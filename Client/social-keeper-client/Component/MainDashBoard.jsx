@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet,Dimensions } from 'react-native'
+import { View, Text, StyleSheet, Dimensions } from 'react-native'
 import { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -11,19 +11,20 @@ import SuggestedMeetingsScreen from './SuggestedMeetingsScreen';
 const Tab = createBottomTabNavigator();
 export default function MainDashBoard() {
     return (
-       
-            <Tab.Navigator
+
+        <Tab.Navigator
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
                     if (route.name === 'Previous Meetings') {
-                        iconName = focused ? 'ios-time' : 'ios-time-outline';
+                        iconName = focused ? 'ios-timer-outline' : 'ios-timer-outline';
                     } else if (route.name === 'Future Meetings') {
                         iconName = focused ? 'ios-calendar' : 'ios-calendar-outline';
-                    } else if (route.name === 'Settings') {
+                    } else if (route.name === 'Personal') {
+                        //sliders icon for settings
                         iconName = focused ? 'ios-settings' : 'ios-settings-outline';
                     } else if (route.name === 'Suggested Meetings') {
-                        iconName = focused ? 'ios-people' : 'ios-people-outline';
+                        iconName = focused ? 'ios-home' : 'ios-people-outline';
                     }
                     return <Ionicons name={iconName} size={size} color={color} />;
                 },
@@ -36,13 +37,12 @@ export default function MainDashBoard() {
             initialRouteName="Suggested Meetings"
 
         >
-                <Tab.Screen name="Previous Meetings" component={PreviousMeetingsScreen} />
-                <Tab.Screen name="Future Meetings" component={FutureMeetingScreen} />
+            <Tab.Screen name="Personal" component={SettingDashBoard} />
+            <Tab.Screen name="Previous Meetings" component={PreviousMeetingsScreen} />
+            <Tab.Screen name="Future Meetings" component={FutureMeetingScreen} />
+            <Tab.Screen name="Suggested Meetings" component={SuggestedMeetingsScreen} />
+        </Tab.Navigator>
 
-                <Tab.Screen name="Suggested Meetings" component={SuggestedMeetingsScreen} />
-                <Tab.Screen name="Settings" component={SettingDashBoard} />
-            </Tab.Navigator>
-       
     );
 }
 const styles = StyleSheet.create({

@@ -3,7 +3,7 @@ import React from 'react'
 
 export default function SettingDashBoard(props) {
   return (
-    <View style={{backgroundColor:'red'}}>
+    <View >
       <Text>SettingDashBoard</Text>
     </View>
   )
