@@ -24,7 +24,7 @@ export default function MainDashBoard() {
                         //sliders icon for settings
                         iconName = focused ? 'ios-settings' : 'ios-settings-outline';
                     } else if (route.name === 'Suggested Meetings') {
-                        iconName = focused ? 'ios-home' : 'ios-people-outline';
+                        iconName = focused ? 'ios-home' : 'ios-home-outline';
                     }
                     return <Ionicons name={iconName} size={size} color={color} />;
                 },
