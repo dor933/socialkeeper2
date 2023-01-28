@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary-SocialKeeper", "ClassLibrary-SocialKeeper\ClassLibrary-SocialKeeper.csproj", "{681FEAA7-5ABB-40FD-B19D-919D277BAABB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{681FEAA7-5ABB-40FD-B19D-919D277BAABB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{681FEAA7-5ABB-40FD-B19D-919D277BAABB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{681FEAA7-5ABB-40FD-B19D-919D277BAABB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{681FEAA7-5ABB-40FD-B19D-919D277BAABB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D0EEC55E-1DCB-4965-AFDB-756DA4A1DE62}
+	EndGlobalSection
+EndGlobal
