@@ -37,7 +37,9 @@ export default function MainDashBoard() {
             initialRouteName="Suggested Meetings"
 
         >
-            <Tab.Screen name="Personal" component={SettingDashBoard} />
+          
+                <Tab.Screen name="Personal" component={SettingDashBoard} />
+           
             <Tab.Screen name="Previous Meetings" component={PreviousMeetingsScreen} />
             <Tab.Screen name="Future Meetings" component={FutureMeetingScreen} />
             <Tab.Screen name="Suggested Meetings" component={SuggestedMeetingsScreen} />
