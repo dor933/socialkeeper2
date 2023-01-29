@@ -1,31 +1,37 @@
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
+import * as Contacts from 'expo-contacts';
 
 
 import MainDashBoard from './Component/MainDashBoard';
 
 export default function App() {
+  const [allContacts, setAllContacts] = useState(null);
+
 
   //this section is for the contact list
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const { status } = await Contacts.requestPermissionsAsync();
-  //     if (status === 'granted') {
-  //       const { data } = await Contacts.getContactsAsync({
-  //         fields: [Contacts.Fields.PhoneNumbers],
-  //       });
+//there is more work to be done here to get the contact list to work
+  useEffect(() => {
+    (async () => {
+      const { status } = await Contacts.requestPermissionsAsync();
+      if (status === 'granted') {
+        const { data } = await Contacts.getContactsAsync({
+          fields: [Contacts.Fields.PhoneNumbers],
+        });
   
-  //       if (data.length > 0) {
-  //         const contact = data[0];
-  //         console.log(contact);
-  //         alert(contact.name);
-  //       }
-  //     }
-  //   })();
-  // }, []);
+        if (data.length > 0) {
+          setAllContacts(data);
+
+
+
+
+ 
+        }
+      }
+    })();
+  }, [console.log(allContacts)]);
 
 
   return (
