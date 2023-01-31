@@ -4,10 +4,12 @@ import { Picker } from '@react-native-picker/picker';
 
 
 const hours = [...Array(24)].map((_, i) => `${i}:00`);
+const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 export default function PreferredMeetingTimes() {
     const [selecteStartdHour, setSelectedStartHour] = useState(hours[0]);
     const [selectedEndHour, setSelectedEndHour] = useState(hours[0]);
+    const [selectedDay, setSelectedDay] = useState('');
 
     return (
         <View style={styles.container}>

@@ -21,7 +21,9 @@ export default function App() {
         });
 
         if (data.length > 0) {
-          setAllContacts(data);        
+          setAllContacts(data);
+          
+
         }
       }
     })();

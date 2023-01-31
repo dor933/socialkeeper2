@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 
 
 import Icon from 'react-native-vector-icons/MaterialIcons'
-
+//this i old code, we will delete it later,use it if you need it for the 
+//new login screen (using google and outlook api)
 export default function LogIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
