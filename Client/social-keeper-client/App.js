@@ -12,22 +12,22 @@ export default function App() {
 
   //this section is for the contact list
   //there is more work to be done here to get the contact list to work
-  useEffect(() => {
-    (async () => {
-      const { status } = await Contacts.requestPermissionsAsync();
-      if (status === 'granted') {
-        const { data } = await Contacts.getContactsAsync({
-          fields: [Contacts.Fields.PhoneNumbers],
-        });
+  // useEffect(() => {
+  //   (async () => {
+  //     const { status } = await Contacts.requestPermissionsAsync();
+  //     if (status === 'granted') {
+  //       const { data } = await Contacts.getContactsAsync({
+  //         fields: [Contacts.Fields.PhoneNumbers],
+  //       });
 
-        if (data.length > 0) {
-          setAllContacts(data);
+  //       if (data.length > 0) {
+  //         setAllContacts(data);
           
 
-        }
-      }
-    })();
-  }, [console.log(allContacts)]);
+  //       }
+  //     }
+  //   })();
+  // }, [console.log(allContacts)]);
 
 
   return (
