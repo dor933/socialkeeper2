@@ -29,7 +29,6 @@ export default function PreferredMeetingTimes() {
             Alert.alert('Start hour should be before end hour');
             return;
         }
-
         let newTime = {
             day: selectedDay,
             startHour: selecteStartdHour,
@@ -42,26 +41,15 @@ export default function PreferredMeetingTimes() {
         setSelectedDay('');
         setSelectedStartHour(hours[0]);
         setSelectedEndHour(hours[0]);
-
-
     };
-
-
-
-
     return (
         <View style={styles.container}>
             <View style={styles.logoContainer} >
                 {/* //social-keeper-low-resolution-logo-color-on-transparent-background.png */}
                 <Image
-                    style={styles.logo}
-                //crop the bottom of the logo               
-
+                    style={styles.logo}            
                     source={require('../../Images/social-keeper-low-resolution-logo-color-on-transparent-background.png')}
-
-                />
-                
-                
+                />               
             </View>
             <Text style={styles.logoText}>Choose at least 3 favorite times </Text>
            
@@ -250,6 +238,5 @@ const styles = StyleSheet.create({
         backgroundColor: 'lightgray',
        // marginTop: Dimensions.get('window').height * 0.01,
         marginBottom: Dimensions.get('window').height * 0.025,
-
     },
 });
