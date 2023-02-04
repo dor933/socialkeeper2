@@ -29,20 +29,38 @@ export default function MainDashBoard() {
                     }
                     return <Ionicons name={iconName} size={size} color={color} />;
                 },
+                
             })}
             tabBarOptions={{
                 activeTintColor: 'tomato',
                 inactiveTintColor: 'gray',
                 style: styles.tabBar,
+                headerShown: false,
+                labelStyle: {
+                    fontSize: 12,
+                },
+                tabStyle: {
+                    width: Dimensions.get('window').width / 4,
+                },
+             
+
+                
             }}
             initialRouteName="Suggested Meetings"
+            
 
         >
 
-            <Tab.Screen name="Personal" component={SettingDashBoard} />
+            <Tab.Screen name="Personal" component={SettingDashBoard} options={{
+                headerShown: false,
+            }}  />
 
             <Tab.Screen name="Previous Meetings" component={PreviousMeetingsScreen} />
-            <Tab.Screen name="Future Meetings" component={FutureMeetingScreen} />
+            <Tab.Screen name="Future Meetings" component={FutureMeetingScreen}
+            options={{
+                tabBarBadge: 3,//in the future this will be the number of future meetings the user has
+                
+            }} />
             <Tab.Screen name="Suggested Meetings" component={SuggestedMeetingsScreen} />
         </Tab.Navigator>
 

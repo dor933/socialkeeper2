@@ -21,6 +21,7 @@ function HomeScreen({ navigation }) {
       <Button
         title="Preferred Hoobies"
         onPress={() => navigation.navigate('Preferred Hoobies')}
+        
       />
     </View>
   );
@@ -34,11 +35,22 @@ const Stack = createNativeStackNavigator();
 //this is the navigation container for the setting dashboard
 export default function SettingDashBoard(props) {
   return (
-    <NavigationContainer independent={true}>
-      <Stack.Navigator>
+    <NavigationContainer independent={true}
+    
+    
+    >
+      <Stack.Navigator
+        screenOptions={{        
+          //this is the animation for the navigation
+          animation: 'slide_from_right',
+
+        }}
+      
+      >
         <Stack.Screen name="Main settings" component={HomeScreen} />
         <Stack.Screen name="Preferred Meeting Times" component={PreferredMeetingTimes} />
         <Stack.Screen name="Preferred Hoobies" component={PreferredHoobies} />
+        
       </Stack.Navigator>
     </NavigationContainer>
 
