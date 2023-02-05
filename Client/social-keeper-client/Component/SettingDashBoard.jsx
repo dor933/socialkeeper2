@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Button, SafeAreaView, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, Button, SafeAreaView, TouchableOpacity,Dimensions } from 'react-native'
 import React from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -17,11 +17,13 @@ function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.personalContainer}>
+        {/* here will be the personal name and image */}
 
 
       </View>
 
       <View style={styles.btnContainer}>
+        
 
         <Button
           title="Preferred Meeting Times"
@@ -54,22 +56,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#F5F5F5',
-    paddingHorizontal: 20,
    
   },
   btnContainer: {
-    flex: 4,
-    width: '100%',
-   
-    //justifyContent: 'space-between',
+    flex: 6,
+ 
     alignItems: 'center',
   },
   personalContainer: {
-    flex: 1,
-    width: '100%',
+    flex: 2.2,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: Dimensions.get('window').height * 0.07,
   },
 
 });
