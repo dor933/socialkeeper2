@@ -103,7 +103,7 @@ export default function PreferredMeetingTimes() {
             </View>
             <View style={styles.btnContainer} >
                 <TouchableOpacity onPress={addFavoriteTime} style={styles.btn} >
-                    <Text style={styles.btnText} >Add</Text>
+                    <Text style={styles.btnText} >Save </Text>
                 </TouchableOpacity>
             </View>
         </View>
