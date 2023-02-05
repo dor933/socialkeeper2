@@ -42,15 +42,10 @@ export default function MainDashBoard() {
                 tabStyle: {
                     width: Dimensions.get('window').width / 4,
                 },
-             
-
-                
+                           
             }}
-            initialRouteName="Suggested Meetings"
-            
-
+            initialRouteName="Suggested Meetings"           
         >
-
             <Tab.Screen name="Personal" component={SettingDashBoard} options={{
                 headerShown: false,
             }}  />
