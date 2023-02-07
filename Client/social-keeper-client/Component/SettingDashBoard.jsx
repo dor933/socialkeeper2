@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: '#F5F5F5',
+    
   },
   btnContainer: {
     flex: 6,
@@ -125,11 +126,11 @@ const styles = StyleSheet.create({
     marginRight: Dimensions.get('window').width * 0.03,
   },
   logo: {
-    width: Dimensions.get('window').width * 0.2,
-    height: Dimensions.get('window').height * 0.1,
+    width: Dimensions.get('window').width * 0.3,
+    height: Dimensions.get('window').height * 0.15,
     borderRadius: 100,
     backgroundColor: 'transparent',
-    marginLeft: Dimensions.get('window').width * 0.03,
+    marginRight: Dimensions.get('window').width * 0.03,
   },
   image: {
     width: Dimensions.get('window').width * 0.22,
@@ -169,6 +170,27 @@ export default function SettingDashBoard(props) {
         screenOptions={{
           //this is the animation for the navigation
           animation: 'slide_from_right',
+          headerStyle: {
+            backgroundColor: '#F5F5F5',
+            height: Dimensions.get('window').height * 0.05,
+          },
+          headerTintColor: 'red',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize: 15,
+            color: 'black',
+            marginLeft: Dimensions.get('window').width * 0.03,
+          },
+          headerBackTitleVisible: false,
+          // headerBackImage: () => (
+          //   <Ionicons style={{
+          //     marginLeft: Dimensions.get('window').width * 0.03,
+          //     marginRight: Dimensions.get('window').width * 0.05
+          //   }} name='ios-arrow-back' size={30} color='gray' />
+          // ),
+          //do not show the header,just the back button
+ 
+
 
         }}
       >

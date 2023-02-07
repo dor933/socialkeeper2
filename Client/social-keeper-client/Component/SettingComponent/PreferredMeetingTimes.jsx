@@ -113,6 +113,7 @@ export default function PreferredMeetingTimes() {
             alignItems: 'center',
             justifyContent: 'center',
             marginBottom: Dimensions.get('window').height * 0.04,
+            marginTop: Dimensions.get('window').height * 0.008,
         },
         
 

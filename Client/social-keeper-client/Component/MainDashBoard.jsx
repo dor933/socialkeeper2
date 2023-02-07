@@ -29,6 +29,7 @@ export default function MainDashBoard() {
                     }
                     return <Ionicons name={iconName} size={size} color={color} />;
                 },
+                headerShown: false,
                 
             })}
             tabBarOptions={{
@@ -42,9 +43,12 @@ export default function MainDashBoard() {
                 tabStyle: {
                     width: Dimensions.get('window').width / 4,
                 },
+                //do not show header
+                
                            
             }}
-            initialRouteName="Suggested Meetings"           
+            initialRouteName="Suggested Meetings"   
+                    
         >
             <Tab.Screen name="Personal" component={SettingDashBoard} options={{
                 headerShown: false,
