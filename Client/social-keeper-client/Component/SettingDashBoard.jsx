@@ -1,7 +1,10 @@
-import { StyleSheet, View, Text, Button, SafeAreaView, TouchableOpacity,Dimensions } from 'react-native'
+import { StyleSheet, View, Text, Button, SafeAreaView, TouchableOpacity, Dimensions,Image } from 'react-native'
 import React from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
+import { SimpleLineIcons } from '@expo/vector-icons';
 //internal imports:
 import PreferredMeetingTimes from './SettingComponent/PreferredMeetingTimes';
 import PreferredHoobies from './SettingComponent/PreferredHoobies';
@@ -17,31 +20,74 @@ function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.personalContainer}>
-        {/* here will be the personal name and image */}
-
-
+        {/* here will be the personal name and image and the logo of the app */}
+        <Image style={styles.image} source={require('../Images/flat-business-man-user-profile-avatar.jpg')} />
+        <Text style={styles.personalText}>Personal Name</Text>
       </View>
 
       <View style={styles.btnContainer}>
-        
+      <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Personal Setting')}>
+          <Ionicons style={{
+            marginLeft: Dimensions.get('window').width * 0.03,
+            marginRight: Dimensions.get('window').width * 0.06
 
-        <Button
-          title="Preferred Meeting Times"
-          onPress={() => navigation.navigate('Preferred Meeting Times')}
-        />
-        <Button
-          title="Preferred Hoobies"
-          onPress={() => navigation.navigate('Preferred Hoobies')}
-        />
-        <Button
+          }} name='ios-person-outline' size={30} color='gray' />
+          <Text style={styles.btnText}>Personal Setting</Text>
+          <AntDesign
+            style={{
 
-          title="Personal Setting"
-          onPress={() => navigation.navigate('Personal Setting')}
-        />
-        <Button
-          title="Favorite Contacts"
-          onPress={() => navigation.navigate('Favorite Contacts')}
-        />
+              position: 'absolute',
+              right: Dimensions.get('window').width * 0.03,
+            }} name="right" size={25} color="gray" />
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Preferred Meeting Times')}>
+          <SimpleLineIcons style={{
+            marginLeft: Dimensions.get('window').width * 0.03,
+            marginRight: Dimensions.get('window').width * 0.06
+
+          }} name='speedometer' size={30} color='gray' />
+          <Text style={styles.btnText}>Preferred Meeting Times</Text>
+          <AntDesign
+            style={{
+
+              position: 'absolute',
+              right: Dimensions.get('window').width * 0.03,
+            }} name="right" size={24} color="gray" />
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Preferred Hoobies')}>
+          <Ionicons style={{
+            marginLeft: Dimensions.get('window').width * 0.03,
+            marginRight: Dimensions.get('window').width * 0.06
+
+          }} name='ios-heart-outline' size={30} color='gray' />
+          <Text style={styles.btnText}>Preferred Hoobies</Text>
+          <AntDesign
+            style={{
+
+              position: 'absolute',
+              right: Dimensions.get('window').width * 0.03,
+            }} name="right" size={25} color="gray" />
+
+        </TouchableOpacity>
+
+
+
+        <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Favorite Contacts')}>
+          <Ionicons style={{
+            marginLeft: Dimensions.get('window').width * 0.03,
+            marginRight: Dimensions.get('window').width * 0.06
+
+          }} name='ios-star' size={30} color='gray' />
+          <Text style={styles.btnText}>Favorite Contacts</Text>
+          <AntDesign
+            style={{
+
+              position: 'absolute',
+              right: Dimensions.get('window').width * 0.03,
+            }} name="right" size={25} color="gray" />
+        </TouchableOpacity>
 
       </View>
 
@@ -54,24 +100,60 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#F5F5F5',
-   
   },
   btnContainer: {
     flex: 6,
- 
     alignItems: 'center',
+    justifyContent: 'start',
+
   },
   personalContainer: {
     flex: 2.2,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: Dimensions.get('window').height * 0.07,
-  },
+    flexDirection: 'cloumn',
+    justifyContent: 'start',
+    alignItems: 'start',
+    width: Dimensions.get('window').width * 1,
+    paddingVertical: Dimensions.get('window').height * 0.04,
 
+  },
+  personalText: {
+    fontSize: 25,
+    marginRight: Dimensions.get('window').width * 0.03,
+  },
+  image: {
+    width: Dimensions.get('window').width * 0.2,
+    height: Dimensions.get('window').height * 0.1,
+    borderRadius: 100,
+    //fit the image to the container
+    resizeMode: 'contain',
+  
+    
+    //no background color
+   
+    marginLeft: Dimensions.get('window').width * 0.03,
+  },
+  btn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'start',
+    width: Dimensions.get('window').width * 1,
+    height: Dimensions.get('window').height * 0.08,
+    //add a underline to the button
+    borderBottomWidth: 1,
+    borderBottomColor: 'lightgray',
+
+
+
+
+  },
+  btnText: {
+    fontSize: 21,
+
+
+  },
 });
+
 const Stack = createNativeStackNavigator();
 
 //this is the navigation container for the setting dashboard
