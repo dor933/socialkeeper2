@@ -49,8 +49,12 @@ export default function MainDashBoard() {
             <Tab.Screen name="Personal" component={SettingDashBoard} options={{
                 headerShown: false,
             }}  />
+            
 
             <Tab.Screen name="Previous Meetings" component={PreviousMeetingsScreen} />
+            
+
+
             <Tab.Screen name="Future Meetings" component={FutureMeetingScreen}
             options={{
                 tabBarBadge: 3,//in the future this will be the number of future meetings the user has

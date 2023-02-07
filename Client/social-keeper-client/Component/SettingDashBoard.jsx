@@ -150,10 +150,6 @@ const styles = StyleSheet.create({
     //add a underline to the button
     borderBottomWidth: 1,
     borderBottomColor: 'lightgray',
-
-
-
-
   },
   btnText: {
     fontSize: 21,
@@ -179,6 +175,7 @@ export default function SettingDashBoard(props) {
         <Stack.Screen name="Main settings" component={HomeScreen} />
         <Stack.Screen name="Preferred Meeting Times" component={PreferredMeetingTimes} />
         <Stack.Screen name="Preferred Hoobies" component={PreferredHoobies} />
+
         <Stack.Screen name="Personal Setting" component={ProfileScreen} />
         <Stack.Screen name="Favorite Contacts" component={FavoriteContacts} />
 
