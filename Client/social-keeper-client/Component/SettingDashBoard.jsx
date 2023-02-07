@@ -20,9 +20,12 @@ function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.personalContainer}>
+
         {/* here will be the personal name and image and the logo of the app */}
-        <Image style={styles.image} source={require('../Images/flat-business-man-user-profile-avatar.jpg')} />
-        <Text style={styles.personalText}>Personal Name</Text>
+        <Image style={styles.image} source={require('../Images/Screenshot_20230131_103310.png')} />
+        {/* <Text style={styles.personalText}>Personal Name</Text> */}
+        <Image style={styles.logo} source={require('../Images/social-keeper-website-favicon-color.png')} />
+
       </View>
 
       <View style={styles.btnContainer}>
@@ -110,8 +113,8 @@ const styles = StyleSheet.create({
   },
   personalContainer: {
     flex: 2.2,
-    flexDirection: 'cloumn',
-    justifyContent: 'start',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'start',
     width: Dimensions.get('window').width * 1,
     paddingVertical: Dimensions.get('window').height * 0.04,
@@ -121,14 +124,19 @@ const styles = StyleSheet.create({
     fontSize: 25,
     marginRight: Dimensions.get('window').width * 0.03,
   },
-  image: {
+  logo: {
     width: Dimensions.get('window').width * 0.2,
     height: Dimensions.get('window').height * 0.1,
     borderRadius: 100,
-    //fit the image to the container
-    resizeMode: 'contain',
-  
-    
+    backgroundColor: 'transparent',
+    marginLeft: Dimensions.get('window').width * 0.03,
+  },
+  image: {
+    width: Dimensions.get('window').width * 0.22,
+    height: Dimensions.get('window').height * 0.11,
+    borderRadius: 100,
+
+
     //no background color
    
     marginLeft: Dimensions.get('window').width * 0.03,
