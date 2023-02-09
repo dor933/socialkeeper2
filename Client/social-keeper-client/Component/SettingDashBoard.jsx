@@ -157,12 +157,13 @@ const styles = StyleSheet.create({
     marginLeft: Dimensions.get('window').width * 0.03,
   },
   logo: {
-    width: Dimensions.get('window').width * 0.3,
-    height: Dimensions.get('window').height * 0.15,
+    width: Dimensions.get('window').width * 0.2,
+    height: Dimensions.get('window').height * 0.1,
     borderRadius: 100,
     backgroundColor: 'transparent',
     marginRight: Dimensions.get('window').width * 0.03,
-    marginBottom: Dimensions.get('window').height * 0.02,
+    marginTop: Dimensions.get('window').height * 0.03,
+    marginBottom: Dimensions.get('window').height * 0.0,
   },
   image: {
     width: Dimensions.get('window').width * 0.20,
