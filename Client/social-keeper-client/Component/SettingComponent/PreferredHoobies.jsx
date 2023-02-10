@@ -44,7 +44,7 @@ export default function PreferredHoobies() {
     setSelectedHobbies([...selectedHobbies, hobby])
     setSelectCurrentHobby(hobby)
     //alert the user that he selected the hobby
-    alert("You selected " + hobby)
+
 
 
   }
@@ -79,10 +79,8 @@ export default function PreferredHoobies() {
                     source={Object.values(item)[0]}
                   />
                 </View>
-                
-
+              
               </TouchableOpacity>
-
             {          
               //if the user selected the current hobby, show the stars rating component to rate it, and if he already rated it, show the rating 
               selectCurrentHobby == Object.keys(item)[0] ?
@@ -96,19 +94,13 @@ export default function PreferredHoobies() {
                   </View>
                   :
                   null
-                  
-    
             
           }
-
             </View>
-
           )}
           keyExtractor={(item, index) => index.toString()}
         />
-
       </View>
-
     </View>
   )
 }
