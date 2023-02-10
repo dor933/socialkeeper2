@@ -4,7 +4,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import * as Contacts from 'expo-contacts';
 
+
 import MainDashBoard from './Component/MainDashBoard';
+
+
+
 
 export default function App() {
   const [allContacts, setAllContacts] = useState(null);

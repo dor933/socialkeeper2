@@ -54,25 +54,26 @@ export default function PreferredMeetingTimes({ navigation }, props) {
     const saveFavoriteTimeToDb = () => {
         //send selectedDays array to the server to save it in the database
         //after saving the data, we will navigate to the settings screen or to the next setting screen if it is a new user
-        
+
         console.log('save to db');
-  //ask the user if he wants to save the data or not
-        Alert.alert(    
-            'Save Preferred Meeting Times',    
+        //ask the user if he wants to save the data or not
+        Alert.alert(
+            'Save Preferred Meeting Times',
             'Are you sure you want to save the preferred meeting times?',
             [
-                {text: 'Yes', onPress: () => {
-                    //send selectedDays array to the server to save it in the database
-                    //after saving the data, we will navigate to the settings screen or to the next setting screen if it is a new user
-                    navigation.navigate('Personal');//כרגע מנווט חזרה רק למסך הגדרות, כשנבנה את תהליך ההרשמה נעבור למסך הבא בתהליך ההרשמה
-                }
+                {
+                    text: 'Yes', onPress: () => {
+                        //send selectedDays array to the server to save it in the database
+                        //after saving the data, we will navigate to the settings screen or to the next setting screen if it is a new user
+                        navigation.navigate('Personal');//כרגע מנווט חזרה רק למסך הגדרות, כשנבנה את תהליך ההרשמה נעבור למסך הבא בתהליך ההרשמה
+                    }
                 },
-                {text: 'No', onPress: () => console.log('No Pressed'), style: 'cancel'},
+                { text: 'No', onPress: () => console.log('No Pressed'), style: 'cancel' },
             ],
-            {cancelable: false},
+            { cancelable: false },
         );
 
-    
+
     };
 
 

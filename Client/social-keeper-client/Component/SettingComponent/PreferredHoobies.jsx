@@ -1,6 +1,8 @@
 
 import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, FlatList } from 'react-native'
 import React, { useState } from 'react'
+import StarsRatingComp from '../HelpComponent/StarsRatingComp'
+
 
 const hobbiesAndImages = [
   {
@@ -10,35 +12,43 @@ const hobbiesAndImages = [
   { "Gym": require('../../Images/Hoobies/Gym.jpeg') },
   { "Coffie": require('../../Images/Hoobies/Coffie.jpeg') },
   {
-    "Basketball": require('../../Images/Hoobies/Basketballl.jpeg')
+    "Movie": require('../../Images/Hoobies/Movie.jpeg')
   }
   ,
-  { "Gym": require('../../Images/Hoobies/Gym.jpeg') },
+  { "Resturant": require('../../Images/Hoobies/Resturant.jpeg') },
   { "Coffie": require('../../Images/Hoobies/Coffie.jpeg') },
   {
     "Basketball": require('../../Images/Hoobies/Basketballl.jpeg')
   }
   ,
   { "Gym": require('../../Images/Hoobies/Gym.jpeg') },
-  { "Coffie": require('../../Images/Hoobies/Coffie.jpeg') },
+  { "Resturant": require('../../Images/Hoobies/Resturant.jpeg') },
   {
     "Basketball": require('../../Images/Hoobies/Basketballl.jpeg')
   }
   ,
-  { "Gym": require('../../Images/Hoobies/Gym.jpeg') },
+  { "Movie": require('../../Images/Hoobies/Movie.jpeg') },
   { "Coffie": require('../../Images/Hoobies/Coffie.jpeg') },
 
 ]//temporarily for testing purposes only, will be replaced with a call to the server
 
 export default function PreferredHoobies() {
-  const [selectedHobbies, setSelectedHobbies] = useState({})
+  //will be an array of hobbies and the rate that the user selecte for each one of them (1-5),example: {Basketball: 3, Gym: 5, Coffie: 1}
+  const [selectedHobbies, setSelectedHobbies] = useState([])
+  const [selectCurrentHobby, setSelectCurrentHobby] = useState(null)
 
-  const onHobbyPress = hobby => {
-    setSelectedHobbies({
-      ...selectedHobbies,
-      [hobby]: !selectedHobbies[hobby],
-    })
+
+
+  const onHobbyPress = (hobby) => {
+
+    setSelectedHobbies([...selectedHobbies, hobby])
+    setSelectCurrentHobby(hobby)
+    //alert the user that he selected the hobby
+    alert("You selected " + hobby)
+
+
   }
+
 
   return (
     <View style={styles.container}>
@@ -57,24 +67,48 @@ export default function PreferredHoobies() {
           numColumns={2}
           contentContainerStyle={styles.contentContainer}
           renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.hobbyButton}
-              onPress={() => onHobbyPress(Object.keys(item)[0])}
-            >
-              <View style={styles.hobbyView}>
-                <Text style={styles.hobbieTxt}>{Object.keys(item)[0]}</Text>
-                <Image
-                  style={styles.hobbyImage}
-                  source={Object.values(item)[0]}
-                />
-              </View>
-            </TouchableOpacity>
+            <View >
+              <TouchableOpacity
+                style={styles.hobbyButton}
+                onPress={() => onHobbyPress(Object.keys(item)[0])}
+              >
+                <View style={selectedHobbies.length == 0 || selectedHobbies.find(hobby => hobby == Object.keys(item)[0]) == undefined ? styles.hobbyView : styles.sellectedHobbyView}>
+                  <Text style={styles.hobbieTxt}>{Object.keys(item)[0]}</Text>
+                  <Image
+                    style={styles.hobbyImage}
+                    source={Object.values(item)[0]}
+                  />
+                </View>
+                
+
+              </TouchableOpacity>
+
+            {          
+              //if the user selected the current hobby, show the stars rating component to rate it, and if he already rated it, show the rating 
+              selectCurrentHobby == Object.keys(item)[0] ?
+                <View style={styles.starsRatingContainer}>
+                  <StarsRatingComp />
+                </View>
+                :
+                selectedHobbies.length != 0 && selectedHobbies.find(hobby => hobby == Object.keys(item)[0]) != undefined ?
+                  <View style={styles.starsRatingContainer}>
+                    <StarsRatingComp />
+                  </View>
+                  :
+                  null
+                  
+    
+            
+          }
+
+            </View>
 
           )}
           keyExtractor={(item, index) => index.toString()}
         />
 
       </View>
+
     </View>
   )
 }
@@ -127,10 +161,24 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
 
   },
-
-
   hobbyView: {
-    width: Dimensions.get('window').width * 0.35, 
+    width: Dimensions.get('window').width * 0.35,
+    height: Dimensions.get('window').height * 0.13,
+    backgroundColor: '#E5E5EA',
+    borderRadius: 10,
+    marginVertical: Dimensions.get('window').height * 0.04,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginHorizontal: Dimensions.get('window').width * 0.06,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0.8, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 1.8,
+  },
+
+
+  sellectedHobbyView: {
+    width: Dimensions.get('window').width * 0.35,
     height: Dimensions.get('window').height * 0.13,
     backgroundColor: '#BB3F3F',
     borderRadius: 10,
@@ -142,7 +190,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0.8, height: 2.5 },
     shadowOpacity: 0.8,
     shadowRadius: 1.8,
-  
 
   },
   hobbyButton: {
@@ -166,8 +213,8 @@ const styles = StyleSheet.create({
     fontSize: Dimensions.get('window').height * 0.02,
     fontWeight: 'bold',
     marginTop: Dimensions.get('window').height * 0.004,
-  
-    
+
+
 
     textAlign: 'center',
 
