@@ -229,8 +229,6 @@ export default function SettingDashBoard(props) {
           // ),
           //do not show the header,just the back button
 
-
-
         }}
       >
         <Stack.Screen name="Personal" options={{

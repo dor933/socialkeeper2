@@ -13,6 +13,9 @@ export default function PreferredMeetingTimes({ navigation }, props) {
     const [selectedDay, setSelectedDay] = useState('');
     const [selectedDays, setSelectedDays] = useState([]);//array of objects {day: 'S', startHour: '10:00', endHour: '12:00'}
 
+
+ 
+    
     //this function is called when the user clicks on the add button to add a new preferred meeting time
     //in the future we will send the selectedDays array to the server to save it in the database
     const addFavoriteTime = () => {
@@ -270,7 +273,7 @@ const styles = StyleSheet.create({
     },
     btnAddBefore: {
         backgroundColor: '#F95F6B',
-        width: Dimensions.get('window').width * 0.77,
+        width: Dimensions.get('window').width * 0.8,
         height: Dimensions.get('window').height * 0.058,
         alignItems: 'center',
         justifyContent: 'center',
@@ -293,7 +296,6 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
 
     },
-
 
     btnText: {
         fontSize: 24,
