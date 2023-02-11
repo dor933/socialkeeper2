@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, FlatList, 
 import React, { useState, useEffect } from 'react'
 import StarsRatingComp from '../HelpComponent/StarsRatingComp'
 
-
 const hobbiesAndImages = [
   {
     "Basketball": require('../../Images/Hoobies/Basketballl.jpeg')
@@ -38,7 +37,6 @@ export default function PreferredHoobies({ navigation}, props) {
   const [selectedHobbies, setSelectedHobbies] = useState([])
   const [selectCurrentHobby, setSelectCurrentHobby] = useState(null)//will be the hobby that the user pressed on
   const [rate, setRate] = useState(0)//will be the rate that the user selected for the current hobby
-
 
   const [animation, setAnimation] = useState({});
 
@@ -80,8 +78,6 @@ export default function PreferredHoobies({ navigation}, props) {
     );
   }
 
-
-
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer} >
@@ -105,9 +101,7 @@ export default function PreferredHoobies({ navigation}, props) {
                 onPress={() => onHobbyPress(Object.keys(item)[0])}
               >
                 <View style={selectedHobbies.find(hobby => Object.keys(hobby)[0] === Object.keys(item)[0]) ? styles.sellectedHobbyView : selectCurrentHobby == Object.keys(item)[0] ? styles.sellectedHobbyView :
-
                   styles.hobbyView}
-
                 >
                   <Text style={styles.hobbieTxt}>{Object.keys(item)[0]}</Text>
                   <Image
@@ -144,9 +138,6 @@ export default function PreferredHoobies({ navigation}, props) {
         </View>
         : null
       }
-
-
-
     </View>
   )
 }
@@ -214,8 +205,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: Dimensions.get('window').height * 0.022,
   },
-
-
   contentContainer: {
     alignItems: 'center',
     width: Dimensions.get('window').width * 1,
@@ -270,6 +259,5 @@ const styles = StyleSheet.create({
     marginTop: Dimensions.get('window').height * 0.004,
     textAlign: 'center',
   },
-
 })
 

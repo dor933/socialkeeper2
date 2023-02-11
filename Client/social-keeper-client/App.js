@@ -6,6 +6,7 @@ import * as Contacts from 'expo-contacts';
 
 
 import MainDashBoard from './Component/MainDashBoard';
+import ProfileScreen from './Component/SettingComponent/ProfileScreen';
 
 
 
@@ -35,9 +36,10 @@ export default function App() {
 
 
   return (
-    <NavigationContainer>
-      <MainDashBoard />
-    </NavigationContainer>
+    // <NavigationContainer>
+    //   <MainDashBoard />
+    // </NavigationContainer>
+    <ProfileScreen/>
 
   );
 }
