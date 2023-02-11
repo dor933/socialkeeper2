@@ -39,6 +39,7 @@ export default function PreferredHoobies({ navigation}, props) {
   const [selectCurrentHobby, setSelectCurrentHobby] = useState(null)//will be the hobby that the user pressed on
   const [rate, setRate] = useState(0)//will be the rate that the user selected for the current hobby
 
+
   const [animation, setAnimation] = useState({});
 
   const onHobbyPress = (hobby) => {
@@ -132,10 +133,7 @@ export default function PreferredHoobies({ navigation}, props) {
         />
       </View>
       {selectedHobbies.length >= 3 ?
-
-        //in the future, we will slide this view when it appears
-      
-
+        //in the future, we will slide this view when it appears   
         <View style={styles.nextButtonContainer}>
           <TouchableOpacity
             style={styles.nextButton}
@@ -162,13 +160,15 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   logo: {
-    width: Dimensions.get('window').width * 0.63,
+    width: Dimensions.get('window').width * 0.6,
     height: Dimensions.get('window').height * 0.2,
     resizeMode: 'contain',
   },
   logoContainer: {
-    flex: 1.65,
-    alignItems: 'center',
+    flex: 1.6,
+    alignItems: 'stretch',
+    justifyContent: 'center',
+    paddingTop: Dimensions.get('window').height * 0.018,
   },
   logoText: {
     fontSize: Dimensions.get('window').height * 0.022,
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     marginVertical: Dimensions.get('window').width * 0.05,
   },
   descContainer: {
-    flex: 1,
+    flex: 1.2,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   },
   nextButtonContainer: {
     //slide the view up
-    flex: 0.9,
+    flex: 0.79,
     alignItems: 'center',
     justifyContent: 'center',
   },
