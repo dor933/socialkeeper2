@@ -6,20 +6,18 @@ import DatePicker from 'react-native-datepicker';
 import { Picker } from '@react-native-picker/picker';
 import GenderDropdown from '../HelpComponent/GenderDropdown';
 
-export default function ProfileScreen() {
+export default function ProfileScreen(props,{navigation}) {
   const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
   const [animation, setAnimation] = useState({});
   const [user, setUser] = useState({
     firstName: '',
     lastName: '',
-    dateOfbirth: '',
-    gender: '',
     city: '',
-    profilePicture: '',
 
   })
   const [date, setDate] = useState();
   const [gender, setGender] = useState(null)
+  const [image, setImage] = useState('')
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -54,6 +52,10 @@ export default function ProfileScreen() {
     }
 
   }, []);
+ const changeImage = (image) => {
+    setImage(image);
+  }
+
 
   const handleCreateUser = () => {
     //check all fields are filled
@@ -78,9 +80,25 @@ export default function ProfileScreen() {
       Alert.alert("You have to be a man or women becuse of the new goverment law")
       //מעניין אם מישהו ישים לב לזה וישנה את הטקסט? 
     }
+    if (image === '') {
+      //set a default image if user didn't choose one 
+      image = '../../Images/user.png';
+      return;
+    }
+
+    let userObj = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      dateOfbirth: date,
+      imageUri: image,
+      city: user.city,
+      gender:gender
+    }
     //here we will call api to create user..
     //or to update user profile if user already exist
     Alert.alert('User Created');//just for testing
+    props.navigation.goBack();
+
   }
 
   const handleInputChange = (field, value) => {
@@ -89,7 +107,7 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.imageContainer}>
-        <ImagePickerExample style={styles.image} />
+        <ImagePickerExample onImageChange={changeImage} style={styles.image} />
       </View>
       <View style={[styles.inputContainer, animation]}>
         <View >
@@ -203,7 +221,7 @@ const styles = StyleSheet.create({
 
   },
   imageContainer: {
-    flex: 3,
+    flex: 2,
     alignItems: 'center',
     justifyContent: 'center',
   },

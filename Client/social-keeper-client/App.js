@@ -36,10 +36,10 @@ export default function App() {
 
 
   return (
-    // <NavigationContainer>
-    //   <MainDashBoard />
-    // </NavigationContainer>
-    <ProfileScreen/>
+    <NavigationContainer>
+      <MainDashBoard />
+    </NavigationContainer>
+    // <ProfileScreen/>
 
   );
 }

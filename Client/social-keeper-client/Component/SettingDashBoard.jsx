@@ -14,7 +14,7 @@ import FavoriteContacts from './SettingComponent/FavoriteContacts';
 
 //this is the home screen for the setting dashboard, 
 //need to add the personal setting (יצירת פרופיל) screen (Idan\ tal )
-function HomeScreen({ navigation, }, props) {
+function HomeScreen({ navigation }, props) {
 
   //the user name will be taken from the database
   //the user image will be taken from the database
@@ -24,10 +24,7 @@ function HomeScreen({ navigation, }, props) {
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Personal</Text>
       <View style={styles.personalContainer}>
-  
         <View style={styles.imageContainer}>
-
-
           {/* here will be the personal name and image and the logo of the app */}
           <Image style={styles.image} source={require('../Images/Screenshot_20230131_103310.png')} />
           <View style={styles.personalTextContainer}>
@@ -116,7 +113,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: '#F5F5F5',
-
   },
   title: {
 //the title, it will be on the left side of the screen,just above the image
@@ -125,7 +121,6 @@ const styles = StyleSheet.create({
     marginLeft: Dimensions.get('window').width * 0.03,
     marginRight: Dimensions.get('window').width * 0.6,
     marginTop: Dimensions.get('window').height * 0.03,
-    
   },
 
   btnContainer: {
@@ -141,7 +136,6 @@ const styles = StyleSheet.create({
     alignItems: 'start',
     width: Dimensions.get('window').width * 1,
    // paddingVertical: Dimensions.get('window').height * 0.04,
-
   },
   imageContainer: {
     flexDirection: 'row',
@@ -169,9 +163,6 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width * 0.20,
     height: Dimensions.get('window').height * 0.09,
     borderRadius: 100,
-
-
-    //no background color
     marginTop: Dimensions.get('window').height * 0.022,
     marginLeft: Dimensions.get('window').width * 0.05,
   },
@@ -181,16 +172,11 @@ const styles = StyleSheet.create({
     justifyContent: 'start',
     width: Dimensions.get('window').width * 1,
     height: Dimensions.get('window').height * 0.08,
-    //add a underline to the button
     borderBottomWidth: 1,
     borderBottomColor: 'lightgray',
   },
   btnText: {
     fontSize: 21,
-    //roboto font
-
-
-
   },
 });
 
@@ -206,11 +192,9 @@ export default function SettingDashBoard(props) {
           //this is the animation for the navigation
           animation: 'slide_from_right',
           headerBlurEffect: 'light',
-
           headerStyle: {
             backgroundColor: '#F5F5F5',
             height: Dimensions.get('window').height * 0.0,
-
           },
 
           headerTintColor: 'red',
@@ -234,15 +218,11 @@ export default function SettingDashBoard(props) {
         <Stack.Screen name="Personal" options={{
           headerShown: false,
         }
-
-
         } component={HomeScreen} />
         <Stack.Screen name="Preferred Meeting Times" component={PreferredMeetingTimes} />
         <Stack.Screen name="Preferred Hoobies" component={PreferredHoobies} />
-
-        <Stack.Screen name="Personal Setting" component={ProfileScreen} />
+        <Stack.Screen name="Personal Setting" component={ProfileScreen}  />
         <Stack.Screen name="Favorite Contacts" component={FavoriteContacts} />
-
       </Stack.Navigator>
     </NavigationContainer>
 

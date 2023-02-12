@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 
 
 
-export default function ImagePickerExample() {
+export default function ImagePickerExample(props) {
   const [image, setImage] = useState(null);
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -18,10 +18,11 @@ export default function ImagePickerExample() {
     console.log(result);
     if (!result.canceled) {
       setImage(result.assets[0].uri);
+      props.onImageChange(result.assets[0].uri);
     }
   };
   return (
-    <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'space-between' }}>
+    <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'space-between',position:'absolute' }}>
       <TouchableOpacity onPress={pickImage} >
         {!image && <Image source={require('../../Images/user.png')} style={styles.imgUser} />}
         {image && <Image source={{ uri: image }} style={styles.imgUser} />}
@@ -37,8 +38,8 @@ const styles = StyleSheet.create({
     borderRadius: 60,
   },
   icon: {
-    position: 'fixed',
-    bottom: 38,
-    right: -33,
+    position: 'absolute',
+    bottom: 10,
+    right: 8,
   }
 });

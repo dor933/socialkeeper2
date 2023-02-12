@@ -76,9 +76,7 @@ export default function PreferredMeetingTimes({ navigation }, props) {
             { cancelable: false },
         );
 
-
     };
-
 
     return (
         <View style={styles.container}>
@@ -156,7 +154,6 @@ const styles = StyleSheet.create({
         marginBottom: Dimensions.get('window').height * 0.04,
         marginTop: Dimensions.get('window').height * 0.008,
     },
-
     pickerInside: {
         flex: 1,
         width: Dimensions.get('window').width * 1,
@@ -196,7 +193,6 @@ const styles = StyleSheet.create({
         marginBottom: Dimensions.get('window').height * 0.01,
 
     },
-
     pickerItem: {
         fontSize: Dimensions.get('window').height * 0.025,
         flex: 1,
@@ -209,7 +205,6 @@ const styles = StyleSheet.create({
         fontSize: Dimensions.get('window').height * 0.022,
 
     },
-
     daysContainer: {
         flex: 1,
         alignItems: 'center',
@@ -296,7 +291,6 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
 
     },
-
     btnText: {
         fontSize: 24,
         color: 'white',
