@@ -58,6 +58,7 @@ export default function PreferredHoobies({ navigation}, props) {
     selectedHobbies.push({ [selectCurrentHobby]: rate })
     console.log(selectedHobbies)
   }
+  //function for save the selected hobbies to the DB
   const PreferredHoobies = () => {
     console.log('save to db');
     //ask the user if he wants to save the data or not
@@ -109,7 +110,6 @@ export default function PreferredHoobies({ navigation}, props) {
                     source={Object.values(item)[0]}
                   />
                 </View>
-
               </TouchableOpacity>
               {
                 //if the user selected the current hobby, show the stars rating component to rate it, and if he already rated it, show the rating 

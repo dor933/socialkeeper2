@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import ImagePickerExample from './ImagePickerExample ';
 import DatePicker from 'react-native-datepicker';
+import { Picker } from '@react-native-picker/picker';
+import GenderDropdown from '../HelpComponent/GenderDropdown';
 
 export default function ProfileScreen() {
   const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
@@ -16,7 +18,8 @@ export default function ProfileScreen() {
     profilePicture: '',
 
   })
-  const [date, setDate] = useState('2016-05-15');
+  const [date, setDate] = useState();
+  const [gender, setGender] = useState(null)
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -25,11 +28,11 @@ export default function ProfileScreen() {
         LayoutAnimation.configureNext({
           update: {
             type: LayoutAnimation.Types.easeIn,
-            duration: 200,
-            useNativeDriver: true,
+            duration: 160,
+            useNativeDriver: 'true',
           },
         });
-        setAnimation({ marginBottom: Dimensions.get('window').height * 0.325 });
+        setAnimation({ marginBottom: Dimensions.get('window').height * 0.15 });
       }
     );
     const keyboardDidHideListener = Keyboard.addListener(
@@ -38,8 +41,8 @@ export default function ProfileScreen() {
         LayoutAnimation.configureNext({
           update: {
             type: LayoutAnimation.Types.easeOut,
-            duration: 200,
-            useNativeDriver: true,
+            duration: 160,
+            useNativeDriver: 'true',
           },
         });
         setAnimation({ marginBottom: 0 });
@@ -53,7 +56,37 @@ export default function ProfileScreen() {
   }, []);
 
   const handleCreateUser = () => {
-    Alert.alert('User created successfully');
+    //check all fields are filled
+    
+    if (user.firstName === '') {
+      Alert.alert('First Name is required');
+      return;
+    }
+    if (user.lastName === '') {
+      Alert.alert('Last Name is required');
+      return;
+    }
+    if (user.dateOfbirth === '') {
+      Alert.alert('Date of Birth is required');
+      return;
+    }
+      if (user.city === '') {
+      Alert.alert('City is required');
+      return;
+    }
+    if (gender==null){
+      Alert.alert("You have to be a man or women becuse of the new goverment law")
+      //מעניין אם מישהו ישים לב לזה וישנה את הטקסט? 
+    }
+    //here we will call api to create user..
+    //or to update user profile if user already exist
+    
+    Alert.alert('User Created');//just for testing
+
+
+      
+    
+    
   }
 
   const handleInputChange = (field, value) => {
@@ -71,58 +104,81 @@ export default function ProfileScreen() {
             placeholder="First Name"
             onChangeText={(value) => handleInputChange('firstName', value)}
           />
-          <View />
-          <View>
-            <TextInput
-              style={[styles.input, styles.lastNameInput]}
-              placeholder="Last Name"
-              onChangeText={(value) => handleInputChange('lastName', value)}
+        </View >
+        <View>
+          <TextInput
+            style={[styles.input, styles.lastNameInput]}
+            placeholder="Last Name"
+            onChangeText={(value) => handleInputChange('lastName', value)}
+          />
+        </View>
+        <View>
+          <TextInput
+            style={[styles.input, styles.lastNameInput]}
+            placeholder="City"
+            onChangeText={(value) => handleInputChange('city', value)}
+          />
+        </View>
+        <View style={styles.birthDateContainer}>
+          <DatePicker
+            style={styles.datePickerStyle}
+            useNativeDriver={true}
+            date={date} //initial date from state
+            mode="date" //The enum of date, datetime and time
+            placeholder="Date of birth"
+            format="DD-MM-YYYY"
+            minDate="01-01-1940"
+            maxDate="01-01-2003"
+            confirmBtnText="Confirm"
+            cancelBtnText="Cancel"
+            customStyles={{
+              dateIcon: {
+                //display: 'none',
+                position: 'absolute',
+                left: 2,
+                top: 4,
+                marginLeft: 0.2,
+              },
+              dateInput: {
+                marginLeft: 0,
+                borderWidth: 0,
+              },
+            }}
+            onDateChange={(date) => {
+              setDate(date);
+            }}
+          />
+        </View>
+      </View>
+      <Text style={styles.genderTxt}> im a:</Text>
+      <View style={styles.genderPickContainer}>
+        
+        <TouchableOpacity
+          onPress={() => setGender('men')}>
+          <View style={styles.allGender}>
+            <Image
+              source={require('../../Images/superhero.png')}
+              style={[gender == 'men' ? styles.selectedGander : {}, styles.genderImage]}
+
             />
           </View>
-          <View style={styles.birthDateContainer}>
-          <DatePicker
-          style={styles.datePickerStyle}
-          date={date} //initial date from state
-          mode="date" //The enum of date, datetime and time
-          placeholder="select date"
-          format="DD-MM-YYYY"
-          minDate="01-01-2016"
-          maxDate="01-01-2019"
-          confirmBtnText="Confirm"
-          cancelBtnText="Cancel"
-          customStyles={{
-            dateIcon: {
-              //display: 'none',
-              position: 'absolute',
-              left: 0,
-              top: 4,
-              marginLeft: 0,
-            },
-            dateInput: {
-              marginLeft: 36,
-            },
-          }}
-          onDateChange={(date) => {
-            setDate(date);
-          }}
-        />
-
-
-          </View>
-        </View>
-
-
-
-
-
-        <TouchableOpacity style={styles.button} onPress={handleCreateUser} >
-          <Text style={styles.buttonText}>Save</Text>
         </TouchableOpacity>
+        
+        <TouchableOpacity
+          onPress={() => setGender('women')}>
+          <View style={styles.allGender}>
+            <Image
+              source={require('../../Images/wonder-woman.png')}
+              style={[gender == 'women' ? styles.selectedGander : {},styles.genderImage]}
+            />
+          </View>
+        </TouchableOpacity>
+
       </View>
-
-
-
-    </SafeAreaView>
+      <TouchableOpacity style={styles.button} onPress={handleCreateUser} >
+        <Text style={styles.buttonText}>Save</Text>
+      </TouchableOpacity>
+    </SafeAreaView >
   )
 }
 const styles = StyleSheet.create({
@@ -134,29 +190,78 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
     flexDirection: 'column',
   },
-  birthDateContainer: {
-    // flexDirection: 'row',
-    // width: Dimensions.get('window').width * 0.85,
-    // padding: 10,
-    // margin: 10,
-    // alignItems: 'left',
-    // borderRadius: 16,
-    // borderWidth: 1,
-    // backgroundColor: '#F5F5F5',
-    // borderColor: 'lightgray',
-    // shadowColor: '#000',
-    // height: 45,
+  selectedGander:
+  {
+    borderColor: 'red',
+    borderWidth: 2,
+    borderRadius: 28,
+  
+
   },
-  inputContainer: {
-    width: Dimensions.get('window').width * 1,
-    height: Dimensions.get('window').height * 1,
-    alignItems: 'center',
-    flex: 6,
+  allGender:
+  {
+    flex: 1,
+    paddingTop: Dimensions.get('window').width * 0.08,
+  },
+  genderTxt: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000000',
+    marginTop: Dimensions.get('window').height * 0.05,
+
   },
   imageContainer: {
     flex: 3,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  inputContainer: {
+    width: Dimensions.get('window').width * 1,
+    height: Dimensions.get('window').height * 1,
+    alignItems: 'center',
+    flex: 3,
+  },
+  genderPickContainer: {
+    flex: 2.5,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    //backgroundColor:'red',
+    width: Dimensions.get('window').width * 0.85,
+  },
+  genderImage: {
+    width: Dimensions.get('window').width * 0.3,
+    height: Dimensions.get('window').width * 0.3,
+    resizeMode: 'contain',
+    // marginHorizontal: Dimensions.get('window').width * 0.06,
+    shadowColor: 'red',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+  },
+  datePickerStyle: {
+    width: Dimensions.get('window').width * 0.85,
+    height: Dimensions.get('window').width * 0.14,
+    justifyContent: 'center',
+    borderColor: 'lightgray',
+    borderWidth: 1,
+    borderRadius: 16,
+    
+    
+    alignItems: 'center',
+    alignItems: 'left',
+
+  },
+
+  birthDateContainer: {
+    marginTop: Dimensions.get('window').width * 0.012,
+    
+
   },
 
   image: {
@@ -166,15 +271,15 @@ const styles = StyleSheet.create({
   },
   input: {
     width: Dimensions.get('window').width * 0.85,
-    padding: 10,
-    margin: 10,
+    padding: Dimensions.get('window').width * 0.03,
+    margin: Dimensions.get('window').width * 0.02,
     alignItems: 'left',
     borderRadius: 16,
     borderWidth: 1,
     backgroundColor: '#F5F5F5',
     borderColor: 'lightgray',
     shadowColor: '#000',
-    height: 45,
+    height: Dimensions.get('window').width * 0.13,
   },
   button: {
     width: Dimensions.get('window').width * 0.85,
@@ -196,18 +301,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-  nameContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+
   firstNameInput: {
-    paddingVertical: Dimensions.get('window').height * 0.028,
+
     width: Dimensions.get('window').width * 0.85,
   },
   lastNameInput: {
-    paddingVertical: Dimensions.get('window').height * 0.028,
+
 
     width: Dimensions.get('window').width * 0.85,
   },
