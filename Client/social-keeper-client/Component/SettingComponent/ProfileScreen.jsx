@@ -80,13 +80,7 @@ export default function ProfileScreen() {
     }
     //here we will call api to create user..
     //or to update user profile if user already exist
-    
     Alert.alert('User Created');//just for testing
-
-
-      
-    
-    
   }
 
   const handleInputChange = (field, value) => {
@@ -151,8 +145,7 @@ export default function ProfileScreen() {
         </View>
       </View>
       <Text style={styles.genderTxt}> im a:</Text>
-      <View style={styles.genderPickContainer}>
-        
+      <View style={styles.genderPickContainer}>        
         <TouchableOpacity
           onPress={() => setGender('men')}>
           <View style={styles.allGender}>
@@ -162,8 +155,7 @@ export default function ProfileScreen() {
 
             />
           </View>
-        </TouchableOpacity>
-        
+        </TouchableOpacity>      
         <TouchableOpacity
           onPress={() => setGender('women')}>
           <View style={styles.allGender}>
@@ -219,16 +211,17 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width * 1,
     height: Dimensions.get('window').height * 1,
     alignItems: 'center',
-    flex: 3,
+    flex: 3.5,
   },
   genderPickContainer: {
-    flex: 2.5,
+    flex: 2,
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',
     //backgroundColor:'red',
     width: Dimensions.get('window').width * 0.85,
   },
+
   genderImage: {
     width: Dimensions.get('window').width * 0.3,
     height: Dimensions.get('window').width * 0.3,
@@ -283,7 +276,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: Dimensions.get('window').width * 0.85,
-    backgroundColor: '#548DFF',
+    backgroundColor: '#F95F6B',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
