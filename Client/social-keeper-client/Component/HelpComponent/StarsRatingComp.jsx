@@ -59,7 +59,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
 
   },
-
   stars: {
     display: 'flex',
     flexDirection: 'row',

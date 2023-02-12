@@ -78,6 +78,7 @@ export default function ProfileScreen(props,{navigation}) {
     }
     if (gender==null){
       Alert.alert("You have to be a man or women becuse of the new goverment law")
+      return;
       //מעניין אם מישהו ישים לב לזה וישנה את הטקסט? 
     }
     if (image === '') {
@@ -86,14 +87,14 @@ export default function ProfileScreen(props,{navigation}) {
       return;
     }
 
-    let userObj = {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      dateOfbirth: date,
-      imageUri: image,
-      city: user.city,
-      gender:gender
-    }
+    // let userObj = {
+    //   firstName: user.firstName,
+    //   lastName: user.lastName,
+    //   dateOfbirth: date,
+    //   imageUri: image,
+    //   city: user.city,
+    //   gender:gender
+    // }
     //here we will call api to create user..
     //or to update user profile if user already exist
     Alert.alert('User Created');//just for testing
@@ -170,7 +171,6 @@ export default function ProfileScreen(props,{navigation}) {
             <Image
               source={require('../../Images/superhero.png')}
               style={[gender == 'men' ? styles.selectedGander : {}, styles.genderImage]}
-
             />
           </View>
         </TouchableOpacity>      
@@ -183,7 +183,6 @@ export default function ProfileScreen(props,{navigation}) {
             />
           </View>
         </TouchableOpacity>
-
       </View>
       <TouchableOpacity style={styles.button} onPress={handleCreateUser} >
         <Text style={styles.buttonText}>Save</Text>
@@ -261,9 +260,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderColor: 'lightgray',
     borderWidth: 1,
-    borderRadius: 16,
-    
-    
+    borderRadius: 16,  
     alignItems: 'center',
     alignItems: 'left',
 
