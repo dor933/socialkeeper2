@@ -1,7 +1,7 @@
 import { Image, Keyboard, LayoutAnimation, View, Text, TextInput, Dimensions, SafeAreaView, Alert, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import ImagePickerExample from './ImagePickerExample ';
+import ImagePickerExample from '../HelpComponent/ImagePickerExample ';
 import DatePicker from 'react-native-datepicker';
 import { Picker } from '@react-native-picker/picker';
 import GenderDropdown from '../HelpComponent/GenderDropdown';

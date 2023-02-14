@@ -7,41 +7,19 @@ import * as Contacts from 'expo-contacts';
 
 import MainDashBoard from './Component/MainDashBoard';
 import ProfileScreen from './Component/SettingComponent/ProfileScreen';
-import ContactListExample from './Component/ContactListExample';
+
+import FavoriteContacts from './Component/SettingComponent/FavoriteContacts';
 
 
 
 
 export default function App() {
-  const [allContacts, setAllContacts] = useState(null);
-
-
-  //this section is for the contact list
-  //there is more work to be done here to get the contact list to work
-  // useEffect(() => {
-  //   (async () => {
-  //     const { status } = await Contacts.requestPermissionsAsync();
-  //     if (status === 'granted') {
-  //       const { data } = await Contacts.getContactsAsync({
-  //         fields: [Contacts.Fields.PhoneNumbers],
-  //       });
-
-  //       if (data.length > 0) {
-  //         setAllContacts(data);
-        
-  //       }
-  //     }
-  //   })();
-  // }, [console.log(allContacts)]);
 
 
   return (
-    // <NavigationContainer>
-    //   <MainDashBoard />
-    // </NavigationContainer>
-    <ContactListExample/>
-    // //  <ProfileScreen/>
-
+    <NavigationContainer> 
+      <MainDashBoard />
+    </NavigationContainer>
   );
 }
 
