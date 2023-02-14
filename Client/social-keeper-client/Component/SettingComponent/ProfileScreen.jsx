@@ -95,6 +95,8 @@ export default function ProfileScreen(props,{navigation}) {
     //   city: user.city,
     //   gender:gender
     // }
+
+    
     //here we will call api to create user..
     //or to update user profile if user already exist
     Alert.alert('User Created');//just for testing
