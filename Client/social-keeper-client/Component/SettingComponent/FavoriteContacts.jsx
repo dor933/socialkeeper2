@@ -93,7 +93,7 @@ export default function FavoriteContacts() {
                     value={search}
                     onChangeText={(text) => setSearch(text)}
                 />
-                <MaterialIcons name="search" size={24} color="gray" />
+                <MaterialIcons style={styles.searchIcon} name="search" size={24} color="gray" />
             </View>
             {/* //this is the list of contacts, first on the list will be the favorite */}
             <FlatList
@@ -143,9 +143,17 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.4,
         shadowRadius: 2,
         elevation: 1,
+        position: 'relative',
     },
     searchInput: {
         fontSize: 14,
+        width: Dimensions.get('window').width * 0.9,
+        
+    },
+    searchIcon: {
+        position: 'absolute',
+        right: 0,
+        marginRight: Dimensions.get('window').width * 0.05,
     },
     contactRow: {
         flexDirection: 'row',
