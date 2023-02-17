@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, Text, View, StyleSheet, TextInput, TouchableOpacity, Dimensions, SafeAreaView, Image,Animated } from 'react-native';
+import { FlatList, Text, View, StyleSheet, TextInput, TouchableOpacity, Dimensions, SafeAreaView, Image, Animated } from 'react-native';
 import * as Contacts from 'expo-contacts';
-import { CheckBox } from 'react-native-elements';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 
-export default function FavoriteContacts() {
+export default function FavoriteContacts({ navigation }, props) {
     const [contacts, setContacts] = useState([]);
     const [favorites, setFavorites] = useState(new Set());
     const [search, setSearch] = useState('');
-
     //this is for loading the contacts from the phone and setting them to the contacts state
     useEffect(() => {
         const loadContacts = async () => {
@@ -32,7 +30,6 @@ export default function FavoriteContacts() {
         }
         setFavorites(updatedFavorites);
     };
-
     //this is the function that renders each contact
     const renderItem = ({ item }) => {
         const isFavorite = favorites.has(item.id);
@@ -47,7 +44,6 @@ export default function FavoriteContacts() {
                             <Text style={styles.contactPhone}>{item.phoneNumbers[0].number}</Text>
                         )}
                     </View>
-                    {/* icon here */}
                     <Octicons style={{
                         position: 'absolute',
                         right: 0,
@@ -61,6 +57,15 @@ export default function FavoriteContacts() {
     //this is for filtering the contacts,filters by name and sorts the favorites to the top
     const filteredContacts = contacts.filter((contact) => {
         const contactName = contact.name || '';
+        //throw the contact that the name is null
+        if (contactName === '') {
+            return false;
+        }
+        //thorow the the phone number is null
+        if (contact.phoneNumbers === null) {
+            return false;
+        }
+
         return contactName.toLowerCase().includes(search.toLowerCase());
     }).sort((a, b) => {
         const aIsFavorite = favorites.has(a.id);
@@ -74,7 +79,6 @@ export default function FavoriteContacts() {
         return 0;
     });
 
-   
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.logo}>
@@ -87,26 +91,33 @@ export default function FavoriteContacts() {
                 <Text style={styles.descText}>Choose your favorite contacts </Text>
             </View>
             <View style={styles.searchBar}>
+                <MaterialIcons style={styles.searchIcon} name="search" size={24} color="gray" />
                 <TextInput
                     style={styles.searchInput}
                     placeholder="Search"
                     value={search}
                     onChangeText={(text) => setSearch(text)}
                 />
-                <MaterialIcons style={styles.searchIcon} name="search" size={24} color="gray" />
+                {
+                    search === '' ?
+                        null
+                        :
+                        <MaterialIcons onPressIn={() => setSearch('')} onPress={() => setSearch('')} name="close" size={24} color="gray" style={styles.closeIcon} />
+                }
+
             </View>
             {/* //this is the list of contacts, first on the list will be the favorite */}
             <FlatList
                 data={filteredContacts}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id}
-            
             />
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
+
     container: {
         flex: 1,
         backgroundColor: 'white',
@@ -143,18 +154,29 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.4,
         shadowRadius: 2,
         elevation: 1,
-        position: 'relative',
+        //
+         position: 'relative',
     },
     searchInput: {
         fontSize: 14,
         width: Dimensions.get('window').width * 0.9,
-        
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'left',
+        left: 0,
+        marginLeft: Dimensions.get('window').width * 0.05,
     },
     searchIcon: {
         position: 'absolute',
         right: 0,
+        marginRight: Dimensions.get('window').width * 0.77,
+    },
+    closeIcon: {
+        position: 'absolute',
+        right: 0,
         marginRight: Dimensions.get('window').width * 0.05,
     },
+
     contactRow: {
         flexDirection: 'row',
         alignItems: 'center',

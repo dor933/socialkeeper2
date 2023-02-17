@@ -18,7 +18,7 @@ export default function App() {
 
   return (
     <NavigationContainer> 
-      <MainDashBoard />
+      <FavoriteContacts />
     </NavigationContainer>
   );
 }
