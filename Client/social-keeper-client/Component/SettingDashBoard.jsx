@@ -186,7 +186,7 @@ const Stack = createNativeStackNavigator();
 export default function SettingDashBoard(props) {
   return (
     <Text>
-      settnigs try to change2sasdasd
+      settnigs try to change2sasdasdasd
     </Text>
     // <NavigationContainer independent={true}
     // >
