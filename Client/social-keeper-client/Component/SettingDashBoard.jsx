@@ -185,46 +185,49 @@ const Stack = createNativeStackNavigator();
 //this is the navigation container for the setting dashboard
 export default function SettingDashBoard(props) {
   return (
-    <NavigationContainer independent={true}
-    >
-      <Stack.Navigator
-        screenOptions={{
-          //this is the animation for the navigation
-          animation: 'slide_from_right',
-          headerBlurEffect: 'light',
-          headerStyle: {
-            backgroundColor: '#F5F5F5',
-            height: Dimensions.get('window').height * 0.0,
-          },
+    <Text>
+      settnigs dash
+    </Text>
+    // <NavigationContainer independent={true}
+    // >
+    //   <Stack.Navigator
+    //     screenOptions={{
+    //       //this is the animation for the navigation
+    //       animation: 'slide_from_right',
+    //       headerBlurEffect: 'light',
+    //       headerStyle: {
+    //         backgroundColor: '#F5F5F5',
+    //         height: Dimensions.get('window').height * 0.0,
+    //       },
 
-          headerTintColor: 'red',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-            fontSize: 15,
-            color: 'black',
-            marginLeft: Dimensions.get('window').width * 0.03,
-          },
-          headerBackTitleVisible: false,
-          // headerBackImage: () => (
-          //   <Ionicons style={{
-          //     marginLeft: Dimensions.get('window').width * 0.03,
-          //     marginRight: Dimensions.get('window').width * 0.05
-          //   }} name='ios-arrow-back' size={30} color='gray' />
-          // ),
-          //do not show the header,just the back button
+    //       headerTintColor: 'red',
+    //       headerTitleStyle: {
+    //         fontWeight: 'bold',
+    //         fontSize: 15,
+    //         color: 'black',
+    //         marginLeft: Dimensions.get('window').width * 0.03,
+    //       },
+    //       headerBackTitleVisible: false,
+    //       // headerBackImage: () => (
+    //       //   <Ionicons style={{
+    //       //     marginLeft: Dimensions.get('window').width * 0.03,
+    //       //     marginRight: Dimensions.get('window').width * 0.05
+    //       //   }} name='ios-arrow-back' size={30} color='gray' />
+    //       // ),
+    //       //do not show the header,just the back button
 
-        }}
-      >
-        <Stack.Screen name="Personal" options={{
-          headerShown: false,
-        }
-        } component={HomeScreen} />
-        <Stack.Screen name="Preferred Meeting Times" component={PreferredMeetingTimes} />
-        <Stack.Screen name="Preferred Hoobies" component={PreferredHoobies} />
-        <Stack.Screen name="Personal Setting" component={ProfileScreen}  />
-        <Stack.Screen name="Favorite Contacts" component={FavoriteContacts} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    //     }}
+    //   >
+    //     <Stack.Screen name="Personal" options={{
+    //       headerShown: false,
+    //     }
+    //     } component={HomeScreen} />
+    //     <Stack.Screen name="Preferred Meeting Times" component={PreferredMeetingTimes} />
+    //     <Stack.Screen name="Preferred Hoobies" component={PreferredHoobies} />
+    //     <Stack.Screen name="Personal Setting" component={ProfileScreen}  />
+    //     <Stack.Screen name="Favorite Contacts" component={FavoriteContacts} />
+    //   </Stack.Navigator>
+    // </NavigationContainer>
 
   )
 }
