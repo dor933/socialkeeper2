@@ -186,7 +186,7 @@ const Stack = createNativeStackNavigator();
 export default function SettingDashBoard(props) {
   return (
     <Text>
-      settnigs dash
+      settnigs dash to idan
     </Text>
     // <NavigationContainer independent={true}
     // >
