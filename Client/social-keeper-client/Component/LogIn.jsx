@@ -18,7 +18,7 @@ export default function LogIn() {
         //check email format, it should be email format
         if (!validateEmail(email)) {
             Alert.alert('Email is not valid');
-            return;
+            return;  
         }
 
         //check password format, it should be password format
