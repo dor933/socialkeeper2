@@ -1,0 +1,1014 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="igroup192_prodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'igroup192_prod.dbo.tblActualMeeting' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="tblActualMeeting">
+          <Key>
+            <PropertyRef Name="meetingNum" />
+            <PropertyRef Name="hobbieNum" />
+            <PropertyRef Name="longitude" />
+            <PropertyRef Name="latitude" />
+          </Key>
+          <Property Name="meetingNum" Type="int" Nullable="false" />
+          <Property Name="rankUser1" Type="char" MaxLength="1" />
+          <Property Name="hobbieNum" Type="int" Nullable="false" />
+          <Property Name="rankUser2" Type="char" MaxLength="1" />
+          <Property Name="longitude" Type="int" Nullable="false" />
+          <Property Name="latitude" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblFavoriteContact">
+          <Key>
+            <PropertyRef Name="phoneNum1" />
+            <PropertyRef Name="phoneNum2" />
+            <PropertyRef Name="hobbieNum" />
+          </Key>
+          <Property Name="phoneNum1" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="phoneNum2" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="rank" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="hobbieNum" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblHobbie">
+          <Key>
+            <PropertyRef Name="hobbieNum" />
+          </Key>
+          <Property Name="hobbieNum" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="hobbieName" Type="nvarchar" MaxLength="30" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblInvite">
+          <Key>
+            <PropertyRef Name="phoneNum1" />
+            <PropertyRef Name="phoneNum2" />
+          </Key>
+          <Property Name="phoneNum1" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="phoneNum2" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="status" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="date" Type="date" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblLoctation">
+          <Key>
+            <PropertyRef Name="longitude" />
+            <PropertyRef Name="latitude" />
+          </Key>
+          <Property Name="longitude" Type="int" Nullable="false" />
+          <Property Name="latitude" Type="int" Nullable="false" />
+          <Property Name="city" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblNewUser">
+          <Key>
+            <PropertyRef Name="phoneNum1" />
+          </Key>
+          <Property Name="phoneNum1" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="nickName" Type="nvarchar" MaxLength="15" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblPreferredTime">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="startTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="endTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="weekDay" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="rank" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="phoneNum1" Type="nvarchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblSuggestedHobbie">
+          <Key>
+            <PropertyRef Name="meetingNum" />
+            <PropertyRef Name="hobbieNum" />
+          </Key>
+          <Property Name="meetingNum" Type="int" Nullable="false" />
+          <Property Name="hobbieNum" Type="int" Nullable="false" />
+          <Property Name="isChosen" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblSuggestedMeeting">
+          <Key>
+            <PropertyRef Name="meetingNum" />
+          </Key>
+          <Property Name="meetingNum" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="startTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="endTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="status" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="phoneNum1" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="phoneNum2" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="date" Type="date" Nullable="false" />
+          <Property Name="rejectReason" Type="nvarchar" MaxLength="20" />
+          <Property Name="longitude" Type="int" Nullable="false" />
+          <Property Name="latitude" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblUser">
+          <Key>
+            <PropertyRef Name="phoneNum1" />
+          </Key>
+          <Property Name="phoneNum1" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="userName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="birthDate" Type="date" />
+          <Property Name="email" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="city" Type="nvarchar" MaxLength="20" />
+          <Property Name="gender" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="imageUri" Type="nvarchar" MaxLength="4000" />
+          <Property Name="GoogleID" Type="nvarchar" MaxLength="3000" />
+          <Property Name="MicrosoftID" Type="nvarchar" MaxLength="3000" />
+        </EntityType>
+        <EntityType Name="tblUserHobbie">
+          <Key>
+            <PropertyRef Name="hobbieNum" />
+            <PropertyRef Name="phoneNum1" />
+          </Key>
+          <Property Name="hobbieNum" Type="int" Nullable="false" />
+          <Property Name="phoneNum1" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="rank" Type="char" MaxLength="1" Nullable="false" />
+        </EntityType>
+        <Association Name="fk1">
+          <End Role="tblNewUser" Type="Self.tblNewUser" Multiplicity="1" />
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="tblNewUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk1tblFavoriteContact">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+          <End Role="tblFavoriteContact" Type="Self.tblFavoriteContact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="tblFavoriteContact">
+              <PropertyRef Name="phoneNum1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk1tblInvite">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+          <End Role="tblInvite" Type="Self.tblInvite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="tblInvite">
+              <PropertyRef Name="phoneNum1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk1tblPreferredTime">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+          <End Role="tblPreferredTime" Type="Self.tblPreferredTime" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="tblPreferredTime">
+              <PropertyRef Name="phoneNum1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk1tblSuggestedHobbie">
+          <End Role="tblSuggestedMeeting" Type="Self.tblSuggestedMeeting" Multiplicity="1" />
+          <End Role="tblSuggestedHobbie" Type="Self.tblSuggestedHobbie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblSuggestedMeeting">
+              <PropertyRef Name="meetingNum" />
+            </Principal>
+            <Dependent Role="tblSuggestedHobbie">
+              <PropertyRef Name="meetingNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk1tblSuggestedMeeting">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+          <End Role="tblSuggestedMeeting" Type="Self.tblSuggestedMeeting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="tblSuggestedMeeting">
+              <PropertyRef Name="phoneNum1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk1tbltblActualMeeting">
+          <End Role="tblHobbie" Type="Self.tblHobbie" Multiplicity="1" />
+          <End Role="tblActualMeeting" Type="Self.tblActualMeeting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblHobbie">
+              <PropertyRef Name="hobbieNum" />
+            </Principal>
+            <Dependent Role="tblActualMeeting">
+              <PropertyRef Name="hobbieNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk1tblUserHobbie">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+          <End Role="tblUserHobbie" Type="Self.tblUserHobbie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="tblUserHobbie">
+              <PropertyRef Name="phoneNum1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk2tblFavoriteContact">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+          <End Role="tblFavoriteContact" Type="Self.tblFavoriteContact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="tblFavoriteContact">
+              <PropertyRef Name="phoneNum2" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk2tblInvite">
+          <End Role="tblNewUser" Type="Self.tblNewUser" Multiplicity="1" />
+          <End Role="tblInvite" Type="Self.tblInvite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblNewUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="tblInvite">
+              <PropertyRef Name="phoneNum2" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk2tblSuggestedHobbie">
+          <End Role="tblHobbie" Type="Self.tblHobbie" Multiplicity="1" />
+          <End Role="tblSuggestedHobbie" Type="Self.tblSuggestedHobbie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblHobbie">
+              <PropertyRef Name="hobbieNum" />
+            </Principal>
+            <Dependent Role="tblSuggestedHobbie">
+              <PropertyRef Name="hobbieNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk2tblSuggestedMeeting">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+          <End Role="tblSuggestedMeeting" Type="Self.tblSuggestedMeeting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="tblSuggestedMeeting">
+              <PropertyRef Name="phoneNum2" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk2tbltblActualMeeting">
+          <End Role="tblSuggestedMeeting" Type="Self.tblSuggestedMeeting" Multiplicity="1" />
+          <End Role="tblActualMeeting" Type="Self.tblActualMeeting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblSuggestedMeeting">
+              <PropertyRef Name="meetingNum" />
+            </Principal>
+            <Dependent Role="tblActualMeeting">
+              <PropertyRef Name="meetingNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk2tblUserHobbie">
+          <End Role="tblHobbie" Type="Self.tblHobbie" Multiplicity="1" />
+          <End Role="tblUserHobbie" Type="Self.tblUserHobbie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblHobbie">
+              <PropertyRef Name="hobbieNum" />
+            </Principal>
+            <Dependent Role="tblUserHobbie">
+              <PropertyRef Name="hobbieNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk3tblFavoriteContact">
+          <End Role="tblHobbie" Type="Self.tblHobbie" Multiplicity="1" />
+          <End Role="tblFavoriteContact" Type="Self.tblFavoriteContact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblHobbie">
+              <PropertyRef Name="hobbieNum" />
+            </Principal>
+            <Dependent Role="tblFavoriteContact">
+              <PropertyRef Name="hobbieNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk3tblSuggestedMeeting">
+          <End Role="tblLoctation" Type="Self.tblLoctation" Multiplicity="1" />
+          <End Role="tblSuggestedMeeting" Type="Self.tblSuggestedMeeting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblLoctation">
+              <PropertyRef Name="longitude" />
+              <PropertyRef Name="latitude" />
+            </Principal>
+            <Dependent Role="tblSuggestedMeeting">
+              <PropertyRef Name="longitude" />
+              <PropertyRef Name="latitude" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk3tbltblActualMeeting">
+          <End Role="tblLoctation" Type="Self.tblLoctation" Multiplicity="1" />
+          <End Role="tblActualMeeting" Type="Self.tblActualMeeting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblLoctation">
+              <PropertyRef Name="longitude" />
+              <PropertyRef Name="latitude" />
+            </Principal>
+            <Dependent Role="tblActualMeeting">
+              <PropertyRef Name="longitude" />
+              <PropertyRef Name="latitude" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="igroup192_prodModelStoreContainer">
+          <EntitySet Name="tblFavoriteContact" EntityType="Self.tblFavoriteContact" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblHobbie" EntityType="Self.tblHobbie" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblInvite" EntityType="Self.tblInvite" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblLoctation" EntityType="Self.tblLoctation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblNewUser" EntityType="Self.tblNewUser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblPreferredTime" EntityType="Self.tblPreferredTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblSuggestedHobbie" EntityType="Self.tblSuggestedHobbie" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblSuggestedMeeting" EntityType="Self.tblSuggestedMeeting" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblUser" EntityType="Self.tblUser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblUserHobbie" EntityType="Self.tblUserHobbie" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblActualMeeting" EntityType="Self.tblActualMeeting" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [tblActualMeeting].[meetingNum] AS [meetingNum], 
+    [tblActualMeeting].[rankUser1] AS [rankUser1], 
+    [tblActualMeeting].[hobbieNum] AS [hobbieNum], 
+    [tblActualMeeting].[rankUser2] AS [rankUser2], 
+    [tblActualMeeting].[longitude] AS [longitude], 
+    [tblActualMeeting].[latitude] AS [latitude]
+    FROM [dbo].[tblActualMeeting] AS [tblActualMeeting]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="fk1" Association="Self.fk1">
+            <End Role="tblNewUser" EntitySet="tblNewUser" />
+            <End Role="tblUser" EntitySet="tblUser" />
+          </AssociationSet>
+          <AssociationSet Name="fk1tblFavoriteContact" Association="Self.fk1tblFavoriteContact">
+            <End Role="tblUser" EntitySet="tblUser" />
+            <End Role="tblFavoriteContact" EntitySet="tblFavoriteContact" />
+          </AssociationSet>
+          <AssociationSet Name="fk1tblInvite" Association="Self.fk1tblInvite">
+            <End Role="tblUser" EntitySet="tblUser" />
+            <End Role="tblInvite" EntitySet="tblInvite" />
+          </AssociationSet>
+          <AssociationSet Name="fk1tblPreferredTime" Association="Self.fk1tblPreferredTime">
+            <End Role="tblUser" EntitySet="tblUser" />
+            <End Role="tblPreferredTime" EntitySet="tblPreferredTime" />
+          </AssociationSet>
+          <AssociationSet Name="fk1tblSuggestedHobbie" Association="Self.fk1tblSuggestedHobbie">
+            <End Role="tblSuggestedMeeting" EntitySet="tblSuggestedMeeting" />
+            <End Role="tblSuggestedHobbie" EntitySet="tblSuggestedHobbie" />
+          </AssociationSet>
+          <AssociationSet Name="fk1tblSuggestedMeeting" Association="Self.fk1tblSuggestedMeeting">
+            <End Role="tblUser" EntitySet="tblUser" />
+            <End Role="tblSuggestedMeeting" EntitySet="tblSuggestedMeeting" />
+          </AssociationSet>
+          <AssociationSet Name="fk1tbltblActualMeeting" Association="Self.fk1tbltblActualMeeting">
+            <End Role="tblHobbie" EntitySet="tblHobbie" />
+            <End Role="tblActualMeeting" EntitySet="tblActualMeeting" />
+          </AssociationSet>
+          <AssociationSet Name="fk1tblUserHobbie" Association="Self.fk1tblUserHobbie">
+            <End Role="tblUser" EntitySet="tblUser" />
+            <End Role="tblUserHobbie" EntitySet="tblUserHobbie" />
+          </AssociationSet>
+          <AssociationSet Name="fk2tblFavoriteContact" Association="Self.fk2tblFavoriteContact">
+            <End Role="tblUser" EntitySet="tblUser" />
+            <End Role="tblFavoriteContact" EntitySet="tblFavoriteContact" />
+          </AssociationSet>
+          <AssociationSet Name="fk2tblInvite" Association="Self.fk2tblInvite">
+            <End Role="tblNewUser" EntitySet="tblNewUser" />
+            <End Role="tblInvite" EntitySet="tblInvite" />
+          </AssociationSet>
+          <AssociationSet Name="fk2tblSuggestedHobbie" Association="Self.fk2tblSuggestedHobbie">
+            <End Role="tblHobbie" EntitySet="tblHobbie" />
+            <End Role="tblSuggestedHobbie" EntitySet="tblSuggestedHobbie" />
+          </AssociationSet>
+          <AssociationSet Name="fk2tblSuggestedMeeting" Association="Self.fk2tblSuggestedMeeting">
+            <End Role="tblUser" EntitySet="tblUser" />
+            <End Role="tblSuggestedMeeting" EntitySet="tblSuggestedMeeting" />
+          </AssociationSet>
+          <AssociationSet Name="fk2tbltblActualMeeting" Association="Self.fk2tbltblActualMeeting">
+            <End Role="tblSuggestedMeeting" EntitySet="tblSuggestedMeeting" />
+            <End Role="tblActualMeeting" EntitySet="tblActualMeeting" />
+          </AssociationSet>
+          <AssociationSet Name="fk2tblUserHobbie" Association="Self.fk2tblUserHobbie">
+            <End Role="tblHobbie" EntitySet="tblHobbie" />
+            <End Role="tblUserHobbie" EntitySet="tblUserHobbie" />
+          </AssociationSet>
+          <AssociationSet Name="fk3tblFavoriteContact" Association="Self.fk3tblFavoriteContact">
+            <End Role="tblHobbie" EntitySet="tblHobbie" />
+            <End Role="tblFavoriteContact" EntitySet="tblFavoriteContact" />
+          </AssociationSet>
+          <AssociationSet Name="fk3tblSuggestedMeeting" Association="Self.fk3tblSuggestedMeeting">
+            <End Role="tblLoctation" EntitySet="tblLoctation" />
+            <End Role="tblSuggestedMeeting" EntitySet="tblSuggestedMeeting" />
+          </AssociationSet>
+          <AssociationSet Name="fk3tbltblActualMeeting" Association="Self.fk3tbltblActualMeeting">
+            <End Role="tblLoctation" EntitySet="tblLoctation" />
+            <End Role="tblActualMeeting" EntitySet="tblActualMeeting" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="igroup192_prodModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="tblFavoriteContact">
+          <Key>
+            <PropertyRef Name="phoneNum1" />
+            <PropertyRef Name="phoneNum2" />
+            <PropertyRef Name="hobbieNum" />
+          </Key>
+          <Property Name="phoneNum1" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="phoneNum2" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="rank" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="hobbieNum" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tblUser" Relationship="Self.fk1tblFavoriteContact" FromRole="tblFavoriteContact" ToRole="tblUser" />
+          <NavigationProperty Name="tblUser1" Relationship="Self.fk2tblFavoriteContact" FromRole="tblFavoriteContact" ToRole="tblUser" />
+          <NavigationProperty Name="tblHobbie" Relationship="Self.fk3tblFavoriteContact" FromRole="tblFavoriteContact" ToRole="tblHobbie" />
+        </EntityType>
+        <EntityType Name="tblHobbie">
+          <Key>
+            <PropertyRef Name="hobbieNum" />
+          </Key>
+          <Property Name="hobbieNum" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="hobbieName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="tblFavoriteContacts" Relationship="Self.fk3tblFavoriteContact" FromRole="tblHobbie" ToRole="tblFavoriteContact" />
+          <NavigationProperty Name="tblActualMeetings" Relationship="Self.fk1tbltblActualMeeting" FromRole="tblHobbie" ToRole="tblActualMeeting" />
+          <NavigationProperty Name="tblSuggestedHobbies" Relationship="Self.fk2tblSuggestedHobbie" FromRole="tblHobbie" ToRole="tblSuggestedHobbie" />
+          <NavigationProperty Name="tblUserHobbies" Relationship="Self.fk2tblUserHobbie" FromRole="tblHobbie" ToRole="tblUserHobbie" />
+        </EntityType>
+        <EntityType Name="tblInvite">
+          <Key>
+            <PropertyRef Name="phoneNum1" />
+            <PropertyRef Name="phoneNum2" />
+          </Key>
+          <Property Name="phoneNum1" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="phoneNum2" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="status" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="date" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="tblUser" Relationship="Self.fk1tblInvite" FromRole="tblInvite" ToRole="tblUser" />
+          <NavigationProperty Name="tblNewUser" Relationship="Self.fk2tblInvite" FromRole="tblInvite" ToRole="tblNewUser" />
+        </EntityType>
+        <EntityType Name="tblLoctation">
+          <Key>
+            <PropertyRef Name="longitude" />
+            <PropertyRef Name="latitude" />
+          </Key>
+          <Property Name="longitude" Type="Int32" Nullable="false" />
+          <Property Name="latitude" Type="Int32" Nullable="false" />
+          <Property Name="city" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="tblSuggestedMeetings" Relationship="Self.fk3tblSuggestedMeeting" FromRole="tblLoctation" ToRole="tblSuggestedMeeting" />
+          <NavigationProperty Name="tblActualMeetings" Relationship="Self.fk3tbltblActualMeeting" FromRole="tblLoctation" ToRole="tblActualMeeting" />
+        </EntityType>
+        <EntityType Name="tblNewUser">
+          <Key>
+            <PropertyRef Name="phoneNum1" />
+          </Key>
+          <Property Name="phoneNum1" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="nickName" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="tblInvites" Relationship="Self.fk2tblInvite" FromRole="tblNewUser" ToRole="tblInvite" />
+          <NavigationProperty Name="tblUser" Relationship="Self.fk1" FromRole="tblNewUser" ToRole="tblUser" />
+        </EntityType>
+        <EntityType Name="tblPreferredTime">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="startTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="endTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="weekDay" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="rank" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="phoneNum1" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="tblUser" Relationship="Self.fk1tblPreferredTime" FromRole="tblPreferredTime" ToRole="tblUser" />
+        </EntityType>
+        <EntityType Name="tblSuggestedHobbie">
+          <Key>
+            <PropertyRef Name="meetingNum" />
+            <PropertyRef Name="hobbieNum" />
+          </Key>
+          <Property Name="meetingNum" Type="Int32" Nullable="false" />
+          <Property Name="hobbieNum" Type="Int32" Nullable="false" />
+          <Property Name="isChosen" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tblHobbie" Relationship="Self.fk2tblSuggestedHobbie" FromRole="tblSuggestedHobbie" ToRole="tblHobbie" />
+          <NavigationProperty Name="tblSuggestedMeeting" Relationship="Self.fk1tblSuggestedHobbie" FromRole="tblSuggestedHobbie" ToRole="tblSuggestedMeeting" />
+        </EntityType>
+        <EntityType Name="tblSuggestedMeeting">
+          <Key>
+            <PropertyRef Name="meetingNum" />
+          </Key>
+          <Property Name="meetingNum" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="startTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="endTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="status" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="phoneNum1" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="phoneNum2" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="rejectReason" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="longitude" Type="Int32" Nullable="false" />
+          <Property Name="latitude" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tblLoctation" Relationship="Self.fk3tblSuggestedMeeting" FromRole="tblSuggestedMeeting" ToRole="tblLoctation" />
+          <NavigationProperty Name="tblSuggestedHobbies" Relationship="Self.fk1tblSuggestedHobbie" FromRole="tblSuggestedMeeting" ToRole="tblSuggestedHobbie" />
+          <NavigationProperty Name="tblUser" Relationship="Self.fk1tblSuggestedMeeting" FromRole="tblSuggestedMeeting" ToRole="tblUser" />
+          <NavigationProperty Name="tblUser1" Relationship="Self.fk2tblSuggestedMeeting" FromRole="tblSuggestedMeeting" ToRole="tblUser" />
+          <NavigationProperty Name="tblActualMeetings" Relationship="Self.fk2tbltblActualMeeting" FromRole="tblSuggestedMeeting" ToRole="tblActualMeeting" />
+        </EntityType>
+        <EntityType Name="tblUser">
+          <Key>
+            <PropertyRef Name="phoneNum1" />
+          </Key>
+          <Property Name="phoneNum1" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="userName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="birthDate" Type="DateTime" Precision="0" />
+          <Property Name="email" Type="String" MaxLength="60" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="city" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="gender" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="imageUri" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="GoogleID" Type="String" MaxLength="3000" FixedLength="false" Unicode="true" />
+          <Property Name="MicrosoftID" Type="String" MaxLength="3000" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tblFavoriteContacts" Relationship="Self.fk1tblFavoriteContact" FromRole="tblUser" ToRole="tblFavoriteContact" />
+          <NavigationProperty Name="tblFavoriteContacts1" Relationship="Self.fk2tblFavoriteContact" FromRole="tblUser" ToRole="tblFavoriteContact" />
+          <NavigationProperty Name="tblInvites" Relationship="Self.fk1tblInvite" FromRole="tblUser" ToRole="tblInvite" />
+          <NavigationProperty Name="tblNewUser" Relationship="Self.fk1" FromRole="tblUser" ToRole="tblNewUser" />
+          <NavigationProperty Name="tblPreferredTimes" Relationship="Self.fk1tblPreferredTime" FromRole="tblUser" ToRole="tblPreferredTime" />
+          <NavigationProperty Name="tblSuggestedMeetings" Relationship="Self.fk1tblSuggestedMeeting" FromRole="tblUser" ToRole="tblSuggestedMeeting" />
+          <NavigationProperty Name="tblSuggestedMeetings1" Relationship="Self.fk2tblSuggestedMeeting" FromRole="tblUser" ToRole="tblSuggestedMeeting" />
+          <NavigationProperty Name="tblUserHobbies" Relationship="Self.fk1tblUserHobbie" FromRole="tblUser" ToRole="tblUserHobbie" />
+        </EntityType>
+        <EntityType Name="tblUserHobbie">
+          <Key>
+            <PropertyRef Name="hobbieNum" />
+            <PropertyRef Name="phoneNum1" />
+          </Key>
+          <Property Name="hobbieNum" Type="Int32" Nullable="false" />
+          <Property Name="phoneNum1" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="rank" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="tblHobbie" Relationship="Self.fk2tblUserHobbie" FromRole="tblUserHobbie" ToRole="tblHobbie" />
+          <NavigationProperty Name="tblUser" Relationship="Self.fk1tblUserHobbie" FromRole="tblUserHobbie" ToRole="tblUser" />
+        </EntityType>
+        <EntityType Name="tblActualMeeting">
+          <Key>
+            <PropertyRef Name="meetingNum" />
+            <PropertyRef Name="hobbieNum" />
+            <PropertyRef Name="longitude" />
+            <PropertyRef Name="latitude" />
+          </Key>
+          <Property Name="meetingNum" Type="Int32" Nullable="false" />
+          <Property Name="rankUser1" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="hobbieNum" Type="Int32" Nullable="false" />
+          <Property Name="rankUser2" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="longitude" Type="Int32" Nullable="false" />
+          <Property Name="latitude" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tblHobbie" Relationship="Self.fk1tbltblActualMeeting" FromRole="tblActualMeeting" ToRole="tblHobbie" />
+          <NavigationProperty Name="tblLoctation" Relationship="Self.fk3tbltblActualMeeting" FromRole="tblActualMeeting" ToRole="tblLoctation" />
+          <NavigationProperty Name="tblSuggestedMeeting" Relationship="Self.fk2tbltblActualMeeting" FromRole="tblActualMeeting" ToRole="tblSuggestedMeeting" />
+        </EntityType>
+        <Association Name="fk1tblFavoriteContact">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+          <End Role="tblFavoriteContact" Type="Self.tblFavoriteContact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="tblFavoriteContact">
+              <PropertyRef Name="phoneNum1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk2tblFavoriteContact">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+          <End Role="tblFavoriteContact" Type="Self.tblFavoriteContact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="tblFavoriteContact">
+              <PropertyRef Name="phoneNum2" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk3tblFavoriteContact">
+          <End Role="tblHobbie" Type="Self.tblHobbie" Multiplicity="1" />
+          <End Role="tblFavoriteContact" Type="Self.tblFavoriteContact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblHobbie">
+              <PropertyRef Name="hobbieNum" />
+            </Principal>
+            <Dependent Role="tblFavoriteContact">
+              <PropertyRef Name="hobbieNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk1tbltblActualMeeting">
+          <End Role="tblHobbie" Type="Self.tblHobbie" Multiplicity="1" />
+          <End Role="tblActualMeeting" Type="Self.tblActualMeeting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblHobbie">
+              <PropertyRef Name="hobbieNum" />
+            </Principal>
+            <Dependent Role="tblActualMeeting">
+              <PropertyRef Name="hobbieNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk2tblSuggestedHobbie">
+          <End Role="tblHobbie" Type="Self.tblHobbie" Multiplicity="1" />
+          <End Role="tblSuggestedHobbie" Type="Self.tblSuggestedHobbie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblHobbie">
+              <PropertyRef Name="hobbieNum" />
+            </Principal>
+            <Dependent Role="tblSuggestedHobbie">
+              <PropertyRef Name="hobbieNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk2tblUserHobbie">
+          <End Role="tblHobbie" Type="Self.tblHobbie" Multiplicity="1" />
+          <End Role="tblUserHobbie" Type="Self.tblUserHobbie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblHobbie">
+              <PropertyRef Name="hobbieNum" />
+            </Principal>
+            <Dependent Role="tblUserHobbie">
+              <PropertyRef Name="hobbieNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk1tblInvite">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+          <End Role="tblInvite" Type="Self.tblInvite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="tblInvite">
+              <PropertyRef Name="phoneNum1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk2tblInvite">
+          <End Role="tblNewUser" Type="Self.tblNewUser" Multiplicity="1" />
+          <End Role="tblInvite" Type="Self.tblInvite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblNewUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="tblInvite">
+              <PropertyRef Name="phoneNum2" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk3tblSuggestedMeeting">
+          <End Role="tblLoctation" Type="Self.tblLoctation" Multiplicity="1" />
+          <End Role="tblSuggestedMeeting" Type="Self.tblSuggestedMeeting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblLoctation">
+              <PropertyRef Name="longitude" />
+              <PropertyRef Name="latitude" />
+            </Principal>
+            <Dependent Role="tblSuggestedMeeting">
+              <PropertyRef Name="longitude" />
+              <PropertyRef Name="latitude" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk3tbltblActualMeeting">
+          <End Role="tblLoctation" Type="Self.tblLoctation" Multiplicity="1" />
+          <End Role="tblActualMeeting" Type="Self.tblActualMeeting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblLoctation">
+              <PropertyRef Name="longitude" />
+              <PropertyRef Name="latitude" />
+            </Principal>
+            <Dependent Role="tblActualMeeting">
+              <PropertyRef Name="longitude" />
+              <PropertyRef Name="latitude" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk1">
+          <End Role="tblNewUser" Type="Self.tblNewUser" Multiplicity="1" />
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="tblNewUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk1tblPreferredTime">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+          <End Role="tblPreferredTime" Type="Self.tblPreferredTime" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="tblPreferredTime">
+              <PropertyRef Name="phoneNum1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk1tblSuggestedHobbie">
+          <End Role="tblSuggestedMeeting" Type="Self.tblSuggestedMeeting" Multiplicity="1" />
+          <End Role="tblSuggestedHobbie" Type="Self.tblSuggestedHobbie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblSuggestedMeeting">
+              <PropertyRef Name="meetingNum" />
+            </Principal>
+            <Dependent Role="tblSuggestedHobbie">
+              <PropertyRef Name="meetingNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk1tblSuggestedMeeting">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+          <End Role="tblSuggestedMeeting" Type="Self.tblSuggestedMeeting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="tblSuggestedMeeting">
+              <PropertyRef Name="phoneNum1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk2tblSuggestedMeeting">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+          <End Role="tblSuggestedMeeting" Type="Self.tblSuggestedMeeting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="tblSuggestedMeeting">
+              <PropertyRef Name="phoneNum2" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk2tbltblActualMeeting">
+          <End Role="tblSuggestedMeeting" Type="Self.tblSuggestedMeeting" Multiplicity="1" />
+          <End Role="tblActualMeeting" Type="Self.tblActualMeeting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblSuggestedMeeting">
+              <PropertyRef Name="meetingNum" />
+            </Principal>
+            <Dependent Role="tblActualMeeting">
+              <PropertyRef Name="meetingNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk1tblUserHobbie">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+          <End Role="tblUserHobbie" Type="Self.tblUserHobbie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="tblUserHobbie">
+              <PropertyRef Name="phoneNum1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="igroup192_DbContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tblFavoriteContacts" EntityType="Self.tblFavoriteContact" />
+          <EntitySet Name="tblHobbies" EntityType="Self.tblHobbie" />
+          <EntitySet Name="tblInvites" EntityType="Self.tblInvite" />
+          <EntitySet Name="tblLoctations" EntityType="Self.tblLoctation" />
+          <EntitySet Name="tblNewUsers" EntityType="Self.tblNewUser" />
+          <EntitySet Name="tblPreferredTimes" EntityType="Self.tblPreferredTime" />
+          <EntitySet Name="tblSuggestedHobbies" EntityType="Self.tblSuggestedHobbie" />
+          <EntitySet Name="tblSuggestedMeetings" EntityType="Self.tblSuggestedMeeting" />
+          <EntitySet Name="tblUsers" EntityType="Self.tblUser" />
+          <EntitySet Name="tblUserHobbies" EntityType="Self.tblUserHobbie" />
+          <EntitySet Name="tblActualMeetings" EntityType="Self.tblActualMeeting" />
+          <AssociationSet Name="fk1tblFavoriteContact" Association="Self.fk1tblFavoriteContact">
+            <End Role="tblUser" EntitySet="tblUsers" />
+            <End Role="tblFavoriteContact" EntitySet="tblFavoriteContacts" />
+          </AssociationSet>
+          <AssociationSet Name="fk2tblFavoriteContact" Association="Self.fk2tblFavoriteContact">
+            <End Role="tblUser" EntitySet="tblUsers" />
+            <End Role="tblFavoriteContact" EntitySet="tblFavoriteContacts" />
+          </AssociationSet>
+          <AssociationSet Name="fk3tblFavoriteContact" Association="Self.fk3tblFavoriteContact">
+            <End Role="tblHobbie" EntitySet="tblHobbies" />
+            <End Role="tblFavoriteContact" EntitySet="tblFavoriteContacts" />
+          </AssociationSet>
+          <AssociationSet Name="fk1tbltblActualMeeting" Association="Self.fk1tbltblActualMeeting">
+            <End Role="tblHobbie" EntitySet="tblHobbies" />
+            <End Role="tblActualMeeting" EntitySet="tblActualMeetings" />
+          </AssociationSet>
+          <AssociationSet Name="fk2tblSuggestedHobbie" Association="Self.fk2tblSuggestedHobbie">
+            <End Role="tblHobbie" EntitySet="tblHobbies" />
+            <End Role="tblSuggestedHobbie" EntitySet="tblSuggestedHobbies" />
+          </AssociationSet>
+          <AssociationSet Name="fk2tblUserHobbie" Association="Self.fk2tblUserHobbie">
+            <End Role="tblHobbie" EntitySet="tblHobbies" />
+            <End Role="tblUserHobbie" EntitySet="tblUserHobbies" />
+          </AssociationSet>
+          <AssociationSet Name="fk1tblInvite" Association="Self.fk1tblInvite">
+            <End Role="tblUser" EntitySet="tblUsers" />
+            <End Role="tblInvite" EntitySet="tblInvites" />
+          </AssociationSet>
+          <AssociationSet Name="fk2tblInvite" Association="Self.fk2tblInvite">
+            <End Role="tblNewUser" EntitySet="tblNewUsers" />
+            <End Role="tblInvite" EntitySet="tblInvites" />
+          </AssociationSet>
+          <AssociationSet Name="fk3tblSuggestedMeeting" Association="Self.fk3tblSuggestedMeeting">
+            <End Role="tblLoctation" EntitySet="tblLoctations" />
+            <End Role="tblSuggestedMeeting" EntitySet="tblSuggestedMeetings" />
+          </AssociationSet>
+          <AssociationSet Name="fk3tbltblActualMeeting" Association="Self.fk3tbltblActualMeeting">
+            <End Role="tblLoctation" EntitySet="tblLoctations" />
+            <End Role="tblActualMeeting" EntitySet="tblActualMeetings" />
+          </AssociationSet>
+          <AssociationSet Name="fk1" Association="Self.fk1">
+            <End Role="tblNewUser" EntitySet="tblNewUsers" />
+            <End Role="tblUser" EntitySet="tblUsers" />
+          </AssociationSet>
+          <AssociationSet Name="fk1tblPreferredTime" Association="Self.fk1tblPreferredTime">
+            <End Role="tblUser" EntitySet="tblUsers" />
+            <End Role="tblPreferredTime" EntitySet="tblPreferredTimes" />
+          </AssociationSet>
+          <AssociationSet Name="fk1tblSuggestedHobbie" Association="Self.fk1tblSuggestedHobbie">
+            <End Role="tblSuggestedMeeting" EntitySet="tblSuggestedMeetings" />
+            <End Role="tblSuggestedHobbie" EntitySet="tblSuggestedHobbies" />
+          </AssociationSet>
+          <AssociationSet Name="fk1tblSuggestedMeeting" Association="Self.fk1tblSuggestedMeeting">
+            <End Role="tblUser" EntitySet="tblUsers" />
+            <End Role="tblSuggestedMeeting" EntitySet="tblSuggestedMeetings" />
+          </AssociationSet>
+          <AssociationSet Name="fk2tblSuggestedMeeting" Association="Self.fk2tblSuggestedMeeting">
+            <End Role="tblUser" EntitySet="tblUsers" />
+            <End Role="tblSuggestedMeeting" EntitySet="tblSuggestedMeetings" />
+          </AssociationSet>
+          <AssociationSet Name="fk2tbltblActualMeeting" Association="Self.fk2tbltblActualMeeting">
+            <End Role="tblSuggestedMeeting" EntitySet="tblSuggestedMeetings" />
+            <End Role="tblActualMeeting" EntitySet="tblActualMeetings" />
+          </AssociationSet>
+          <AssociationSet Name="fk1tblUserHobbie" Association="Self.fk1tblUserHobbie">
+            <End Role="tblUser" EntitySet="tblUsers" />
+            <End Role="tblUserHobbie" EntitySet="tblUserHobbies" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="igroup192_prodModelStoreContainer" CdmEntityContainer="igroup192_DbContext">
+          <EntitySetMapping Name="tblFavoriteContacts">
+            <EntityTypeMapping TypeName="igroup192_prodModel.tblFavoriteContact">
+              <MappingFragment StoreEntitySet="tblFavoriteContact">
+                <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
+                <ScalarProperty Name="phoneNum2" ColumnName="phoneNum2" />
+                <ScalarProperty Name="rank" ColumnName="rank" />
+                <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblHobbies">
+            <EntityTypeMapping TypeName="igroup192_prodModel.tblHobbie">
+              <MappingFragment StoreEntitySet="tblHobbie">
+                <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
+                <ScalarProperty Name="hobbieName" ColumnName="hobbieName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblInvites">
+            <EntityTypeMapping TypeName="igroup192_prodModel.tblInvite">
+              <MappingFragment StoreEntitySet="tblInvite">
+                <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
+                <ScalarProperty Name="phoneNum2" ColumnName="phoneNum2" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="date" ColumnName="date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblLoctations">
+            <EntityTypeMapping TypeName="igroup192_prodModel.tblLoctation">
+              <MappingFragment StoreEntitySet="tblLoctation">
+                <ScalarProperty Name="longitude" ColumnName="longitude" />
+                <ScalarProperty Name="latitude" ColumnName="latitude" />
+                <ScalarProperty Name="city" ColumnName="city" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblNewUsers">
+            <EntityTypeMapping TypeName="igroup192_prodModel.tblNewUser">
+              <MappingFragment StoreEntitySet="tblNewUser">
+                <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
+                <ScalarProperty Name="nickName" ColumnName="nickName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblPreferredTimes">
+            <EntityTypeMapping TypeName="igroup192_prodModel.tblPreferredTime">
+              <MappingFragment StoreEntitySet="tblPreferredTime">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="startTime" ColumnName="startTime" />
+                <ScalarProperty Name="endTime" ColumnName="endTime" />
+                <ScalarProperty Name="weekDay" ColumnName="weekDay" />
+                <ScalarProperty Name="rank" ColumnName="rank" />
+                <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblSuggestedHobbies">
+            <EntityTypeMapping TypeName="igroup192_prodModel.tblSuggestedHobbie">
+              <MappingFragment StoreEntitySet="tblSuggestedHobbie">
+                <ScalarProperty Name="meetingNum" ColumnName="meetingNum" />
+                <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
+                <ScalarProperty Name="isChosen" ColumnName="isChosen" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblSuggestedMeetings">
+            <EntityTypeMapping TypeName="igroup192_prodModel.tblSuggestedMeeting">
+              <MappingFragment StoreEntitySet="tblSuggestedMeeting">
+                <ScalarProperty Name="meetingNum" ColumnName="meetingNum" />
+                <ScalarProperty Name="startTime" ColumnName="startTime" />
+                <ScalarProperty Name="endTime" ColumnName="endTime" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
+                <ScalarProperty Name="phoneNum2" ColumnName="phoneNum2" />
+                <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="rejectReason" ColumnName="rejectReason" />
+                <ScalarProperty Name="longitude" ColumnName="longitude" />
+                <ScalarProperty Name="latitude" ColumnName="latitude" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblUsers">
+            <EntityTypeMapping TypeName="igroup192_prodModel.tblUser">
+              <MappingFragment StoreEntitySet="tblUser">
+                <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
+                <ScalarProperty Name="userName" ColumnName="userName" />
+                <ScalarProperty Name="birthDate" ColumnName="birthDate" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="city" ColumnName="city" />
+                <ScalarProperty Name="gender" ColumnName="gender" />
+                <ScalarProperty Name="imageUri" ColumnName="imageUri" />
+                <ScalarProperty Name="GoogleID" ColumnName="GoogleID" />
+                <ScalarProperty Name="MicrosoftID" ColumnName="MicrosoftID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblUserHobbies">
+            <EntityTypeMapping TypeName="igroup192_prodModel.tblUserHobbie">
+              <MappingFragment StoreEntitySet="tblUserHobbie">
+                <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
+                <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
+                <ScalarProperty Name="rank" ColumnName="rank" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblActualMeetings">
+            <EntityTypeMapping TypeName="igroup192_prodModel.tblActualMeeting">
+              <MappingFragment StoreEntitySet="tblActualMeeting">
+                <ScalarProperty Name="meetingNum" ColumnName="meetingNum" />
+                <ScalarProperty Name="rankUser1" ColumnName="rankUser1" />
+                <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
+                <ScalarProperty Name="rankUser2" ColumnName="rankUser2" />
+                <ScalarProperty Name="longitude" ColumnName="longitude" />
+                <ScalarProperty Name="latitude" ColumnName="latitude" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="5e2b547a8048405e9d286f25b1565fe2" Name="Diagram1">
+        <EntityTypeShape EntityType="igroup192_prodModel.tblFavoriteContact" Width="1.5" PointX="8.25" PointY="12.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblHobbie" Width="1.5" PointX="8.25" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblInvite" Width="1.5" PointX="5.25" PointY="11.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblLoctation" Width="1.5" PointX="6" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblNewUser" Width="1.5" PointX="0.75" PointY="9.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblPreferredTime" Width="1.5" PointX="5.25" PointY="15.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblSuggestedHobbie" Width="1.5" PointX="10.5" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblSuggestedMeeting" Width="1.5" PointX="8.25" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblUser" Width="1.5" PointX="3" PointY="11.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblUserHobbie" Width="1.5" PointX="8.25" PointY="15.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblActualMeeting" Width="1.5" PointX="13.5" PointY="7.875" IsExpanded="true" />
+        <AssociationConnector Association="igroup192_prodModel.fk1tblFavoriteContact" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.fk2tblFavoriteContact" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.fk3tblFavoriteContact" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.fk1tbltblActualMeeting" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.fk2tblSuggestedHobbie" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.fk2tblUserHobbie" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.fk1tblInvite" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.fk2tblInvite" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.fk3tblSuggestedMeeting" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.fk3tbltblActualMeeting" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.fk1" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.fk1tblPreferredTime" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.fk1tblSuggestedHobbie" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.fk1tblSuggestedMeeting" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.fk2tblSuggestedMeeting" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.fk2tbltblActualMeeting" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.fk1tblUserHobbie" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
