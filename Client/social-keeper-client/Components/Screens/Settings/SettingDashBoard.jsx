@@ -6,10 +6,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { SimpleLineIcons } from '@expo/vector-icons';
 //internal imports:
-import PreferredMeetingTimes from './SettingComponent/PreferredMeetingTimes';
-import PreferredHoobies from './SettingComponent/PreferredHoobies';
-import ProfileScreen from './SettingComponent/ProfileScreen';
-import FavoriteContacts from './SettingComponent/FavoriteContacts';
+import PreferredMeetingTimes from './PreferredMeetingTimes';
+import PreferredHoobies from './PreferredHoobies';
+import ProfileScreen from '../Profile/ProfileScreen';
+import FavoriteContacts from './FavoriteContacts';
 
 
 //this is the home screen for the setting dashboard, 
@@ -26,14 +26,14 @@ function HomeScreen({ navigation }, props) {
       <View style={styles.personalContainer}>
         <View style={styles.imageContainer}>
           {/* here will be the personal name and image and the logo of the app */}
-          <Image style={styles.image} source={require('../Images/Screenshot_20230131_103310.png')} />
+          <Image style={styles.image} source={require('../assets/images/RandomImages/Screenshot_20230131_103310.png')} />
           <View style={styles.personalTextContainer}>
             <Text style={styles.personalText}>Hello, {userName}</Text>
             <Text style={styles.personalText}></Text>
           </View>
           {/* <Text style={styles.personalText}>Personal Name</Text> */}
         </View>
-        <Image style={styles.logo} source={require('../Images/social-keeper-website-favicon-color.png')} />
+        <Image style={styles.logo} source={require('../assets/images/RandomImages/social-keeper-website-favicon-color.png')} />
 
       </View>
 

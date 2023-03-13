@@ -1,35 +1,18 @@
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Button, Keyboard, Alert, LayoutAnimation, Types } from 'react-native'
 import React from 'react'
 import { useEffect, useState } from 'react';
-
-
 import Icon from 'react-native-vector-icons/MaterialIcons'
-//this i old code, we will delete it later,use it if you need it for the 
-//new login screen (using google and outlook api)
+
+
+
 export default function LogIn() {
+
+
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);//for password visibility
     const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
     const [animation, setAnimation] = useState({});
 
-    //login function
-    const logInBtn = () => {
-        //check email format, it should be email format
-        if (!validateEmail(email)) {
-            Alert.alert('Email is not valid');
-            return;
-        }
-
-        //check password format, it should be password format
-        if (password === '') {
-            Alert.alert('Password is required');
-            return;
-        }
-        //here we will call api to login user.. 
-
-        Alert.alert('Login Success');//just for testing
-    }
     //function to check email format
     const validateEmail = (email) => {
         var re = /\S+@\S+\.\S+/;
@@ -79,7 +62,7 @@ export default function LogIn() {
             <View style={styles.imageContainer}>
                 <Image
                     style={styles.image}
-                    source={require('../Images/social-keeper-low-resolution-logo-color-on-transparent-background.png')}
+                    source={require('')}
                 />
             </View>
 
@@ -94,36 +77,10 @@ export default function LogIn() {
                     keyboardType="email-address"
 
                 />
-                <View style={styles.passwordContainer}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Password"
-                        secureTextEntry={!showPassword}
-                        value={password}
-                        onChangeText={text => setPassword(text)}
-
-                    />
-                    <TouchableOpacity
-                        style={styles.passwordButton}
-                        onPress={() => setShowPassword(!showPassword)}
-                    >
-                        <Icon
-                            name={showPassword ? 'visibility' : 'visibility-off'}
-                            size={20}
-                            color='black'
-                        />
-                    </TouchableOpacity>
-
-                </View>
 
                 <TouchableOpacity onPress={logInBtn} style={styles.button}>
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
-            </View>
-            <View style={styles.lineContainer}>
-                <View style={styles.line} />
-                <Text style={styles.orText}>or</Text>
-                <View style={styles.line} />
             </View>
 
 
@@ -136,10 +93,7 @@ export default function LogIn() {
                     style={styles.signUpButton}
 
                 />
-                {/* <Button
-                    title="Forget Password"
-                    onPress={() => alert('Forget Password')}
-                /> */}
+              
             </View>
         </View>
     )

@@ -1,25 +1,19 @@
-import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+// import { NavigationContainer } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import * as Contacts from 'expo-contacts';
-
-
-import MainDashBoard from './Component/MainDashBoard';
-import ProfileScreen from './Component/SettingComponent/ProfileScreen';
-
-import FavoriteContacts from './Component/SettingComponent/FavoriteContacts';
-
-
+import LogIn from './Components/Screens/Login/LogIn';
+// import * as Contacts from 'expo-contacts';
 
 
 export default function App() {
 
 
   return (
-    <NavigationContainer> 
-      <FavoriteContacts />
-    </NavigationContainer>
+    <View style={styles.container}>
+   <Text>This is test comp</Text>
+   <LogIn></LogIn>
+  
+  </View>
   );
 }
 
