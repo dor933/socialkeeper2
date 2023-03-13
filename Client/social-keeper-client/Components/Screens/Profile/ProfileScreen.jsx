@@ -83,7 +83,7 @@ export default function ProfileScreen(props,{navigation}) {
 
     if (image === '') {
       //set a default image if user didn't choose one 
-      image = '../assets/images/RandomImages/user.png';
+      image = '../../../assets/images/RandomImages/user.png';
       return;
     }
 
@@ -171,7 +171,7 @@ export default function ProfileScreen(props,{navigation}) {
           onPress={() => setGender('men')}>
           <View style={styles.allGender}>
             <Image
-              source={require('../assets/images/RandomImages/superhero.png')}
+              source={require('../../../assets/images/RandomImages/superhero.png')}
               style={[gender == 'men' ? styles.selectedGander : {}, styles.genderImage]}
             />
           </View>
@@ -180,7 +180,7 @@ export default function ProfileScreen(props,{navigation}) {
           onPress={() => setGender('women')}>
           <View style={styles.allGender}>
             <Image
-              source={require('../assets/images/RandomImages/wonder-woman.png')}
+              source={require('../../../assets/images/RandomImages/wonder-woman.png')}
               style={[gender == 'women' ? styles.selectedGander : {},styles.genderImage]}
             />
           </View>

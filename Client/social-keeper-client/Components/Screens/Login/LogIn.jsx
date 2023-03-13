@@ -1,4 +1,5 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Button, Keyboard, Alert, LayoutAnimation, Types } from 'react-native'
+import {View, Text, StyleSheet, Image, TextInput, TouchableOpacity, Button, Keyboard, LayoutAnimation, Platform, UIManager } from 'react-native'
+
 import React from 'react'
 import { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons'
