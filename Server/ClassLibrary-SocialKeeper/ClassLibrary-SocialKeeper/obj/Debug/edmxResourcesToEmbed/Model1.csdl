@@ -24,6 +24,7 @@
     <NavigationProperty Name="tblActualMeetings" Relationship="Self.fk1tbltblActualMeeting" FromRole="tblHobbie" ToRole="tblActualMeeting" />
     <NavigationProperty Name="tblSuggestedHobbies" Relationship="Self.fk2tblSuggestedHobbie" FromRole="tblHobbie" ToRole="tblSuggestedHobbie" />
     <NavigationProperty Name="tblUserHobbies" Relationship="Self.fk2tblUserHobbie" FromRole="tblHobbie" ToRole="tblUserHobbie" />
+    <NavigationProperty Name="PossibleFavoriteContacts" Relationship="igroup192_prodModel.FK__PossibleF__hobbi__6E01572D" FromRole="tblHobbie" ToRole="PossibleFavoriteContact" />
   </EntityType>
   <EntityType Name="tblInvite">
     <Key>
@@ -121,6 +122,8 @@
     <NavigationProperty Name="tblSuggestedMeetings" Relationship="Self.fk1tblSuggestedMeeting" FromRole="tblUser" ToRole="tblSuggestedMeeting" />
     <NavigationProperty Name="tblSuggestedMeetings1" Relationship="Self.fk2tblSuggestedMeeting" FromRole="tblUser" ToRole="tblSuggestedMeeting" />
     <NavigationProperty Name="tblUserHobbies" Relationship="Self.fk1tblUserHobbie" FromRole="tblUser" ToRole="tblUserHobbie" />
+    <NavigationProperty Name="PossibleFavoriteContacts" Relationship="igroup192_prodModel.FK__PossibleF__phone__6C190EBB" FromRole="tblUser" ToRole="PossibleFavoriteContact" />
+    <NavigationProperty Name="PossibleFavoriteContacts1" Relationship="igroup192_prodModel.FK__PossibleF__phone__6D0D32F4" FromRole="tblUser" ToRole="PossibleFavoriteContact" />
   </EntityType>
   <EntityType Name="tblUserHobbie">
     <Key>
@@ -438,5 +441,78 @@
       <End Role="tblUser" EntitySet="tblUsers" />
       <End Role="tblUserHobbie" EntitySet="tblUserHobbies" />
     </AssociationSet>
+    <EntitySet Name="PossibleFavoriteContacts" EntityType="igroup192_prodModel.PossibleFavoriteContact" />
+    <EntitySet Name="sysdiagrams" EntityType="igroup192_prodModel.sysdiagram" />
+    <AssociationSet Name="FK__PossibleF__hobbi__6E01572D" Association="igroup192_prodModel.FK__PossibleF__hobbi__6E01572D">
+      <End Role="tblHobbie" EntitySet="tblHobbies" />
+      <End Role="PossibleFavoriteContact" EntitySet="PossibleFavoriteContacts" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PossibleF__phone__6C190EBB" Association="igroup192_prodModel.FK__PossibleF__phone__6C190EBB">
+      <End Role="tblUser" EntitySet="tblUsers" />
+      <End Role="PossibleFavoriteContact" EntitySet="PossibleFavoriteContacts" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PossibleF__phone__6D0D32F4" Association="igroup192_prodModel.FK__PossibleF__phone__6D0D32F4">
+      <End Role="tblUser" EntitySet="tblUsers" />
+      <End Role="PossibleFavoriteContact" EntitySet="PossibleFavoriteContacts" />
+    </AssociationSet>
   </EntityContainer>
+  <EntityType Name="PossibleFavoriteContact">
+    <Key>
+      <PropertyRef Name="phonenuminvite" />
+      <PropertyRef Name="phonenuminvited" />
+      <PropertyRef Name="hobbieNum" />
+    </Key>
+    <Property Name="phonenuminvite" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="phonenuminvited" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="hobbieNum" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="tblHobbie" Relationship="igroup192_prodModel.FK__PossibleF__hobbi__6E01572D" FromRole="PossibleFavoriteContact" ToRole="tblHobbie" />
+    <NavigationProperty Name="tblUser" Relationship="igroup192_prodModel.FK__PossibleF__phone__6C190EBB" FromRole="PossibleFavoriteContact" ToRole="tblUser" />
+    <NavigationProperty Name="tblUser1" Relationship="igroup192_prodModel.FK__PossibleF__phone__6D0D32F4" FromRole="PossibleFavoriteContact" ToRole="tblUser" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <Association Name="FK__PossibleF__hobbi__6E01572D">
+    <End Type="igroup192_prodModel.tblHobbie" Role="tblHobbie" Multiplicity="1" />
+    <End Type="igroup192_prodModel.PossibleFavoriteContact" Role="PossibleFavoriteContact" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblHobbie">
+        <PropertyRef Name="hobbieNum" />
+      </Principal>
+      <Dependent Role="PossibleFavoriteContact">
+        <PropertyRef Name="hobbieNum" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PossibleF__phone__6C190EBB">
+    <End Type="igroup192_prodModel.tblUser" Role="tblUser" Multiplicity="1" />
+    <End Type="igroup192_prodModel.PossibleFavoriteContact" Role="PossibleFavoriteContact" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblUser">
+        <PropertyRef Name="phoneNum1" />
+      </Principal>
+      <Dependent Role="PossibleFavoriteContact">
+        <PropertyRef Name="phonenuminvite" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PossibleF__phone__6D0D32F4">
+    <End Type="igroup192_prodModel.tblUser" Role="tblUser" Multiplicity="1" />
+    <End Type="igroup192_prodModel.PossibleFavoriteContact" Role="PossibleFavoriteContact" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblUser">
+        <PropertyRef Name="phoneNum1" />
+      </Principal>
+      <Dependent Role="PossibleFavoriteContact">
+        <PropertyRef Name="phonenuminvited" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

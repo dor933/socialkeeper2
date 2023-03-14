@@ -1,5 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="igroup192_prodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="PossibleFavoriteContact">
+    <Key>
+      <PropertyRef Name="phonenuminvite" />
+      <PropertyRef Name="phonenuminvited" />
+      <PropertyRef Name="hobbieNum" />
+    </Key>
+    <Property Name="phonenuminvite" Type="nvarchar" MaxLength="10" Nullable="false" />
+    <Property Name="phonenuminvited" Type="nvarchar" MaxLength="10" Nullable="false" />
+    <Property Name="hobbieNum" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
   <!--Errors Found During Generation:
 warning 6002: The table/view 'igroup192_prod.dbo.tblActualMeeting' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
   <EntityType Name="tblActualMeeting">
@@ -118,6 +138,42 @@ warning 6002: The table/view 'igroup192_prod.dbo.tblActualMeeting' does not have
     <Property Name="phoneNum1" Type="nvarchar" MaxLength="10" Nullable="false" />
     <Property Name="rank" Type="char" MaxLength="1" Nullable="false" />
   </EntityType>
+  <Association Name="FK__PossibleF__hobbi__6E01572D">
+    <End Role="tblHobbie" Type="Self.tblHobbie" Multiplicity="1" />
+    <End Role="PossibleFavoriteContact" Type="Self.PossibleFavoriteContact" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblHobbie">
+        <PropertyRef Name="hobbieNum" />
+      </Principal>
+      <Dependent Role="PossibleFavoriteContact">
+        <PropertyRef Name="hobbieNum" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PossibleF__phone__6C190EBB">
+    <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+    <End Role="PossibleFavoriteContact" Type="Self.PossibleFavoriteContact" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblUser">
+        <PropertyRef Name="phoneNum1" />
+      </Principal>
+      <Dependent Role="PossibleFavoriteContact">
+        <PropertyRef Name="phonenuminvite" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PossibleF__phone__6D0D32F4">
+    <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+    <End Role="PossibleFavoriteContact" Type="Self.PossibleFavoriteContact" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblUser">
+        <PropertyRef Name="phoneNum1" />
+      </Principal>
+      <Dependent Role="PossibleFavoriteContact">
+        <PropertyRef Name="phonenuminvited" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk1">
     <End Role="tblNewUser" Type="Self.tblNewUser" Multiplicity="1" />
     <End Role="tblUser" Type="Self.tblUser" Multiplicity="0..1" />
@@ -327,6 +383,8 @@ warning 6002: The table/view 'igroup192_prod.dbo.tblActualMeeting' does not have
     </ReferentialConstraint>
   </Association>
   <EntityContainer Name="igroup192_prodModelStoreContainer">
+    <EntitySet Name="PossibleFavoriteContact" EntityType="Self.PossibleFavoriteContact" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblFavoriteContact" EntityType="Self.tblFavoriteContact" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblHobbie" EntityType="Self.tblHobbie" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblInvite" EntityType="Self.tblInvite" Schema="dbo" store:Type="Tables" />
@@ -347,6 +405,18 @@ warning 6002: The table/view 'igroup192_prod.dbo.tblActualMeeting' does not have
     [tblActualMeeting].[latitude] AS [latitude]
     FROM [dbo].[tblActualMeeting] AS [tblActualMeeting]</DefiningQuery>
     </EntitySet>
+    <AssociationSet Name="FK__PossibleF__hobbi__6E01572D" Association="Self.FK__PossibleF__hobbi__6E01572D">
+      <End Role="tblHobbie" EntitySet="tblHobbie" />
+      <End Role="PossibleFavoriteContact" EntitySet="PossibleFavoriteContact" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PossibleF__phone__6C190EBB" Association="Self.FK__PossibleF__phone__6C190EBB">
+      <End Role="tblUser" EntitySet="tblUser" />
+      <End Role="PossibleFavoriteContact" EntitySet="PossibleFavoriteContact" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PossibleF__phone__6D0D32F4" Association="Self.FK__PossibleF__phone__6D0D32F4">
+      <End Role="tblUser" EntitySet="tblUser" />
+      <End Role="PossibleFavoriteContact" EntitySet="PossibleFavoriteContact" />
+    </AssociationSet>
     <AssociationSet Name="fk1" Association="Self.fk1">
       <End Role="tblNewUser" EntitySet="tblNewUser" />
       <End Role="tblUser" EntitySet="tblUser" />

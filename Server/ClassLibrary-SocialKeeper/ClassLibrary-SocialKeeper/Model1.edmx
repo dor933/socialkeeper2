@@ -5,6 +5,26 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="igroup192_prodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="PossibleFavoriteContact">
+          <Key>
+            <PropertyRef Name="phonenuminvite" />
+            <PropertyRef Name="phonenuminvited" />
+            <PropertyRef Name="hobbieNum" />
+          </Key>
+          <Property Name="phonenuminvite" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="phonenuminvited" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="hobbieNum" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'igroup192_prod.dbo.tblActualMeeting' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="tblActualMeeting">
@@ -123,6 +143,42 @@ warning 6002: The table/view 'igroup192_prod.dbo.tblActualMeeting' does not have
           <Property Name="phoneNum1" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="rank" Type="char" MaxLength="1" Nullable="false" />
         </EntityType>
+        <Association Name="FK__PossibleF__hobbi__6E01572D">
+          <End Role="tblHobbie" Type="Self.tblHobbie" Multiplicity="1" />
+          <End Role="PossibleFavoriteContact" Type="Self.PossibleFavoriteContact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblHobbie">
+              <PropertyRef Name="hobbieNum" />
+            </Principal>
+            <Dependent Role="PossibleFavoriteContact">
+              <PropertyRef Name="hobbieNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PossibleF__phone__6C190EBB">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+          <End Role="PossibleFavoriteContact" Type="Self.PossibleFavoriteContact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="PossibleFavoriteContact">
+              <PropertyRef Name="phonenuminvite" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PossibleF__phone__6D0D32F4">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+          <End Role="PossibleFavoriteContact" Type="Self.PossibleFavoriteContact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="PossibleFavoriteContact">
+              <PropertyRef Name="phonenuminvited" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk1">
           <End Role="tblNewUser" Type="Self.tblNewUser" Multiplicity="1" />
           <End Role="tblUser" Type="Self.tblUser" Multiplicity="0..1" />
@@ -332,6 +388,8 @@ warning 6002: The table/view 'igroup192_prod.dbo.tblActualMeeting' does not have
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="igroup192_prodModelStoreContainer">
+          <EntitySet Name="PossibleFavoriteContact" EntityType="Self.PossibleFavoriteContact" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblFavoriteContact" EntityType="Self.tblFavoriteContact" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblHobbie" EntityType="Self.tblHobbie" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblInvite" EntityType="Self.tblInvite" Schema="dbo" store:Type="Tables" />
@@ -352,6 +410,18 @@ warning 6002: The table/view 'igroup192_prod.dbo.tblActualMeeting' does not have
     [tblActualMeeting].[latitude] AS [latitude]
     FROM [dbo].[tblActualMeeting] AS [tblActualMeeting]</DefiningQuery>
           </EntitySet>
+          <AssociationSet Name="FK__PossibleF__hobbi__6E01572D" Association="Self.FK__PossibleF__hobbi__6E01572D">
+            <End Role="tblHobbie" EntitySet="tblHobbie" />
+            <End Role="PossibleFavoriteContact" EntitySet="PossibleFavoriteContact" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PossibleF__phone__6C190EBB" Association="Self.FK__PossibleF__phone__6C190EBB">
+            <End Role="tblUser" EntitySet="tblUser" />
+            <End Role="PossibleFavoriteContact" EntitySet="PossibleFavoriteContact" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PossibleF__phone__6D0D32F4" Association="Self.FK__PossibleF__phone__6D0D32F4">
+            <End Role="tblUser" EntitySet="tblUser" />
+            <End Role="PossibleFavoriteContact" EntitySet="PossibleFavoriteContact" />
+          </AssociationSet>
           <AssociationSet Name="fk1" Association="Self.fk1">
             <End Role="tblNewUser" EntitySet="tblNewUser" />
             <End Role="tblUser" EntitySet="tblUser" />
@@ -449,6 +519,7 @@ warning 6002: The table/view 'igroup192_prod.dbo.tblActualMeeting' does not have
           <NavigationProperty Name="tblActualMeetings" Relationship="Self.fk1tbltblActualMeeting" FromRole="tblHobbie" ToRole="tblActualMeeting" />
           <NavigationProperty Name="tblSuggestedHobbies" Relationship="Self.fk2tblSuggestedHobbie" FromRole="tblHobbie" ToRole="tblSuggestedHobbie" />
           <NavigationProperty Name="tblUserHobbies" Relationship="Self.fk2tblUserHobbie" FromRole="tblHobbie" ToRole="tblUserHobbie" />
+          <NavigationProperty Name="PossibleFavoriteContacts" Relationship="igroup192_prodModel.FK__PossibleF__hobbi__6E01572D" FromRole="tblHobbie" ToRole="PossibleFavoriteContact" />
         </EntityType>
         <EntityType Name="tblInvite">
           <Key>
@@ -546,6 +617,8 @@ warning 6002: The table/view 'igroup192_prod.dbo.tblActualMeeting' does not have
           <NavigationProperty Name="tblSuggestedMeetings" Relationship="Self.fk1tblSuggestedMeeting" FromRole="tblUser" ToRole="tblSuggestedMeeting" />
           <NavigationProperty Name="tblSuggestedMeetings1" Relationship="Self.fk2tblSuggestedMeeting" FromRole="tblUser" ToRole="tblSuggestedMeeting" />
           <NavigationProperty Name="tblUserHobbies" Relationship="Self.fk1tblUserHobbie" FromRole="tblUser" ToRole="tblUserHobbie" />
+          <NavigationProperty Name="PossibleFavoriteContacts" Relationship="igroup192_prodModel.FK__PossibleF__phone__6C190EBB" FromRole="tblUser" ToRole="PossibleFavoriteContact" />
+          <NavigationProperty Name="PossibleFavoriteContacts1" Relationship="igroup192_prodModel.FK__PossibleF__phone__6D0D32F4" FromRole="tblUser" ToRole="PossibleFavoriteContact" />
         </EntityType>
         <EntityType Name="tblUserHobbie">
           <Key>
@@ -863,7 +936,80 @@ warning 6002: The table/view 'igroup192_prod.dbo.tblActualMeeting' does not have
             <End Role="tblUser" EntitySet="tblUsers" />
             <End Role="tblUserHobbie" EntitySet="tblUserHobbies" />
           </AssociationSet>
+          <EntitySet Name="PossibleFavoriteContacts" EntityType="igroup192_prodModel.PossibleFavoriteContact" />
+          <EntitySet Name="sysdiagrams" EntityType="igroup192_prodModel.sysdiagram" />
+          <AssociationSet Name="FK__PossibleF__hobbi__6E01572D" Association="igroup192_prodModel.FK__PossibleF__hobbi__6E01572D">
+            <End Role="tblHobbie" EntitySet="tblHobbies" />
+            <End Role="PossibleFavoriteContact" EntitySet="PossibleFavoriteContacts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PossibleF__phone__6C190EBB" Association="igroup192_prodModel.FK__PossibleF__phone__6C190EBB">
+            <End Role="tblUser" EntitySet="tblUsers" />
+            <End Role="PossibleFavoriteContact" EntitySet="PossibleFavoriteContacts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PossibleF__phone__6D0D32F4" Association="igroup192_prodModel.FK__PossibleF__phone__6D0D32F4">
+            <End Role="tblUser" EntitySet="tblUsers" />
+            <End Role="PossibleFavoriteContact" EntitySet="PossibleFavoriteContacts" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="PossibleFavoriteContact">
+          <Key>
+            <PropertyRef Name="phonenuminvite" />
+            <PropertyRef Name="phonenuminvited" />
+            <PropertyRef Name="hobbieNum" />
+          </Key>
+          <Property Name="phonenuminvite" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="phonenuminvited" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="hobbieNum" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tblHobbie" Relationship="igroup192_prodModel.FK__PossibleF__hobbi__6E01572D" FromRole="PossibleFavoriteContact" ToRole="tblHobbie" />
+          <NavigationProperty Name="tblUser" Relationship="igroup192_prodModel.FK__PossibleF__phone__6C190EBB" FromRole="PossibleFavoriteContact" ToRole="tblUser" />
+          <NavigationProperty Name="tblUser1" Relationship="igroup192_prodModel.FK__PossibleF__phone__6D0D32F4" FromRole="PossibleFavoriteContact" ToRole="tblUser" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <Association Name="FK__PossibleF__hobbi__6E01572D">
+          <End Type="igroup192_prodModel.tblHobbie" Role="tblHobbie" Multiplicity="1" />
+          <End Type="igroup192_prodModel.PossibleFavoriteContact" Role="PossibleFavoriteContact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblHobbie">
+              <PropertyRef Name="hobbieNum" />
+            </Principal>
+            <Dependent Role="PossibleFavoriteContact">
+              <PropertyRef Name="hobbieNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PossibleF__phone__6C190EBB">
+          <End Type="igroup192_prodModel.tblUser" Role="tblUser" Multiplicity="1" />
+          <End Type="igroup192_prodModel.PossibleFavoriteContact" Role="PossibleFavoriteContact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="PossibleFavoriteContact">
+              <PropertyRef Name="phonenuminvite" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PossibleF__phone__6D0D32F4">
+          <End Type="igroup192_prodModel.tblUser" Role="tblUser" Multiplicity="1" />
+          <End Type="igroup192_prodModel.PossibleFavoriteContact" Role="PossibleFavoriteContact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="phoneNum1" />
+            </Principal>
+            <Dependent Role="PossibleFavoriteContact">
+              <PropertyRef Name="phonenuminvited" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -985,6 +1131,26 @@ warning 6002: The table/view 'igroup192_prod.dbo.tblActualMeeting' does not have
                 <ScalarProperty Name="rankUser2" ColumnName="rankUser2" />
                 <ScalarProperty Name="longitude" ColumnName="longitude" />
                 <ScalarProperty Name="latitude" ColumnName="latitude" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PossibleFavoriteContacts">
+            <EntityTypeMapping TypeName="igroup192_prodModel.PossibleFavoriteContact">
+              <MappingFragment StoreEntitySet="PossibleFavoriteContact">
+                <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
+                <ScalarProperty Name="phonenuminvited" ColumnName="phonenuminvited" />
+                <ScalarProperty Name="phonenuminvite" ColumnName="phonenuminvite" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="igroup192_prodModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

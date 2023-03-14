@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClassLibrary_SocialKeeper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,17 +16,21 @@ namespace ClassLibrary_SocialKeeper
         public string city { get; set; }
         public string gender { get; set; }
         public string imageUri { get; set; }
-        public byte[] image { get; set; }
+        public string image { get; set; }
         public string GoogleID { get; set; }
         public string MicrosoftID { get; set; }
 
-        public virtual ICollection<tblFavoriteContact> tblFavoriteContacts { get; set; }
-        public virtual ICollection<tblFavoriteContact> tblFavoriteContacts1 { get; set; }
-        public virtual ICollection<tblInvite> tblInvites { get; set; }
-        public virtual tblNewUser tblNewUser { get; set; }
-        public virtual ICollection<tblPreferredTime> tblPreferredTimes { get; set; }
+        public virtual ICollection<FavoriteContactsDTO> tblFavoriteContacts { get; set; }
+        public virtual ICollection<FavoriteContactsDTO> tblFavoriteContacts1 { get; set; }
+        public virtual ICollection<tblInvitesDTO> tblInvitesDTO { get; set; }
+        public virtual NewUserDTO tblNewUserDTO { get; set; }
+        public virtual ICollection<tblPrefferedtimesDTO> tblprefferdDTO { get; set; }
         public virtual ICollection<tblSuggestedMeeting> tblSuggestedMeetings { get; set; }
         public virtual ICollection<tblSuggestedMeeting> tblSuggestedMeetings1 { get; set; }
-        public virtual ICollection<tblUserHobbie> tblUserHobbies { get; set; }
+        public virtual ICollection<UserhobbiesDTO> tblUserHobbiesDTO { get; set; }
+
+        public virtual ICollection<tblPossibleDTO> possibleFavoriteContacts_invite_DTO { get; set; }
+
+        public virtual ICollection<tblPossibleDTO> possibleFavoriteContacts_invited_DTO { get; set; }
     }
 }

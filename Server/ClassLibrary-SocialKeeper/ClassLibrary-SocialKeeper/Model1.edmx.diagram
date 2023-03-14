@@ -33,6 +33,11 @@
         <AssociationConnector Association="igroup192_prodModel.fk2tblSuggestedMeeting" ManuallyRouted="false" />
         <AssociationConnector Association="igroup192_prodModel.fk2tbltblActualMeeting" ManuallyRouted="false" />
         <AssociationConnector Association="igroup192_prodModel.fk1tblUserHobbie" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="igroup192_prodModel.PossibleFavoriteContact" Width="1.5" PointX="10.875" PointY="11.875" />
+        <EntityTypeShape EntityType="igroup192_prodModel.sysdiagram" Width="1.5" PointX="0.75" PointY="0.75" />
+        <AssociationConnector Association="igroup192_prodModel.FK__PossibleF__hobbi__6E01572D" />
+        <AssociationConnector Association="igroup192_prodModel.FK__PossibleF__phone__6C190EBB" />
+        <AssociationConnector Association="igroup192_prodModel.FK__PossibleF__phone__6D0D32F4" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

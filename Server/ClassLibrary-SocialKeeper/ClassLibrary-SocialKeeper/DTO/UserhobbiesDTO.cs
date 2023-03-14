@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary_SocialKeeper
 {
-    public class NewUserDTO
+    public class UserhobbiesDTO
     {
+        public int hobbieNum { get; set; }
         public string phoneNum1 { get; set; }
-        public string nickName { get; set; }
-        public ICollection<tblInvitesDTO> invitesDTO { get; set; }
-        public ICollection<UserDTO> tblrelateduserDTO { get; set; }
+        public string rank { get; set; }
     }
 }

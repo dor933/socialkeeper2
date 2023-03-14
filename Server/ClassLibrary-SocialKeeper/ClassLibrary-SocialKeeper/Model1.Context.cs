@@ -36,5 +36,7 @@ namespace ClassLibrary_SocialKeeper
         public virtual DbSet<tblUser> tblUsers { get; set; }
         public virtual DbSet<tblUserHobbie> tblUserHobbies { get; set; }
         public virtual DbSet<tblActualMeeting> tblActualMeetings { get; set; }
+        public virtual DbSet<PossibleFavoriteContact> PossibleFavoriteContacts { get; set; }
+        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
     }
 }

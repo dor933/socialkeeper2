@@ -12,21 +12,14 @@ namespace ClassLibrary_SocialKeeper
     using System;
     using System.Collections.Generic;
     
-    public partial class tblNewUser
+    public partial class PossibleFavoriteContact
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public tblNewUser()
-        {
-            this.tblInvites = new HashSet<tblInvite>();
-        }
+        public string phonenuminvite { get; set; }
+        public string phonenuminvited { get; set; }
+        public int hobbieNum { get; set; }
     
-        public string phoneNum1 { get; set; }
-        public string nickName { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblInvite> tblInvites { get; set; }
+        public virtual tblHobbie tblHobbie { get; set; }
         public virtual tblUser tblUser { get; set; }
-
-
+        public virtual tblUser tblUser1 { get; set; }
     }
 }

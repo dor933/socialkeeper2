@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'C:\Users\dorat\Source\Repos\socialkeeper2check\Server\ClassLibrary-SocialKeeper\ClassLibrary-SocialKeeper\Model1.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Users\dorat\Source\Repos\socialkeeper2prod\Server\ClassLibrary-SocialKeeper\ClassLibrary-SocialKeeper\Model1.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.
