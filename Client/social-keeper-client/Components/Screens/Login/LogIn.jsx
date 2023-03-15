@@ -65,9 +65,6 @@ export default function LogIn() {
                     style={styles.image}
                     source={require('')}
                 />
-            </View>
-
-            <View style={[styles.inputContainer, animation]}>
 
 
                 <TextInput
@@ -78,10 +75,36 @@ export default function LogIn() {
                     keyboardType="email-address"
 
                 />
+                <View style={styles.passwordContainer}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Password"
+                        secureTextEntry={!showPassword}
+                        value={password}
+                        onChangeText={text => setPassword(text)}
+
+                    />
+                    <TouchableOpacity
+                        style={styles.passwordButton}
+                        onPress={() => setShowPassword(!showPassword)}
+                    >
+                        <Icon
+                            name={showPassword ? 'visibility' : 'visibility-off'}
+                            size={20}
+                            color='black'
+                        />
+                    </TouchableOpacity>
+
+                </View>
 
                 <TouchableOpacity onPress={logInBtn} style={styles.button}>
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
+            </View>
+            <View style={styles.lineContainer}>
+                <View style={styles.line} />
+                <Text style={styles.orText}>or</Text>
+                <View style={styles.line} />
             </View>
 
 
@@ -94,7 +117,6 @@ export default function LogIn() {
                     style={styles.signUpButton}
 
                 />
-              
             </View>
         </View>
     )

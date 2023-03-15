@@ -1,18 +1,17 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet} from 'react-native';
+import SignUpAPI from './Components/Screens/Login/SignUpAPI';
 // import { NavigationContainer } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
-import FutureMeetingScreen from './Components/Screens/Meetings/FutureMeetingScreen';
-// import * as Contacts from 'expo-contacts';
-import MainDashBoard from './/Components//Screens///Meetings///MainDashBoard';
-
+// import FutureMeetingScreen from './Components//Screens/Meetings/FutureMeetingScreen';
+// import PreviousMeetingsScreen from './/Components//Screens//Meetings///PreviousMeetingsScreen';
+// import SuggestedMeetingsScreen from './/Components//Screens//Meetings///SuggestedMeetingsScreen';
+// import FavoriteContacts from './/Components//Screens///Settings/FavoriteContacts';
 export default function App() {
 
 
   return (
-    <View style={styles.container}>
-   <Text>This is test comp</Text>
-  </View>
-  
+    <SafeAreaView>
+      <SignUpAPI></SignUpAPI>
+    </SafeAreaView>
   );
 }
 
@@ -21,8 +20,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-
-
   },
   logIn: {
     flex: 1,
