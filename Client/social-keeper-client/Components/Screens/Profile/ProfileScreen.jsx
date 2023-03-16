@@ -1,19 +1,19 @@
 import { Image, Keyboard, LayoutAnimation, View, Text, TextInput, Dimensions, SafeAreaView, Alert, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import ImagePickerExample from '../HelpComponent/ImagePickerExample ';
 import DatePicker from 'react-native-datepicker';
 import { Picker } from '@react-native-picker/picker';
-import GenderDropdown from '../HelpComponent/GenderDropdown';
+import GenderDropdown from './../..//CompsToUse//GenderDropdown';
+import ImagePickerExample from './../..//CompsToUse//ImagePickerExample';
 
 export default function ProfileScreen(props,{navigation}) {
+  
   const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
   const [animation, setAnimation] = useState({});
   const [user, setUser] = useState({
     firstName: '',
     lastName: '',
     city: '',
-
   })
   const [date, setDate] = useState();
   const [gender, setGender] = useState(null)
@@ -77,13 +77,13 @@ export default function ProfileScreen(props,{navigation}) {
       return;
     }
     if (gender==null){
-      Alert.alert("You have to be a man or women becuse of the new goverment law")
+      Alert.alert("Gender is required")
       return;
-      //מעניין אם מישהו ישים לב לזה וישנה את הטקסט? 
     }
+
     if (image === '') {
       //set a default image if user didn't choose one 
-      image = '../../Images/user.png';
+      image = '../../../assets/images/RandomImages/user.png';
       return;
     }
 
@@ -171,7 +171,7 @@ export default function ProfileScreen(props,{navigation}) {
           onPress={() => setGender('men')}>
           <View style={styles.allGender}>
             <Image
-              source={require('../../Images/superhero.png')}
+              source={require('../../../assets/images/RandomImages/superhero.png')}
               style={[gender == 'men' ? styles.selectedGander : {}, styles.genderImage]}
             />
           </View>
@@ -180,7 +180,7 @@ export default function ProfileScreen(props,{navigation}) {
           onPress={() => setGender('women')}>
           <View style={styles.allGender}>
             <Image
-              source={require('../../Images/wonder-woman.png')}
+              source={require('../../../assets/images/RandomImages/wonder-woman.png')}
               style={[gender == 'women' ? styles.selectedGander : {},styles.genderImage]}
             />
           </View>
