@@ -36,7 +36,7 @@ namespace WebApplication1.Controllers
 
 
 
-                tblUser user = db.tblUsers.Where(u => u.email == email).FirstOrDefault();
+                var user = db.tblUsers.Where(u => u.email == email).FirstOrDefault();
                 if (user != null)
                 {
                     UserDTO usertoret = GetUser(user);
