@@ -1,33 +1,32 @@
 
 import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, FlatList, LayoutAnimation,Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import StarsRatingComp from '../HelpComponent/StarsRatingComp'
-
+import StarsRatingComp from '../../CompsToUse/StarsRatingComp'
 const hobbiesAndImages = [
   {
-    "Basketball": require('../../Images/Hoobies/Basketballl.jpeg')
+    "Basketball": require('../../../assets/images/Hoobies/Basketballl.jpeg')
   }
   ,
-  { "Gym": require('../../Images/Hoobies/Gym.jpeg') },
-  { "Coffie": require('../../Images/Hoobies/Coffie.jpeg') },
+  { "Gym": require('../../../assets/images/Hoobies/Hoobies/Gym.jpeg') },
+  { "Coffie": require('../../../assets/images/Hoobies/Coffie.jpeg') },
   {
-    "Movie": require('../../Images/Hoobies/Movie.jpeg')
+    "Movie": require('../../../assets/images/Hoobies/Movie.jpeg')
   }
   ,
-  { "Resturant": require('../../Images/Hoobies/Resturant.jpeg') },
-  { "Coffie": require('../../Images/Hoobies/Coffie.jpeg') },
+  { "Resturant": require('../../../assets/images/Hoobies/Resturant.jpeg') },
+  { "Coffie": require('../../../assets/images/Hoobies/Coffie.jpeg') },
   {
-    "Basketball": require('../../Images/Hoobies/Basketballl.jpeg')
+    "Basketball": require('../../../assets/images/Hoobies/Basketballl.jpeg')
   }
   ,
-  { "Gym": require('../../Images/Hoobies/Gym.jpeg') },
-  { "Resturant": require('../../Images/Hoobies/Resturant.jpeg') },
+  { "Gym": require('../../../assets/images/Hoobies/Gym.jpeg') },
+  { "Resturant": require('../../../assets/images/Hoobies/Resturant.jpeg') },
   {
-    "Basketball": require('../../Images/Hoobies/Basketballl.jpeg')
+    "Basketball": require('../../../assets/images/Hoobies/Basketballl.jpeg')
   }
   ,
-  { "Movie": require('../../Images/Hoobies/Movie.jpeg') },
-  { "Coffie": require('../../Images/Hoobies/Coffie.jpeg') },
+  { "Movie": require('../../../assets/images/Hoobies/Movie.jpeg') },
+  { "Coffie": require('../../../assets/images/Hoobies/Coffie.jpeg') },
 
 ]//temporarily for testing purposes only, will be replaced with a call to the server
 
@@ -84,7 +83,7 @@ export default function PreferredHoobies({ navigation}, props) {
       <View style={styles.logoContainer} >
         <Image
           style={styles.logo}
-          source={require('../../Images/social-keeper-low-resolution-logo-color-on-transparent-background.png')}
+          source={require('../../../assets/images/RandomImages/social-keeper-low-resolution-logo-color-on-transparent-background.png')}
         />
       </View>
       <View style={styles.descContainer}>

@@ -84,7 +84,7 @@ export default function PreferredMeetingTimes({ navigation }, props) {
                 {/* //social-keeper-low-resolution-logo-color-on-transparent-background.png */}
                 <Image
                     style={styles.logo}
-                    source={require('../../Images/social-keeper-low-resolution-logo-color-on-transparent-background.png')}
+                    source={require('.../assets/Images/RandomImages/social-keeper-low-resolution-logo-color-on-transparent-background.png')}
                 />
             </View>
             <Text style={styles.logoText}>Choose at least 3 favorite times </Text>
