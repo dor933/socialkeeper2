@@ -1,5 +1,7 @@
 import { SafeAreaView, StyleSheet} from 'react-native';
+import SignInAPI from './Components/Screens/Login/SignInAPI';
 import SignUpAPI from './Components/Screens/Login/SignUpAPI';
+import CreateProfile from './Components//Screens///Profile/CreateProfile';
 // import { NavigationContainer } from '@react-navigation/native';
 // import FutureMeetingScreen from './Components//Screens/Meetings/FutureMeetingScreen';
 // import PreviousMeetingsScreen from './/Components//Screens//Meetings///PreviousMeetingsScreen';
@@ -10,7 +12,7 @@ export default function App() {
 
   return (
     <SafeAreaView>
-      <SignUpAPI></SignUpAPI>
+      <CreateProfile></CreateProfile>
     </SafeAreaView>
   );
 }

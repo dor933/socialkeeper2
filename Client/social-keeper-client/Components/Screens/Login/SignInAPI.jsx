@@ -1,16 +1,16 @@
 import React from 'react'
 import { SafeAreaView, Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native'
 
-function SignUpAPI() {
+function SignInAPI() {
 
 
   return (
 
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.elipseTop}></View>
-      
+
       {/* Connect text */}
-      <Text style={styles.text}>Sign Up</Text>
+      <Text style={styles.text}>Sign In</Text>
       <Image style={styles.logo} source={require('../../../assets/Images/RandomImages/social-keeper-low-resolution-logo-color-on-transparent-background.png')} />
 
       {/* Login with google button */}
@@ -29,19 +29,12 @@ function SignUpAPI() {
         </View>
       </TouchableOpacity>
 
-      {/* Already member qusetion */}
-      <View>
-          <Text style={styles.textAlreadyMember}>Already member?</Text>
-          <TouchableOpacity>
-          <Text style={styles.refToSignIn}>Sign in</Text>
-          </TouchableOpacity>
-      </View>
       <View style={styles.elipseButtom}></View>
     </SafeAreaView>
   )
 }
 
-export default SignUpAPI
+export default SignInAPI
 
 
 
@@ -126,7 +119,7 @@ const styles = StyleSheet.create({
   },
 
   //text for sign up suggestion
-  textAlreadyMember: {
+  refToSignIn: {
     position: 'absolute',
     width: 195,
     height: 19,
@@ -137,19 +130,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     color: 'rgba(0, 0, 0, 0.7)',
-  },
-
-  refToSignIn: {
-    position: 'absolute',
-    width: 195,
-    height: 19,
-    left: 240,
-    top: 600,
-    fontStyle: 'normal',
-    fontWeight: '400',
-    fontSize: 16,
-    lineHeight: 19,
-    color: '#E04747B2',
   },
   //CSS for logo
   logo: {
