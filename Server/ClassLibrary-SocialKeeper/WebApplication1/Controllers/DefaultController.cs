@@ -6,17 +6,26 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using Google.Apis.Auth;
-using Newtonsoft.Json.Linq;
 using System.Web;
 using System.Data.Entity.Validation;
-using System.Web.UI.WebControls;
+using System.Threading.Tasks;
+using Google.Cloud.Storage.V1;
+using Google.Apis.Storage.v1.Data;
+using System.Text.RegularExpressions;
 
 namespace WebApplication1.Controllers
 {
     public class DefaultController : ApiController
     {
         igroup192_DbContext db = new igroup192_DbContext();
+        private readonly Googlecloudstorage _storageService;
+
+        public DefaultController()
+        {
+            _storageService= new Googlecloudstorage();
+        }
+
+
 
 
         // GET: api/Default
@@ -33,6 +42,7 @@ namespace WebApplication1.Controllers
             // he will be redirected to the sign up page)
             try
             {
+                
 
 
 
@@ -62,7 +72,6 @@ namespace WebApplication1.Controllers
             usertoret.phoneNum1 = checkifuser.phoneNum1;
             usertoret.userName = checkifuser.userName;
             usertoret.imageUri = checkifuser.imageUri;
-            usertoret.image = GetImage(checkifuser.imageUri);
             usertoret.birthDate = Convert.ToDateTime(checkifuser.birthDate);
             usertoret.email = checkifuser.email;
             usertoret.city = checkifuser.city;
@@ -84,7 +93,6 @@ namespace WebApplication1.Controllers
                 user1dto.city = favo.tblUser1.city;
                 user1dto.gender = favo.tblUser1.gender;
                 user1dto.email = favo.tblUser1.email;
-                user1dto.image = GetImage(favo.tblUser1.imageUri);
                 favodto.tblUser1 = user1dto;
                 tblhobbieDTO hobbieDTO = new tblhobbieDTO();
                 hobbieDTO.hobbieNum = favo.tblHobbie.hobbieNum;
@@ -111,7 +119,7 @@ namespace WebApplication1.Controllers
                 user1dto.city = favo.tblUser1.city;
                 user1dto.gender = favo.tblUser1.gender;
                 user1dto.email = favo.tblUser1.email;
-                user1dto.image = GetImage(favodto.tblUser1.imageUri);
+                user1dto.imageUri = favodto.tblUser1.imageUri;
                 favodto.tblUser1 = user1dto;
                 tblhobbieDTO hobbieDTO = new tblhobbieDTO();
                 hobbieDTO.hobbieNum = favo.tblHobbie.hobbieNum;
@@ -156,6 +164,36 @@ namespace WebApplication1.Controllers
             }
             usertoret.tblUserHobbiesDTO = userhobbiesDTOs;
 
+            List<tblPossibleDTO> possibleinvite= new List<tblPossibleDTO>();
+            List<tblPossibleDTO> possibleinvited= new List<tblPossibleDTO>();
+
+            foreach (PossibleFavoriteContact pos in checkifuser.PossibleFavoriteContacts)
+            {
+                tblPossibleDTO posdto= new tblPossibleDTO();
+                posdto.phonenuminvite= pos.phonenuminvite;
+                posdto.phonenuminvited= pos.phonenuminvited;
+                posdto.hobbieNum= pos.hobbieNum;
+                posdto.tblUser=pos.tblUser;
+                posdto.tblUser1= pos.tblUser;
+                posdto.tblHobbie= pos.tblHobbie;
+                possibleinvite.Add( posdto );
+            }
+
+            foreach(PossibleFavoriteContact posinvited in checkifuser.PossibleFavoriteContacts1)
+            {
+                tblPossibleDTO posdoinviteddto= new tblPossibleDTO();
+                posdoinviteddto.phonenuminvite=posinvited.phonenuminvite;
+                posdoinviteddto.phonenuminvited=posinvited.phonenuminvited;
+                posdoinviteddto.hobbieNum=posinvited.hobbieNum;
+                posdoinviteddto.tblUser= posinvited.tblUser;
+                posdoinviteddto.tblUser1 = posinvited.tblUser1;
+                posdoinviteddto.tblHobbie=posinvited.tblHobbie;
+                possibleinvited.Add( posdoinviteddto );
+            }
+
+            usertoret.possibleFavoriteContacts_invite_DTO= possibleinvite;
+            usertoret.possibleFavoriteContacts_invited_DTO= possibleinvited;
+
             return usertoret;
 
             // יש פה צורך לעשות המרה של אובייקטי ה-DTO לאובייקטים רגילים ואז להחזיר
@@ -179,8 +217,75 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
+        [Route("api/Default/getexistingmembers")]
+        public HttpResponseMessage Getexistingmembers(ExistsingUsers[] ExistingUsereser)
+        {
+
+
+            List<tblUser> listtblusers= db.tblUsers.ToList();
+            List<ExistsingUsers> existsingUsers= new List<ExistsingUsers>();
+
+            foreach(ExistsingUsers existuser in ExistingUsereser)
+            {
+                foreach(string phonenum in existuser.phonenumbers)
+                {
+                    string cleanedPhoneNumber = Regex.Replace(phonenum, @"[^0-9]+", "");
+                    if (cleanedPhoneNumber.StartsWith("972"))
+                    {
+                        cleanedPhoneNumber = cleanedPhoneNumber.Substring(3);
+                    }
+                    if (!cleanedPhoneNumber.StartsWith("0"))
+                    {
+                        cleanedPhoneNumber = "0" + cleanedPhoneNumber;
+                    }
+
+                    tblUser usera = listtblusers.Where(x=> x.phoneNum1==cleanedPhoneNumber).FirstOrDefault();
+                    ExistsingUsers ex= existsingUsers.Where(x=> x.phonenumbers.Contains(cleanedPhoneNumber)).FirstOrDefault();
+                    if(usera!=null && ex==null)
+                    {
+                        ExistsingUsers Existinguser = new ExistsingUsers();
+                        Existinguser.phonenumbers.Add(usera.phoneNum1);
+                        Existinguser.userName = usera.userName;
+                        Existinguser.birthDate = Convert.ToDateTime(usera.birthDate);
+                        Existinguser.gender = usera.gender;
+                        Existinguser.city = usera.city;
+                        Existinguser.imageUri = usera.imageUri;
+                        List<UserhobbiesDTO> listuserhobbiesdto = new List<UserhobbiesDTO>();
+
+                        foreach (tblUserHobbie hob in usera.tblUserHobbies)
+                        {
+                            UserhobbiesDTO userhobdto = new UserhobbiesDTO();
+                            userhobdto.hobbieNum = hob.hobbieNum;
+                            userhobdto.phoneNum1 = hob.phoneNum1;
+                            userhobdto.rank = hob.rank;
+                            listuserhobbiesdto.Add(userhobdto);
+                        }
+
+                        Existinguser.tblUserHobbiesDTO= listuserhobbiesdto;
+                        existsingUsers.Add(Existinguser);
+                        break;
+
+                    }
+
+                }
+            }
+
+            if (existsingUsers.Count > 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, existsingUsers);
+            }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, "No Users");
+            }
+
+         
+
+        }
+
+        [HttpPost]
         [Route("api/Default/Addimage")]
-        public IHttpActionResult UploadFile()
+        public async Task<IHttpActionResult> UploadFile()
         {
             var httpRequest = HttpContext.Current.Request;
             string identi = httpRequest["identis"];
@@ -194,8 +299,10 @@ namespace WebApplication1.Controllers
                 {
                     fileContents = binaryReader.ReadBytes(postedFile.ContentLength);
                 }
-                string filepath = SaveImage(fileContents, identi);
-                myusertosave.imageUri = filepath;
+                string remotefilepath = $"Images/Profiles/{identi}";
+                string downloadurl = await UploadToGoogleCloudStorage(fileContents, postedFile.ContentType, remotefilepath);
+                myusertosave.imageUri = downloadurl;
+                db.SaveChanges();
 
                 return Ok(myusertosave);
 
@@ -207,8 +314,35 @@ namespace WebApplication1.Controllers
 
         }
 
+        private async Task<string> UploadToGoogleCloudStorage(byte[] fileContents, string contentType, string remoteFilePath)
+        {
+            MemoryStream fileStream = new MemoryStream(fileContents);
+            var uploadedObject = await _storageService._storageClient.UploadObjectAsync(_storageService._bucketName, remoteFilePath, contentType, fileStream,new UploadObjectOptions());
+            fileStream.Dispose();
+
+            var acl= uploadedObject.Acl ?? new List<ObjectAccessControl>();
+            acl.Add(new ObjectAccessControl
+            {
+                Entity = "allUsers",
+                Role = "READER"
+            }
+                );
+
+            uploadedObject.Acl= acl;
+            var updatedObject = await _storageService._storageClient.UpdateObjectAsync(uploadedObject);
+
+            var publicUrl = $"https://storage.googleapis.com/{_storageService._bucketName}/{remoteFilePath}";
+            return publicUrl;
+
+
+
+
+        }
+
+
         public string GetImage(string Imageuri)
         {
+            //May be not neccessary
             string imageData = null;
             using (var imageStream = new FileStream(Imageuri, FileMode.Open))
             {
@@ -277,19 +411,8 @@ namespace WebApplication1.Controllers
                     List<tblPreferredTime> userpreflist = new List<tblPreferredTime>();
 
                     //bring me the last row in the table tblprefeeredtimes
-
-
-                    tblPreferredTime lastidprefferedtime = db.tblPreferredTimes.OrderByDescending(t => t.id).FirstOrDefault();
-                    int lastidpreffered;
-                    if (lastidprefferedtime == null)
-                    {
-                        
-                        lastidpreffered= 0;
-                    }
-                    else
-                    {
-                        lastidpreffered = lastidprefferedtime.id++;
-                    }
+                    int lastrow = db.tblPreferredTimes.OrderByDescending(x => x.id).FirstOrDefault().id;
+                    lastrow++;
 
 
                     foreach (tblPrefferedtimesDTO userpref in Mynewuser.tblprefferdDTO)
@@ -298,13 +421,12 @@ namespace WebApplication1.Controllers
                         newuserpref.startTime = userpref.startTime;
                         newuserpref.endTime = userpref.endTime;
                         newuserpref.weekDay = userpref.weekDay;
-                        newuserpref.id = lastidpreffered;
+                        newuserpref.id = lastrow;
                         newuserpref.rank = userpref.rank;
                         newuserpref.phoneNum1 = Mynewuser.phoneNum1;
                         newuserpref.tblUser = newuser;
                         userpreflist.Add(newuserpref);
                         db.tblPreferredTimes.Add(newuserpref);
-                        lastidpreffered++;
                     }
                     newuser.tblPreferredTimes = userpreflist;
                     List<PossibleFavoriteContact> tblpossFavoriteContacts = new List<PossibleFavoriteContact>();
@@ -321,7 +443,10 @@ namespace WebApplication1.Controllers
                         hobbie.PossibleFavoriteContacts.Add(newpossfavcontact);
                         tblpossFavoriteContacts.Add(newpossfavcontact);
                         user2.PossibleFavoriteContacts1.Add(newpossfavcontact);
+                        newpossfavcontact.tblUser = user1;
+                        newpossfavcontact.tblUser1 = user2;
                         db.PossibleFavoriteContacts.Add(newpossfavcontact);
+                        
                     }
 
                     newuser.PossibleFavoriteContacts = tblpossFavoriteContacts;
@@ -347,7 +472,7 @@ namespace WebApplication1.Controllers
                         newuser.tblInvites.Add(newinvite);
                         user2invite.tblInvites.Add(newinvite);
                         db.tblInvites.Add(newinvite);
-                        db.tblNewUsers.Add(user2invite); //  here
+                        db.tblNewUsers.Add(user2invite); 
 
                     }
 
@@ -370,29 +495,7 @@ namespace WebApplication1.Controllers
                 return "Error: " + ex.Message;
             }
         }
-        public string SaveImage(byte[] imageData, string identifier)
-        {
-            try
-            {
-                // Specify the file path where you want to save the image
-                string filePath = "C:\\MyImages\\Users\\" + identifier + ".png";
-
-                // Create a file stream and write the image data to it
-                using (FileStream stream = new FileStream(filePath, FileMode.Create))
-                {
-                    stream.Write(imageData, 0, imageData.Length);
-                }
-
-                // Return a success response
-                return filePath;
-            }
-            catch (Exception ex)
-            {
-                // Return an error response
-                return "Error: " + ex.Message;
-            }
-
-        }
+    
         // PUT: api/Default/5
         public void Put(int id, [FromBody] string value)
         {

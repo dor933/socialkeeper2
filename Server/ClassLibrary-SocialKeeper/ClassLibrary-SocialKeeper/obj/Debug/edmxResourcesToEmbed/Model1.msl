@@ -93,8 +93,6 @@
           <ScalarProperty Name="city" ColumnName="city" />
           <ScalarProperty Name="gender" ColumnName="gender" />
           <ScalarProperty Name="imageUri" ColumnName="imageUri" />
-          <ScalarProperty Name="GoogleID" ColumnName="GoogleID" />
-          <ScalarProperty Name="MicrosoftID" ColumnName="MicrosoftID" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

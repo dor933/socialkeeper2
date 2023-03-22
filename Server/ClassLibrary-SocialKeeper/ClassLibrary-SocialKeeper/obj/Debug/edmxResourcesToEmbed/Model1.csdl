@@ -112,8 +112,6 @@
     <Property Name="city" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
     <Property Name="gender" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
     <Property Name="imageUri" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
-    <Property Name="GoogleID" Type="String" MaxLength="3000" FixedLength="false" Unicode="true" />
-    <Property Name="MicrosoftID" Type="String" MaxLength="3000" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="tblFavoriteContacts" Relationship="Self.fk1tblFavoriteContact" FromRole="tblUser" ToRole="tblFavoriteContact" />
     <NavigationProperty Name="tblFavoriteContacts1" Relationship="Self.fk2tblFavoriteContact" FromRole="tblUser" ToRole="tblFavoriteContact" />
     <NavigationProperty Name="tblInvites" Relationship="Self.fk1tblInvite" FromRole="tblUser" ToRole="tblInvite" />

@@ -26,7 +26,5 @@ namespace ClassLibrary_SocialKeeper
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblInvite> tblInvites { get; set; }
         public virtual tblUser tblUser { get; set; }
-
-
     }
 }

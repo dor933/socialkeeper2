@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="DTO\EmailDTO.cs" />
+    <Compile Include="DTO\ExistsingUsers.cs" />
     <Compile Include="DTO\FavoriteContactsDTO.cs" />
     <Compile Include="DTO\NewUserDTO.cs" />
     <Compile Include="DTO\SuggestedDTO.cs" />

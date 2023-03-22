@@ -22,3 +22,15 @@ C:\Users\dorat\Source\Repos\socialkeeper2prod\Server\ClassLibrary-SocialKeeper\C
 C:\Users\dorat\Source\Repos\socialkeeper2prod\Server\ClassLibrary-SocialKeeper\ClassLibrary-SocialKeeper\obj\Debug\ClassLibrary-SocialKeeper.csproj.CopyComplete
 C:\Users\dorat\Source\Repos\socialkeeper2prod\Server\ClassLibrary-SocialKeeper\ClassLibrary-SocialKeeper\obj\Debug\ClassLibrary-SocialKeeper.dll
 C:\Users\dorat\Source\Repos\socialkeeper2prod\Server\ClassLibrary-SocialKeeper\ClassLibrary-SocialKeeper\obj\Debug\ClassLibrary-SocialKeeper.pdb
+C:\Users\dorat\source\repos\socialkeeper2therepo\Server\ClassLibrary-SocialKeeper\ClassLibrary-SocialKeeper\bin\Debug\ClassLibrary-SocialKeeper.dll.config
+C:\Users\dorat\source\repos\socialkeeper2therepo\Server\ClassLibrary-SocialKeeper\ClassLibrary-SocialKeeper\bin\Debug\ClassLibrary-SocialKeeper.dll
+C:\Users\dorat\source\repos\socialkeeper2therepo\Server\ClassLibrary-SocialKeeper\ClassLibrary-SocialKeeper\bin\Debug\ClassLibrary-SocialKeeper.pdb
+C:\Users\dorat\source\repos\socialkeeper2therepo\Server\ClassLibrary-SocialKeeper\ClassLibrary-SocialKeeper\bin\Debug\EntityFramework.dll
+C:\Users\dorat\source\repos\socialkeeper2therepo\Server\ClassLibrary-SocialKeeper\ClassLibrary-SocialKeeper\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\dorat\source\repos\socialkeeper2therepo\Server\ClassLibrary-SocialKeeper\ClassLibrary-SocialKeeper\bin\Debug\EntityFramework.xml
+C:\Users\dorat\source\repos\socialkeeper2therepo\Server\ClassLibrary-SocialKeeper\ClassLibrary-SocialKeeper\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\dorat\source\repos\socialkeeper2therepo\Server\ClassLibrary-SocialKeeper\ClassLibrary-SocialKeeper\obj\Debug\ClassLibrary-SocialKeeper.csproj.AssemblyReference.cache
+C:\Users\dorat\source\repos\socialkeeper2therepo\Server\ClassLibrary-SocialKeeper\ClassLibrary-SocialKeeper\obj\Debug\ClassLibrary-SocialKeeper.csproj.CoreCompileInputs.cache
+C:\Users\dorat\source\repos\socialkeeper2therepo\Server\ClassLibrary-SocialKeeper\ClassLibrary-SocialKeeper\obj\Debug\ClassLibrary-SocialKeeper.csproj.CopyComplete
+C:\Users\dorat\source\repos\socialkeeper2therepo\Server\ClassLibrary-SocialKeeper\ClassLibrary-SocialKeeper\obj\Debug\ClassLibrary-SocialKeeper.dll
+C:\Users\dorat\source\repos\socialkeeper2therepo\Server\ClassLibrary-SocialKeeper\ClassLibrary-SocialKeeper\obj\Debug\ClassLibrary-SocialKeeper.pdb

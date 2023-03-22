@@ -35,8 +35,6 @@ namespace ClassLibrary_SocialKeeper
         public string city { get; set; }
         public string gender { get; set; }
         public string imageUri { get; set; }
-        public string GoogleID { get; set; }
-        public string MicrosoftID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblFavoriteContact> tblFavoriteContacts { get; set; }
