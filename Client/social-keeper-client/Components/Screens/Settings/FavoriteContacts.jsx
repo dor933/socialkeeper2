@@ -14,228 +14,355 @@ import {
 import * as Contacts from "expo-contacts";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Octicons } from "@expo/vector-icons";
+import {
+  useFonts,
+  NunitoSans_200ExtraLight,
+  NunitoSans_300Light,
+  NunitoSans_400Regular,
+  NunitoSans_600SemiBold,
+  NunitoSans_700Bold,
+  NunitoSans_800ExtraBold,
+  NunitoSans_900Black,
+} from "@expo-google-fonts/nunito-sans";
+import axios from "axios";
+//import popover from metarial ui
+
+
+
+
 
 export default function FavoriteContacts({ navigation }, props) {
   const [contacts, setContacts] = useState([]);
-  const [favorites, setFavorites] = useState(new Set());
-  const [search, setSearch] = useState("");
+  const [filteredContacts, setFilteredContacts] = useState([]);
+  const [alreadymembers, setAlreadyMembers] = useState([]);
+  
+
+  let [fontsLoaded] = useFonts({
+    NunitoSans_200ExtraLight,
+    NunitoSans_300Light,
+    NunitoSans_400Regular,
+    NunitoSans_600SemiBold,
+    NunitoSans_700Bold,
+    NunitoSans_800ExtraBold,
+    NunitoSans_900Black,
+  });
+
+
+
+
+
   //this is for loading the contacts from the phone and setting them to the contacts state
+
   useEffect(() => {
-    const loadContacts = async () => {
-      const { status } = await Contacts.requestPermissionsAsync();
-      if (status === "granted") {
-        const { data } = await Contacts.getContactsAsync();
-        setContacts(data);
-      }
-    };
+    
     loadContacts();
   }, []);
 
-  //this is for toggling favorite contacts, it will add or remove the contact from the favorites list
-  const toggleFavorite = (id) => {
-    const updatedFavorites = new Set(favorites);
-    if (updatedFavorites.has(id)) {
-      updatedFavorites.delete(id);
-    } else {
-      updatedFavorites.add(id);
-    }
-    setFavorites(updatedFavorites);
-  };
-  //this is the function that renders each contact
-  const renderItem = ({ item }) => {
-    const isFavorite = favorites.has(item.id);
+ 
+  
+
+  async function loadContacts() {  
+    const { status } = await Contacts.requestPermissionsAsync();
+  if (status === "granted") {
+    const { data } = await Contacts.getContactsAsync();
+    setContacts(data);
+    setFilteredContacts(data);
+    console.log(contacts);
+    //create an array of contacts with a name and phone number
+    const contactList =  data.map((contact) => {
+
+      let contacttoreturnt={
+        userName: contact.name,
+        phonenumbers:[]
+      }
+
+      for(const phonenumber in contact.phoneNumbers){
+
+        if(typeof contact.phoneNumbers[phonenumber].number != 'string'){
+          continue;
+        }
+                
+
+        contacttoreturnt.phonenumbers.push(contact.phoneNumbers[phonenumber].number);
+        
+      }
+      
+      
+      return contacttoreturnt;
+       
+  }
+  
+  
+  );
+
+  console.log(contactList);
+
+  
+  const already= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/getexistingmembers', contactList);
+  console.log(already.data);
+  setAlreadyMembers(already.data);
+  console.log(alreadymembers.length);
+
+  // here we need to send the contactList to the backend and get back the already members
+    
+}
+  }
+
+
+  const renderfavoriteItem = ({ item }) => {
     return (
-      <TouchableOpacity onPress={() => toggleFavorite(item.id)}>
-        <View
-          style={[styles.contactRow, isFavorite && styles.favoriteContactRow]}
-        >
-          <View style={styles.contactInfo}>
-            {item.name && <Text style={styles.contactName}>{item.name}</Text>}
-            {item.phoneNumbers && item.phoneNumbers[0] && (
-              <Text style={styles.contactPhone}>
-                {item.phoneNumbers[0].number}
-              </Text>
-            )}
-          </View>
-          <Octicons
-            style={{
-              position: "absolute",
-              right: 0,
-              marginRight: Dimensions.get("window").width * 0.05,
-            }}
-            name="person-add"
-            size={24}
-            color={isFavorite ? "red" : "black"}
-          />
-        </View>
+      <View style={[styles.contactRowfavo]}>
+        <Image source={{uri: item.imageUri}} style={styles.contactImage} />
+        <View style={{left:20}}>
+        <Text style={styles.contactName}>{item.userName}</Text>
+      {item.phonenumbers && item.phonenumbers[0] && (
+        <Text style={styles.contactPhone}>{item.phonenumbers[0]}</Text>
+      )}
+      </View>
+
+        {/* <TouchableOpacity style={styles.Iconoption} onPress={() => navigation.navigate('AddContact', {id: item.id})}> */}
+      {/* above is an example for tochable opactiy with function */}
+
+      <TouchableOpacity style={styles.Iconoption} >
+      <Image source={require('../../../assets/Images/Contacts/Iconopt.png')}  />
       </TouchableOpacity>
-    );
-  };
+
+      </View> 
+    ) 
+  }
+
+const renderItem = ({ item }) => {
+  return (
+    <View style={styles.contactRow}>
+      <Text style={styles.contactName}>{item.name}</Text>
+      {item.phoneNumbers && item.phoneNumbers[0] && (
+        <Text style={styles.contactPhone}>{item.phoneNumbers[0].number}</Text>
+      )}
+
+    
+
+      <TouchableOpacity style={styles.Iconoption} >
+      <Image source={require('../../../assets/Images/Contacts/Iconopt.png')}  />
+      </TouchableOpacity>
+      
+    </View>
+  );
+};
+
+
+
+
+
+
+
 
   //this is for filtering the contacts,filters by name and sorts the favorites to the top
-  const filteredContacts = contacts
-    .filter((contact) => {
-      const contactName = contact.name || "";
-      //throw the contact that the name is null
-      if (contactName === "") {
-        return false;
-      }
-      //thorow the the phone number is null
-      if (contact.phoneNumbers === null) {
-        return false;
-      }
+  
 
-      return contactName.toLowerCase().includes(search.toLowerCase());
-    })
-    .sort((a, b) => {
-      const aIsFavorite = favorites.has(a.id);
-      const bIsFavorite = favorites.has(b.id);
-      if (aIsFavorite && !bIsFavorite) {
-        return -1;
-      }
-      if (!aIsFavorite && bIsFavorite) {
-        return 1;
-      }
-      return 0;
-    });
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.logo}>
-        <Image
-          style={styles.logo}
-          source={require('../assets/images/RandomImagessocial-keeper-low-resolution-logo-color-on-transparent-background.png')}
-        />
+      <View style={styles.Title}>
+        <Text style={styles.Titletext}> Your Contacts </Text>
       </View>
-      <View style={styles.desc}>
-        <Text style={styles.descText}>Choose your favorite contacts</Text>
-      </View>
-      <View style={styles.searchBar}>
-        <MaterialIcons
-          style={styles.searchIcon}
-          name="search"
-          size={24}
-          color="gray"
-        />
+      <View style={{
+        width: Dimensions.get('window').width - 40,
+        height: 43,
+        backgroundColor: '#FFFFFF',
+        borderRadius: 20,
+        paddingLeft: 20,
+        paddingRight: 20,
+        fontSize: 14,
+        lineHeight: 19,
+        opacity: 0.5,
+        borderRadius: 12,
+        shadowColor: '#FFFFFF',
+        shadowOffset: {
+          width: 0,
+          height: 0,
+        },
+        shadowOpacity: 0.05,
+        shadowRadius: 40,
+        elevation: 5,
+        top: 0,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        color:'black',
+      }}> 
+      <MaterialIcons name="search" size={24} color="grey" style={styles.searchIcon}  />
+      
         <TextInput
-          style={styles.searchInput}
-          placeholder="Search"
-          value={search}
-          onChangeText={(text) => setSearch(text)}
-        />
-        {search === "" ? null : (
-          <MaterialIcons
-            onPressIn={() => setSearch("")}
-            onPress={() => setSearch("")}
-            name="close"
-            size={24}
-            color="gray"
-            style={styles.closeIcon}
-          />
-        )}
+        style={{
+          height: 40,
+          borderColor: "gray",
+          borderWidth: 1,
+          width: Dimensions.get('window').width - 40,
+          top: 0,
+          height: 43,
+          backgroundColor: '#FFFFFF',
+          borderRadius: 20,
+          paddingLeft: 40,
+          paddingRight: 20,
+          fontSize: 14,
+          lineHeight: 19,
+          borderColor: "rgba(128, 128, 128, 0.5)",
+          backgroundColor: 'rgba(255, 255, 255, 0.5)', // Adjust the backgroundColor color with transparency
+          borderRadius: 12,
+          color:'black',
+   
+          
+
+
+       
+
+        }}
+        placeholder="Search"
+        onChangeText={(text) => {
+          setFilteredContacts(
+            contacts.filter((i) =>
+              i.name.toLowerCase().includes(text.toLowerCase())
+            )
+          );
+        }}
+        
+          
+  
+      />
+
+
       </View>
-      {/* //this is the list of contacts, first on the list will be the favorite */}
+
+     <View style={{flex:1}}>
+      
+     { alreadymembers.length > 0 && (
+    <View>
+      <Text style={styles.alreadymemberscss}>Already Members</Text>
       <FlatList
+        data={alreadymembers}
+        renderItem={renderfavoriteItem}
+        keyExtractor={(item) => item.id}
+        extraData={alreadymembers}
+      />
+    </View>
+  )}
+        
+
+    
+
+      <View style={{marginTop:15}}>
+      <Text style={styles.alreadymemberscss}>Invite to join</Text>
+
+      <FlatList 
         data={filteredContacts}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
+        extraData={filteredContacts}
       />
+      </View>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "white",
-    alignItems: "center",
-  },
-  desc: {
-    height: Dimensions.get("window").height * 0.07,
-  },
-  descText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#ff0000",
-  },
-  logo: {
-    width: Dimensions.get("window").width * 0.5,
-    height: Dimensions.get("window").height * 0.1,
-    resizeMode: "contain",
-    marginTop: Dimensions.get("window").height * 0.01,
-    marginBottom: Dimensions.get("window").height * 0.03,
-  },
-
-  searchBar: {
-    marginBottom: Dimensions.get("window").height * 0.01,
-    height: Dimensions.get("window").height * 0.05,
-    paddingHorizontal: 16,
-    width: Dimensions.get("window").width * 0.85,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderRadius: 16,
-    backgroundColor: "#eeeeee",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 0.4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 2,
-    elevation: 1,
-    //
-    position: "relative",
-  },
-  searchInput: {
-    fontSize: 14,
-    width: Dimensions.get("window").width * 0.9,
-    alignItems: "center",
-    justifyContent: "center",
-    textAlign: "left",
-    left: 0,
-    marginLeft: Dimensions.get("window").width * 0.05,
-  },
-  searchIcon: {
-    position: "absolute",
-    right: 0,
-    marginRight: Dimensions.get("window").width * 0.77,
-  },
-  closeIcon: {
-    position: "absolute",
-    right: 0,
-    marginRight: Dimensions.get("window").width * 0.05,
-  },
-
+  
+    flex:1,
+    marginTop: 40,
+  } ,
   contactRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginHorizontal: Dimensions.get("window").width * 0.05,
-    marginVertical: Dimensions.get("window").height * 0.01,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    width: Dimensions.get("window").width * 0.85,
-    borderRadius: 10,
-    backgroundColor: "white",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 0.4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 2,
-    elevation: 1,
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+    width: Dimensions.get('window').width,
   },
-  contactInfo: {},
+  contactRowfavo: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+    width: Dimensions.get('window').width,
+    flexDirection: 'row',
+  },
   contactName: {
-    fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
+    textAlign: 'left',
+    fontStyle:'normal',
+    fontWeight:"600",
+    fontsize:14,
+    lineHeight:19,
+    color:'#333333',
+    marginBottom: 5,
+    fontFamily: "NunitoSans_400Regular",
+  },
+  
+  alreadymemberscss: {
+    fontFamily:"NunitoSans_600SemiBold",
+    fontStyle:"normal",
+    fontWeight:"600",
+    fontSize:14,
+    lineHeight:19,
+    color:"#333333",
+    textShadowColor:  'rgba(0, 0, 0, 0.25)',
+    textShadowRadius: 2,
+    top:10,
+    marginBottom: 15,
+    textAlign: 'left',
+    marginLeft: 20,
+    
+    
+  },
+
+  searchIcon:{
+    position: 'absolute',
+    left: 30,
   },
   contactPhone: {
-    color: "gray",
+    fontSize: 12,
+    color:'#333333',
+    opacity: 0.5,
+    textAlign: 'left',
+    fontWeight:"600",
+    lineHeight:16,
+    fontFamily: "NunitoSans_300Light",
   },
-  favoriteContactName: {
-    color: "red",
-    fontWeight: "bold",
+  Iconoption: {
+    position: 'absolute',
+    width: 24,
+    height: 20,
+    left: 330,
+    top: 30,
+    opacity: 0.3,
+
+    
   },
-  favoriteContactPhone: {
-    color: "red",
+
+  contactImage : {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginLeft: 0,
+    top: 0,
+    right: 0,
   },
-  favoriteContactRow: {
-    backgroundColor: "#FFC0CB",
+
+  Title: {
+    width: Dimensions.get('window').width,
+    height: 80,
+    top:24,
+ 
   },
-});
+
+  Titletext: {
+    fontSize: 24,
+    fontweight: "800",
+    color: "#333333",
+    lineHeight: 33,
+    textAlign: 'right',
+    marginRight: 5,
+    fontFamily: "NunitoSans_600SemiBold",
+    //should be "nunito"
+}
+}
+);
+  
