@@ -19,13 +19,14 @@ export default function DatePickerComponent() {
         cancelBtnText="Cancel"
         customStyles={{
           dateIcon: {
-            //display: 'none',
+            display: 'none',
             position: 'absolute',
             left: 0,
             top: 4,
             marginLeft: 0
           },
           dateInput: {
+            borderWidth: 0,
             position: 'absolute',
             marginLeft: 36,
             height: 50,
@@ -33,7 +34,6 @@ export default function DatePickerComponent() {
             left: 0,
           }
         }}
-
         onDateChange={(date) => {
           setDate(date);
         }}

@@ -17,19 +17,27 @@ import ImageViewer from "../../CompsToUse/ImageViewer";
 
 export default function CreateProfile() {
   const [selectedImage, setSelectedImage] = useState(null);
-  const placeHolderImage = require("../Profile/avatar-user.png");
+  const placeHolderImage = require("..//..///../assets//Images///RandomImages/avatar-user.png");
+
 
   //Pick image from gallery function (expo)
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       quality: 1,
+      allowsMultipleSelection: false,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      aspect: [4, 3],
+      allowsEditing: true,
+
+
     });
 
-    if (!result.canceled) {
-      console.log(result);
+    if (result.canceled) {
+      Alert.alert("Image upload canceled");
     } else {
       setSelectedImage(result.assets[0].uri);
+      console.log(result.assets[0].uri);
     }
   };
 
@@ -45,11 +53,8 @@ export default function CreateProfile() {
       <Text style={styles.text}>Create Your Profile</Text>
 
       {/* Photo viewer component */}
-      <ImageViewer
-        placeholderImageSource={placeHolderImage}
-        selectedImage={selectedImage}
+      <ImageViewer placeholderImageSource={placeHolderImage} selectedImage={selectedImage}
       />
-      {/* To insert avatar image - must use matirial UI or something equal .. */}
 
       {/* Button to chnoose image from gallery */}
       <Button
@@ -75,8 +80,8 @@ export default function CreateProfile() {
         }}
         containerStyle={{
           marginHorizontal: 50,
-          width: 40,
-          height: 40,
+          width: 35,
+          height: 35,
           marginVertical: 10,
           top: 200,
           left: 165,
@@ -93,17 +98,24 @@ export default function CreateProfile() {
       </View>
       {/* Birth date - must use matirial UI or something equal ..  */}
       <View style={styles.birthdayDate}>
-        <DatePickerComponent></DatePickerComponent>
-      </View>
-
-      {/* Gender - must use matirial UI or something equal ..  */}
-      <View style={styles.gender}>
-        <Input
+      <Input
           placeholder="Gender"
           leftIcon={{ type: "font-awesome", name: "venus-mars" }}
           style={styles.icons}
         />
+                <DatePickerComponent></DatePickerComponent>
+
       </View>
+      
+
+      {/* Gender - must use matirial UI or something equal ..  */}
+      <View style={styles.gender}>
+        <Input
+          leftIcon={{ type: "font-awesome", name: "calendar" }}
+          style={styles.icons}
+        />
+      </View>
+      
 
       {/* Address? - to check if relevant - must use matirial UI or something equal ..  */}
       <View>
@@ -131,7 +143,6 @@ export default function CreateProfile() {
           },
         }}
         titleStyle={{
-          fontFamily: "Inter",
           fontStyle: "normal",
           fontWeight: "bold",
           fontSize: 16,
@@ -143,7 +154,7 @@ export default function CreateProfile() {
           width: 200,
           height: 60,
           marginVertical: 10,
-          top: 650,
+          top: 530,
           left: 50,
         }}
         onPress={() => Alert.alert("Confirm button pressed")}
@@ -192,7 +203,7 @@ const styles = StyleSheet.create({
     width: 313,
     height: 61,
     left: 59,
-    top: 420,
+    top: 400,
   },
 
   //CSS for birthday date
@@ -201,7 +212,7 @@ const styles = StyleSheet.create({
     width: 313,
     height: 61,
     left: 56,
-    top: 490,
+    top: 460,
   },
 
   //CSS for gender
@@ -210,7 +221,7 @@ const styles = StyleSheet.create({
     width: 313,
     height: 61,
     left: 56,
-    top: 540,
+    top: 520,
   },
   //CSS for address
   address: {
@@ -218,7 +229,7 @@ const styles = StyleSheet.create({
     width: 313,
     height: 61,
     left: 56,
-    top: 530,
+    top: 420,
   },
   confirmBtn: {
     width: 174,
