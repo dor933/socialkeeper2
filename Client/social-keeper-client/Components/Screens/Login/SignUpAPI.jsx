@@ -9,11 +9,11 @@ function SignUpAPI() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.elipseTop}></View>
       
-      {/* Connect text */}
+      {/* Sign Up  text */}
       <Text style={styles.text}>Sign Up</Text>
       <Image style={styles.logo} source={require('../../../assets/Images/RandomImages/social-keeper-low-resolution-logo-color-on-transparent-background.png')} />
 
-      {/* Login with google button */}
+      {/* Login with google button - to check if put in component? */}
       <TouchableOpacity>
         <View style={styles.container}>
           <Image style={styles.googleLogo} source={require('../../../assets/Images/Logos/GoogleLogo.png')} ></Image>
@@ -21,7 +21,7 @@ function SignUpAPI() {
         </View>
       </TouchableOpacity>
 
-      {/* Login with outlook button */}
+      {/* Login with outlook button - to check if put in component? */}
       <TouchableOpacity>
         <View style={styles.container2}>
           <Image style={styles.outLookLogo} source={require('../../../assets/Images/Logos/OutlookLogo.png')} ></Image>
@@ -29,7 +29,7 @@ function SignUpAPI() {
         </View>
       </TouchableOpacity>
 
-      {/* Already member qusetion */}
+      {/* Already member qusetion - navigate to Sign in screen*/}
       <View>
           <Text style={styles.textAlreadyMember}>Already member?</Text>
           <TouchableOpacity>
@@ -46,7 +46,7 @@ export default SignUpAPI
 
 
 
-
+//Styles for sign up screen
 const styles = StyleSheet.create({
 
   //connect text

@@ -9,11 +9,11 @@ function SignInAPI() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.elipseTop}></View>
 
-      {/* Connect text */}
+      {/* Sign In text */}
       <Text style={styles.text}>Sign In</Text>
       <Image style={styles.logo} source={require('../../../assets/Images/RandomImages/social-keeper-low-resolution-logo-color-on-transparent-background.png')} />
 
-      {/* Login with google button */}
+      {/* Login with google button - to check if put in component? */}
       <TouchableOpacity>
         <View style={styles.container}>
           <Image style={styles.googleLogo} source={require('../../../assets/Images/Logos/GoogleLogo.png')} ></Image>
@@ -21,7 +21,7 @@ function SignInAPI() {
         </View>
       </TouchableOpacity>
 
-      {/* Login with outlook button */}
+      {/* Login with outlook button - to check if put in component? */}
       <TouchableOpacity>
         <View style={styles.container2}>
           <Image style={styles.outLookLogo} source={require('../../../assets/Images/Logos/OutlookLogo.png')} ></Image>
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     color: '#E04747',
   },
 
-  //container for google button
+  //Container for google button
   container2: {
     position: 'absolute',
     width: 306,
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
 
-  //container for outlook button
+  //Container for outlook button
   container: {
     position: 'absolute',
     width: 306,
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
 
-  //container for safe area
+  //Container for safe area
   safeArea: {
     position: 'relative',
     width: 430,
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   },
 
 
-  //text for google button
+  //Text for google button
   textForButton: {
     position: 'absolute',
     width: 127,
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     color: 'rgba(0, 0, 0, 0.4)',
   },
 
-  //text for sign up suggestion
+  //Text for sign up suggestion
   refToSignIn: {
     position: 'absolute',
     width: 195,
