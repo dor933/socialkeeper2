@@ -3,17 +3,72 @@ import React, { useState, useEffect } from 'react'
 import { Input } from '@rneui/themed';
 import DatePickerComponent from '../../CompsToUse/DatePickerComponent';
 import { Button } from '@rneui/themed';
+import * as ImagePicker from 'expo-image-picker';
+import ImageViewer from '../../CompsToUse/ImageViewer';
+import placeHolderImage from '../.././assets//Images//RandomImages/avatar-user.png';
+
+
+
 
 
 
 export default function CreateProfile() {
+  const [selectedImage, setSelectedImage] = useState(null);
+
+
+  const pickImageAsync = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      console.log(result);
+    } else {
+      alert('You did not select any image.');
+    }
+  };
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <Image style={styles.logo} source={require('../../../assets/Images/RandomImages/social-keeper-low-resolution-logo-color-on-transparent-background.png')} />
       <Text style={styles.text}>Create Your Profile</Text>
-
+      <ImageViewer
+          placeholderImageSource={placeHolderImage}
+          selectedImage={selectedImage}
+        />
       {/* To insert avatar image - must use matirial UI or something equal .. */}
+      <Button theme="primary"
+       title="+"
+       buttonStyle={{
+        backgroundColor: 'grey',
+        borderRadius: 25,
+        shadowOpacity: 0.05,
+        shadowRadius: 50,
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 0,
+        },
+      }}
+      titleStyle={{
+        fontStyle: 'normal',
+        fontWeight: 'bold',
+        fontSize: 16,
+        lineHeight: 19,
+        letterSpacing: 0.1
+      }}
+      containerStyle={{
+        marginHorizontal: 50,
+        width:40,
+        height: 40,
+        marginVertical: 10,
+        top: 250,
+        left: 150
+      }}
+      
+      onPress={pickImageAsync} />
 
       {/* UserName - must use matirial UI or something equal .. */}
       <View style={styles.userName}>
@@ -38,13 +93,13 @@ export default function CreateProfile() {
 
       {/* Address? - to check if relevant - must use matirial UI or something equal ..  */}
       <View>
-      <View style={styles.address}>
-        <Input
-          placeholder='Address'
-          leftIcon={{ type: 'font-awesome', name: 'map' }}
-          style={styles.icons}
-        />
-      </View>
+        <View style={styles.address}>
+          <Input
+            placeholder='Address'
+            leftIcon={{ type: 'font-awesome', name: 'map' }}
+            style={styles.icons}
+          />
+        </View>
 
       </View>
       <Button
@@ -62,19 +117,21 @@ export default function CreateProfile() {
             height: 0,
           },
         }}
-        titleStyle={{  fontFamily: 'Inter',
-        fontStyle: 'normal',
-        fontWeight: 'bold',
-        fontSize: 16,
-        lineHeight: 19,
-        letterSpacing: 0.1}}
+        titleStyle={{
+          fontFamily: 'Inter',
+          fontStyle: 'normal',
+          fontWeight: 'bold',
+          fontSize: 16,
+          lineHeight: 19,
+          letterSpacing: 0.1
+        }}
         containerStyle={{
           marginHorizontal: 50,
           width: 200,
           height: 60,
           marginVertical: 10,
-          top:650,
-          left:50
+          top: 650,
+          left: 50
         }}
         onPress={() => Alert.alert('Confirm button pressed')}
       />
@@ -99,7 +156,7 @@ const styles = StyleSheet.create({
     width: 295,
     height: 155,
     left: 60,
-    top: 126,
+    top: 35,
   },
   //CSS for the title text
   text: {
@@ -107,7 +164,7 @@ const styles = StyleSheet.create({
     width: 220,
     height: 29,
     left: 95,
-    top: 299,
+    top: 200,
     fontStyle: 'normal',
     fontWeight: '800',
     fontSize: 24,
@@ -123,7 +180,7 @@ const styles = StyleSheet.create({
     width: 313,
     height: 61,
     left: 59,
-    top: 350
+    top: 420
   },
 
   //CSS for birthday date
@@ -132,7 +189,7 @@ const styles = StyleSheet.create({
     width: 313,
     height: 61,
     left: 56,
-    top: 420
+    top: 490
   },
 
   //CSS for gender 
@@ -141,7 +198,7 @@ const styles = StyleSheet.create({
     width: 313,
     height: 61,
     left: 56,
-    top: 470
+    top: 540
   },
   //CSS for address
   address: {
@@ -155,5 +212,17 @@ const styles = StyleSheet.create({
     width: 174,
     height: 60,
     backgroundColor: '#E04747',
+  },
+  //CSS for imagePicker 
+  imagePicker: {
+    position: 'absolute',
+    width: 200,
+    height: 200,
+    left: 100,
+    top: 100,
+    borderRadius: 100,
+    borderWidth: 2,
+    borderColor: 'black',
+    backgroundColor: 'white',
   },
 });
