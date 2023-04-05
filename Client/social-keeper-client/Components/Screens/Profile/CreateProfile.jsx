@@ -7,21 +7,69 @@ import {
   Alert,
   TouchableOpacity,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Input } from "@rneui/themed";
 import DatePickerComponent from "../../CompsToUse/DatePickerComponent";
 import { Button } from "@rneui/themed";
 import * as ImagePicker from "expo-image-picker";
 import ImageViewer from "../../CompsToUse/ImageViewer";
+//import the use context component
+import {RegistContext} from "../../../RegistContext";
 
 
-export default function CreateProfile() {
-  const [selectedImage, setSelectedImage] = useState(null);
+export default function CreateProfile({navigation}) {
+  
+  const {selectedImage, setSelectedImage} = useContext(RegistContext);
+  const {personaldetails, setPersonalDetails} = useContext(RegistContext);
+  
   const placeHolderImage = require("..//..///../assets//Images///RandomImages/avatar-user.png");
+  const placeHolderImageuri= Image.resolveAssetSource(placeHolderImage).uri;
+  //get the uri of the selected image
+  
+
+  useEffect (() => {
+    //set the placeholder image as the selected image
+    setSelectedImage(placeHolderImageuri);
+
+  },[]);
+
 
 
   //Pick image from gallery function (expo)
-  const pickImageAsync = async () => {
+  const Choosefunctionalty = () => {
+   
+
+
+    Alert.alert(
+      "Select Image",
+      "Choose an image from your gallery",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "destructive",
+          
+
+
+        },
+       
+        {
+          text: "Choose from gallery",
+          onPress: async () => takeimagefromgallery(),
+          style: "default",
+        },
+      ],
+      { cancelable: false }
+    );
+
+ 
+  };
+
+
+
+
+  const takeimagefromgallery = async () => {
+    
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       quality: 1,
@@ -29,8 +77,6 @@ export default function CreateProfile() {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       aspect: [4, 3],
       allowsEditing: true,
-
-
     });
 
     if (result.canceled) {
@@ -41,7 +87,34 @@ export default function CreateProfile() {
     }
   };
 
+  const hasUndefinedOrNullField = (personalobj) => {
+
+    console.log("checking if object is undefined or null");
+    console.log(personalobj);
+
+    if(typeof personalobj == 'undefined' || typeof personalobj == 'null'|| Object.keys(personalobj).length === 0){
+      console.log("object is undefined or null");
+      return true;
+    }
+
+    //run through the personal details object
+  
+    if(personalobj.userName == undefined || personalobj.phoneNumber == undefined || personalobj.birthDate == undefined || personalobj.gender == undefined || personalobj.address==undefined){
+      console.log("object is undefined or null");
+      return true;
+    }
+
+
+   
+    return false;
+  };
+
+  
+
+
   return (
+    <SafeAreaView style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+
     <SafeAreaView style={styles.safeArea}>
       {/* Logo image */}
       <Image
@@ -86,34 +159,53 @@ export default function CreateProfile() {
           top: 200,
           left: 165,
         }}
-        onPress={pickImageAsync}
+        onPress={Choosefunctionalty}
       />
+      
+      <View style={styles.phoneNumber}>
+        <Input
+          onChangeText={(text) => setPersonalDetails({...personaldetails, phoneNumber: text})}
+          placeholder="Phone number"
+          keyboardType="numeric"
+          value={personaldetails.phoneNumber || ''}
+          maxLength={10}
+          leftIcon={{ type: "font-awesome", name: "phone" }}
+          style={styles.icons} />
+      </View>
 
       {/* UserName - must use matirial UI or something equal .. */}
       <View style={styles.userName}>
         <Input
+         onChangeText={(text) => setPersonalDetails({...personaldetails, userName: text})}
           placeholder="User name"
-          leftIcon={{ type: "font-awesome", name: "user" }}
-        />
+          value={personaldetails.userName || ''}
+          leftIcon={{ type: "font-awesome", name: "user" }} />
       </View>
       {/* Birth date - must use matirial UI or something equal ..  */}
       <View style={styles.birthdayDate}>
       <Input
-          placeholder="Gender"
+          onChangeText={(text) => setPersonalDetails({...personaldetails, gender:text})}
+          //need to be only one char allowed
+          placeholder= "gender"
+          value={personaldetails.gender || ''}
+          keyboardType="default"
+          maxLength={1}
           leftIcon={{ type: "font-awesome", name: "venus-mars" }}
           style={styles.icons}
         />
-                <DatePickerComponent></DatePickerComponent>
+
+
 
       </View>
+
+   
       
 
       {/* Gender - must use matirial UI or something equal ..  */}
       <View style={styles.gender}>
-        <Input
-          leftIcon={{ type: "font-awesome", name: "calendar" }}
-          style={styles.icons}
-        />
+
+      <DatePickerComponent />
+
       </View>
       
 
@@ -121,7 +213,9 @@ export default function CreateProfile() {
       <View>
         <View style={styles.address}>
           <Input
-            placeholder="Address"
+            onChangeText={(text) => setPersonalDetails({...personaldetails, address:text})}
+            placeholder="City"
+            value={personaldetails.address || ''}
             leftIcon={{ type: "font-awesome", name: "map" }}
             style={styles.icons}
           />
@@ -157,8 +251,41 @@ export default function CreateProfile() {
           top: 530,
           left: 50,
         }}
-        onPress={() => Alert.alert("Confirm button pressed")}
+        onPress={() => {
+          if(hasUndefinedOrNullField(personaldetails)===true){
+            Alert.alert("Please fill all the fields");
+            return;
+          }
+          else{
+          if(personaldetails.phoneNumber.length < 10 || personaldetails.phoneNumber[0] != '0' || personaldetails.phoneNumber[1] != '5'){
+            Alert.alert("Please enter a valid phone number");
+            return;
+          }
+
+          if(personaldetails.userName.length < 3){
+            Alert.alert("Please enter a valid user name");
+            return;
+          }
+
+          if(personaldetails.gender!='M' && personaldetails.gender!='F'){
+
+            Alert.alert('Gender must be M or F')
+            return;
+
+          }
+
+          if(personaldetails.address.length < 3){
+            Alert.alert("Please enter a valid address");
+            return;
+          }
+          
+
+          console.log(personaldetails);
+          navigation.navigate("PreferredHoobies");
+        }}
+      }
       />
+    </SafeAreaView>
     </SafeAreaView>
   );
 }
@@ -167,11 +294,11 @@ export default function CreateProfile() {
 const styles = StyleSheet.create({
   //CSS for the SafeAreaView
   safeArea: {
-    position: "relative",
+    flex:1,
     width: 430,
-    height: 932,
     backgroundColor: "#FFFFFF",
     borderRadius: 50,
+    top:30
   },
   //CSS for the logo image
   logo: {
@@ -203,7 +330,7 @@ const styles = StyleSheet.create({
     width: 313,
     height: 61,
     left: 59,
-    top: 400,
+    top: 410,
   },
 
   //CSS for birthday date
@@ -212,8 +339,17 @@ const styles = StyleSheet.create({
     width: 313,
     height: 61,
     left: 56,
-    top: 460,
+    top: 470,
   },
+
+  phoneNumber: {
+    position: "absolute",
+    width: 313,
+    height: 61,
+    left: 56,
+    top: 352,
+  },
+
 
   //CSS for gender
   gender: {
@@ -229,7 +365,7 @@ const styles = StyleSheet.create({
     width: 313,
     height: 61,
     left: 56,
-    top: 420,
+    top: 430,
   },
   confirmBtn: {
     width: 174,
