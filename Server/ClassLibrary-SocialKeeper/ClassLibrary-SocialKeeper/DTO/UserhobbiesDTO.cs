@@ -11,5 +11,9 @@ namespace ClassLibrary_SocialKeeper
         public int hobbieNum { get; set; }
         public string phoneNum1 { get; set; }
         public string rank { get; set; }
+
+        public string hobbiename { get; set; }
+
+        public string hobbieimage { get; set; }
     }
 }

@@ -14,6 +14,8 @@ namespace ClassLibrary_SocialKeeper
         public string city { get; set; }
         public string gender { get; set; }
         public string imageUri { get; set; }
+
+        public string email { get; set; }
         public virtual ICollection<UserhobbiesDTO> tblUserHobbiesDTO { get; set; }
 
     }

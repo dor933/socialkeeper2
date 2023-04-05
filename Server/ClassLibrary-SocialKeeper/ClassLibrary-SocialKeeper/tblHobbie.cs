@@ -26,6 +26,7 @@ namespace ClassLibrary_SocialKeeper
     
         public int hobbieNum { get; set; }
         public string hobbieName { get; set; }
+        public string imageuri { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblFavoriteContact> tblFavoriteContacts { get; set; }

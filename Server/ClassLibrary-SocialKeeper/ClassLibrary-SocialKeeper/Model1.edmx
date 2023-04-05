@@ -56,6 +56,7 @@
           </Key>
           <Property Name="hobbieNum" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="hobbieName" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="imageuri" Type="nvarchar" MaxLength="150" />
         </EntityType>
         <EntityType Name="tblInvite">
           <Key>
@@ -507,6 +508,7 @@
           <NavigationProperty Name="tblSuggestedHobbies" Relationship="Self.fk2tblSuggestedHobbie" FromRole="tblHobbie" ToRole="tblSuggestedHobbie" />
           <NavigationProperty Name="tblUserHobbies" Relationship="Self.fk2tblUserHobbie" FromRole="tblHobbie" ToRole="tblUserHobbie" />
           <NavigationProperty Name="PossibleFavoriteContacts" Relationship="igroup192_prodModel.FK__PossibleF__hobbi__6E01572D" FromRole="tblHobbie" ToRole="PossibleFavoriteContact" />
+          <Property Name="imageuri" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tblInvite">
           <Key>
@@ -1014,6 +1016,7 @@
           <EntitySetMapping Name="tblHobbies">
             <EntityTypeMapping TypeName="igroup192_prodModel.tblHobbie">
               <MappingFragment StoreEntitySet="tblHobbie">
+                <ScalarProperty Name="imageuri" ColumnName="imageuri" />
                 <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
                 <ScalarProperty Name="hobbieName" ColumnName="hobbieName" />
               </MappingFragment>

@@ -10,5 +10,7 @@ namespace ClassLibrary_SocialKeeper
     {
         public int hobbieNum { get; set; }
         public string hobbieName { get; set; }
+        public string imageuri { get; set; }
+
     }
 }
