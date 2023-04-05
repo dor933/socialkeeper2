@@ -160,6 +160,8 @@ namespace WebApplication1.Controllers
                 hobbieDTO.phoneNum1 = item.phoneNum1;
                 hobbieDTO.hobbieNum = item.hobbieNum;
                 hobbieDTO.rank = item.rank;
+                tblHobbie ushob = db.tblHobbies.Where(x => x.hobbieNum == item.hobbieNum).FirstOrDefault();
+                hobbieDTO.hobbiename = ushob.hobbieName;
                 userhobbiesDTOs.Add(hobbieDTO);
             }
             usertoret.tblUserHobbiesDTO = userhobbiesDTOs;
@@ -250,6 +252,7 @@ namespace WebApplication1.Controllers
                         Existinguser.gender = usera.gender;
                         Existinguser.city = usera.city;
                         Existinguser.imageUri = usera.imageUri;
+                        Existinguser.email = usera.email;
                         List<UserhobbiesDTO> listuserhobbiesdto = new List<UserhobbiesDTO>();
 
                         foreach (tblUserHobbie hob in usera.tblUserHobbies)
@@ -258,6 +261,9 @@ namespace WebApplication1.Controllers
                             userhobdto.hobbieNum = hob.hobbieNum;
                             userhobdto.phoneNum1 = hob.phoneNum1;
                             userhobdto.rank = hob.rank;
+                            tblHobbie ushob= db.tblHobbies.Where(x => x.hobbieNum == hob.hobbieNum).FirstOrDefault();
+                            userhobdto.hobbiename = ushob.hobbieName;
+                            userhobdto.hobbieimage = ushob.imageuri;
                             listuserhobbiesdto.Add(userhobdto);
                         }
 
@@ -314,6 +320,37 @@ namespace WebApplication1.Controllers
 
         }
 
+        [HttpGet]
+        [Route("api/Default/getallhobbies")]
+
+        public HttpResponseMessage Getallhobbies()
+        {
+            try
+            {
+                List<tblHobbie> listhobbies = db.tblHobbies.ToList();
+                List<tblhobbieDTO> listhobbiesdto = new List<tblhobbieDTO>();
+                foreach (tblHobbie item in listhobbies)
+                {
+                    tblhobbieDTO hobbiedto = new tblhobbieDTO();
+                    hobbiedto.hobbieNum = item.hobbieNum;
+                    hobbiedto.hobbieName = item.hobbieName;
+                    if (item.imageuri != null)
+                    {
+                        hobbiedto.imageuri = item.imageuri;
+                    }
+
+                    listhobbiesdto.Add(hobbiedto);
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, listhobbiesdto);
+            }
+            catch (Exception ex)
+            {
+
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+
+            }
+        }
+
         private async Task<string> UploadToGoogleCloudStorage(byte[] fileContents, string contentType, string remoteFilePath)
         {
             MemoryStream fileStream = new MemoryStream(fileContents);
@@ -366,11 +403,19 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                tblUser checkifuser = db.tblUsers.Where(u => u.phoneNum1 == Mynewuser.phoneNum1).FirstOrDefault();
-                if (checkifuser != null)
+                var checkifuserphone = db.tblUsers.Where(u => u.phoneNum1 == Mynewuser.phoneNum1).FirstOrDefault();
+                var checkifusername= db.tblUsers.Where(u => u.userName == Mynewuser.userName).FirstOrDefault();
+                if (checkifuserphone != null)
                 {
-                    return "There is already a user";
+                    return "Phone Number already exists";
                 }
+
+                else if (checkifusername != null)
+                {
+                    return "User name already exists";
+                }
+                
+
                 else
                 {
                     tblNewUser newuserif = db.tblNewUsers.Where(x => x.phoneNum1 == Mynewuser.phoneNum1).FirstOrDefault();
