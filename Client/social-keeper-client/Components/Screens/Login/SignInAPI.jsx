@@ -1,7 +1,55 @@
 import React from 'react'
 import { SafeAreaView, Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native'
+import * as Google from "expo-auth-session/providers/google";
+import * as AuthSession from 'expo-auth-session';
+import { makeRedirectUri, useAuthRequest, useAutoDiscovery } from 'expo-auth-session';
+import { useEffect,useState } from "react";
+
 
 function SignUpAPI() {
+
+  const [token, setToken] = useState("");
+  const [userInfo, setUserInfo] = useState(null);
+  const RedirectUrl=AuthSession.makeRedirectUri({
+    useProxy:true,
+    
+  });
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    clientId: '923332378077-0gf55cn5cq0dvpahm5bk6vetdaigl7cr.apps.googleusercontent.com',
+    
+    // Use expo's web browser
+
+    useProxy: true,
+    redirectUri: RedirectUrl,
+    
+
+  });
+
+  useEffect(() => {
+    console.log('into edffect');
+    if (response?.type === "success") {
+      console.log('got here');
+      console.log(response);
+      setToken(response.authentication.accessToken);
+      getUserInfo();
+    }
+  }, [response,token]);
+
+  const getUserInfo = async () => {
+    try {
+      const response = await fetch(
+        "https://www.googleapis.com/userinfo/v2/me",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const user = await response.json();
+      setUserInfo(user);
+      console.log(user);
+    } catch (error) {
+      // Add your own error handler here
+    }
+  };
 
 
   return (
@@ -9,14 +57,14 @@ function SignUpAPI() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.elipseTop}></View>
       {/* Connect text */}
-      <Text style={styles.text}>Sign Up</Text>
+      <Text style={styles.text}>Sign In</Text>
       <Image style={styles.logo} source={require('../../../assets/Images/RandomImages/social-keeper-low-resolution-logo-color-on-transparent-background.png')} />
 
       {/* Login with google button */}
-      <TouchableOpacity>
+      <TouchableOpacity onPress={async() => promptAsync()}>
         <View style={styles.container}>
           <Image style={styles.googleLogo} source={require('../../../assets/Images/Logos/GoogleLogo.png')} ></Image>
-          <Text style={styles.textForButton}>Use Google</Text>
+          <Text style={styles.textForButton}>Sign in with Google</Text>
         </View>
       </TouchableOpacity>
 
@@ -24,7 +72,7 @@ function SignUpAPI() {
       <TouchableOpacity>
         <View style={styles.container2}>
           <Image style={styles.outLookLogo} source={require('../../../assets/Images/Logos/OutlookLogo.png')} ></Image>
-          <Text style={styles.textForButton}>Use Outlook</Text>
+          <Text style={styles.textForButton}>Sign in with Outlook</Text>
         </View>
       </TouchableOpacity>
 
@@ -112,7 +160,7 @@ const styles = StyleSheet.create({
   //text for google button
   textForButton: {
     position: 'absolute',
-    width: 127,
+    width: 150,
     height: 19,
     left: 90,
     top: 22,
@@ -147,9 +195,9 @@ const styles = StyleSheet.create({
   //CSS for elipse on buttom
   elipseButtom: {
     position: 'absolute',
-    width: 505,
+    width: 380,
     height: 364,
-    left: 100,
+    left:212,
     top: 650,
     borderRadius: 200,
     backgroundColor: '#FFAEAE',

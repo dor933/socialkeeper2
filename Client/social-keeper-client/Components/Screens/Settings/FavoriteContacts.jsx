@@ -9,233 +9,955 @@ import {
   Dimensions,
   SafeAreaView,
   Image,
-  Animated,
+  Modal
 } from "react-native";
 import * as Contacts from "expo-contacts";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Octicons } from "@expo/vector-icons";
+import {
+  useFonts,
+  NunitoSans_200ExtraLight,
+  NunitoSans_300Light,
+  NunitoSans_400Regular,
+  NunitoSans_600SemiBold,
+  NunitoSans_700Bold,
+  NunitoSans_800ExtraBold,
+  NunitoSans_900Black,
+} from "@expo-google-fonts/nunito-sans";
+import axios from "axios";
+import { Overlay, Icon } from '@rneui/themed';
+import * as SMS from 'expo-sms';
+import call from 'react-native-phone-call'
+import * as Linking from 'expo-linking';
+
+
+
+
+
+
+
+
+//import popover from metarial ui
+
+
+
+
 
 export default function FavoriteContacts({ navigation }, props) {
   const [contacts, setContacts] = useState([]);
-  const [favorites, setFavorites] = useState(new Set());
-  const [search, setSearch] = useState("");
+  const [filteredContacts, setFilteredContacts] = useState([]);
+  const [alreadymembers, setAlreadyMembers] = useState([]);
+  const [isOverlayVisible, setOverlayVisible] = useState(false);
+  const [overlayPosition, setOverlayPosition] = useState({ x: 0, y: 0 });
+  const [selectedContact, setSelectedContact] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+
+
+
+  const handleOpen = (event,item) => {
+    console.log('this is item')
+    console.log(item)
+    const { pageX, pageY } = event.nativeEvent;
+    console.log(pageX, pageY);
+    setOverlayPosition({ x: pageX+200, y: pageY-100 });
+    setSelectedContact(item);
+    setOverlayVisible(true);
+    console.log(selectedContact)
+  };
+
+ 
+
+  
+
+
+  const handleClose = () => {
+    setOverlayVisible(false);
+  };
+
+  let [fontsLoaded] = useFonts({
+    NunitoSans_200ExtraLight,
+    NunitoSans_300Light,
+    NunitoSans_400Regular,
+    NunitoSans_600SemiBold,
+    NunitoSans_700Bold,
+    NunitoSans_800ExtraBold,
+    NunitoSans_900Black,
+  });
+
+
+
+
+
   //this is for loading the contacts from the phone and setting them to the contacts state
+
   useEffect(() => {
-    const loadContacts = async () => {
-      const { status } = await Contacts.requestPermissionsAsync();
-      if (status === "granted") {
-        const { data } = await Contacts.getContactsAsync();
-        setContacts(data);
-      }
-    };
+
+    
+    
     loadContacts();
   }, []);
 
-  //this is for toggling favorite contacts, it will add or remove the contact from the favorites list
-  const toggleFavorite = (id) => {
-    const updatedFavorites = new Set(favorites);
-    if (updatedFavorites.has(id)) {
-      updatedFavorites.delete(id);
+ 
+  async function sendsms(personalsms){
+
+    if(!personalsms){
+    console.log(selectedContact)
+
+
+    const isAvailable = await SMS.isAvailableAsync();
+    if (isAvailable) {
+      // do your SMS stuff here
+      const { result } = await SMS.sendSMSAsync(
+        selectedContact.phoneNumbers[0].number,
+        'You have been invited to join a group on Social Keeper'
+      );
+      console.log(result);
     } else {
-      updatedFavorites.add(id);
+      // misfortune... there's no SMS available on this device
     }
-    setFavorites(updatedFavorites);
-  };
-  //this is the function that renders each contact
-  const renderItem = ({ item }) => {
-    const isFavorite = favorites.has(item.id);
+  }else{
+    const isAvailable = await SMS.isAvailableAsync();
+    console.log(selectedContact)
+    if (isAvailable) {
+      // do your SMS stuff here
+      const { result } = await SMS.sendSMSAsync(
+        selectedContact.phonenumbers[0],
+        'Send your message here'
+      );
+      console.log(result);
+    } else {
+      // misfortune... there's no SMS available on this device
+    }
+  }
+
+  }
+
+  async function whatsappcontact(){
+
+    let url = `whatsapp://send?text=You have been invited to be my friend on Social Keeper&phone=972${selectedContact.phonenumbers[0]}`;
+
+    Linking.openURL(url).then((data) => {
+      console.log('WhatsApp Opened');
+    }).catch(() => {
+      alert('Make sure WhatsApp installed on your device');
+    });
+  }
+
+  async function telegramcontact(){
+
+    let url = `tg://msg?text=You have been invited to be my friend on Social Keeper&phone=972${selectedContact.phonenumbers[0]}`;
+
+
+    Linking.openURL(url).then((data) => {
+      console.log('Telegram Opened');
+    }).catch(() => {
+      alert('Make sure Telegram installed on your device');
+    });
+  }
+  
+  async function mailcomposer(){
+
+  
+    let url = `mailto:doratzabi1@gmail.com?subject=You have been invited to be my friend on Social Keeper&body=You have been invited to be my friend on Social Keeper`;
+    //send the email
+    Linking.openURL(url).then((data) => {
+      console.log('Mail Opened');
+    }).catch(() => {
+      alert('Make sure Mail installed on your device');
+    });
+
+  }
+
+  async function callnumber(){
+ 
+    console.log(selectedContact.phonenumbers[0])
+    const args = {
+      number: selectedContact.phonenumbers[0],
+      prompt: true,
+    }
+    call(args).catch(console.error)
+  }
+       // String value with the number to call
+
+  async function loadContacts() {  
+    const { status } = await Contacts.requestPermissionsAsync();
+  if (status === "granted") {
+    const { data } = await Contacts.getContactsAsync();
+    //add id to each contact
+    for (let i = 0; i < data.length; i++) {
+      data[i].id = i;
+    }
+    setContacts(data);
+    setFilteredContacts(data);
+    console.log(contacts);
+    //create an array of contacts with a name and phone number
+    const contactList =  data.map((contact) => {
+
+      let contacttoreturnt={
+        userName: contact.name,
+        phoneNumbers:[]
+      }
+
+      for(const phonenumber in contact.phoneNumbers){
+
+        if(typeof contact.phoneNumbers[phonenumber].number != 'string'){
+          continue;
+        }
+                
+
+        contacttoreturnt.phoneNumbers.push(contact.phoneNumbers[phonenumber].number);
+        
+      }
+      
+      
+      return contacttoreturnt;
+       
+  }
+  
+  
+  );
+
+  console.log(contactList);
+
+  
+  const already= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/getexistingmembers', contactList);
+  console.log(already.data);
+  //add field that called "addedtofav"  to each contact and set it to false
+  for (let i = 0; i < already.data.length; i++) {
+    already.data[i].addedtofav = false;
+  }
+  setAlreadyMembers(already.data);
+  console.log(alreadymembers.length);
+
+  // here we need to send the contactList to the backend and get back the already members
+    
+}
+  }
+
+
+  const renderfavoriteItem = ({ item }) => {
     return (
-      <TouchableOpacity onPress={() => toggleFavorite(item.id)}>
-        <View
-          style={[styles.contactRow, isFavorite && styles.favoriteContactRow]}
-        >
-          <View style={styles.contactInfo}>
-            {item.name && <Text style={styles.contactName}>{item.name}</Text>}
-            {item.phoneNumbers && item.phoneNumbers[0] && (
-              <Text style={styles.contactPhone}>
-                {item.phoneNumbers[0].number}
-              </Text>
+      <>
+        {!item.addedtofav ? (
+          <View style={[styles.contactRowfavo]}>
+            <Image source={{uri: item.imageUri}} style={styles.contactImage} />
+            <View style={{left:20}}>
+              <Text style={styles.contactName}>{item.userName}</Text>
+              {item.phonenumbers && item.phonenumbers[0] && (
+                <Text style={styles.contactPhone}>{item.phonenumbers[0]}</Text>
+              )}
+            </View>
+            <TouchableOpacity style={styles.Iconoption} onPress={(event) => handleOpen(event,item)}>
+              <Icon
+                name="more-horiz"
+                size={28}
+                color="#000000"
+              />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={[styles.contactRowfavo, {opacity:0.3}]}>
+          <Image source={{uri: item.imageUri}} style={styles.contactImage} />
+          <View style={{left:20}}>
+            <Text style={styles.contactName}>{item.userName}</Text>
+            {item.phonenumbers && item.phonenumbers[0] && (
+              <Text style={styles.contactPhone}>{item.phonenumbers[0]}</Text>
             )}
           </View>
-          <Octicons
-            style={{
-              position: "absolute",
-              right: 0,
-              marginRight: Dimensions.get("window").width * 0.05,
-            }}
-            name="person-add"
-            size={24}
-            color={isFavorite ? "red" : "black"}
-          />
+          <TouchableOpacity style={styles.Iconoption} onPress={(event) => handleOpen(event,item)}>
+            <Icon
+              name="more-horiz"
+              size={28}
+              color="#000000"
+            />
+          </TouchableOpacity>
         </View>
-      </TouchableOpacity>
+        )}
+      </>
     );
+  }
+
+  const addtofavorite = () => {
+    const updatedAlreadyMembers = alreadymembers.map((contact) => {
+      if (contact.phonenumbers[0] === selectedContact.phonenumbers[0]) {
+
+        return { ...contact, addedtofav: true };
+      }
+      return contact;
+    });
+  
+    console.log('Updated already members:', updatedAlreadyMembers);
+    setAlreadyMembers(updatedAlreadyMembers);
+    const newselected= updatedAlreadyMembers.find((contact) => contact.phonenumbers[0] === selectedContact.phonenumbers[0]);
+    console.log(newselected);
+    setSelectedContact(newselected);
+
   };
 
-  //this is for filtering the contacts,filters by name and sorts the favorites to the top
-  const filteredContacts = contacts
-    .filter((contact) => {
-      const contactName = contact.name || "";
-      //throw the contact that the name is null
-      if (contactName === "") {
-        return false;
-      }
-      //thorow the the phone number is null
-      if (contact.phoneNumbers === null) {
-        return false;
-      }
+const renderItem = ({ item }) => {
+  return (
+    <View style={styles.contactRow} >
+      <Text style={styles.contactName}>{item.name}</Text>
+      {item.phoneNumbers && item.phoneNumbers[0] && (
+        <Text style={styles.contactPhone}>{item.phoneNumbers[0].number}</Text>
+      )}
 
-      return contactName.toLowerCase().includes(search.toLowerCase());
-    })
-    .sort((a, b) => {
-      const aIsFavorite = favorites.has(a.id);
-      const bIsFavorite = favorites.has(b.id);
-      if (aIsFavorite && !bIsFavorite) {
-        return -1;
-      }
-      if (!aIsFavorite && bIsFavorite) {
-        return 1;
-      }
-      return 0;
-    });
+    
+
+      <TouchableOpacity style={styles.Iconoption} onPress={(event) => handleOpen(event,item)}>
+          <Icon
+            name="more-horiz"
+            size={28}
+            color="#000000"
+          />
+
+      
+      </TouchableOpacity>
+   
+      
+    </View>
+  );
+};
+
+
+
+
+
+
+
+
+  //this is for filtering the contacts,filters by name and sorts the favorites to the top
+  
+
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.logo}>
-        <Image
-          style={styles.logo}
-          source={require('../assets/images/RandomImagessocial-keeper-low-resolution-logo-color-on-transparent-background.png')}
-        />
+      <View style={styles.Title}>
+        <Text style={styles.Titletext}> My Contacts </Text>
+        <Image source={require('../../../assets/Images/RandomImages/avatar-user.png')} style={styles.myimageprofile} />
       </View>
-      <View style={styles.desc}>
-        <Text style={styles.descText}>Choose your favorite contacts</Text>
+   
+      <View style={styles.headerandsearch}> 
+
+     <View style={{ position: 'relative', width: Dimensions.get('window').width - 40}}>
+
+
+
+     <MaterialIcons name="search" size={24} color="grey" style={{position:'absolute',left:10,top:10}}   />
+
+      <View style={{width:"100%",height:43}}>
+
+      <TextInput
+        style={styles.textinputstyle}
+        placeholder="Search"
+        placeholderTextColor="black"
+        onChangeText={(text) => {
+          setFilteredContacts(
+            contacts.filter((i) =>
+              i.name.toLowerCase().includes(text.toLowerCase())
+            )
+          );
+        }}
+                
+      />
+
       </View>
-      <View style={styles.searchBar}>
-        <MaterialIcons
-          style={styles.searchIcon}
-          name="search"
-          size={24}
-          color="gray"
-        />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search"
-          value={search}
-          onChangeText={(text) => setSearch(text)}
-        />
-        {search === "" ? null : (
-          <MaterialIcons
-            onPressIn={() => setSearch("")}
-            onPress={() => setSearch("")}
-            name="close"
-            size={24}
-            color="gray"
-            style={styles.closeIcon}
-          />
-        )}
+       
+
+
+</View>
+
+        
+
+
       </View>
-      {/* //this is the list of contacts, first on the list will be the favorite */}
+
+     <View style={{flex:1,marginTop:10}}>
+      
+     { alreadymembers!='No Users' && (
+    <View>
+      <Text style={styles.alreadymemberscss}>Already Members</Text>
       <FlatList
+        data={alreadymembers}
+        renderItem={renderfavoriteItem}
+        keyExtractor={(item) => item.phonenumbers[0]}
+        extraData={alreadymembers}
+      />
+    </View>
+    
+
+  )}
+        
+
+    
+
+      <View>
+      <Text style={styles.alreadymemberscss}>Invite to join</Text>
+
+      <FlatList 
         data={filteredContacts}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
+        extraData={filteredContacts}
       />
+      </View>
+
+      <Overlay
+    isVisible={isOverlayVisible}
+    onBackdropPress={handleClose}
+    overlayStyle={[
+      styles.overlay,
+      {
+        top: overlayPosition.y + 90, // Adjust the top position
+        left: overlayPosition.x - 40, // Adjust the left position
+      },
+    ]}
+  >
+      {console.log(selectedContact)}
+    { alreadymembers.includes(selectedContact) ? (
+      <>
+
+     <View style={{flexDirection:'row-reverse',alignItems:'center',justifyContent:'space-around',width:"100%"}}>
+      <Icon 
+         name="info"
+          size={15}
+          type="AntDesign"
+          color="black"
+          
+          />
+
+
+        <Text style={styles.overlayText} onPress={()=> setModalVisible(true)}>Show contact details</Text>
+
+
+     </View>
+
+{!selectedContact.addedtofav && (
+   <View style={{flexDirection:'row-reverse',alignItems:'center',justifyContent:'space-around',width:"100%"}}>
+      
+   <Icon
+     name="favorite"
+     size={15}
+     type="AntDesign"
+     color="red"
+     />
+
+
+
+   <Text style={[styles.overlayText, { color: "#e06c85" }]} onPress={()=> addtofavorite()}>
+     Send favorite request
+   </Text>
+   </View>
+
+
+)}
+     
+
+     
+    
+
+
+      </>
+    ) : (
+      <Text style={styles.overlayText} onPress={()=> sendsms()}>Send SMS invitation</Text>
+    )}
+  </Overlay>
+  <Modal
+        animationType="slide"
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={() => {
+
+          setModalVisible(!modalVisible);
+        }}
+      >
+              <SafeAreaView style={{top:45}} >
+                <View >
+        <View style={styles.headerModal}>
+          <View style={{paddingLeft:45}}>
+        <Text style={{ fontFamily: 'NunitoSans_700Bold', fontStyle: 'normal', fontWeight:'600', fontSize: 24, lineHeight: 33, color: '#333333'}}>
+            Contact Details
+            </Text>
+            </View>
+          <View style={{filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))'}}>
+          <TouchableOpacity onPress={() => {
+            setModalVisible(!modalVisible);
+          }}>
+          <Image source={require('../../../assets/Images/Contacts/modalback.png')}  />
+          </TouchableOpacity>
+       
+            </View>
+         
+          </View>
+          {console.log("selected contact")}
+          {console.log(selectedContact)}
+          {console.log("already members")}
+          {console.log(alreadymembers)}
+            { alreadymembers.includes(selectedContact) && (
+              
+              <View>
+                        <View style={styles.imagemodelview}>
+                          {console.log("selected contact from modal")}
+                          {console.log(selectedContact)}
+
+
+          <Image source={{uri: selectedContact.imageUri}} style={styles.contactimagemodal} />
+          </View>
+          <View style={styles.informationcss}>
+            <Text style={styles.infromationtext}> {selectedContact.city}</Text>
+            <Text style={[styles.infromationtext,{fontFamily:"NunitoSans_400Regular",fontSize:20,paddingTop:10}]}> {selectedContact.userName}</Text>
+          </View>
+          <View style={{marginTop:40,height:'100%',borderTopColor: '#C4C4C4',borderTopWidth: 1,backgroundColor:"rgba(154, 173, 190, 0.2)"}}>
+                    <View style={{height:60,width:Dimensions.get('window').width-20,marginTop:10,justifyContent:'space-between',flexDirection:'row-reverse'}}>
+
+                      <View>
+
+                      <Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333"}}>Mobile</Text>
+                        <Text style={{fontFamily:"NunitoSans_300Light",fontStyle:"normal",fontSize:12,marginTop:5,lineHeight:16,color:"#333333",opacity:0.5}}>
+                          {selectedContact.phonenumbers[0]}
+                      
+                        </Text>
+                      </View>
+                      <View style={{marginTop:10,right:15,flexDirection:'row'}}>
+                        <View style={{height:26,width:26,backgroundColor:"#FFFFFF",borderRadius:100,alignItems:'center',justifyContent:'center',marginRight:10}}>
+                          <TouchableOpacity onPress={()=>sendsms(true)}>
+                          <Icon 
+                          name="sms"
+                          size={17}
+                          color="#333333"
+                          />
+                          </TouchableOpacity>
+                          </View>
+                          <View style={{height:26,width:26,backgroundColor:"#FFFFFF",borderRadius:100,alignItems:'center',justifyContent:'center'}}>
+                            <TouchableOpacity onPress={()=>callnumber()}>
+                          <Icon 
+                          name="phone"
+                          size={17}
+                          color="#333333"
+                          type="Entypo"
+                          />
+                          </TouchableOpacity>
+                          </View>
+                          
+                        
+                        </View>
+                      
+                    </View>
+<View style={{height:60,width:Dimensions.get('window').width-20,marginTop:10,justifyContent:'space-between',flexDirection:'row-reverse'}}>
+
+<View>
+
+<Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333"}}>Email</Text>
+  <Text style={{fontFamily:"NunitoSans_300Light",fontStyle:"normal",fontSize:12,marginTop:5,lineHeight:16,color:"#333333",opacity:0.5}}>
+    Email will be here
+  </Text>
+</View>
+<View style={{marginTop:10,right:15,flexDirection:'row'}}>
+
+    <View style={{height:26,width:26,backgroundColor:"#FFFFFF",borderRadius:100,alignItems:'center',justifyContent:'center'}}>
+      <TouchableOpacity onPress={()=>mailcomposer()}>
+    <Icon 
+    name="email"
+    size={17}
+    color="#333333"
+    type="MaterialCommunityIcons"
+    />
+    </TouchableOpacity>
+    </View>
+    
+  
+  </View>
+
+</View>
+<View style={{height:60,width:Dimensions.get('window').width-20,marginTop:10,justifyContent:'space-between',flexDirection:'row-reverse'}}>
+
+<View>
+
+<Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333"}}>Hobbies</Text>
+  <Text style={{fontFamily:"NunitoSans_300Light",fontStyle:"normal",fontSize:12,marginTop:5,lineHeight:16,color:"#333333",opacity:0.5}}>
+    Hobbies will be here
+  </Text>
+</View>
+
+
+</View>
+<View style={{height:55,width:Dimensions.get('window').width,backgroundColor:"#FFFFFF",flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+  <Text style={{height:22,fontFamily:'NunitoSans_700Bold',fontSize:16,lineHeight:22,fontStyle:'normal'}}>Account Linked</Text>
+     </View>
+     <TouchableOpacity onPress={()=> whatsappcontact()}>
+
+     <View style={{height:60,width:Dimensions.get('window').width-20,marginTop:10,justifyContent:'space-between',flexDirection:'row-reverse'}}>
+
+<View>
+
+<Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333",marginTop:10}}>WhatsApp</Text>
+
+</View>
+<View style={{marginTop:10,right:15,flexDirection:'row'}}>
+
+<View style={{height:26,width:26,borderRadius:100,alignItems:'center',justifyContent:'center',borderRadius:100,backgroundColor:'#25D366',borderWidth:2,borderColor:"#25D366"}}>
+ 
+      <Image source={require('../../../assets/Images/Contacts/whatstrans.png')}
+        resizeMode="contain"
+        style={{
+          width: 16, // Set the icon width
+          height: 16, // Set the icon height
+        }}
+      
+     />
+
+    </View>
+    
+    
+  
+  </View>
+
+</View>
+</TouchableOpacity>
+
+<TouchableOpacity onPress={()=> telegramcontact()}>
+
+<View style={{height:60,width:Dimensions.get('window').width-20,marginTop:10,justifyContent:'space-between',flexDirection:'row-reverse'}}>
+
+<View>
+
+<Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333",marginTop:10}}>Telegram</Text>
+
+</View>
+<View style={{marginTop:10,right:15,flexDirection:'row'}}>
+
+    <View style={{height:26,width:26,borderRadius:100,alignItems:'center',justifyContent:'center',borderRadius:100,backgroundColor:'#039BE5',borderWidth:2,borderColor:"#039BE5"}}>
+ 
+      <Image source={require('../../../assets/Images/Contacts/telegram.png')}
+        resizeMode="contain"
+        style={{
+          width: 16, // Set the icon width
+          height: 16, // Set the icon height
+        }}
+      
+     />
+
+    </View>
+    
+    
+  
+  </View>
+
+</View>
+</TouchableOpacity>
+
+{selectedContact.addedtofav == false ? (
+  <TouchableOpacity onPress={()=> addtofavorite()}>
+
+  <View style={{height:60,width:Dimensions.get('window').width-20,marginTop:10,justifyContent:'space-between',flexDirection:'row-reverse'}}>
+  
+  <View>
+  
+  <Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333",marginTop:10}}>Send favorite request</Text>
+  
+  </View>
+  <View style={{marginTop:10,right:15,flexDirection:'row'}}>
+  
+  <View style={{height:26,width:26,alignItems:'center',justifyContent:'center'}}>
+  
+  <Icon
+            name="favorite"
+            size={24}
+            type="AntDesign"
+            color="red"
+            />
+  
+  </View>
+  
+  
+  
+  </View>
+  
+  </View>
+  </TouchableOpacity>
+
+) : (
+<View style={{height:60,width:Dimensions.get('window').width-20,marginTop:10,justifyContent:'space-between',flexDirection:'row-reverse',opacity:0.3}}>
+  
+  <View>
+  
+  <Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333",marginTop:10}}>Send favorite request</Text>
+  
+  </View>
+  <View style={{marginTop:10,right:15,flexDirection:'row'}}>
+  
+  <View style={{height:26,width:26,alignItems:'center',justifyContent:'center'}}>
+  
+  <Icon
+            name="favorite"
+            size={24}
+            type="AntDesign"
+            color="red"
+            />
+  
+  </View>
+  
+  
+  
+  </View>
+  
+  </View>
+)
+  
+}
+
+
+
+
+
+ </View>
+
+          </View>
+
+        ) 
+            }
+               
+    
+          </View>
+          
+                </SafeAreaView>
+      </Modal>
+
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "white",
-    alignItems: "center",
-  },
-  desc: {
-    height: Dimensions.get("window").height * 0.07,
-  },
-  descText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#ff0000",
-  },
-  logo: {
-    width: Dimensions.get("window").width * 0.5,
-    height: Dimensions.get("window").height * 0.1,
-    resizeMode: "contain",
-    marginTop: Dimensions.get("window").height * 0.01,
-    marginBottom: Dimensions.get("window").height * 0.03,
-  },
-
-  searchBar: {
-    marginBottom: Dimensions.get("window").height * 0.01,
-    height: Dimensions.get("window").height * 0.05,
-    paddingHorizontal: 16,
-    width: Dimensions.get("window").width * 0.85,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderRadius: 16,
-    backgroundColor: "#eeeeee",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 0.4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 2,
-    elevation: 1,
-    //
-    position: "relative",
-  },
-  searchInput: {
-    fontSize: 14,
-    width: Dimensions.get("window").width * 0.9,
-    alignItems: "center",
-    justifyContent: "center",
-    textAlign: "left",
-    left: 0,
-    marginLeft: Dimensions.get("window").width * 0.05,
-  },
-  searchIcon: {
-    position: "absolute",
-    right: 0,
-    marginRight: Dimensions.get("window").width * 0.77,
-  },
-  closeIcon: {
-    position: "absolute",
-    right: 0,
-    marginRight: Dimensions.get("window").width * 0.05,
-  },
-
+  
+    flex:1,
+    marginTop: 40,
+  } ,
   contactRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginHorizontal: Dimensions.get("window").width * 0.05,
-    marginVertical: Dimensions.get("window").height * 0.01,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    width: Dimensions.get("window").width * 0.85,
-    borderRadius: 10,
-    backgroundColor: "white",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 0.4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 2,
-    elevation: 1,
+    paddingBottom: 16,
+    paddingTop: 16,
+    paddingLeft: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+    width: Dimensions.get('window').width,
   },
-  contactInfo: {},
+
+  textinputstyle:{
+    borderColor: "gray",
+    borderWidth: 1,
+    width: "100%",
+    top: 0,
+    height: 43,
+    borderRadius: 20,
+    paddingLeft: 40,
+    paddingRight: 20,
+    fontSize: 14,
+    lineHeight: 19,
+    borderColor: "rgba(128, 128, 128, 0.5)",
+    backfaceVisibility: '#FEFEFE', // Adjust the backgroundColor color with transparency
+    borderRadius: 12,
+    color:'black',
+
+  },
+  headerModal:{
+width: Dimensions.get('window').width,
+height: 50,
+flexDirection: 'row',
+alignItems: 'center',
+justifyContent: 'space-around',
+
+  },
+  informationcss:{
+    width: Dimensions.get('window').width,
+    height:30,
+
+    
+  },
+
+  infromationtext:{
+    fontFamily: 'NunitoSans_300Light',
+    fontStyle: 'normal',
+    fontsize: 14,
+    lineHeight: 19,
+    color: '#333333',
+    textAlign:'center',
+
+  },
+
+
+  imagemodelview:{
+    width:Dimensions.get('window').width,
+    height:150,
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+
+  contactimagemodal:{
+    width: 100,
+    height: 100,
+    borderRadius: 100,
+    
+  },
+
+  headerandsearch:{
+    width: Dimensions.get('window').width,
+        height: 43,
+        backgroundColor: '#FFFFFF',
+        fontSize: 14,
+        lineHeight: 19,
+        opacity: 0.4,
+        borderRadius: 12,
+        shadowColor: '#b8b4ad',
+        
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        elevation: 5,
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        top: 0,
+        flexDirection: 'row',
+        justifyContent:'flex-end',
+        color:'black',
+        right:10
+
+  },
+
+  contactRowfavo: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+    width: Dimensions.get('window').width,
+    flexDirection: 'row',
+  },
+
+  gradient: {
+    flex: 1,
+    justifyContent: 'center',
+    borderRadius: 10,
+  },
   contactName: {
-    fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
+    textAlign: 'left',
+    fontStyle:'normal',
+    fontWeight:"600",
+    fontsize:14,
+    lineHeight:19,
+    color:'#333333',
+    marginBottom: 5,
+    fontFamily: "NunitoSans_400Regular",
+  },
+  
+  alreadymemberscss: {
+    fontFamily:"NunitoSans_600SemiBold",
+    fontStyle:"normal",
+    fontWeight:"600",
+    fontSize:14,
+    lineHeight:19,
+    color:"#333333",
+    textShadowColor:  'rgba(0, 0, 0, 0.25)',
+    textShadowRadius: 2,
+    top:10,
+    marginBottom: 15,
+    textAlign: 'left',
+    marginLeft: 20,
+    
+    
+  },
+
+//restore the overlay style
+  overlay: {
+    position: 'absolute',
+    width: 170,
+    height: 50,
+    padding: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+
+  overlayText: {
+   alignSelf: 'center',
+      fontSize: 12,
+      fontFamily: 'NunitoSans_200ExtraLight',
+      lineHeight: 19,
+      textShadowColor: 'rgba(0, 0, 0, 0.25)',
+      textShadowOffset: { width: 1, height: 1 },
+      textShadowRadius: 0.5,
+  },
+
+
+
+  searchIcon:{
+    left:40
+    
   },
   contactPhone: {
-    color: "gray",
+    fontSize: 12,
+    color:'#333333',
+    opacity: 0.5,
+    textAlign: 'left',
+    fontWeight:"600",
+    lineHeight:16,
+    fontFamily: "NunitoSans_300Light",
   },
-  favoriteContactName: {
-    color: "red",
-    fontWeight: "bold",
+  Iconoption: {
+    position: 'absolute',
+    width: 30,
+    height: 20,
+    left: 330,
+    top: 30,
+    opacity: 0.3,
+
+    
   },
-  favoriteContactPhone: {
-    color: "red",
+
+  contactImage : {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginLeft: 0,
+    top: 0,
+    right: 0,
   },
-  favoriteContactRow: {
-    backgroundColor: "#FFC0CB",
+
+  myimageprofile: {
+    width: 60,
+    height: 60,
+    borderRadius: 100,
+    marginLeft: 0,
+    top: 0,
+    right: 10,
   },
-});
+
+
+  Title: {
+    width: Dimensions.get('window').width,
+    height: 80,
+    top:24,
+    flexDirection: 'row-reverse',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+    
+    
+ 
+  },
+
+  Titletext: {
+    fontSize: 24,
+    fontweight: "800",
+    color: "#333333",
+    lineHeight: 33,
+    textAlign: 'right',
+    marginRight: 5,
+    fontFamily: "NunitoSans_400Regular",
+    top:10
+}
+}
+);
+  
