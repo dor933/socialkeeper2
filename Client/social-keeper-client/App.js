@@ -12,11 +12,24 @@ import FavoriteContacts from './Components/Screens/Settings/FavoriteContacts';
 //Tal's code
 
 import SignInAPI from './Components/Screens/Login/SignInAPI';
+import { SafeAreaView, StyleSheet} from 'react-native';
+import CreateProfile from './Components/Screens/Profile/CreateProfile';
+
+
+
+//Imports to use :
+// import SignInAPI from './Components/Screens/Login/SignInAPI';
+// import SignUpAPI from './Components/Screens/Login/SignUpAPI';
+
 // import { NavigationContainer } from '@react-navigation/native';
 // import FutureMeetingScreen from './Components//Screens/Meetings/FutureMeetingScreen';
 // import PreviousMeetingsScreen from './/Components//Screens//Meetings///PreviousMeetingsScreen';
 // import SuggestedMeetingsScreen from './/Components//Screens//Meetings///SuggestedMeetingsScreen';
 // import FavoriteContacts from './/Components//Screens///Settings/FavoriteContacts';
+
+
+
+
 export default function App() {
 
 
