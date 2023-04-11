@@ -9,7 +9,8 @@ import {
   Dimensions,
   SafeAreaView,
   Image,
-  Modal
+  Modal,
+  Alert,
 } from "react-native";
 import * as Contacts from "expo-contacts";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -24,10 +25,16 @@ import {
   NunitoSans_900Black,
 } from "@expo-google-fonts/nunito-sans";
 import axios from "axios";
-import { Overlay, Icon } from '@rneui/themed';
+import { Overlay, Icon,CheckBox } from '@rneui/themed';
 import * as SMS from 'expo-sms';
 import call from 'react-native-phone-call'
 import * as Linking from 'expo-linking';
+import {RegistContext} from '..//..//..//RegistContext.jsx';
+import { Button } from "@rneui/base";
+import Mymodal from './/FavoriteComp//Mymodal.jsx';
+import AuthContext from "../..//..//Authcontext.jsx";
+import {MainAppcontext} from "..//MainApp/MainAppcontext.jsx";
+
 
 
 
@@ -43,26 +50,29 @@ import * as Linking from 'expo-linking';
 
 
 export default function FavoriteContacts({ navigation }, props) {
-  const [contacts, setContacts] = useState([]);
-  const [filteredContacts, setFilteredContacts] = useState([]);
-  const [alreadymembers, setAlreadyMembers] = useState([]);
+  const {contacts, setContacts} = React.useContext(RegistContext);
+  const {filteredContacts, setFilteredContacts} = React.useContext(RegistContext);
+  const {alreadymembers, setAlreadyMembers} = React.useContext(RegistContext);
   const [isOverlayVisible, setOverlayVisible] = useState(false);
   const [overlayPosition, setOverlayPosition] = useState({ x: 0, y: 0 });
   const [selectedContact, setSelectedContact] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-
+  const {possiblefavoritecontacts,setPossibleFavoriteContacts}= React.useContext(RegistContext);
+  const {personaldetails,selectedImage,prefferdtimes,selectedhobbies,setPersonalDetails,imagetype}= React.useContext(RegistContext);
+  const {invitedcontacts,setInvitedContacts}= React.useContext(RegistContext);
+  const {filteredalreadymebers,setFilteredAlreadyMembers}= React.useContext(RegistContext);
+  const [modalhobbiesvisible,setModalHobbiesVisible]=useState(false)
+  const [commonhobbie,setCommonHobbie]=useState([]);
+  const { setIsAuthenticated}= React.useContext(AuthContext);
+  const {setUser} = React.useContext(MainAppcontext);
 
 
 
   const handleOpen = (event,item) => {
-    console.log('this is item')
-    console.log(item)
     const { pageX, pageY } = event.nativeEvent;
-    console.log(pageX, pageY);
     setOverlayPosition({ x: pageX+200, y: pageY-100 });
     setSelectedContact(item);
     setOverlayVisible(true);
-    console.log(selectedContact)
   };
 
  
@@ -93,15 +103,18 @@ export default function FavoriteContacts({ navigation }, props) {
   useEffect(() => {
 
     
-    
     loadContacts();
   }, []);
+
+  useEffect(() => {
+    console.log("possiblefavoritecontacts",possiblefavoritecontacts)
+    console.log("invitedcontacts",invitedcontacts)
+  }, [possiblefavoritecontacts,invitedcontacts]);
 
  
   async function sendsms(personalsms){
 
     if(!personalsms){
-    console.log(selectedContact)
 
 
     const isAvailable = await SMS.isAvailableAsync();
@@ -111,20 +124,64 @@ export default function FavoriteContacts({ navigation }, props) {
         selectedContact.phoneNumbers[0].number,
         'You have been invited to join a group on Social Keeper'
       );
-      console.log(result);
+
+        Alert.alert(
+        "Did you want to invite this contact to use Social Keeper?",
+        "You can invite them to use Social Keeper by sending them an SMS",
+        [
+          {
+            text: "No",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          {
+            text: "Yes",
+            onPress: () => {
+              console.log("im here");
+
+              //find from filtered contacts the contact that match to selecetd contact and add it "sendsms" to true
+              let newfilteredcontacts=filteredContacts.map((contact)=>{
+             //iterate over the phoneNumbers array and find the number that match to the selected contact
+              let returncontact=contact
+              contact.phoneNumbers.map((phonenumber)=>{
+                if(phonenumber.number===selectedContact.phoneNumbers[0].number){
+                  returncontact.sendsms=true
+                }
+              })
+                return contact
+              })
+
+              const timestamp = Date.now();
+              const date = new Date(timestamp);
+
+              const day = String(date.getDate()).padStart(2, '0');
+              const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed, so we need to add 1
+              const year = date.getFullYear();
+
+              const formattedDate = `${day}/${month}/${year}`;
+    
+            
+              setFilteredContacts(newfilteredcontacts)
+              setInvitedContacts([...invitedcontacts,{phoneNum1:personaldetails.phoneNumber,phoneNum2:selectedContact.phoneNumbers[0].number,status:"P",date:formattedDate,Nickname:selectedContact.firstName}])
+            }
+            },
+          ,
+
+        ],
+        { cancelable: false }
+      );
+      
     } else {
       // misfortune... there's no SMS available on this device
     }
   }else{
     const isAvailable = await SMS.isAvailableAsync();
-    console.log(selectedContact)
     if (isAvailable) {
       // do your SMS stuff here
       const { result } = await SMS.sendSMSAsync(
         selectedContact.phonenumbers[0],
         'Send your message here'
       );
-      console.log(result);
     } else {
       // misfortune... there's no SMS available on this device
     }
@@ -132,12 +189,14 @@ export default function FavoriteContacts({ navigation }, props) {
 
   }
 
+  
+    
+
   async function whatsappcontact(){
 
     let url = `whatsapp://send?text=You have been invited to be my friend on Social Keeper&phone=972${selectedContact.phonenumbers[0]}`;
 
     Linking.openURL(url).then((data) => {
-      console.log('WhatsApp Opened');
     }).catch(() => {
       alert('Make sure WhatsApp installed on your device');
     });
@@ -149,7 +208,6 @@ export default function FavoriteContacts({ navigation }, props) {
 
 
     Linking.openURL(url).then((data) => {
-      console.log('Telegram Opened');
     }).catch(() => {
       alert('Make sure Telegram installed on your device');
     });
@@ -161,7 +219,6 @@ export default function FavoriteContacts({ navigation }, props) {
     let url = `mailto:doratzabi1@gmail.com?subject=You have been invited to be my friend on Social Keeper&body=You have been invited to be my friend on Social Keeper`;
     //send the email
     Linking.openURL(url).then((data) => {
-      console.log('Mail Opened');
     }).catch(() => {
       alert('Make sure Mail installed on your device');
     });
@@ -170,26 +227,194 @@ export default function FavoriteContacts({ navigation }, props) {
 
   async function callnumber(){
  
-    console.log(selectedContact.phonenumbers[0])
     const args = {
       number: selectedContact.phonenumbers[0],
       prompt: true,
     }
     call(args).catch(console.error)
   }
+
+  async function onsubmit(){
+
+    let newprefferdtimes=[];
+    prefferdtimes.map((time)=>{
+      let timeobj={
+        weekDay:time.day.index,
+        startTime:time.startTime,
+        endTime:time.endTime,
+        rank:time.rank
+
+      }
+      newprefferdtimes.push(timeobj)
+    })
+
+
+    
+    
+
+
+
+    const newuser={
+      phoneNum1:personaldetails.phoneNumber,
+      userName:personaldetails.userName,
+      // birthDate://will be the birth date from datapickercomponent
+      email:personaldetails.email, // will be saved through the authentication with google and facebook not from the form
+      gender:personaldetails.gender,
+      city:personaldetails.address,
+      birthDate:personaldetails.birthDate,
+      tblInvitesDTO: invitedcontacts,
+      tblprefferdDTO:newprefferdtimes,
+      tblUserHobbiesDTO:selectedhobbies,
+      possibleFavoriteContacts_invite_DTO:possiblefavoritecontacts,
+
+    }
+
+    console.log(newuser)
+    console.log(selectedImage)
+
+    try{
+
+      console.log("im here to add user")
+
+    const response= await axios.post("http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/AddUser",newuser);
+    if(response.data=="Phone Number already exists"){
+      Alert.alert(
+        "Phone Number already exists",
+        "Please change your phone number and try again",
+        [
+          {
+            text: "OK",
+            style: "cancel",
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+    else if (response.data=="User name already exists"){
+      Alert.alert(
+        "User name already exists",
+        "Please change your user name and try again",
+        [
+          {
+            text: "OK",
+            style: "cancel",
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+    else if(response.data=="User added"){
+      console.log("im here the user added")
+      const data = new FormData();
+      data.append('img',{ 
+        uri: selectedImage,
+        name: `image.${imagetype}`,
+        type: `image/${imagetype}`,
+        
+      }
+        );
+      data.append('identis', personaldetails.phoneNumber);
+      
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+      
+      const response2 = await axios.post(
+        "http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Addimage",
+        data,
+        config
+      );
+
+      if(typeof response2.data.imageUri == "string") {
+
+        setUser(response2.data)
+
+      Alert.alert(
+        "User created successfully",
+        "Moving to the App...",
+        [
+          {
+            text: "OK",
+            style: "cancel",
+          },
+        ],
+        { cancelable: false }
+      );
+
+
+      setIsAuthenticated(true)
+      }
+
+      
+    }
+    else{
+      console.log("im here the user not added")
+      console.log(response.data)
+    }
+
+  }catch(error){
+    console.log(error)
+    //bring all the errors to the user
+
+    console.log(error.response.data)
+
+
+
+
+  }
+
+  }
        // String value with the number to call
 
   async function loadContacts() {  
+    if(contacts.length==0 && filteredContacts.length==0) {
     const { status } = await Contacts.requestPermissionsAsync();
   if (status === "granted") {
     const { data } = await Contacts.getContactsAsync();
     //add id to each contact
     for (let i = 0; i < data.length; i++) {
       data[i].id = i;
+      data[i].sendsms=false;
     }
-    setContacts(data);
-    setFilteredContacts(data);
-    console.log(contacts);
+
+    const newdata= data.filter((contact)=>{
+      if(contact.phoneNumbers){
+        if(contact.phoneNumbers[0]){
+          //check if phoneNumbers[0] start with 972 or 0 or +972 or 5 and the second number is between 0-9 regex 5[0-9] 
+
+          if (contact.phoneNumbers[0].number!== undefined && contact.phoneNumbers[0].number.match(/^(972|\+972|0-?5\d(-?\d){7}|5(-?\d){8})$/)) {
+
+
+
+            if(!contact.firstName){
+              contact.firstName="No Name"
+            }
+
+            return contact
+
+
+
+
+          }
+
+
+       
+          //check if the contact
+          
+        }
+      }
+ 
+    })
+
+
+
+    
+
+
+    setContacts(newdata);
+    setFilteredContacts(newdata);
     //create an array of contacts with a name and phone number
     const contactList =  data.map((contact) => {
 
@@ -217,21 +442,15 @@ export default function FavoriteContacts({ navigation }, props) {
   
   );
 
-  console.log(contactList);
-
   
   const already= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/getexistingmembers', contactList);
-  console.log(already.data);
-  //add field that called "addedtofav"  to each contact and set it to false
-  for (let i = 0; i < already.data.length; i++) {
-    already.data[i].addedtofav = false;
-  }
   setAlreadyMembers(already.data);
-  console.log(alreadymembers.length);
+  setFilteredAlreadyMembers(already.data);
 
   // here we need to send the contactList to the backend and get back the already members
     
 }
+    }
   }
 
 
@@ -278,44 +497,93 @@ export default function FavoriteContacts({ navigation }, props) {
   }
 
   const addtofavorite = () => {
-    const updatedAlreadyMembers = alreadymembers.map((contact) => {
+
+    setModalHobbiesVisible(true);
+
+    console.log("selectedContact",selectedContact)
+    console.log("alreadymembers",alreadymembers)
+
+    const updatedAlreadyMembers = filteredalreadymebers.map((contact) => {
+      console.log('contact is',contact)
       if (contact.phonenumbers[0] === selectedContact.phonenumbers[0]) {
 
         return { ...contact, addedtofav: true };
       }
       return contact;
     });
+
+
   
-    console.log('Updated already members:', updatedAlreadyMembers);
+    setFilteredAlreadyMembers(updatedAlreadyMembers);
     setAlreadyMembers(updatedAlreadyMembers);
     const newselected= updatedAlreadyMembers.find((contact) => contact.phonenumbers[0] === selectedContact.phonenumbers[0]);
-    console.log(newselected);
     setSelectedContact(newselected);
+    const possiblefavorite={
+      phonenuminvite: personaldetails.phoneNumber,
+      phonenuminvited:newselected.phonenumbers[0],
+      // hobbieNum:selectedhobbies[0].hobbienumber
+      //will be after the hobbie screen
+    }
+
+    setPossibleFavoriteContacts([...possiblefavoritecontacts,possiblefavorite]);
 
   };
 
 const renderItem = ({ item }) => {
   return (
-    <View style={styles.contactRow} >
-      <Text style={styles.contactName}>{item.name}</Text>
-      {item.phoneNumbers && item.phoneNumbers[0] && (
-        <Text style={styles.contactPhone}>{item.phoneNumbers[0].number}</Text>
-      )}
-
+    <>
+    {!item.sendsms ? (
+       <View style={styles.contactRow} >
+       <Text style={styles.contactName}>{item.name}</Text>
+       {item.phoneNumbers && item.phoneNumbers[0] && (
+         <Text style={styles.contactPhone}>{item.phoneNumbers[0].number}</Text>
+       )}
+ 
+     
+ 
+       <TouchableOpacity style={styles.Iconoption} onPress={(event) => handleOpen(event,item)}>
+           <Icon
+             name="more-horiz"
+             size={28}
+             color="#000000"
+           />
+ 
+       
+       </TouchableOpacity>
     
+       
+     </View>
+    ) : (
+      <View style={[styles.contactRow, {opacity:0.3}]} >
+          <Text style={styles.contactName}>{item.name}</Text>
+       {item.phoneNumbers && item.phoneNumbers[0] && (
+         <Text style={styles.contactPhone}>{item.phoneNumbers[0].number}</Text>
+       )}
+ 
+     
+ 
+       <TouchableOpacity style={styles.Iconoption} onPress={(event) => handleOpen(event,item)}>
+           <Icon
+             name="more-horiz"
+             size={28}
+             color="#000000"
+           />
+ 
+       
+       </TouchableOpacity>
+    
+       
+     </View>
+    )}
 
-      <TouchableOpacity style={styles.Iconoption} onPress={(event) => handleOpen(event,item)}>
-          <Icon
-            name="more-horiz"
-            size={28}
-            color="#000000"
-          />
 
-      
-      </TouchableOpacity>
+       
+    
+    
+    
    
-      
-    </View>
+    </>
+       
   );
 };
 
@@ -331,10 +599,13 @@ const renderItem = ({ item }) => {
 
 
   return (
+    <SafeAreaView style={{flex:1, alignItems:'center', justifyContent:'center', backgroundColor:"#ffffff"}}>
+
     <SafeAreaView style={styles.container}>
       <View style={styles.Title}>
         <Text style={styles.Titletext}> My Contacts </Text>
-        <Image source={require('../../../assets/Images/RandomImages/avatar-user.png')} style={styles.myimageprofile} />
+       
+        <Image source={{uri:selectedImage}} style={styles.myimageprofile} />
       </View>
    
       <View style={styles.headerandsearch}> 
@@ -357,6 +628,13 @@ const renderItem = ({ item }) => {
               i.name.toLowerCase().includes(text.toLowerCase())
             )
           );
+
+          setFilteredAlreadyMembers(
+            alreadymembers.filter((i) =>
+              i.userName.toLowerCase().includes(text.toLowerCase())
+            )
+            
+          )
         }}
                 
       />
@@ -378,7 +656,7 @@ const renderItem = ({ item }) => {
     <View>
       <Text style={styles.alreadymemberscss}>Already Members</Text>
       <FlatList
-        data={alreadymembers}
+        data={filteredalreadymebers}
         renderItem={renderfavoriteItem}
         keyExtractor={(item) => item.phonenumbers[0]}
         extraData={alreadymembers}
@@ -413,7 +691,6 @@ const renderItem = ({ item }) => {
       },
     ]}
   >
-      {console.log(selectedContact)}
     { alreadymembers.includes(selectedContact) ? (
       <>
 
@@ -489,16 +766,12 @@ const renderItem = ({ item }) => {
             </View>
          
           </View>
-          {console.log("selected contact")}
-          {console.log(selectedContact)}
-          {console.log("already members")}
-          {console.log(alreadymembers)}
+        
             { alreadymembers.includes(selectedContact) && (
               
               <View>
                         <View style={styles.imagemodelview}>
-                          {console.log("selected contact from modal")}
-                          {console.log(selectedContact)}
+                         
 
 
           <Image source={{uri: selectedContact.imageUri}} style={styles.contactimagemodal} />
@@ -549,7 +822,7 @@ const renderItem = ({ item }) => {
 
 <Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333"}}>Email</Text>
   <Text style={{fontFamily:"NunitoSans_300Light",fontStyle:"normal",fontSize:12,marginTop:5,lineHeight:16,color:"#333333",opacity:0.5}}>
-    Email will be here
+    {selectedContact.email}
   </Text>
 </View>
 <View style={{marginTop:10,right:15,flexDirection:'row'}}>
@@ -575,7 +848,19 @@ const renderItem = ({ item }) => {
 
 <Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333"}}>Hobbies</Text>
   <Text style={{fontFamily:"NunitoSans_300Light",fontStyle:"normal",fontSize:12,marginTop:5,lineHeight:16,color:"#333333",opacity:0.5}}>
-    Hobbies will be here
+    {selectedContact.tblUserHobbiesDTO.map((hobbie,index)=>{
+      if(index==selectedContact.tblUserHobbiesDTO.length-1){
+      return(
+        <Text key={index}>{hobbie.hobbiename}</Text>
+      )
+      }
+      else{
+        return(
+          <Text key={index}>{hobbie.hobbiename},</Text>
+        )
+      }
+    })
+    }
   </Text>
 </View>
 
@@ -722,8 +1007,14 @@ const renderItem = ({ item }) => {
           
                 </SafeAreaView>
       </Modal>
+      <View>
+        <Mymodal modalhobbiesvisible={modalhobbiesvisible} setModalHobbiesVisible={setModalHobbiesVisible} selectedContact={selectedContact} setCommonHobbie={setCommonHobbie} commonhobbie={commonhobbie} />
+      </View>
 
       </View>
+
+      <Button title="Submit" onPress={onsubmit} />
+    </SafeAreaView>
     </SafeAreaView>
   );
 }
@@ -947,6 +1238,8 @@ justifyContent: 'space-around',
     
  
   },
+
+  
 
   Titletext: {
     fontSize: 24,

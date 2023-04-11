@@ -2,11 +2,22 @@ import React from 'react'
 import { SafeAreaView, Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native'
 import * as Google from "expo-auth-session/providers/google";
 import * as AuthSession from 'expo-auth-session';
-import { makeRedirectUri, useAuthRequest, useAutoDiscovery } from 'expo-auth-session';
-import { useEffect,useState } from "react";
+import * as Facebook from 'expo-auth-session/providers/facebook';
+import * as WebBrowser from 'expo-web-browser';
+import { useEffect,useState,useContext } from "react";
+import axios from 'axios';
+import { RegistContext } from '..//../..//RegistContext.jsx';
+import { MainAppcontext } from '../MainApp/MainAppcontext.jsx';
+import AuthContext from '../../../Authcontext.jsx';
 
 
-function SignUpAPI() {
+function SignUpAPI({navigation}) {
+
+  const {personaldetails, setPersonalDetails} = useContext(RegistContext);
+  const {setUser} = useContext(MainAppcontext);
+  const {setIsAuthenticated}= React.useContext(AuthContext);
+
+  WebBrowser.maybeCompleteAuthSession();
 
   const [token, setToken] = useState("");
   const [userInfo, setUserInfo] = useState(null);
@@ -14,6 +25,24 @@ function SignUpAPI() {
     useProxy:true,
     
   });
+
+
+
+
+  const [request2, response2, promptAsync2] = Facebook.useAuthRequest({
+    clientId: '177882227985650',
+    useProxy: true,
+    redirectUri: RedirectUrl,
+    scopes: ['public_profile', 'email'],
+  });
+
+
+    // Use expo's web browser
+    
+  
+  
+
+
   const [request, response, promptAsync] = Google.useAuthRequest({
     clientId: '923332378077-0gf55cn5cq0dvpahm5bk6vetdaigl7cr.apps.googleusercontent.com',
     
@@ -35,6 +64,16 @@ function SignUpAPI() {
     }
   }, [response,token]);
 
+  useEffect(() => {
+    console.log('into edffect');
+    if (response2?.type === "success") {
+      console.log('got here');
+      console.log(response2);
+      setToken(response2.authentication.accessToken);
+      getuserinfofromfacebook();
+    }
+  }, [response2,token]);
+
   const getUserInfo = async () => {
     try {
       const response = await fetch(
@@ -46,14 +85,57 @@ function SignUpAPI() {
       const user = await response.json();
       setUserInfo(user);
       console.log(user);
+      const ifuser= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin',{email:user.email});
+      if(ifuser.data=='no user was found'){
+
+        if(user.email!=undefined) {
+
+        personaldetails.email=user.email;
+        navigation.navigate('CreateProfile');
+        }
+      }
+      else if(typeof ifuser.data.imageUri == 'string'){
+        setUser(ifuser.data);
+        setIsAuthenticated(true);
+      }
     } catch (error) {
       // Add your own error handler here
     }
   };
 
+  const getuserinfofromfacebook=async()=>{
+    try {
+
+      console.log(token);
+      console.log('got here');
+      const response= await axios.get(`https://graph.facebook.com/me?fields=email,id,name&access_token=${token}`)
+      const user=response.data;
+      setUserInfo(user);
+      console.log(user);
+      const ifuser= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin',{email:user.email});
+      if(ifuser.data=='no user was found'){
+
+        personaldetails.email=user.email;
+        navigation.navigate('CreateProfile');
+      }
+      else if(typeof ifuser.data.imageUri == 'string'){
+        setUser(ifuser.data);
+        console.log(ifuser.data);
+        setIsAuthenticated(true);
+      }
+    
+    } catch (error) {
+      // Add your own error handler here
+    }
+  }
+
+        
+
+
 
   return (
 
+    <SafeAreaView style={{flex:1, alignItems:'center', justifyContent:'center'}}>
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.elipseTop}></View>
       {/* Connect text */}
@@ -69,20 +151,16 @@ function SignUpAPI() {
       </TouchableOpacity>
 
       {/* Login with outlook button */}
-      <TouchableOpacity>
+      <TouchableOpacity onPress={async() => promptAsync2()}>
         <View style={styles.container2}>
-          <Image style={styles.outLookLogo} source={require('../../../assets/Images/Logos/OutlookLogo.png')} ></Image>
-          <Text style={styles.textForButton}>Sign in with Outlook</Text>
+          <Image style={styles.outLookLogo} source={require('../../../assets/Images/Logos/facebook.png')} ></Image>
+          <Text style={styles.textForButton}>Login with Facebook</Text>
         </View>
       </TouchableOpacity>
 
-      {/* Already member qusetion */}
-      <View>
-        <TouchableOpacity>
-          <Text style={styles.refToSignIn}>Already member? Sign In</Text>
-        </TouchableOpacity>
-      </View>
+      
       <View style={styles.elipseButtom}></View>
+    </SafeAreaView>
     </SafeAreaView>
   )
 }
@@ -114,7 +192,7 @@ const styles = StyleSheet.create({
   //container for google button
   container2: {
     position: 'absolute',
-    width: 306,
+    width: 320,
     height: 64,
     left: 50,
     top: 500,
@@ -132,7 +210,7 @@ const styles = StyleSheet.create({
   //container for outlook button
   container: {
     position: 'absolute',
-    width: 306,
+    width: 320,
     height: 64,
     left: 50,
     top: 400,
@@ -154,6 +232,7 @@ const styles = StyleSheet.create({
     height: 932,
     backgroundColor: '#FFF1F1',
     borderRadius: 50,
+    
   },
 
 

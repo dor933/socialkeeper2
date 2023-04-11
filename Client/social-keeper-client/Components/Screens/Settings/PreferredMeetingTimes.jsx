@@ -1,146 +1,248 @@
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, SafeAreaView, Alert, Image } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, SafeAreaView, Alert, Image, FlatList } from 'react-native';
 import React, { useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
+import {
+    useFonts,
+    Lato_100Thin,
+    Lato_300Light,
+    Lato_400Regular,
+    Lato_700Bold,
+    
+    Lato_900Black,
+  } from '@expo-google-fonts/lato';
+  import Days from './PrefComp/Days';
+import Timepicker from './PrefComp/Timepicker';
+import {
+    Inter_100Thin,
+    Inter_200ExtraLight,
+    Inter_300Light,
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
+    Inter_800ExtraBold,
+    Inter_900Black,
+  } from '@expo-google-fonts/inter';
+import { Button } from 'react-native-paper';
+import {RegistContext} from "../..//..//RegistContext.jsx";
+import StarRating from 'react-native-star-rating-widget';
+
+
+
+
 
 
 const hours = [...Array(24)].map((_, i) => `${i}:00`);
-const days = ['S', 'M', 'T', 'W', 'Th', 'F', 'Sa'];
 
+const days = [
+    { index: 1, letter: 'S' },
+    { index: 7, letter: 'Sa' },
+    { index: 6, letter: 'F' },
+    { index: 5, letter: 'Th' },
+    { index: 4, letter: 'W' },
+    { index: 3, letter: 'T' },
+    { index: 2, letter: 'M' },
+  ];
 
 export default function PreferredMeetingTimes({ navigation }, props) {
-    const [selecteStartdHour, setSelectedStartHour] = useState(hours[0]);
-    const [selectedEndHour, setSelectedEndHour] = useState(hours[0]);
-    const [selectedDay, setSelectedDay] = useState('');
-    const [selectedDays, setSelectedDays] = useState([]);//array of objects {day: 'S', startHour: '10:00', endHour: '12:00'}
+    const {prefferdtimes,setPrefferdTimes}= React.useContext(RegistContext);
+    const [selectedDay, setSelectedDay] = useState({});
+    let [fontsLoaded] = useFonts({
+        Lato_100Thin,
+        Lato_300Light,
+        Lato_400Regular,
+        Lato_700Bold,
+        Lato_900Black,
+        Inter_100Thin,
+        Inter_200ExtraLight,
+        Inter_300Light,
+        Inter_400Regular,
+        Inter_500Medium,
+        Inter_600SemiBold,
+        Inter_700Bold,
+        Inter_800ExtraBold,
+        Inter_900Black,
+        });
+       
+        const [valuestart, setValuestart] = useState(null);
+        const [valueend, setValueend] = useState(null);
+        const [rating, setRating] = useState(0);
+
+        const handlerating = (rating) => {
+            const roundedrating=Math.round(rating);
+            setRating(roundedrating);
+         
+          }
+
+        const handlevaluestart = (value) => {
+            setValuestart(value);
+        }
+        const handlevalueend = (value) => {
+            setValueend(value);
+        }
+
+        const addtimetoarray = () => {
+            if (selectedDay.letter === undefined) {
+                Alert.alert('Please select a day');
+            }
+            else if (valuestart === null) {
+                Alert.alert('Please select a start time');
+            }
+            else if (valueend === null) {
+                Alert.alert('Please select an end time');
+            }
+            else {
+              
+                let therank = rating;
+                if(therank===0){
+                    therank=1;
+                }
+                
+                setPrefferdTimes([...prefferdtimes, { day: selectedDay, startTime: valuestart, endTime: valueend, rank: therank }]);
+                setRating(0);
+                console.log(prefferdtimes);
+                setSelectedDay({});
+              
+            }
+        }
+
+
+        const submittimes= () => {
+
+            console.log(prefferdtimes);
+            navigation.navigate('FavoriteContacts');
+
+        }
+
+        const removeTimeFromArray = (index) => {
+            //remove from prefferdtimes without selectedDays or newSelectedDays
+            setPrefferdTimes(prefferdtimes.filter((_, i) => i !== index));
+            console.log(prefferdtimes);
+        
+          };
+
+      
+        
+
 
 
  
     
     //this function is called when the user clicks on the add button to add a new preferred meeting time
     //in the future we will send the selectedDays array to the server to save it in the database
-    const addFavoriteTime = () => {
-        if (selectedDay === '') {
-            Alert.alert('Please select a day');
-            return;
-        }
-        //check start hour is not equal to end hour and start hour is before end hour
-        if (selecteStartdHour === selectedEndHour) {
-            Alert.alert('Start hour and end hour should not be the same');
-            return;
-        }
-        if (hours.indexOf(selecteStartdHour) > hours.indexOf(selectedEndHour)) {
-            Alert.alert('Start hour should be before end hour');
-            return;
-        }
-        let newTime = {
-            day: selectedDay,
-            startHour: selecteStartdHour,
-            endHour: selectedEndHour,
-        };
-
-        //if the user selected a day that already exists in the selectedDays array, we will replace it with the new time
-        //otherwise we will add it to the array
-        let index = selectedDays.findIndex((time) => time.day === selectedDay);
-        if (index !== -1) {
-            selectedDays[index] = newTime;
-        } else {
-            setSelectedDays([...selectedDays, newTime]);
-        }
-        setSelectedDay('');
-        setSelectedStartHour(hours[0]);
-        setSelectedEndHour(hours[0]);
-        for (let i = 0; i < selectedDays.length; i++) {
-            console.log(selectedDays[i].day);
-        }
-
-    };
-    const saveFavoriteTimeToDb = () => {
-        //send selectedDays array to the server to save it in the database
-        //after saving the data, we will navigate to the settings screen or to the next setting screen if it is a new user
-
-        console.log('save to db');
-        //ask the user if he wants to save the data or not
-        Alert.alert(
-            'Save Preferred Meeting Times',
-            'Are you sure you want to save the preferred meeting times?',
-            [
-                {
-                    text: 'Yes', onPress: () => {
-                        //send selectedDays array to the server to save it in the database
-                        //after saving the data, we will navigate to the settings screen or to the next setting screen if it is a new user
-                        navigation.navigate('Personal');//כרגע מנווט חזרה רק למסך הגדרות, כשנבנה את תהליך ההרשמה נעבור למסך הבא בתהליך ההרשמה
-                    }
-                },
-                { text: 'No', onPress: () => console.log('No Pressed'), style: 'cancel' },
-            ],
-            { cancelable: false },
-        );
-
-    };
+  
 
     return (
+        <SafeAreaView style={{flex:1, alignItems:'center', justifyContent:'center',backgroundColor:'#ffffff'}}>
         <View style={styles.container}>
-            <View style={styles.logoContainer} >
-                {/* //social-keeper-low-resolution-logo-color-on-transparent-background.png */}
-                <Image
-                    style={styles.logo}
-                    source={require('.../assets/Images/RandomImages/social-keeper-low-resolution-logo-color-on-transparent-background.png')}
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => submittimes()}>
+            <Image source={require('../../../assets/Images/Pref/arrowkeeper.png')} style={{backfaceVisibility:'#E04747'}}  />
+            </TouchableOpacity>
+            </View>
+            <View style={styles.keeperview}>
+            <Image source={require('../../..//assets/Images/RandomImages/SocialKeeper.jpeg')} style={styles.keeperview} />
+            </View>
+            <View style={styles.TextViews}>
+                <Text style={{fontFamily:'Lato_700Bold',fontWeight:"800", fontSize: 24, color: '#E04747', lineHeight:29,letterSpacing:0.03,textAlign:'center' }}>Preferred Meeting Times</Text>
+                <Text style={{fontFamily:'Lato_400Regular',fontWeight:"400", fontSize: 16, color: '#E04747', lineHeight:19,letterSpacing:0.03,textAlign:'center',color:"rgba(0,0,0,0.7)",top:8 }}>Select the days and hours you prefer to meet</Text>
+            </View>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems:'center' ,height:Dimensions.get('window').height*0.15,alignContent:'center', width: Dimensions.get('window').width * 0.9, top: Dimensions.get('window').height * 0.02 }}>
+                {
+                    days.map((day, index) => {
+                        return (
+                            <Days key={index} 
+                            dayindex={day.index}
+                            dayLetter={day.letter}
+                            setSelectedDay={setSelectedDay}
+                            selectedDay={selectedDay}
+
+                            
+                            />
+                        )
+                    })
+
+                }
+                </View>
+
+            <View style={styles.Prefferdtimesview}>
+                <View style={{ flexDirection: 'row', width:"90%", height: Dimensions.get('window').height * 0.15 }}>
+                <View style={{flexDirection:'column',height:"100%",width:"50%"}}>
+                    <Text style={{ fontSize: 16,marginBottom:10, color: '#E04747', lineHeight:19,letterSpacing:0.03,textAlign:'center',color:"rgba(0,0,0,0.7)",fontFamily:"Lato_400Regular" }}>End time</Text>
+              
+             <Timepicker onTimeSelected={handlevalueend} />
+                                    
+            
+                </View>
+
+                <View
+      style={{
+        width: "0.3%", // Border width
+        height: '120%',
+        bottom:10,
+        backgroundColor: 'rgba(0, 0, 0, 0.2)', 
+        // Border color
+      }}
+    />
+                <View style={{flexDirection:'column',height:"100%",width:"50%",marginLeft:20}}>
+                    <Text style={{fontFamily:'Lato_400Regular',marginBottom:10, fontSize: 16, color: '#E04747', lineHeight:19,letterSpacing:0.03,textAlign:'center',color:"rgba(0,0,0,0.7)" }}>Start time</Text>
+              
+
+             
+                <Timepicker onTimeSelected={handlevaluestart} />
+                 
+                                         
+            
+                </View>
+              
+                </View>
+                
+                </View>
+
+              <View style={styles.preferredTimesList}>
+                <FlatList
+                    data={prefferdtimes}
+                    renderItem={({ item,index }) => (
+                        
+                   <View style={styles.preferredTimeItem}>
+                    <Text style={styles.preferredTimeText}>{`${item.day.letter} ${item.startTime}-${item.endTime}`}</Text>
+                   <TouchableOpacity style={styles.removeButton} onPress={() => removeTimeFromArray(index)}>
+                   <Text style={styles.removeButtonText}>X</Text>
+                  </TouchableOpacity>
+                  </View> )}
+                    keyExtractor={(item, index) => index.toString()}
                 />
             </View>
-            <Text style={styles.logoText}>Choose at least 3 favorite times </Text>
 
-            <View style={styles.daysContainer} >
-                {days.map(day => (
-                    <TouchableOpacity
-                        key={day}
-                        style={selectedDay === day ? styles.selectedDay : selectedDays.find(d => d.day === day) ? styles.alreadySelectedDay : styles.day}
-                        onPress={() => setSelectedDay(day)}
-                    >
-                        <Text style={styles.dayText}>{day}</Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
-            <View style={styles.dividerLine} />
-            <View style={styles.firstPickerContainer} >
-                <Text style={styles.text}>Start Time:</Text>
+            <View style={{marginTop:5}}>
+                <Text style={{fontFamily:'Lato_700Bold',fontWeight:"400", fontSize: 16, color: '#E04747', lineHeight:19,letterSpacing:0.03,textAlign:'center',marginBottom:5,color:"rgba(0,0,0,0.7)"}} > Rank </Text>
+            <StarRating
+          starSize={22}
+          maxStars={5}
+          rating={rating}
+          onChange={handlerating}
+          style={styles.rating}
+        />
 
-                <Picker
-                    style={styles.pickerInside}
+            </View>
 
-                    selectedValue={selecteStartdHour}
-                    onValueChange={itemValue => setSelectedStartHour(itemValue)}
-                    itemStyle={styles.pickerItem}
-                >
-                    {hours.map(hour => (
-                        <Picker.Item key={hour} label={hour} value={hour} />
+   
+                        
 
-                    ))}
-                </Picker>
-            </View>
-            <View style={styles.dividerLine} />
-            <View style={styles.lastPickerContainer} >
-                <Text style={styles.text}>End Time:</Text>
-                <Picker
-                    style={styles.pickerInside}
-                    selectedValue={selectedEndHour}
-                    onValueChange={itemValue => setSelectedEndHour(itemValue)}
-                    itemStyle={styles.pickerItem}>
-                    {hours.map(hour => (
-                        <Picker.Item key={hour} label={hour} value={hour} />
-                    ))}
-                </Picker>
-            </View>
-            <View style={styles.btnContainer} >
-                <TouchableOpacity onPress={addFavoriteTime} style={selectedDays.length < 3 ? styles.btnAddBefore : styles.btnAdd} >
-                    <Text style={styles.btnText} >Add </Text>
-                </TouchableOpacity>
-                {selectedDays.length > 2 ?
-                    <TouchableOpacity onPress={saveFavoriteTimeToDb} style={styles.btnSave}  >
-                        <Text style={styles.btnText} >Save </Text>
-                    </TouchableOpacity>
-                    : null}
-            </View>
+      
+              
+                <View style={styles.buttonsviews}>
+               
+                    <TouchableOpacity style={styles.submitbox} onPress={()=> submittimes()}>
+                        <Text style={styles.buttonstext}>Submit</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.addtimearraybox} onPress={()=> addtimetoarray()}>
+                        <Text style={styles.buttonstext}>Add</Text>
+                        </TouchableOpacity>
+                    </View>
         </View>
+        </SafeAreaView>
     );
 }
 
@@ -148,156 +250,143 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center',
         marginBottom: Dimensions.get('window').height * 0.04,
-        marginTop: Dimensions.get('window').height * 0.008,
+        marginTop: Dimensions.get('window').height * 0.04,
     },
-    pickerInside: {
-        flex: 1,
-        width: Dimensions.get('window').width * 1,
-        height: Dimensions.get('window').height * 0.02,
-    },
-    picker: {
-        flex: 1,
+
+    header:{
+        alignItems:'flex-start',
         width: Dimensions.get('window').width * 0.9,
-        height: Dimensions.get('window').height * 0.02,
+        top: Dimensions.get('window').height * 0.02,
+        height: Dimensions.get('window').height * 0.1,
+        
+    } ,
 
-    },
-    logo
-        : {
-        width: Dimensions.get('window').width * 0.63,
-        height: '100%',
-        resizeMode: 'contain',
-    },
-    logoContainer: {
-        flex: 1.65,
-    },
-    logoText: {
-        fontSize: Dimensions.get('window').height * 0.022,
-        color: 'black',
+    buttonstext:{
+        fontFamily:'Inter_700Bold',
+        fontSize: 16,
+        fontStyle: 'normal',
+        lineHeight: 19,
+        letterSpacing:0.01,
         textAlign: 'center',
-        marginVertical: Dimensions.get('window').width * 0.05,
+        color:'rgba(255, 255, 255, 0.8)',
+        fontWeight:'700'
+
+    } ,
+
+    keeperview:{
+        width:270,
+        height:110,
     },
-    firstPickerContainer: {
-        flex: 2.3,
-        alignItems: 'center',
-        justifyContent: 'center',
-        //marginBottom: Dimensions.get('window').height * 0.06     
-    },
-    lastPickerContainer: {
-        flex: 2.3,
-        alignItems: 'center',
-        justifyContent: 'start',
-        marginBottom: Dimensions.get('window').height * 0.01,
+
+    submitbox:{
+
+        backgroundColor: "#1976D2",
+        boxShadow: '0px 0px 40px 2px rgba(0, 0, 0, 0.5)',
+        borderRadius: 25,
+        flexDirection:'column',
+        justifyContent:'center',
+        alignItems:'center',
+        width:"44%",
+        height:"23%"
+
 
     },
-    pickerItem: {
-        fontSize: Dimensions.get('window').height * 0.025,
-        flex: 1,
-        color: 'black',
-        textAlign: 'center',
-        fontWeight: 'bold',
+
+    addtimearraybox:{
+        backgroundColor: "#E04747",
+        boxShadow: '0px 0px 40px 2px rgba(0, 0, 0, 0.5)',
+        borderRadius: 25,
+        width:"44%",
+        height:"23%",
+        flexDirection:'column',
+        justifyContent:'center',
+        alignItems:'center',
+    },
+
+
+
+    buttonsviews:{
+        width: Dimensions.get('window').width * 0.9,
+        height: Dimensions.get('window').height * 0.13,
+        top: Dimensions.get('window').height * 0.005,
+        alignItems:'center',
+        justifyContent:'center',
+        flexDirection:'row',
+        justifyContent:'space-between',
+        
+    },
+
+    resetbuttonview:{
+        width: Dimensions.get('window').width * 0.9,
+        height: Dimensions.get('window').height * 0.1,
+        top: Dimensions.get('window').height * 0.02,
+        alignItems:'center',
+        justifyContent:'center',
+        flexDirection:'row',
+        
 
     },
-    text: {
-        fontSize: Dimensions.get('window').height * 0.022,
+
+    resetbuttonstyle:{
+        backgroundColor: "#E04747",
+        boxShadow: '0px 0px 40px 2px rgba(0, 0, 0, 0.5)',
+        borderRadius: 25,
+        width:"44%",
+        height:"40%",
+        flexDirection:'column',
+        justifyContent:'center',
+        alignItems:'center',
+    },
+
+
+
+
+    TextViews:{
+        width: Dimensions.get('window').width * 0.9,
+        height: Dimensions.get('window').height * 0.1,
+        top: Dimensions.get('window').height * 0.02,
+        alignItems:'center',
+        justifyContent:'center',
+        
+
+
 
     },
-    daysContainer: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+    preferredTimesList: {
+        width: Dimensions.get('window').width * 0.9,
+        height: Dimensions.get('window').height * 0.15,
+        
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        marginBottom: 10,
+        backgroundColor: '#FFFFFF',
+        marginTop: 10,
+     
+      },
+      preferredTimeItem: {
         flexDirection: 'row',
-    },
-    day: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'lightgray',
-        margin: 5,
-        borderRadius: 3,
-        width: Dimensions.get('window').width * 0.1,
-        height: '60%'
-    },
-    selectedDay: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'lightgray',
-        margin: 5,
-        borderRadius: 3,
-        borderColor: 'black',
-        borderWidth: 1.1,
-        width: Dimensions.get('window').width * 0.1,
-        height: '60%'
-    },
-    alreadySelectedDay: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#484848',
-        margin: 3,
-        borderRadius: 3,
-        width: Dimensions.get('window').width * 0.1,
-        height: Dimensions.get('window').height * 0.05,
-    },
-    dayText: {
-        fontSize: 24,
-    },
-    btnContainer: {
-        flex: 0.4,
-        alignItems: 'center',
         justifyContent: 'space-between',
-        paddingTop: Dimensions.get('window').height * 0.01,
-        flexDirection: 'row',
-    },
-    btnAdd: {
-        backgroundColor: '#F95F6B',
-        width: Dimensions.get('window').width * 0.4,
-        height: Dimensions.get('window').height * 0.058,
         alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 10,
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.8,
-        shadowRadius: 4,
-        marginRight: Dimensions.get('window').width * 0.09,
+        marginBottom: 5,
+      },
+      preferredTimeText: {
+        fontSize: 16,
+        color: '#333',
+        fontFamily: 'Lato_400Regular',
+      },
+      removeButton: {
+        backgroundColor: '#E04747',
+        borderRadius: 5,
+        padding: 5,
+      },
+      removeButtonText: {
+        color: '#FFF',
+        fontSize: 14,
+        fontWeight: 'bold',
+      },
+   
 
-    },
-    btnAddBefore: {
-        backgroundColor: '#F95F6B',
-        width: Dimensions.get('window').width * 0.8,
-        height: Dimensions.get('window').height * 0.058,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 10,
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.8,
-        shadowRadius: 4,
 
-    },
-
-    btnSave: {
-        backgroundColor: '#1EAAF1',
-        width: Dimensions.get('window').width * 0.4,
-        height: Dimensions.get('window').height * 0.058,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 10,
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.8,
-        shadowRadius: 4,
-
-    },
-    btnText: {
-        fontSize: 24,
-        color: 'white',
-    },
-    dividerLine: {
-        width: Dimensions.get('window').width * 0.95,
-        height: 1,
-        backgroundColor: 'lightgray',
-        // marginTop: Dimensions.get('window').height * 0.01,
-        marginBottom: Dimensions.get('window').height * 0.025,
-    },
+   
 });

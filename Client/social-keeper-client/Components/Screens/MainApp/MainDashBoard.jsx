@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 //internal imports:
 import PreviousMeetingsScreen from './PreviousMeetingsScreen';
 import FutureMeetingScreen from './FutureMeetingScreen';
-import SettingDashBoard from '../Settings/SettingDashBoard';
+import SettingDashBoard from './PersonalSettings';
 import SuggestedMeetingsScreen from './SuggestedMeetingsScreen';
 
 const Tab = createBottomTabNavigator();
@@ -21,8 +21,8 @@ export default function MainDashBoard() {
                     let iconName;
                     if (route.name === 'Previous Meetings') {
                         iconName = focused ? 'ios-timer-outline' : 'ios-timer-outline';
-                    } else if (route.name === 'Future Meetings') {
-                        iconName = focused ? 'ios-calendar' : 'ios-calendar-outline';
+                    } else if (route.name === 'Random Meeting') {
+                        iconName = focused ? 'person-add' : 'person-add-outline';
                     } else if (route.name === 'Personal') {
                         //sliders icon for settings
                         iconName = focused ? 'ios-settings' : 'ios-settings-outline';
@@ -61,10 +61,9 @@ export default function MainDashBoard() {
             
 
 
-            <Tab.Screen name="Future Meetings" component={FutureMeetingScreen}
+            <Tab.Screen name="Random Meeting" component={FutureMeetingScreen}
             options={{
-                tabBarBadge: 3,//in the future this will be the number of future meetings the user has
-                
+                headerShown: false,
             }} />
             <Tab.Screen name="Suggested Meetings" component={SuggestedMeetingsScreen} />
         </Tab.Navigator>
@@ -72,12 +71,12 @@ export default function MainDashBoard() {
     );
 }
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
+    // container: {
+    //     flex: 1,
+    //     backgroundColor: '#fff',
+    //     alignItems: 'center',
+    //     justifyContent: 'center',
+    // },
     tabBar: {
         backgroundColor: '#fff',
     },
