@@ -67,7 +67,6 @@ namespace WebApplication1.Controllers
 
         public UserDTO GetUser(tblUser checkifuser)
         {
-
             UserDTO usertoret = new UserDTO();
             usertoret.phoneNum1 = checkifuser.phoneNum1;
             usertoret.userName = checkifuser.userName;
@@ -86,13 +85,14 @@ namespace WebApplication1.Controllers
                 favodto.phoneNum1 = favo.phoneNum1;
                 favodto.phoneNum2 = favo.phoneNum2;
                 favodto.hobbieNum = favo.hobbieNum;
-                UserDTO user1dto = new UserDTO();
+                Usersummary user1dto = new Usersummary();
                 user1dto.phoneNum1 = favo.tblUser1.phoneNum1;
                 user1dto.userName = favo.tblUser1.userName;
                 user1dto.birthDate = Convert.ToDateTime(favo.tblUser1.birthDate);
                 user1dto.city = favo.tblUser1.city;
                 user1dto.gender = favo.tblUser1.gender;
                 user1dto.email = favo.tblUser1.email;
+                user1dto.imageUri = favo.tblUser1.imageUri;
                 favodto.tblUser1 = user1dto;
                 tblhobbieDTO hobbieDTO = new tblhobbieDTO();
                 hobbieDTO.hobbieNum = favo.tblHobbie.hobbieNum;
@@ -112,7 +112,7 @@ namespace WebApplication1.Controllers
                 favodto.phoneNum1 = favo.phoneNum1;
                 favodto.phoneNum2 = favo.phoneNum2;
                 favodto.hobbieNum = favo.hobbieNum;
-                UserDTO user1dto = new UserDTO();
+                Usersummary user1dto = new Usersummary();
                 user1dto.phoneNum1 = favo.tblUser1.phoneNum1;
                 user1dto.userName = favo.tblUser1.userName;
                 user1dto.birthDate = Convert.ToDateTime(favo.tblUser1.birthDate);
@@ -162,41 +162,83 @@ namespace WebApplication1.Controllers
                 hobbieDTO.rank = item.rank;
                 tblHobbie ushob = db.tblHobbies.Where(x => x.hobbieNum == item.hobbieNum).FirstOrDefault();
                 hobbieDTO.hobbiename = ushob.hobbieName;
+                hobbieDTO.hobbieimage = ushob.imageuri;
                 userhobbiesDTOs.Add(hobbieDTO);
             }
             usertoret.tblUserHobbiesDTO = userhobbiesDTOs;
 
-            List<tblPossibleDTO> possibleinvite= new List<tblPossibleDTO>();
-            List<tblPossibleDTO> possibleinvited= new List<tblPossibleDTO>();
+            List<tblPossibleDTO> possibleinvite = new List<tblPossibleDTO>();
+            List<tblPossibleDTO> possibleinvited = new List<tblPossibleDTO>();
 
             foreach (PossibleFavoriteContact pos in checkifuser.PossibleFavoriteContacts)
             {
-                tblPossibleDTO posdto= new tblPossibleDTO();
-                posdto.phonenuminvite= pos.phonenuminvite;
-                posdto.phonenuminvited= pos.phonenuminvited;
-                posdto.hobbieNum= pos.hobbieNum;
-                posdto.tblUser=pos.tblUser;
-                posdto.tblUser1= pos.tblUser;
-                posdto.tblHobbie= pos.tblHobbie;
-                possibleinvite.Add( posdto );
+                tblPossibleDTO posdto = new tblPossibleDTO();
+                posdto.phonenuminvite = pos.phonenuminvite;
+                posdto.phonenuminvited = pos.phonenuminvited;
+                posdto.hobbieNum = pos.hobbieNum;
+                Usersummary user = new Usersummary();
+                user.userName = pos.tblUser.userName;
+                user.phoneNum1 = pos.tblUser.phoneNum1;
+                user.birthDate = Convert.ToDateTime(pos.tblUser.birthDate);
+                user.email = pos.tblUser.email;
+                user.gender = pos.tblUser.gender;
+                user.city = pos.tblUser.city;
+                user.imageUri = pos.tblUser.imageUri;
+                posdto.tblUser = user;
+                Usersummary user1 = new Usersummary();
+                user1.userName = pos.tblUser1.userName;
+                user1.phoneNum1 = pos.tblUser1.phoneNum1;
+                user1.birthDate = Convert.ToDateTime(pos.tblUser1.birthDate);
+                user1.email = pos.tblUser1.email;
+                user1.gender = pos.tblUser1.gender;
+                user1.city = pos.tblUser1.city;
+                user1.imageUri = pos.tblUser1.imageUri;
+                posdto.tblUser1 = user1;
+                tblhobbieDTO hobbiedto = new tblhobbieDTO();
+                hobbiedto.hobbieName = pos.tblHobbie.hobbieName;
+                hobbiedto.hobbieNum = pos.tblHobbie.hobbieNum;
+                hobbiedto.imageuri = pos.tblHobbie.imageuri;
+                posdto.tblHobbiedto = hobbiedto;
+
+
+                possibleinvite.Add(posdto);
             }
 
-            foreach(PossibleFavoriteContact posinvited in checkifuser.PossibleFavoriteContacts1)
+            foreach (PossibleFavoriteContact posinvited in checkifuser.PossibleFavoriteContacts1)
             {
-                tblPossibleDTO posdoinviteddto= new tblPossibleDTO();
-                posdoinviteddto.phonenuminvite=posinvited.phonenuminvite;
-                posdoinviteddto.phonenuminvited=posinvited.phonenuminvited;
-                posdoinviteddto.hobbieNum=posinvited.hobbieNum;
-                posdoinviteddto.tblUser= posinvited.tblUser;
-                posdoinviteddto.tblUser1 = posinvited.tblUser1;
-                posdoinviteddto.tblHobbie=posinvited.tblHobbie;
-                possibleinvited.Add( posdoinviteddto );
+                tblPossibleDTO posdoinviteddto = new tblPossibleDTO();
+                posdoinviteddto.phonenuminvite = posinvited.phonenuminvite;
+                posdoinviteddto.phonenuminvited = posinvited.phonenuminvited;
+                posdoinviteddto.hobbieNum = posinvited.hobbieNum;
+                Usersummary user = new Usersummary();
+                user.userName = posinvited.tblUser.userName;
+                user.phoneNum1 = posinvited.tblUser.phoneNum1;
+                user.birthDate = Convert.ToDateTime(posinvited.tblUser.birthDate);
+                user.gender = posinvited.tblUser.gender;
+                user.city = posinvited.tblUser.city;
+                user.imageUri = posinvited.tblUser.imageUri;
+                posdoinviteddto.tblUser = user;
+                Usersummary user1 = new Usersummary();
+                user1.userName = posinvited.tblUser1.userName;
+                user1.phoneNum1 = posinvited.tblUser1.phoneNum1;
+                user.birthDate = Convert.ToDateTime(posinvited.tblUser1.birthDate);
+                user1.gender = posinvited.tblUser1.gender;
+                user1.city = posinvited.tblUser1.city;
+                user1.imageUri = posinvited.tblUser1.imageUri;
+                posdoinviteddto.tblUser1 = user1;
+                tblhobbieDTO hobbiedto = new tblhobbieDTO();
+                hobbiedto.hobbieName = posinvited.tblHobbie.hobbieName;
+                hobbiedto.hobbieNum = posinvited.tblHobbie.hobbieNum;
+                hobbiedto.imageuri = posinvited.tblHobbie.imageuri;
+                posdoinviteddto.tblHobbiedto = hobbiedto;
+                possibleinvited.Add(posdoinviteddto);
             }
 
-            usertoret.possibleFavoriteContacts_invite_DTO= possibleinvite;
-            usertoret.possibleFavoriteContacts_invited_DTO= possibleinvited;
+            usertoret.possibleFavoriteContacts_invite_DTO = possibleinvite;
+            usertoret.possibleFavoriteContacts_invited_DTO = possibleinvited;
 
             return usertoret;
+
 
             // יש פה צורך לעשות המרה של אובייקטי ה-DTO לאובייקטים רגילים ואז להחזיר
         }
@@ -231,15 +273,8 @@ namespace WebApplication1.Controllers
             {
                 foreach(string phonenum in existuser.phonenumbers)
                 {
-                    string cleanedPhoneNumber = Regex.Replace(phonenum, @"[^0-9]+", "");
-                    if (cleanedPhoneNumber.StartsWith("972"))
-                    {
-                        cleanedPhoneNumber = cleanedPhoneNumber.Substring(3);
-                    }
-                    if (!cleanedPhoneNumber.StartsWith("0"))
-                    {
-                        cleanedPhoneNumber = "0" + cleanedPhoneNumber;
-                    }
+                    string cleanedPhoneNumber = Utils.cleanphonenumber(phonenum);
+
 
                     tblUser usera = listtblusers.Where(x=> x.phoneNum1==cleanedPhoneNumber).FirstOrDefault();
                     ExistsingUsers ex= existsingUsers.Where(x=> x.phonenumbers.Contains(cleanedPhoneNumber)).FirstOrDefault();
@@ -310,7 +345,10 @@ namespace WebApplication1.Controllers
                 myusertosave.imageUri = downloadurl;
                 db.SaveChanges();
 
-                return Ok(myusertosave);
+                UserDTO usertoret = GetUser(myusertosave);
+
+
+                return Ok(usertoret);
 
             }
             else
@@ -500,16 +538,18 @@ namespace WebApplication1.Controllers
                     {
                         tblInvite newinvite = new tblInvite();
                         newinvite.phoneNum1 = invite.phoneNum1;
-                        newinvite.phoneNum2 = invite.phoneNum2;
+                        newinvite.phoneNum2 = Utils.cleanphonenumber(invite.phoneNum2);
                         newinvite.date = DateTime.Now;
                         newinvite.status = invite.status;
                         tblUser user1invite = newuser;
-                        tblNewUser user2invite = db.tblNewUsers.Where(x => x.phoneNum1 == invite.phoneNum2).FirstOrDefault();
+                        tblNewUser user2invite = db.tblNewUsers.Where(x => x.phoneNum1 == newinvite.phoneNum2).FirstOrDefault();
                         if (user2invite == null)
                         {
                             user2invite = new tblNewUser();
-                            user2invite.phoneNum1 = invite.phoneNum2;
+                            user2invite.phoneNum1 = newinvite.phoneNum2;
                             user2invite.nickName = invite.Nickname;
+                            db.tblNewUsers.Add(user2invite);
+
 
                         }
                         newinvite.tblUser = user1invite;
@@ -517,7 +557,6 @@ namespace WebApplication1.Controllers
                         newuser.tblInvites.Add(newinvite);
                         user2invite.tblInvites.Add(newinvite);
                         db.tblInvites.Add(newinvite);
-                        db.tblNewUsers.Add(user2invite); 
 
                     }
 

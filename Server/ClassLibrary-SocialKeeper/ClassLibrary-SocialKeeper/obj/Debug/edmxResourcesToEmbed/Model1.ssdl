@@ -51,6 +51,7 @@
     </Key>
     <Property Name="hobbieNum" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="hobbieName" Type="nvarchar" MaxLength="30" Nullable="false" />
+    <Property Name="imageuri" Type="nvarchar" MaxLength="150" />
   </EntityType>
   <EntityType Name="tblInvite">
     <Key>

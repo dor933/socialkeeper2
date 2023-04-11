@@ -12,7 +12,7 @@ namespace ClassLibrary_SocialKeeper
         public string phoneNum2 { get; set; }
         public string rank { get; set; }
         public int hobbieNum { get; set; }
-        public virtual UserDTO tblUser1 { get; set; }
+        public virtual Usersummary tblUser1 { get; set; }
         public virtual tblhobbieDTO tblHobbie { get; set; }
     }
 }

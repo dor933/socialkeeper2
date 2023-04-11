@@ -12,8 +12,8 @@ namespace ClassLibrary_SocialKeeper
         public string phonenuminvited { get; set; }
         public int hobbieNum { get; set; }
 
-        public virtual tblHobbie tblHobbie { get; set; }
-        public virtual tblUser tblUser { get; set; }
-        public virtual tblUser tblUser1 { get; set; }
+        public virtual tblhobbieDTO tblHobbiedto { get; set; }
+        public virtual Usersummary tblUser { get; set; }
+        public virtual Usersummary tblUser1 { get; set; }
     }
 }

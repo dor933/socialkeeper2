@@ -14,6 +14,7 @@
     <EntitySetMapping Name="tblHobbies">
       <EntityTypeMapping TypeName="igroup192_prodModel.tblHobbie">
         <MappingFragment StoreEntitySet="tblHobbie">
+          <ScalarProperty Name="imageuri" ColumnName="imageuri" />
           <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
           <ScalarProperty Name="hobbieName" ColumnName="hobbieName" />
         </MappingFragment>
