@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import DatePicker from 'react-native-datepicker';
 import { Picker } from '@react-native-picker/picker';
-import GenderDropdown from './../..//CompsToUse//GenderDropdown';
-import ImagePickerExample from './../..//CompsToUse//ImagePickerExample';
+import GenderDropdown from '../../CompsToUse/GenderDropdown';
+import ImagePickerExample from '../../CompsToUse/ImagePickerExample';
 
 export default function ProfileScreen(props,{navigation}) {
   

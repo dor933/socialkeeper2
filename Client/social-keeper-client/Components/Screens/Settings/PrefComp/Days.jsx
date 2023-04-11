@@ -6,7 +6,8 @@ import { useState, useEffect } from "react";
 //create a simple component
 const Days = (props) => {
 
-    const day=props.day;
+    const dayindex=props.dayindex;
+    const dayletter=props.dayLetter;
     const selectedDay = props.selectedDay;
     const setSelectedDay = props.setSelectedDay;
 
@@ -15,20 +16,23 @@ const Days = (props) => {
   
 
 
-      const handlePress = (day) => {
-        if (day === selectedDay) {
-          setSelectedDay("");
+      const handlePress = (dayindex) => {
+        console.log("dayindex", dayindex);
+        console.log("selectedDay", selectedDay.index);
+
+        if (dayindex === selectedDay.index) {
+          setSelectedDay({});
           return;
         }
       
-        setSelectedDay(day);
+        setSelectedDay({index: dayindex, letter: dayletter});
  
       };
 
     return (
-        <TouchableOpacity onPress={() => handlePress(day)}>
-        <View style={[styles.container, {borderColor: day==selectedDay ? "#E04747" : '' }]}>
-        <Text style={[styles.text,{color: day==selectedDay ? "#E04747" : "rgba(0,0,0,0.7)" }]}>{props.day}</Text>
+        <TouchableOpacity onPress={() => handlePress(dayindex)}>
+        <View style={[styles.container, {borderColor: dayindex==selectedDay.index ? "#E04747" : '' }]}>
+        <Text style={[styles.text,{color: dayindex==selectedDay.index ? "#E04747" : "rgba(0,0,0,0.7)" }]}>{dayletter}</Text>
         </View>
         </TouchableOpacity>
     );

@@ -1,8 +1,6 @@
 
 //Dor's code
 
-import { StatusBar } from 'expo-status-bar';
-import { Alert, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
@@ -14,7 +12,10 @@ import SignInAPI from './Components/Screens/Login/SignInAPI';
 import CreateProfile from './Components/Screens/Profile/CreateProfile';
 import PreferredMeetingTimes from './Components/Screens/Settings/PreferredMeetingTimes';
 import PrefferedHobbies from './/Components/Screens/Settings//PreferredHoobies';
-
+import MainDashBoard from './Components/Screens//MainApp/MainDashBoard';
+import FutureMeetingScreen from './Components/Screens//MainApp/FutureMeetingScreen';
+import PreviousMeetingsScreen from './Components/Screens//MainApp/PreviousMeetingsScreen';
+import MainAppcontext from './Components/Screens/MainApp/MainAppcontext';
 const Registrationstack = createStackNavigator();
 const Mainappstack = createStackNavigator();
 
@@ -34,6 +35,17 @@ const RegistrationStackScreen = () => {
   )
 }
 
+const MainAppStackScreen = () => {
+  return (
+    <Mainappstack.Navigator initialRouteName="MainDashBoard" >
+    <Mainappstack.Screen name="MainDashBoard" component={MainDashBoard} options={{headerShown:false}} />
+    <Mainappstack.Screen name="FutureMeetingScreen" component={FutureMeetingScreen} options={{headerShown:false}} />
+    <Mainappstack.Screen name="PreviousMeetingsScreen" component={PreviousMeetingsScreen} options={{headerShown:false}} />
+    
+    </Mainappstack.Navigator>
+  )
+}
+
 
 export default function App() {
 
@@ -44,14 +56,16 @@ export default function App() {
   return (
     <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
     <RegistrationContext>
+      <MainAppcontext>
 
       <NavigationContainer>
 
-        {isAuthenticated ?  <Mainappstack.Navigator initialRouteName="FutureMeetingScreen" />  : ( <RegistrationStackScreen /> ) }
+        {isAuthenticated ?  <MainAppStackScreen />  : ( <RegistrationStackScreen /> ) }
 
 
 
       </NavigationContainer>
+      </MainAppcontext>
 
     </RegistrationContext>
     </AuthContext.Provider>

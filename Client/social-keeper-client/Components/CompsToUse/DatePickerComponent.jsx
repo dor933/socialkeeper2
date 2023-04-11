@@ -16,13 +16,16 @@ export default () => {
   const onChange = (event, selectedDate) => {
     if (event.type === 'set') {
 
-      //check if the selected date is null or greater than the current date
-      if(selectedDate > new Date()){
-        //if its greater say that the date is invalid
+      const currentDate = new Date();
+      const differenceInTime = currentDate - selectedDate;
+      const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+      
+      if (selectedDate > currentDate || differenceInDays < 6570) {
+        // If the selected date is in the future or doesn't meet the constraint, show an alert
         alert("Invalid Date");
-        //return
         return;
       }
+      
       //if the selected date is not null
       if(selectedDate){
         

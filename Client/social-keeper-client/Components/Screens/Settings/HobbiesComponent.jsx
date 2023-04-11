@@ -63,11 +63,12 @@ function HobbiesComponent({navigation,myitem,counting,count}) {
   };
 
   const handlerating = (rating) => {
-    setRating(rating);
+    const roundedrating=Math.round(rating);
+    setRating(roundedrating);
     //update the rank of the hobbie in the selectedhobbies array
     const newselectedhobbies=selectedhobbies.map((hobbie)=>{
       if(hobbie.hobbieNum===item.hobbieNum){
-        hobbie.rank=rating;
+        hobbie.rank=roundedrating;
       }
       return hobbie;
     });

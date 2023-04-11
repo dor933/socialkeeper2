@@ -33,6 +33,8 @@ import {RegistContext} from '..//..//..//RegistContext.jsx';
 import { Button } from "@rneui/base";
 import Mymodal from './/FavoriteComp//Mymodal.jsx';
 import AuthContext from "../..//..//Authcontext.jsx";
+import {MainAppcontext} from "..//MainApp/MainAppcontext.jsx";
+
 
 
 
@@ -48,21 +50,21 @@ import AuthContext from "../..//..//Authcontext.jsx";
 
 
 export default function FavoriteContacts({ navigation }, props) {
-  const [contacts, setContacts] = useState([]);
-  const [filteredContacts, setFilteredContacts] = useState([]);
-  const [alreadymembers, setAlreadyMembers] = useState([]);
+  const {contacts, setContacts} = React.useContext(RegistContext);
+  const {filteredContacts, setFilteredContacts} = React.useContext(RegistContext);
+  const {alreadymembers, setAlreadyMembers} = React.useContext(RegistContext);
   const [isOverlayVisible, setOverlayVisible] = useState(false);
   const [overlayPosition, setOverlayPosition] = useState({ x: 0, y: 0 });
   const [selectedContact, setSelectedContact] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const {possiblefavoritecontacts,setPossibleFavoriteContacts}= React.useContext(RegistContext);
-  const {personaldetails,selectedImage,prefferdtimes,selectedhobbies}= React.useContext(RegistContext);
-  const [invitedcontacts,setInvitedContacts]=useState([])
-  const [toinvite,setToInvite]=useState(false)
-  const [filteredalreadymebers,setFilteredAlreadyMembers]=useState([])
+  const {personaldetails,selectedImage,prefferdtimes,selectedhobbies,setPersonalDetails,imagetype}= React.useContext(RegistContext);
+  const {invitedcontacts,setInvitedContacts}= React.useContext(RegistContext);
+  const {filteredalreadymebers,setFilteredAlreadyMembers}= React.useContext(RegistContext);
   const [modalhobbiesvisible,setModalHobbiesVisible]=useState(false)
   const [commonhobbie,setCommonHobbie]=useState([]);
-  const {isAuthenticated, setIsAuthenticated}= React.useContext(AuthContext);
+  const { setIsAuthenticated}= React.useContext(AuthContext);
+  const {setUser} = React.useContext(MainAppcontext);
 
 
 
@@ -101,7 +103,6 @@ export default function FavoriteContacts({ navigation }, props) {
   useEffect(() => {
 
     
-    console.log(prefferdtimes)
     loadContacts();
   }, []);
 
@@ -130,7 +131,7 @@ export default function FavoriteContacts({ navigation }, props) {
         [
           {
             text: "No",
-            onPress: () => invitecontact(false),
+            onPress: () => console.log("Cancel Pressed"),
             style: "cancel",
           },
           {
@@ -188,15 +189,7 @@ export default function FavoriteContacts({ navigation }, props) {
 
   }
 
-  const invitecontact= async(shouldinvite)=>{
-    if(shouldinvite){
-
-      setToInvite(true)
-
-    }else{
-      setToInvite(false)
-    }
-  }
+  
     
 
   async function whatsappcontact(){
@@ -242,6 +235,25 @@ export default function FavoriteContacts({ navigation }, props) {
   }
 
   async function onsubmit(){
+
+    let newprefferdtimes=[];
+    prefferdtimes.map((time)=>{
+      let timeobj={
+        weekDay:time.day.index,
+        startTime:time.startTime,
+        endTime:time.endTime,
+        rank:time.rank
+
+      }
+      newprefferdtimes.push(timeobj)
+    })
+
+
+    
+    
+
+
+
     const newuser={
       phoneNum1:personaldetails.phoneNumber,
       userName:personaldetails.userName,
@@ -251,68 +263,113 @@ export default function FavoriteContacts({ navigation }, props) {
       city:personaldetails.address,
       birthDate:personaldetails.birthDate,
       tblInvitesDTO: invitedcontacts,
-      tblprefferdDTO:prefferdtimes,
+      tblprefferdDTO:newprefferdtimes,
       tblUserHobbiesDTO:selectedhobbies,
       possibleFavoriteContacts_invite_DTO:possiblefavoritecontacts,
 
     }
 
-  //   try{
+    console.log(newuser)
+    console.log(selectedImage)
 
-  //   const response= await axios.post("http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/AddUser",newuser);
-  //   if(response.data=="Phone Number already exists"){
-  //     Alert.alert(
-  //       "Phone Number already exists",
-  //       "Please change your phone number and try again",
-  //       [
-  //         {
-  //           text: "OK",
-  //           style: "cancel",
-  //         },
-  //       ],
-  //       { cancelable: false }
-  //     );
-  //   }
-  //   else if (response.data=="User name already exists"){
-  //     Alert.alert(
-  //       "User name already exists",
-  //       "Please change your user name and try again",
-  //       [
-  //         {
-  //           text: "OK",
-  //           style: "cancel",
-  //         },
-  //       ],
-  //       { cancelable: false }
-  //     );
-  //   }
-  //   else{
-  //     Alert.alert(
-  //       "User created successfully",
-  //       "Moving to the App...",
-  //       [
-  //         {
-  //           text: "OK",
-  //           style: "cancel",
-  //         },
-  //       ],
-  //       { cancelable: false }
-  //     );
+    try{
 
-  //     setIsAuthenticated(true)
+      console.log("im here to add user")
+
+    const response= await axios.post("http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/AddUser",newuser);
+    if(response.data=="Phone Number already exists"){
+      Alert.alert(
+        "Phone Number already exists",
+        "Please change your phone number and try again",
+        [
+          {
+            text: "OK",
+            style: "cancel",
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+    else if (response.data=="User name already exists"){
+      Alert.alert(
+        "User name already exists",
+        "Please change your user name and try again",
+        [
+          {
+            text: "OK",
+            style: "cancel",
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+    else if(response.data=="User added"){
+      console.log("im here the user added")
+      const data = new FormData();
+      data.append('img',{ 
+        uri: selectedImage,
+        name: `image.${imagetype}`,
+        type: `image/${imagetype}`,
+        
+      }
+        );
+      data.append('identis', personaldetails.phoneNumber);
+      
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+      
+      const response2 = await axios.post(
+        "http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Addimage",
+        data,
+        config
+      );
+
+      if(typeof response2.data.imageUri == "string") {
+
+        setUser(response2.data)
+
+      Alert.alert(
+        "User created successfully",
+        "Moving to the App...",
+        [
+          {
+            text: "OK",
+            style: "cancel",
+          },
+        ],
+        { cancelable: false }
+      );
+
+
+      setIsAuthenticated(true)
+      }
 
       
-  //   }
+    }
+    else{
+      console.log("im here the user not added")
+      console.log(response.data)
+    }
 
-  // }catch(error){
-  //   console.log(error)
-  // }
+  }catch(error){
+    console.log(error)
+    //bring all the errors to the user
 
-    console.log(newuser)
+    console.log(error.response.data)
+
+
+
+
+  }
+
   }
        // String value with the number to call
 
   async function loadContacts() {  
+    if(contacts.length==0 && filteredContacts.length==0) {
     const { status } = await Contacts.requestPermissionsAsync();
   if (status === "granted") {
     const { data } = await Contacts.getContactsAsync();
@@ -325,10 +382,27 @@ export default function FavoriteContacts({ navigation }, props) {
     const newdata= data.filter((contact)=>{
       if(contact.phoneNumbers){
         if(contact.phoneNumbers[0]){
-          if(!contact.firstName){
-            contact.firstName="No Name"
+          //check if phoneNumbers[0] start with 972 or 0 or +972 or 5 and the second number is between 0-9 regex 5[0-9] 
+
+          if (contact.phoneNumbers[0].number!== undefined && contact.phoneNumbers[0].number.match(/^(972|\+972|0-?5\d(-?\d){7}|5(-?\d){8})$/)) {
+
+
+
+            if(!contact.firstName){
+              contact.firstName="No Name"
+            }
+
+            return contact
+
+
+
+
           }
-        return contact
+
+
+       
+          //check if the contact
+          
         }
       }
  
@@ -370,32 +444,13 @@ export default function FavoriteContacts({ navigation }, props) {
 
   
   const already= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/getexistingmembers', contactList);
-  //add field that called "addedtofav"  to each contact and set it to false
-  for (let i = 0; i < already.data.length; i++) {
-
-    //check if already in possiblefavoriteconacts from registcontext and set the addedtofav to true
-    for(const contact in possiblefavoritecontacts){
-      if(possiblefavoritecontacts[contact].phonenuminvited===already.data[i].phonenumbers[0]){
-        console.log("already in possiblefavoritecontacts")
-        already.data[i].addedtofav = true;
-        break;
-
-      }
-      
-    }
-
-    if(!already.data[i].addedtofav){
-      already.data[i].addedtofav = false;
-
-    }
-       
-  }
   setAlreadyMembers(already.data);
   setFilteredAlreadyMembers(already.data);
 
   // here we need to send the contactList to the backend and get back the already members
     
 }
+    }
   }
 
 
@@ -448,7 +503,7 @@ export default function FavoriteContacts({ navigation }, props) {
     console.log("selectedContact",selectedContact)
     console.log("alreadymembers",alreadymembers)
 
-    const updatedAlreadyMembers = alreadymembers.map((contact) => {
+    const updatedAlreadyMembers = filteredalreadymebers.map((contact) => {
       console.log('contact is',contact)
       if (contact.phonenumbers[0] === selectedContact.phonenumbers[0]) {
 
@@ -459,6 +514,7 @@ export default function FavoriteContacts({ navigation }, props) {
 
 
   
+    setFilteredAlreadyMembers(updatedAlreadyMembers);
     setAlreadyMembers(updatedAlreadyMembers);
     const newselected= updatedAlreadyMembers.find((contact) => contact.phonenumbers[0] === selectedContact.phonenumbers[0]);
     setSelectedContact(newselected);

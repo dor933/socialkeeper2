@@ -17,10 +17,12 @@ import ImageViewer from "../../CompsToUse/ImageViewer";
 import {RegistContext} from "../../../RegistContext";
 
 
+
 export default function CreateProfile({navigation}) {
   
   const {selectedImage, setSelectedImage} = useContext(RegistContext);
   const {personaldetails, setPersonalDetails} = useContext(RegistContext);
+  const {setImageType} = useContext(RegistContext);
   
   const placeHolderImage = require("..//..///../assets//Images///RandomImages/avatar-user.png");
   const placeHolderImageuri= Image.resolveAssetSource(placeHolderImage).uri;
@@ -84,6 +86,11 @@ export default function CreateProfile({navigation}) {
     } else {
       setSelectedImage(result.assets[0].uri);
       console.log(result.assets[0].uri);
+      //find if the image is a png or a jpg or a jpeg
+      let imageType = result.assets[0].uri.split(".").pop();
+      console.log(imageType);
+      setImageType(imageType);
+      
     }
   };
 

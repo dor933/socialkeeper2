@@ -25,19 +25,28 @@ import {
   } from '@expo-google-fonts/inter';
 import { Button } from 'react-native-paper';
 import {RegistContext} from "../..//..//RegistContext.jsx";
+import StarRating from 'react-native-star-rating-widget';
+
 
 
 
 
 
 const hours = [...Array(24)].map((_, i) => `${i}:00`);
-const days = ['S', 'Sa', 'F', 'Th', 'W', 'T', 'M'];
 
+const days = [
+    { index: 1, letter: 'S' },
+    { index: 7, letter: 'Sa' },
+    { index: 6, letter: 'F' },
+    { index: 5, letter: 'Th' },
+    { index: 4, letter: 'W' },
+    { index: 3, letter: 'T' },
+    { index: 2, letter: 'M' },
+  ];
 
 export default function PreferredMeetingTimes({ navigation }, props) {
     const {prefferdtimes,setPrefferdTimes}= React.useContext(RegistContext);
-    const [selectedDay, setSelectedDay] = useState('');
-    const [selectedDays, setSelectedDays] = useState([]);//array of objects {day: 'S', startHour: '10:00', endHour: '12:00'}
+    const [selectedDay, setSelectedDay] = useState({});
     let [fontsLoaded] = useFonts({
         Lato_100Thin,
         Lato_300Light,
@@ -57,6 +66,13 @@ export default function PreferredMeetingTimes({ navigation }, props) {
        
         const [valuestart, setValuestart] = useState(null);
         const [valueend, setValueend] = useState(null);
+        const [rating, setRating] = useState(0);
+
+        const handlerating = (rating) => {
+            const roundedrating=Math.round(rating);
+            setRating(roundedrating);
+         
+          }
 
         const handlevaluestart = (value) => {
             setValuestart(value);
@@ -66,7 +82,7 @@ export default function PreferredMeetingTimes({ navigation }, props) {
         }
 
         const addtimetoarray = () => {
-            if (selectedDay === '') {
+            if (selectedDay.letter === undefined) {
                 Alert.alert('Please select a day');
             }
             else if (valuestart === null) {
@@ -76,27 +92,33 @@ export default function PreferredMeetingTimes({ navigation }, props) {
                 Alert.alert('Please select an end time');
             }
             else {
-                const newSelectedDays = [...selectedDays];
-                newSelectedDays.push({ day: selectedDay, startHour: valuestart, endHour: valueend });
-                setSelectedDays(newSelectedDays);
-                setSelectedDay('');
-                console.log(newSelectedDays);
+              
+                let therank = rating;
+                if(therank===0){
+                    therank=1;
+                }
+                
+                setPrefferdTimes([...prefferdtimes, { day: selectedDay, startTime: valuestart, endTime: valueend, rank: therank }]);
+                setRating(0);
+                console.log(prefferdtimes);
+                setSelectedDay({});
+              
             }
         }
 
 
         const submittimes= () => {
 
-            setPrefferdTimes(selectedDays);
             console.log(prefferdtimes);
             navigation.navigate('FavoriteContacts');
 
         }
 
         const removeTimeFromArray = (index) => {
-            const newSelectedDays = [...selectedDays];
-            newSelectedDays.splice(index, 1);
-            setSelectedDays(newSelectedDays);
+            //remove from prefferdtimes without selectedDays or newSelectedDays
+            setPrefferdTimes(prefferdtimes.filter((_, i) => i !== index));
+            console.log(prefferdtimes);
+        
           };
 
       
@@ -114,7 +136,9 @@ export default function PreferredMeetingTimes({ navigation }, props) {
         <SafeAreaView style={{flex:1, alignItems:'center', justifyContent:'center',backgroundColor:'#ffffff'}}>
         <View style={styles.container}>
             <View style={styles.header}>
+                <TouchableOpacity onPress={() => submittimes()}>
             <Image source={require('../../../assets/Images/Pref/arrowkeeper.png')} style={{backfaceVisibility:'#E04747'}}  />
+            </TouchableOpacity>
             </View>
             <View style={styles.keeperview}>
             <Image source={require('../../..//assets/Images/RandomImages/SocialKeeper.jpeg')} style={styles.keeperview} />
@@ -129,7 +153,8 @@ export default function PreferredMeetingTimes({ navigation }, props) {
                     days.map((day, index) => {
                         return (
                             <Days key={index} 
-                            day={day} 
+                            dayindex={day.index}
+                            dayLetter={day.letter}
                             setSelectedDay={setSelectedDay}
                             selectedDay={selectedDay}
 
@@ -177,10 +202,11 @@ export default function PreferredMeetingTimes({ navigation }, props) {
 
               <View style={styles.preferredTimesList}>
                 <FlatList
-                    data={selectedDays}
+                    data={prefferdtimes}
                     renderItem={({ item,index }) => (
+                        
                    <View style={styles.preferredTimeItem}>
-                    <Text style={styles.preferredTimeText}>{`${item.day} ${item.startHour}-${item.endHour}`}</Text>
+                    <Text style={styles.preferredTimeText}>{`${item.day.letter} ${item.startTime}-${item.endTime}`}</Text>
                    <TouchableOpacity style={styles.removeButton} onPress={() => removeTimeFromArray(index)}>
                    <Text style={styles.removeButtonText}>X</Text>
                   </TouchableOpacity>
@@ -188,6 +214,20 @@ export default function PreferredMeetingTimes({ navigation }, props) {
                     keyExtractor={(item, index) => index.toString()}
                 />
             </View>
+
+            <View style={{marginTop:5}}>
+                <Text style={{fontFamily:'Lato_700Bold',fontWeight:"400", fontSize: 16, color: '#E04747', lineHeight:19,letterSpacing:0.03,textAlign:'center',marginBottom:5,color:"rgba(0,0,0,0.7)"}} > Rank </Text>
+            <StarRating
+          starSize={22}
+          maxStars={5}
+          rating={rating}
+          onChange={handlerating}
+          style={styles.rating}
+        />
+
+            </View>
+
+   
                         
 
       
@@ -268,7 +308,7 @@ const styles = StyleSheet.create({
 
     buttonsviews:{
         width: Dimensions.get('window').width * 0.9,
-        height: Dimensions.get('window').height * 0.2,
+        height: Dimensions.get('window').height * 0.13,
         top: Dimensions.get('window').height * 0.005,
         alignItems:'center',
         justifyContent:'center',

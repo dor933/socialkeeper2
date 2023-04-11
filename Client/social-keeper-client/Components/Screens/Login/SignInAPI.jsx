@@ -7,11 +7,15 @@ import * as WebBrowser from 'expo-web-browser';
 import { useEffect,useState,useContext } from "react";
 import axios from 'axios';
 import { RegistContext } from '..//../..//RegistContext.jsx';
+import { MainAppcontext } from '../MainApp/MainAppcontext.jsx';
+import AuthContext from '../../../Authcontext.jsx';
 
 
 function SignUpAPI({navigation}) {
 
   const {personaldetails, setPersonalDetails} = useContext(RegistContext);
+  const {setUser} = useContext(MainAppcontext);
+  const {setIsAuthenticated}= React.useContext(AuthContext);
 
   WebBrowser.maybeCompleteAuthSession();
 
@@ -21,6 +25,7 @@ function SignUpAPI({navigation}) {
     useProxy:true,
     
   });
+
 
 
 
@@ -83,8 +88,15 @@ function SignUpAPI({navigation}) {
       const ifuser= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin',{email:user.email});
       if(ifuser.data=='no user was found'){
 
+        if(user.email!=undefined) {
+
         personaldetails.email=user.email;
         navigation.navigate('CreateProfile');
+        }
+      }
+      else if(typeof ifuser.data.imageUri == 'string'){
+        setUser(ifuser.data);
+        setIsAuthenticated(true);
       }
     } catch (error) {
       // Add your own error handler here
@@ -97,10 +109,7 @@ function SignUpAPI({navigation}) {
       console.log(token);
       console.log('got here');
       const response= await axios.get(`https://graph.facebook.com/me?fields=email,id,name&access_token=${token}`)
-      
-
       const user=response.data;
-
       setUserInfo(user);
       console.log(user);
       const ifuser= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin',{email:user.email});
@@ -109,8 +118,12 @@ function SignUpAPI({navigation}) {
         personaldetails.email=user.email;
         navigation.navigate('CreateProfile');
       }
+      else if(typeof ifuser.data.imageUri == 'string'){
+        setUser(ifuser.data);
+        console.log(ifuser.data);
+        setIsAuthenticated(true);
+      }
     
-
     } catch (error) {
       // Add your own error handler here
     }
