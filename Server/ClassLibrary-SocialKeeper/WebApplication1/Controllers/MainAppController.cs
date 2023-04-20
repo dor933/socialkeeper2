@@ -387,9 +387,10 @@ namespace WebApplication1.Controllers
 
                                 }
 
+                                double oldhour = dateto.Hour;
                                 dateto = dateto.AddHours(2);
                                 double currenthour = dateto.Hour;
-                                if(currenthour> limitedhour){
+                                if(currenthour> limitedhour || oldhour>currenthour){
 
                                     dateto = dateto.AddHours(10);
 
@@ -662,13 +663,13 @@ namespace WebApplication1.Controllers
 
                     }
                     
-                    List<SuggestedDTO> suggestedsorted= suggestedmeet.OrderBy(x=> x.rank).ToList();
+                    List<SuggestedDTO> suggestedsorted= suggestedmeet.OrderByDescending(x=> x.rank).ToList();
 
                     //here it will take the best 5 suggested meetings, get the places
                     //with google places api, add all the suggested meetings to 
                     // database and send them back with all the reelvant information
 
-                    return Request.CreateResponse(HttpStatusCode.OK);
+                    return Request.CreateResponse(HttpStatusCode.OK,suggestedsorted);
 
 
                 }

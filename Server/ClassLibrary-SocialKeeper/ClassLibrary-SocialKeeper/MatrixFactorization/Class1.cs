@@ -202,19 +202,23 @@ namespace ClassLibrary_SocialKeeper
                             {
                                 TimeSpan addhours = TimeSpan.FromHours(j);
                                 resultimespan.Add(addhours);
+                            if (Timecheck.Item2 - resultimespan > TimeSpan.FromHours(1))
+                            {
                                 eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(resultimespan, Timecheck.Item2));
+                            }
                             }
 
                             j = j - 3;
                         }
-                    return eventstoreturn;
+                  
                     }
                 else
                 {
                     eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(Timecheck.Item1, Timecheck.Item2));
                 }
-                
-               
+                return eventstoreturn;
+
+
             }
 
                  
@@ -268,8 +272,9 @@ namespace ClassLibrary_SocialKeeper
                         }
                         else
                         {
-                            eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(currentStartTime, restrictedperiod.Item1));
+                             eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(currentStartTime, restrictedperiod.Item1));
                         }
+                        return eventstoreturn;
                     }
 
                 }
