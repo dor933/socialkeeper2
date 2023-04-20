@@ -18,11 +18,11 @@ namespace WebApplication1.Controllers
     public class DefaultController : ApiController
     {
         igroup192_DbContext db = new igroup192_DbContext();
-        private readonly Googlecloudstorage _storageService;
+        private readonly Googlecloudservices _googleservices;
 
         public DefaultController()
         {
-            _storageService= new Googlecloudstorage();
+            _googleservices= new Googlecloudservices();
         }
 
 
@@ -74,6 +74,8 @@ namespace WebApplication1.Controllers
             usertoret.birthDate = Convert.ToDateTime(checkifuser.birthDate);
             usertoret.email = checkifuser.email;
             usertoret.city = checkifuser.city;
+            usertoret.citylatt= Convert.ToDouble(checkifuser.citylatt);
+            usertoret.citylong= Convert.ToDouble(checkifuser.citylong);
             usertoret.gender = checkifuser.gender;
 
             List<FavoriteContactsDTO> FavoriteContactsDTOs = new List<FavoriteContactsDTO>();
@@ -176,6 +178,7 @@ namespace WebApplication1.Controllers
                 posdto.phonenuminvite = pos.phonenuminvite;
                 posdto.phonenuminvited = pos.phonenuminvited;
                 posdto.hobbieNum = pos.hobbieNum;
+                posdto.id = pos.id;
                 Usersummary user = new Usersummary();
                 user.userName = pos.tblUser.userName;
                 user.phoneNum1 = pos.tblUser.phoneNum1;
@@ -392,7 +395,7 @@ namespace WebApplication1.Controllers
         private async Task<string> UploadToGoogleCloudStorage(byte[] fileContents, string contentType, string remoteFilePath)
         {
             MemoryStream fileStream = new MemoryStream(fileContents);
-            var uploadedObject = await _storageService._storageClient.UploadObjectAsync(_storageService._bucketName, remoteFilePath, contentType, fileStream,new UploadObjectOptions());
+            var uploadedObject = await _googleservices._storageClient.UploadObjectAsync(_googleservices._bucketName, remoteFilePath, contentType, fileStream,new UploadObjectOptions());
             fileStream.Dispose();
 
             var acl= uploadedObject.Acl ?? new List<ObjectAccessControl>();
@@ -404,9 +407,9 @@ namespace WebApplication1.Controllers
                 );
 
             uploadedObject.Acl= acl;
-            var updatedObject = await _storageService._storageClient.UpdateObjectAsync(uploadedObject);
+            var updatedObject = await _googleservices._storageClient.UpdateObjectAsync(uploadedObject);
 
-            var publicUrl = $"https://storage.googleapis.com/{_storageService._bucketName}/{remoteFilePath}";
+            var publicUrl = $"https://storage.googleapis.com/{_googleservices._bucketName}/{remoteFilePath}";
             return publicUrl;
 
 
@@ -471,6 +474,8 @@ namespace WebApplication1.Controllers
                     newuser.birthDate = Mynewuser.birthDate;
                     newuser.gender = Mynewuser.gender;
                     newuser.city = Mynewuser.city;
+                    newuser.citylatt= Mynewuser.citylatt;
+                    newuser.citylong = Mynewuser.citylong;
                     newuser.email = Mynewuser.email;
                     newuser.tblNewUser = newuserif;
 

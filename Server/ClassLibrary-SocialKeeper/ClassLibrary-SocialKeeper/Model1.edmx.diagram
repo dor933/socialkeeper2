@@ -38,6 +38,7 @@
         <AssociationConnector Association="igroup192_prodModel.FK__PossibleF__hobbi__6E01572D" />
         <AssociationConnector Association="igroup192_prodModel.FK__PossibleF__phone__6C190EBB" />
         <AssociationConnector Association="igroup192_prodModel.FK__PossibleF__phone__6D0D32F4" />
+        <AssociationConnector Association="igroup192_prodModel.FK_tblSuggestedMeeting_tblHobbie" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

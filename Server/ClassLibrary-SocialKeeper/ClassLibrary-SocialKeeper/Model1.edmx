@@ -7,13 +7,12 @@
     <Schema Namespace="igroup192_prodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="PossibleFavoriteContact">
           <Key>
-            <PropertyRef Name="hobbieNum" />
-            <PropertyRef Name="phonenuminvite" />
-            <PropertyRef Name="phonenuminvited" />
+            <PropertyRef Name="id" />
           </Key>
           <Property Name="hobbieNum" Type="int" Nullable="false" />
           <Property Name="phonenuminvite" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="phonenuminvited" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -118,6 +117,8 @@
           <Property Name="rejectReason" Type="nvarchar" MaxLength="20" />
           <Property Name="longitude" Type="int" Nullable="false" />
           <Property Name="latitude" Type="int" Nullable="false" />
+          <Property Name="hobbieNum" Type="int" />
+          <Property Name="rank" Type="real" />
         </EntityType>
         <EntityType Name="tblUser">
           <Key>
@@ -130,6 +131,8 @@
           <Property Name="city" Type="nvarchar" MaxLength="20" />
           <Property Name="gender" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="imageUri" Type="nvarchar" MaxLength="4000" />
+          <Property Name="citylatt" Type="float" />
+          <Property Name="citylong" Type="float" />
         </EntityType>
         <EntityType Name="tblUserHobbie">
           <Key>
@@ -173,6 +176,18 @@
             </Principal>
             <Dependent Role="PossibleFavoriteContact">
               <PropertyRef Name="phonenuminvited" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tblSuggestedMeeting_tblHobbie">
+          <End Role="tblHobbie" Type="Self.tblHobbie" Multiplicity="0..1" />
+          <End Role="tblSuggestedMeeting" Type="Self.tblSuggestedMeeting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblHobbie">
+              <PropertyRef Name="hobbieNum" />
+            </Principal>
+            <Dependent Role="tblSuggestedMeeting">
+              <PropertyRef Name="hobbieNum" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -410,6 +425,10 @@
             <End Role="tblUser" EntitySet="tblUser" />
             <End Role="PossibleFavoriteContact" EntitySet="PossibleFavoriteContact" />
           </AssociationSet>
+          <AssociationSet Name="FK_tblSuggestedMeeting_tblHobbie" Association="Self.FK_tblSuggestedMeeting_tblHobbie">
+            <End Role="tblHobbie" EntitySet="tblHobbie" />
+            <End Role="tblSuggestedMeeting" EntitySet="tblSuggestedMeeting" />
+          </AssociationSet>
           <AssociationSet Name="fk1" Association="Self.fk1">
             <End Role="tblNewUser" EntitySet="tblNewUser" />
             <End Role="tblUser" EntitySet="tblUser" />
@@ -509,6 +528,7 @@
           <NavigationProperty Name="tblUserHobbies" Relationship="Self.fk2tblUserHobbie" FromRole="tblHobbie" ToRole="tblUserHobbie" />
           <NavigationProperty Name="PossibleFavoriteContacts" Relationship="igroup192_prodModel.FK__PossibleF__hobbi__6E01572D" FromRole="tblHobbie" ToRole="PossibleFavoriteContact" />
           <Property Name="imageuri" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tblSuggestedMeetings" Relationship="igroup192_prodModel.FK_tblSuggestedMeeting_tblHobbie" FromRole="tblHobbie" ToRole="tblSuggestedMeeting" />
         </EntityType>
         <EntityType Name="tblInvite">
           <Key>
@@ -584,6 +604,9 @@
           <NavigationProperty Name="tblUser" Relationship="Self.fk1tblSuggestedMeeting" FromRole="tblSuggestedMeeting" ToRole="tblUser" />
           <NavigationProperty Name="tblUser1" Relationship="Self.fk2tblSuggestedMeeting" FromRole="tblSuggestedMeeting" ToRole="tblUser" />
           <NavigationProperty Name="tblActualMeetings" Relationship="Self.fk2tbltblActualMeeting" FromRole="tblSuggestedMeeting" ToRole="tblActualMeeting" />
+          <Property Name="hobbieNum" Type="Int32" />
+          <NavigationProperty Name="tblHobbie" Relationship="igroup192_prodModel.FK_tblSuggestedMeeting_tblHobbie" FromRole="tblSuggestedMeeting" ToRole="tblHobbie" />
+          <Property Name="rank" Type="Single" />
         </EntityType>
         <EntityType Name="tblUser">
           <Key>
@@ -606,6 +629,8 @@
           <NavigationProperty Name="tblUserHobbies" Relationship="Self.fk1tblUserHobbie" FromRole="tblUser" ToRole="tblUserHobbie" />
           <NavigationProperty Name="PossibleFavoriteContacts" Relationship="igroup192_prodModel.FK__PossibleF__phone__6C190EBB" FromRole="tblUser" ToRole="PossibleFavoriteContact" />
           <NavigationProperty Name="PossibleFavoriteContacts1" Relationship="igroup192_prodModel.FK__PossibleF__phone__6D0D32F4" FromRole="tblUser" ToRole="PossibleFavoriteContact" />
+          <Property Name="citylatt" Type="Double" />
+          <Property Name="citylong" Type="Double" />
         </EntityType>
         <EntityType Name="tblUserHobbie">
           <Key>
@@ -937,12 +962,14 @@
             <End Role="tblUser" EntitySet="tblUsers" />
             <End Role="PossibleFavoriteContact" EntitySet="PossibleFavoriteContacts" />
           </AssociationSet>
+          <AssociationSet Name="FK_tblSuggestedMeeting_tblHobbie" Association="igroup192_prodModel.FK_tblSuggestedMeeting_tblHobbie">
+            <End Role="tblHobbie" EntitySet="tblHobbies" />
+            <End Role="tblSuggestedMeeting" EntitySet="tblSuggestedMeetings" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="PossibleFavoriteContact">
           <Key>
-            <PropertyRef Name="phonenuminvite" />
-            <PropertyRef Name="phonenuminvited" />
-            <PropertyRef Name="hobbieNum" />
+            <PropertyRef Name="id" />
           </Key>
           <Property Name="phonenuminvite" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="phonenuminvited" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
@@ -950,6 +977,7 @@
           <NavigationProperty Name="tblHobbie" Relationship="igroup192_prodModel.FK__PossibleF__hobbi__6E01572D" FromRole="PossibleFavoriteContact" ToRole="tblHobbie" />
           <NavigationProperty Name="tblUser" Relationship="igroup192_prodModel.FK__PossibleF__phone__6C190EBB" FromRole="PossibleFavoriteContact" ToRole="tblUser" />
           <NavigationProperty Name="tblUser1" Relationship="igroup192_prodModel.FK__PossibleF__phone__6D0D32F4" FromRole="PossibleFavoriteContact" ToRole="tblUser" />
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
@@ -994,6 +1022,18 @@
             </Principal>
             <Dependent Role="PossibleFavoriteContact">
               <PropertyRef Name="phonenuminvited" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tblSuggestedMeeting_tblHobbie">
+          <End Type="igroup192_prodModel.tblHobbie" Role="tblHobbie" Multiplicity="0..1" />
+          <End Type="igroup192_prodModel.tblSuggestedMeeting" Role="tblSuggestedMeeting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblHobbie">
+              <PropertyRef Name="hobbieNum" />
+            </Principal>
+            <Dependent Role="tblSuggestedMeeting">
+              <PropertyRef Name="hobbieNum" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1073,6 +1113,8 @@
           <EntitySetMapping Name="tblSuggestedMeetings">
             <EntityTypeMapping TypeName="igroup192_prodModel.tblSuggestedMeeting">
               <MappingFragment StoreEntitySet="tblSuggestedMeeting">
+                <ScalarProperty Name="rank" ColumnName="rank" />
+                <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
                 <ScalarProperty Name="meetingNum" ColumnName="meetingNum" />
                 <ScalarProperty Name="startTime" ColumnName="startTime" />
                 <ScalarProperty Name="endTime" ColumnName="endTime" />
@@ -1089,6 +1131,8 @@
           <EntitySetMapping Name="tblUsers">
             <EntityTypeMapping TypeName="igroup192_prodModel.tblUser">
               <MappingFragment StoreEntitySet="tblUser">
+                <ScalarProperty Name="citylong" ColumnName="citylong" />
+                <ScalarProperty Name="citylatt" ColumnName="citylatt" />
                 <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
                 <ScalarProperty Name="userName" ColumnName="userName" />
                 <ScalarProperty Name="birthDate" ColumnName="birthDate" />
@@ -1123,6 +1167,7 @@
           <EntitySetMapping Name="PossibleFavoriteContacts">
             <EntityTypeMapping TypeName="igroup192_prodModel.PossibleFavoriteContact">
               <MappingFragment StoreEntitySet="PossibleFavoriteContact">
+                <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
                 <ScalarProperty Name="phonenuminvited" ColumnName="phonenuminvited" />
                 <ScalarProperty Name="phonenuminvite" ColumnName="phonenuminvite" />

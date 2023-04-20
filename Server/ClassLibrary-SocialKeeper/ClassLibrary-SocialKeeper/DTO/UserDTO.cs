@@ -16,6 +16,9 @@ namespace ClassLibrary_SocialKeeper
         public string city { get; set; }
         public string gender { get; set; }
         public string imageUri { get; set; }
+
+        public double citylatt { get; set; }
+        public double citylong { get; set; }
        
 
         public virtual ICollection<FavoriteContactsDTO> tblFavoriteContacts { get; set; }

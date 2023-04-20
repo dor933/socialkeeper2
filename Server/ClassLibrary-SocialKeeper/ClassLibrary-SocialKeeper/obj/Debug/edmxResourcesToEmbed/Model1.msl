@@ -71,6 +71,8 @@
     <EntitySetMapping Name="tblSuggestedMeetings">
       <EntityTypeMapping TypeName="igroup192_prodModel.tblSuggestedMeeting">
         <MappingFragment StoreEntitySet="tblSuggestedMeeting">
+          <ScalarProperty Name="rank" ColumnName="rank" />
+          <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
           <ScalarProperty Name="meetingNum" ColumnName="meetingNum" />
           <ScalarProperty Name="startTime" ColumnName="startTime" />
           <ScalarProperty Name="endTime" ColumnName="endTime" />
@@ -87,6 +89,8 @@
     <EntitySetMapping Name="tblUsers">
       <EntityTypeMapping TypeName="igroup192_prodModel.tblUser">
         <MappingFragment StoreEntitySet="tblUser">
+          <ScalarProperty Name="citylong" ColumnName="citylong" />
+          <ScalarProperty Name="citylatt" ColumnName="citylatt" />
           <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
           <ScalarProperty Name="userName" ColumnName="userName" />
           <ScalarProperty Name="birthDate" ColumnName="birthDate" />
@@ -121,6 +125,7 @@
     <EntitySetMapping Name="PossibleFavoriteContacts">
       <EntityTypeMapping TypeName="igroup192_prodModel.PossibleFavoriteContact">
         <MappingFragment StoreEntitySet="PossibleFavoriteContact">
+          <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
           <ScalarProperty Name="phonenuminvited" ColumnName="phonenuminvited" />
           <ScalarProperty Name="phonenuminvite" ColumnName="phonenuminvite" />

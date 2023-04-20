@@ -11,6 +11,7 @@ namespace ClassLibrary_SocialKeeper
         public string phonenuminvite { get; set; }
         public string phonenuminvited { get; set; }
         public int hobbieNum { get; set; }
+        public int id { get; set; }
 
         public virtual tblhobbieDTO tblHobbiedto { get; set; }
         public virtual Usersummary tblUser { get; set; }

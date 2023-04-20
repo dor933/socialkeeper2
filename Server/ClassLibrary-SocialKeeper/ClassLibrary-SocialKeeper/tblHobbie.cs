@@ -22,6 +22,7 @@ namespace ClassLibrary_SocialKeeper
             this.tblSuggestedHobbies = new HashSet<tblSuggestedHobbie>();
             this.tblUserHobbies = new HashSet<tblUserHobbie>();
             this.PossibleFavoriteContacts = new HashSet<PossibleFavoriteContact>();
+            this.tblSuggestedMeetings = new HashSet<tblSuggestedMeeting>();
         }
     
         public int hobbieNum { get; set; }
@@ -38,5 +39,7 @@ namespace ClassLibrary_SocialKeeper
         public virtual ICollection<tblUserHobbie> tblUserHobbies { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PossibleFavoriteContact> PossibleFavoriteContacts { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tblSuggestedMeeting> tblSuggestedMeetings { get; set; }
     }
 }
