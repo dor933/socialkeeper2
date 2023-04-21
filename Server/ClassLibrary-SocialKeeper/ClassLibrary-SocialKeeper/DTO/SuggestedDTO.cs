@@ -18,6 +18,10 @@ namespace ClassLibrary_SocialKeeper
         public string rejectReason { get; set; }
         public int longitude { get; set; }
         public int latitude { get; set; }
+
+        public int hobbieNum { get; set; }
+
+        public double rank { get; set; }
         public List<tblLoctation> loctations { get; set; } = new List<tblLoctation>();
         public List<tblSuggestedHobbie> suggestedHobbies { get; set; } = new List<tblSuggestedHobbie>();
         public List<tblActualMeeting> actualMeetings { get; set; } = new List<tblActualMeeting>();

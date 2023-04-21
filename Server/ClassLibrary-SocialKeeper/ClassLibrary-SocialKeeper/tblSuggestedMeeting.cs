@@ -31,6 +31,8 @@ namespace ClassLibrary_SocialKeeper
         public string rejectReason { get; set; }
         public int longitude { get; set; }
         public int latitude { get; set; }
+        public Nullable<int> hobbieNum { get; set; }
+        public Nullable<float> rank { get; set; }
     
         public virtual tblLoctation tblLoctation { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -39,5 +41,6 @@ namespace ClassLibrary_SocialKeeper
         public virtual tblUser tblUser1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblActualMeeting> tblActualMeetings { get; set; }
+        public virtual tblHobbie tblHobbie { get; set; }
     }
 }
