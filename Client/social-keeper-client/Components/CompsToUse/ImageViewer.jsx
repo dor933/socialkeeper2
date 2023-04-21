@@ -1,6 +1,6 @@
 import { View, StyleSheet, Image } from "react-native";
 import React from "react";
-import { useState } from "react";
+import { useState,useContext } from "react";
 
 // export default function ImageViewer({ placeholderImageSource, selectedImage }) {
 //   const imageSource =
@@ -15,6 +15,7 @@ import { useState } from "react";
 
 
 export default function ImageViewer({ placeholderImageSource, selectedImage }) {
+
 
   const imageSource = selectedImage !== null
   ? { uri: selectedImage }

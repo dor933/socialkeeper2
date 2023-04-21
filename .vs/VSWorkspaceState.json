@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Server",
+    "\\Server\\ClassLibrary-SocialKeeper",
+    "\\Server\\ClassLibrary-SocialKeeper\\ClassLibrary-SocialKeeper",
+    "\\Server\\ClassLibrary-SocialKeeper\\ClassLibrary-SocialKeeper\\DTO",
+    "\\Server\\ClassLibrary-SocialKeeper\\WebApplication1",
+    "\\Server\\ClassLibrary-SocialKeeper\\WebApplication1\\Controllers",
+    "\\Server\\ClassLibrary-SocialKeeper\\WebApplication1\\Googlecloud"
+  ],
+  "SelectedNode": "\\Server\\ClassLibrary-SocialKeeper\\WebApplication1\\Controllers\\MainAppController.cs",
+  "PreviewInSolutionExplorer": false
+}

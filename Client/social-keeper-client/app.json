@@ -8,20 +8,29 @@
     "userInterfaceStyle": "light",
 <<<<<<< Updated upstream
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/Images/RandomImages/SocialKeeper.jpeg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-=======
-    "plugins": [
+    
+    "plugins":[
       [
         "expo-image-picker",
         {
+   
           "photosPermission": "The app accesses your photos to let you share them with your friends."
+
+
+
+        }
+      ] ,
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "The app accesses your calendar to let you share them with your friends."
         }
       ]
     ],
->>>>>>> Stashed changes
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -39,6 +48,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "scheme": "socialkeeperclient://+/redirect"
   }
 }

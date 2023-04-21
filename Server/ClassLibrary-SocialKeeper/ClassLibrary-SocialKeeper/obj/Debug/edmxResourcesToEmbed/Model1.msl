@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="igroup192_prodModelStoreContainer" CdmEntityContainer="igroup192_DbContext">
+    <EntitySetMapping Name="tblFavoriteContacts">
+      <EntityTypeMapping TypeName="igroup192_prodModel.tblFavoriteContact">
+        <MappingFragment StoreEntitySet="tblFavoriteContact">
+          <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
+          <ScalarProperty Name="phoneNum2" ColumnName="phoneNum2" />
+          <ScalarProperty Name="rank" ColumnName="rank" />
+          <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tblHobbies">
+      <EntityTypeMapping TypeName="igroup192_prodModel.tblHobbie">
+        <MappingFragment StoreEntitySet="tblHobbie">
+          <ScalarProperty Name="imageuri" ColumnName="imageuri" />
+          <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
+          <ScalarProperty Name="hobbieName" ColumnName="hobbieName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tblInvites">
+      <EntityTypeMapping TypeName="igroup192_prodModel.tblInvite">
+        <MappingFragment StoreEntitySet="tblInvite">
+          <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
+          <ScalarProperty Name="phoneNum2" ColumnName="phoneNum2" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="date" ColumnName="date" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tblLoctations">
+      <EntityTypeMapping TypeName="igroup192_prodModel.tblLoctation">
+        <MappingFragment StoreEntitySet="tblLoctation">
+          <ScalarProperty Name="longitude" ColumnName="longitude" />
+          <ScalarProperty Name="latitude" ColumnName="latitude" />
+          <ScalarProperty Name="city" ColumnName="city" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tblNewUsers">
+      <EntityTypeMapping TypeName="igroup192_prodModel.tblNewUser">
+        <MappingFragment StoreEntitySet="tblNewUser">
+          <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
+          <ScalarProperty Name="nickName" ColumnName="nickName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tblPreferredTimes">
+      <EntityTypeMapping TypeName="igroup192_prodModel.tblPreferredTime">
+        <MappingFragment StoreEntitySet="tblPreferredTime">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="startTime" ColumnName="startTime" />
+          <ScalarProperty Name="endTime" ColumnName="endTime" />
+          <ScalarProperty Name="weekDay" ColumnName="weekDay" />
+          <ScalarProperty Name="rank" ColumnName="rank" />
+          <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tblSuggestedHobbies">
+      <EntityTypeMapping TypeName="igroup192_prodModel.tblSuggestedHobbie">
+        <MappingFragment StoreEntitySet="tblSuggestedHobbie">
+          <ScalarProperty Name="meetingNum" ColumnName="meetingNum" />
+          <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
+          <ScalarProperty Name="isChosen" ColumnName="isChosen" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tblSuggestedMeetings">
+      <EntityTypeMapping TypeName="igroup192_prodModel.tblSuggestedMeeting">
+        <MappingFragment StoreEntitySet="tblSuggestedMeeting">
+          <ScalarProperty Name="rank" ColumnName="rank" />
+          <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
+          <ScalarProperty Name="meetingNum" ColumnName="meetingNum" />
+          <ScalarProperty Name="startTime" ColumnName="startTime" />
+          <ScalarProperty Name="endTime" ColumnName="endTime" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
+          <ScalarProperty Name="phoneNum2" ColumnName="phoneNum2" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="rejectReason" ColumnName="rejectReason" />
+          <ScalarProperty Name="longitude" ColumnName="longitude" />
+          <ScalarProperty Name="latitude" ColumnName="latitude" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tblUsers">
+      <EntityTypeMapping TypeName="igroup192_prodModel.tblUser">
+        <MappingFragment StoreEntitySet="tblUser">
+          <ScalarProperty Name="citylong" ColumnName="citylong" />
+          <ScalarProperty Name="citylatt" ColumnName="citylatt" />
+          <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
+          <ScalarProperty Name="userName" ColumnName="userName" />
+          <ScalarProperty Name="birthDate" ColumnName="birthDate" />
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="city" ColumnName="city" />
+          <ScalarProperty Name="gender" ColumnName="gender" />
+          <ScalarProperty Name="imageUri" ColumnName="imageUri" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tblUserHobbies">
+      <EntityTypeMapping TypeName="igroup192_prodModel.tblUserHobbie">
+        <MappingFragment StoreEntitySet="tblUserHobbie">
+          <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
+          <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
+          <ScalarProperty Name="rank" ColumnName="rank" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tblActualMeetings">
+      <EntityTypeMapping TypeName="igroup192_prodModel.tblActualMeeting">
+        <MappingFragment StoreEntitySet="tblActualMeeting">
+          <ScalarProperty Name="meetingNum" ColumnName="meetingNum" />
+          <ScalarProperty Name="rankUser1" ColumnName="rankUser1" />
+          <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
+          <ScalarProperty Name="rankUser2" ColumnName="rankUser2" />
+          <ScalarProperty Name="longitude" ColumnName="longitude" />
+          <ScalarProperty Name="latitude" ColumnName="latitude" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PossibleFavoriteContacts">
+      <EntityTypeMapping TypeName="igroup192_prodModel.PossibleFavoriteContact">
+        <MappingFragment StoreEntitySet="PossibleFavoriteContact">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
+          <ScalarProperty Name="phonenuminvited" ColumnName="phonenuminvited" />
+          <ScalarProperty Name="phonenuminvite" ColumnName="phonenuminvite" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="sysdiagrams">
+      <EntityTypeMapping TypeName="igroup192_prodModel.sysdiagram">
+        <MappingFragment StoreEntitySet="sysdiagrams">
+          <ScalarProperty Name="definition" ColumnName="definition" />
+          <ScalarProperty Name="version" ColumnName="version" />
+          <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+          <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

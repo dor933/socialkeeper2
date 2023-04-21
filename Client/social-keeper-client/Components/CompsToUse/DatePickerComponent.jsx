@@ -1,43 +1,75 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import DatePicker from 'react-native-datepicker';
+import { StyleSheet, View,Button, TouchableOpacity } from 'react-native';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
+import { Input } from "@rneui/themed";
+import { RegistContext } from '../..//RegistContext.jsx';
+import { useContext } from 'react';
 
 
-export default function DatePickerComponent() {
-  const [date, setDate] = useState();
+export default () => {
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
+  const {personaldetails, setPersonalDetails} = useContext(RegistContext);
+
+  const handlePress = () => setOpen(!open);
+
+  const onChange = (event, selectedDate) => {
+    if (event.type === 'set') {
+
+      const currentDate = new Date();
+      const differenceInTime = currentDate - selectedDate;
+      const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+      
+      if (selectedDate > currentDate || differenceInDays < 6570) {
+        // If the selected date is in the future or doesn't meet the constraint, show an alert
+        alert("Invalid Date");
+        return;
+      }
+      
+      //if the selected date is not null
+      if(selectedDate){
+        
+      const currentDate = new Date(selectedDate || date);
+      //make the current date as string and without time
+     const datestring= currentDate.toISOString().split('T')[0];
+     
+
+      //set the date to the date string
+      setDate(currentDate);
+      setPersonalDetails({...personaldetails, birthDate: datestring});
+      console.log(personaldetails);
+    }
+    setOpen(false);
+  };
+  };
 
   return (
-    <View>
-      <DatePicker
-        date={date} //initial date from state
-        mode="date" //The enum of date, datetime and time
-        placeholder="select date"
-        format="DD-MM-YYYY"
-        minDate="01-01-1940"
-        maxDate="01-01-2003"
-        confirmBtnText="Confirm"
-        cancelBtnText="Cancel"
-        customStyles={{
-          dateIcon: {
-            display: 'none',
-            position: 'absolute',
-            left: 0,
-            top: 4,
-            marginLeft: 0
-          },
-          dateInput: {
-            borderWidth: 0,
-            position: 'absolute',
-            marginLeft: 36,
+    <>
+      <TouchableOpacity onPress={handlePress}>
+        <Input
+          placeholder="Date of Birth"
+          value={date.toDateString()}
+          editable={false}
+          leftIcon={{ type: 'font-awesome', name: 'calendar' }}
+        />
+      </TouchableOpacity>
+
+      {open && (
+        <RNDateTimePicker
+          value={date}
+          mode="date"
+          display="default"
+          onChange={onChange}
+          style={{
+            width: 200,
             height: 50,
-            width: 270,
-            left: 0,
-          }
-        }}
-        onDateChange={(date) => {
-          setDate(date);
-        }}
-      />
-    </View>
-  )
-}
+            backgroundColor: 'white',
+            borderRadius: 5,
+            borderWidth: 1,
+            borderColor: 'black',
+          }}
+        />
+      )}
+    </>
+  );
+};
