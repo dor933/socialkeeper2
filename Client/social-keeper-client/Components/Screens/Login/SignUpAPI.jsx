@@ -8,11 +8,12 @@ function SignUpAPI() {
 
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.elipseTop}></View>
-      {/* Connect text */}
+      
+      {/* Sign Up  text */}
       <Text style={styles.text}>Sign Up</Text>
       <Image style={styles.logo} source={require('../../../assets/Images/RandomImages/social-keeper-low-resolution-logo-color-on-transparent-background.png')} />
 
-      {/* Login with google button */}
+      {/* Login with google button - to check if put in component? */}
       <TouchableOpacity>
         <View style={styles.container}>
           <Image style={styles.googleLogo} source={require('../../../assets/Images/Logos/GoogleLogo.png')} ></Image>
@@ -20,7 +21,7 @@ function SignUpAPI() {
         </View>
       </TouchableOpacity>
 
-      {/* Login with outlook button */}
+      {/* Login with outlook button - to check if put in component? */}
       <TouchableOpacity>
         <View style={styles.container2}>
           <Image style={styles.outLookLogo} source={require('../../../assets/Images/Logos/OutlookLogo.png')} ></Image>
@@ -28,11 +29,12 @@ function SignUpAPI() {
         </View>
       </TouchableOpacity>
 
-      {/* Already member qusetion */}
+      {/* Already member qusetion - navigate to Sign in screen*/}
       <View>
-        <TouchableOpacity>
-          <Text style={styles.refToSignIn}>Already member? Sign In</Text>
-        </TouchableOpacity>
+          <Text style={styles.textAlreadyMember}>Already member?</Text>
+          <TouchableOpacity>
+          <Text style={styles.refToSignIn}>Sign in</Text>
+          </TouchableOpacity>
       </View>
       <View style={styles.elipseButtom}></View>
     </SafeAreaView>
@@ -44,7 +46,7 @@ export default SignUpAPI
 
 
 
-
+//Styles for sign up screen
 const styles = StyleSheet.create({
 
   //connect text
@@ -114,7 +116,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 127,
     height: 19,
-    left: 90,
+    left: 105,
     top: 22,
     fontStyle: 'normal',
     fontWeight: '400',
@@ -124,7 +126,7 @@ const styles = StyleSheet.create({
   },
 
   //text for sign up suggestion
-  refToSignIn: {
+  textAlreadyMember: {
     position: 'absolute',
     width: 195,
     height: 19,
@@ -135,6 +137,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     color: 'rgba(0, 0, 0, 0.7)',
+  },
+
+  refToSignIn: {
+    position: 'absolute',
+    width: 195,
+    height: 19,
+    left: 240,
+    top: 600,
+    fontStyle: 'normal',
+    fontWeight: '400',
+    fontSize: 16,
+    lineHeight: 19,
+    color: '#E04747B2',
   },
   //CSS for logo
   logo: {
