@@ -23,12 +23,17 @@ import { common } from '@mui/material/colors';
 
 
 
-export default function Mymodal({modalhobbiesvisible, setModalHobbiesVisible,selectedContact, commonhobbie, setCommonHobbie}) {
+export default function Mymodal({modalhobbiesvisible, setSelectedContact, setModalHobbiesVisible,selectedContact, commonhobbie, setCommonHobbie}) {
 
   const {selectedhobbies, setSelectedHobbies} = React.useContext(RegistContext);
   const [commonhobbies, setCommonHobbies] = React.useState([]);
   const [allhobbies, setAllHobbies] = React.useState([]);
+  const {personaldetails} = React.useContext(RegistContext);
   const {possiblefavoritecontacts,setPossibleFavoriteContacts}= React.useContext(RegistContext);
+  const {alreadymembers, setAlreadyMembers} = React.useContext(RegistContext);
+  const {filteredalreadymebers,setFilteredAlreadyMembers}= React.useContext(RegistContext);
+
+
 
   
   
@@ -89,24 +94,33 @@ export default function Mymodal({modalhobbiesvisible, setModalHobbiesVisible,sel
 
   const hidemodaladdhobbies = () => {
 
-    //find in possiblefavoritecontacts where phonenuminvited === selectedcontact.phonenumbers[0]
-    //if found, add to the object "hobbieNum:commonhobbies.hobbieNum"
+   
 
 
-   const newpossiblefavorite= possiblefavoritecontacts.map((contact) => {
-      if (contact.phonenuminvited === selectedContact.phonenumbers[0]) {
+    const updatedAlreadyMembers = filteredalreadymebers.map((contact) => {
+      console.log('contact is',contact)
+      if (contact.phonenumbers[0] === selectedContact.phonenumbers[0]) {
 
-        console.log(commonhobbie);
-
-       contact.hobbieNum=commonhobbie.hobbieNum;
-        return contact;
+        return { ...contact, addedtofav: true };
       }
       return contact;
-      
     });
+    
+    setFilteredAlreadyMembers(updatedAlreadyMembers);
+    setAlreadyMembers(updatedAlreadyMembers);
+    const newselected= updatedAlreadyMembers.find((contact) => contact.phonenumbers[0] === selectedContact.phonenumbers[0]);
+    setSelectedContact(newselected);
+    const possiblefavorite={
+      phonenuminvite: personaldetails.phoneNumber,
+      phonenuminvited:newselected.phonenumbers[0],
+      hobbieNum:commonhobbie.hobbieNum
+      // hobbieNum:selectedhobbies[0].hobbienumber
+      //will be after the hobbie screen
+    }
 
-    console.log(possiblefavoritecontacts);
-    setPossibleFavoriteContacts(newpossiblefavorite);
+
+
+    setPossibleFavoriteContacts([...possiblefavoritecontacts,possiblefavorite]);
 
     setModalHobbiesVisible(!modalhobbiesvisible);
   };

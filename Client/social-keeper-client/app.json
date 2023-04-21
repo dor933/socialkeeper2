@@ -22,6 +22,12 @@
 
 
         }
+      ] ,
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "The app accesses your calendar to let you share them with your friends."
+        }
       ]
     ],
     "updates": {

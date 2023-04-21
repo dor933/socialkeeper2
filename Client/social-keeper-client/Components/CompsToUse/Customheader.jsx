@@ -13,7 +13,7 @@ import {
   import {MainAppcontext} from '../Screens/MainApp/MainAppcontext';
 //create a functional component
 
-export default function Customheader() {
+export default function Customheader({ispersonalsettings}) {
     let [fontsLoaded] = useFonts({
         Lato_100Thin,
         Lato_300Light,
@@ -26,7 +26,7 @@ export default function Customheader() {
         const {user}= useContext(MainAppcontext);
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container,{backgroundColor: ispersonalsettings==true? "#222222" : "#ffffff" , borderColor: ispersonalsettings==true? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)" }]}>
             {console.log(user)}
             {console.log(user.userName)}
         {
@@ -35,7 +35,7 @@ export default function Customheader() {
             <>
             <View style={styles.box1}>
               <Image source={require('../../assets/Images/RandomImages/social-keeper-website-favicon-color.png')} style={{ width: 50, height: 61 }} />
-              <Text style={styles.textstyle}>Hello, {user.userName}</Text>
+              <Text style={[styles.textstyle,{color: ispersonalsettings==true? "#ffffff" : "rgba(0,0,0,0.7)"}]}>Hello, {user.userName}</Text>
             </View>
              <View style={styles.box2}>
              <View style={styles.onlinerectengle}>
@@ -86,7 +86,7 @@ const styles= StyleSheet.create({
         width:130,
         height:24,
         fontFamily:'Lato_700Bold',
-        fontSize:18,
+        fontSize:17,
         lineHeight:24,
         color:'rgba(0,0,0,0.7)',
         letterSpacing:0.03,

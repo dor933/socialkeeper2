@@ -15,6 +15,12 @@ import * as ImagePicker from "expo-image-picker";
 import ImageViewer from "../../CompsToUse/ImageViewer";
 //import the use context component
 import {RegistContext} from "../../../RegistContext";
+import cities from '../../../assets/cities.json'
+// import picker
+import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
+
+let keyid=0;
+
 
 
 
@@ -68,7 +74,10 @@ export default function CreateProfile({navigation}) {
   };
 
 
-
+  const handleSelectItem = (item) => {
+    setPersonalDetails({ ...personaldetails, address: item });
+    console.log(item)
+  };
 
   const takeimagefromgallery = async () => {
     
@@ -111,10 +120,11 @@ export default function CreateProfile({navigation}) {
       return true;
     }
 
-
    
     return false;
   };
+
+ 
 
   
 
@@ -185,6 +195,7 @@ export default function CreateProfile({navigation}) {
         <Input
          onChangeText={(text) => setPersonalDetails({...personaldetails, userName: text})}
           placeholder="User name"
+          maxLength={8}
           value={personaldetails.userName || ''}
           leftIcon={{ type: "font-awesome", name: "user" }} />
       </View>
@@ -214,18 +225,65 @@ export default function CreateProfile({navigation}) {
       <DatePickerComponent />
 
       </View>
+
+  
       
 
       {/* Address? - to check if relevant - must use matirial UI or something equal ..  */}
       <View>
         <View style={styles.address}>
-          <Input
-            onChangeText={(text) => setPersonalDetails({...personaldetails, address:text})}
-            placeholder="City"
+          <AutocompleteDropdown
+            //make dataSet as the cities list where title is the city name and id is the city id
+            dataSet={cities.map
+              (city => ({ title: `${city.english_name}, ${city.name}` , englishname:city.english_name, latt: city.latt, long: city.long, id:keyid++ }))}
+            
+            onSelectItem={handleSelectItem}
+            placeholder="Address"
+            initialValue={personaldetails.address || ''}
             value={personaldetails.address || ''}
             leftIcon={{ type: "font-awesome", name: "map" }}
-            style={styles.icons}
+            textInputProps={{
+              placeholder:'City',
+              autoCapitalize:'none',
+
+              style: {
+                fontSize: 16,
+                fontWeight: "normal",
+                fontStyle: "normal",
+                lineHeight: 19,
+                letterSpacing: 0.1,
+                textAlign: "left",
+                
+              },
+              
+              
+            }
+
+            }
+            inputContainerStyle={{
+              backgroundColor: "#fff",
+              borderBottomWidth:1,
+              width:300,
+              left: 6,
+              borderBottomColor:'#000000',
+              //make the border color like the input bottom border
+              
+              shadowOpacity: 0.05,
+              shadowRadius: 20,
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 0,
+              },
+            }}
+            
           />
+
+   
+ 
+
+    
+            
         </View>
       </View>
       <Button

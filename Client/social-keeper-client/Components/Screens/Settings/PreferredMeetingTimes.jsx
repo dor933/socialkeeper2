@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, SafeAreaView, Alert, Image, FlatList } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Picker } from '@react-native-picker/picker';
 import {
     useFonts,
@@ -67,6 +67,10 @@ export default function PreferredMeetingTimes({ navigation }, props) {
         const [valuestart, setValuestart] = useState(null);
         const [valueend, setValueend] = useState(null);
         const [rating, setRating] = useState(0);
+
+        useEffect(() => {
+            setPrefferdTimes([]);
+        }, []);
 
         const handlerating = (rating) => {
             const roundedrating=Math.round(rating);
