@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+<<<<<<< Updated upstream
     "splash": {
       "image": "./assets/Images/RandomImages/SocialKeeper.jpeg",
       "resizeMode": "contain",
