@@ -1,56 +1,31 @@
 import React from 'react'
 import { SafeAreaView, Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native'
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> main
 import * as Google from "expo-auth-session/providers/google";
 import * as AuthSession from 'expo-auth-session';
 import * as Facebook from 'expo-auth-session/providers/facebook';
 import * as WebBrowser from 'expo-web-browser';
-<<<<<<< HEAD
-import { useEffect, useState, useContext } from "react";
-=======
 import { useEffect,useState,useContext } from "react";
->>>>>>> main
 import axios from 'axios';
 import { RegistContext } from '..//../..//RegistContext.jsx';
 import { MainAppcontext } from '../MainApp/MainAppcontext.jsx';
 import AuthContext from '../../../Authcontext.jsx';
 
 
-<<<<<<< HEAD
-function SignUpAPI({ navigation }) {
-
-  const { personaldetails, setPersonalDetails } = useContext(RegistContext);
-  const { setUser } = useContext(MainAppcontext);
-  const { setIsAuthenticated } = React.useContext(AuthContext);
-=======
 function SignUpAPI({navigation}) {
 
   const {personaldetails, setPersonalDetails} = useContext(RegistContext);
   const {setUser} = useContext(MainAppcontext);
   const {setIsAuthenticated}= React.useContext(AuthContext);
->>>>>>> main
 
   WebBrowser.maybeCompleteAuthSession();
 
   const [token, setToken] = useState("");
   const [userInfo, setUserInfo] = useState(null);
-<<<<<<< HEAD
-  const RedirectUrl = AuthSession.makeRedirectUri({
-    useProxy: true,
-
-  });
-  console.log(RedirectUrl);
-=======
   const RedirectUrl=AuthSession.makeRedirectUri({
     useProxy:true,
     
   });
 
->>>>>>> main
 
 
 
@@ -62,35 +37,21 @@ function SignUpAPI({navigation}) {
   });
 
 
-<<<<<<< HEAD
-  // Use expo's web browser
-
-
-
-=======
     // Use expo's web browser
     
   
   
->>>>>>> main
 
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     clientId: '923332378077-0gf55cn5cq0dvpahm5bk6vetdaigl7cr.apps.googleusercontent.com',
-<<<<<<< HEAD
-
-=======
     
->>>>>>> main
     // Use expo's web browser
 
     useProxy: true,
     redirectUri: RedirectUrl,
-<<<<<<< HEAD
-=======
     
 
->>>>>>> main
   });
 
   useEffect(() => {
@@ -101,11 +62,7 @@ function SignUpAPI({navigation}) {
       setToken(response.authentication.accessToken);
       getUserInfo();
     }
-<<<<<<< HEAD
-  }, [response, token]);
-=======
   }, [response,token]);
->>>>>>> main
 
   useEffect(() => {
     console.log('into edffect');
@@ -115,11 +72,7 @@ function SignUpAPI({navigation}) {
       setToken(response2.authentication.accessToken);
       getuserinfofromfacebook();
     }
-<<<<<<< HEAD
-  }, [response2, token]);
-=======
   }, [response2,token]);
->>>>>>> main
 
   const getUserInfo = async () => {
     try {
@@ -132,18 +85,6 @@ function SignUpAPI({navigation}) {
       const user = await response.json();
       setUserInfo(user);
       console.log(user);
-<<<<<<< HEAD
-      const ifuser = await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin', { email: user.email });
-      if (ifuser.data == 'no user was found') {
-
-        if (user.email != undefined) {
-
-          personaldetails.email = user.email;
-          navigation.navigate('CreateProfile');
-        }
-      }
-      else if (typeof ifuser.data.imageUri == 'string') {
-=======
       const ifuser= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin',{email:user.email});
       if(ifuser.data=='no user was found'){
 
@@ -154,7 +95,6 @@ function SignUpAPI({navigation}) {
         }
       }
       else if(typeof ifuser.data.imageUri == 'string'){
->>>>>>> main
         setUser(ifuser.data);
         setIsAuthenticated(true);
       }
@@ -163,28 +103,11 @@ function SignUpAPI({navigation}) {
     }
   };
 
-<<<<<<< HEAD
-  const getuserinfofromfacebook = async () => {
-=======
   const getuserinfofromfacebook=async()=>{
->>>>>>> main
     try {
 
       console.log(token);
       console.log('got here');
-<<<<<<< HEAD
-      const response = await axios.get(`https://graph.facebook.com/me?fields=email,id,name&access_token=${token}`)
-      const user = response.data;
-      setUserInfo(user);
-      console.log(user);
-      const ifuser = await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin', { email: user.email });
-      if (ifuser.data == 'no user was found') {
-
-        personaldetails.email = user.email;
-        navigation.navigate('CreateProfile');
-      }
-      else if (typeof ifuser.data.imageUri == 'string') {
-=======
       const response= await axios.get(`https://graph.facebook.com/me?fields=email,id,name&access_token=${token}`)
       const user=response.data;
       setUserInfo(user);
@@ -196,37 +119,22 @@ function SignUpAPI({navigation}) {
         navigation.navigate('CreateProfile');
       }
       else if(typeof ifuser.data.imageUri == 'string'){
->>>>>>> main
         setUser(ifuser.data);
         console.log(ifuser.data);
         setIsAuthenticated(true);
       }
-<<<<<<< HEAD
-
-=======
     
->>>>>>> main
     } catch (error) {
       // Add your own error handler here
     }
   }
 
-<<<<<<< HEAD
-
->>>>>>> Stashed changes
-=======
-        
->>>>>>> main
 
 
 
   return (
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
     <SafeAreaView style={{flex:1, alignItems:'center', justifyContent:'center'}}>
->>>>>>> main
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.elipseTop}></View>
       {/* Connect text */}
@@ -251,7 +159,6 @@ function SignUpAPI({navigation}) {
 
       
       <View style={styles.elipseButtom}></View>
-=======
     <SafeAreaView style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.elipseTop}></View>
@@ -278,7 +185,7 @@ function SignUpAPI({navigation}) {
 
         <View style={styles.elipseButtom}></View>
       </SafeAreaView>
->>>>>>> Stashed changes
+    </SafeAreaView>
     </SafeAreaView>
     </SafeAreaView>
   )
@@ -351,14 +258,7 @@ const styles = StyleSheet.create({
     height: 932,
     backgroundColor: '#FFF1F1',
     borderRadius: 50,
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
-=======
     
->>>>>>> main
   },
 
 
@@ -402,15 +302,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 380,
     height: 364,
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-    left: 100,
-=======
-    left: 212,
->>>>>>> Stashed changes
-=======
     left:212,
->>>>>>> main
     top: 650,
     borderRadius: 200,
     backgroundColor: '#FFAEAE',
