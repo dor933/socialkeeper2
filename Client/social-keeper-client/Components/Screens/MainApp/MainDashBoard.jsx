@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import firebase from '../../../assets/Firebase/firebaseconfig';
 
 
 //internal imports:
@@ -32,7 +33,7 @@ export default function MainDashBoard() {
                     return <Ionicons name={iconName} size={size} color={color} />;
                 },
                 headerShown: false,
-                
+
             })}
             tabBarOptions={{
                 activeTintColor: 'tomato',
@@ -46,19 +47,19 @@ export default function MainDashBoard() {
                     width: Dimensions.get('window').width / 4,
                 },
                 //do not show header
-                
-                           
+
+
             }}
-            initialRouteName="Suggested Meetings"   
-                    
+            initialRouteName="Suggested Meetings"
+
         >
             <Tab.Screen name="Personal" component={SettingDashBoard} options={{
                 headerShown: false,
             }}  />
-            
+
 
             <Tab.Screen name="Previous Meetings" component={PreviousMeetingsScreen} />
-            
+
 
 
             <Tab.Screen name="Random Meeting" component={FutureMeetingScreen}
