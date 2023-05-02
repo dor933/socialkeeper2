@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Dimensions } from 'react-native'
 import { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack'; // Add this import
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import firebase from '../../../assets/Firebase/firebaseconfig';
@@ -11,8 +12,20 @@ import PreviousMeetingsScreen from './PreviousMeetingsScreen';
 import FutureMeetingScreen from './FutureMeetingScreen';
 import SettingDashBoard from './PersonalSettings';
 import SuggestedMeetingsScreen from './SuggestedMeetingsScreen';
+import Calender from '..//..//CompsToUse/Calender.tsx';
 
 const Tab = createBottomTabNavigator();
+
+const SuggestedMeetingsStack = createStackNavigator(); // Add this line
+
+function SuggestedMeetingsStackScreen() {
+    return (
+      <SuggestedMeetingsStack.Navigator initialRouteName="SuggestedMeetings">
+        <SuggestedMeetingsStack.Screen name="SuggestedMeetings" component={SuggestedMeetingsScreen} options={{headerShown:false}} />
+        <SuggestedMeetingsStack.Screen name="SuggestedMeetingCalender" component={Calender} options={{headerShown:false}} />
+      </SuggestedMeetingsStack.Navigator>
+    );
+  }
 export default function MainDashBoard() {
     return (
 
@@ -66,7 +79,10 @@ export default function MainDashBoard() {
             options={{
                 headerShown: false,
             }} />
-            <Tab.Screen name="Suggested Meetings" component={SuggestedMeetingsScreen} />
+            <Tab.Screen name="Suggested Meetings" component={SuggestedMeetingsStackScreen} 
+            options={{
+                headerShown: false,
+            }} />
         </Tab.Navigator>
 
     );

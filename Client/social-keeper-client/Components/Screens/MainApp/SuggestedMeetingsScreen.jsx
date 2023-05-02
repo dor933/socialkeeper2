@@ -17,12 +17,16 @@ import { MainAppcontext } from './MainAppcontext';
 import firebaseInstance  from '../..//../assets/Firebase/firebaseconfig';
 //import axios
 import axios from 'axios';
-import {getPlaceDetails} from '..//..//..//assets//Utils/places.js';
+import Sugmeet from '../../CompsToUse/Sugmeet';
+import {getPlaceDetails} from '../../..//assets/Utils/places';
+import { ScrollView } from 'react-native-gesture-handler';
+let index=0;
+let index2=0;
 
 
 
 
-export default function SuggestedMeetingsScreen() {
+export default function SuggestedMeetingsScreen({navigation}) {
 
   const {user, setUser} = useContext(MainAppcontext);
 
@@ -39,11 +43,20 @@ export default function SuggestedMeetingsScreen() {
     
   }, []);
 
+ 
+
+
+ 
+
+
+ 
+
   
 
   const getcalendars = async () => {
     const { status } = await Calendar.requestCalendarPermissionsAsync();
     if (status === 'granted') {
+      console.log('granted')
       //get my calandar with id
       const calendars = await Calendar.getCalendarsAsync();
       console.log('Here are all your calendars:');
@@ -53,19 +66,22 @@ export default function SuggestedMeetingsScreen() {
      //get all the calendars id's and set them in an array except the data about holidays
      
       const calendarIds = calendars.map(each => each.id);
+      const cal= [];
+      cal.push(4)
+      console.log('this is calendar id')
+      console.log(calendarIds)
 
       //make a new date object and set it to today
       const startDate = new Date();
+      startDate.setDate(startDate.getDate() );
       //set the end date to 1 week from now
       const endDate = new Date();
-      endDate.setDate(startDate.getDate() + 7);
+      endDate.setDate(startDate.getDate() +7);
     
-      console.log('Getting events between ' + startDate + ' and ' + endDate);
       
 
-
-      const events = await Calendar.getEventsAsync(calendarIds, startDate, endDate);
-      console.log('Here are all your events:');
+        
+      const events = await Calendar.getEventsAsync(cal, startDate, endDate);
       console.log({ events });
       //create a new object which contain the events date, weekday of the date, starttime, endtime, and drop the events
       //that last exactly one day and their starttime and endtime are the same
@@ -77,7 +93,7 @@ export default function SuggestedMeetingsScreen() {
         const EndDate = new Date(each.endDate);
     
         const StartDateplusondeday = new Date(StartDate);
-        StartDateplusondeday.setDate(StartDateplusondeday.getDate() + 1);
+        StartDateplusondeday.setDate(StartDateplusondeday.getDate() + 7);
     
         // Return false if the condition is met, which removes the item from the array
         return !(
@@ -102,8 +118,30 @@ export default function SuggestedMeetingsScreen() {
         };
       });
 
-      setUserevents(newevents);
-      console.log(newevents);
+      const eventobject= newevents.reduce((acc, event,index) => {
+        const date = event.date.toISOString().split('T')[0];
+        if (!acc[date]) {
+    acc[date] = [];
+  }
+
+  acc[date].push({
+    id: index + 1,
+    name: event.title,
+    height: 80,
+    day: date,
+    starttime: event.starttime,
+    endtime: event.endtime
+  });
+
+  return acc;
+}, {});
+
+console.log('this is event object')
+console.log(eventobject)
+
+      setUserevents(eventobject);
+   
+  
 
       if(newevents.length>0){
         const collectionname= user.phoneNum1;
@@ -113,6 +151,7 @@ export default function SuggestedMeetingsScreen() {
         firebaseInstance.getDocs(collectionRef).then(async (querySnapshot) => {
           if (!querySnapshot.empty) {
             // Collection exists, delete all documents
+            console.log('Collection exists, deleting all documents...');
             const batch = firebaseInstance.writeBatch(firebaseInstance.firestore);
             querySnapshot.docs.forEach((docSnapshot) => {
               batch.delete(docSnapshot.ref);
@@ -132,25 +171,31 @@ export default function SuggestedMeetingsScreen() {
   
       }
 
-    //   const eventstosend= newevents.map((each)=>{
-    //     return{
-    //       starttime: each.starttime,
-    //       endtime: each.endtime,
-    //       weekday: each.weekday,
+      if(user.tblSuggestedMeetings.length>0){
 
-    //     }
-    //   })
+        //run on tblsuggestedmeetings
 
-    //  const objsend={
-    //   userdto: user.phoneNum1,
-    //   userinviteeve: eventstosend,
-    //   numberofmeetings: 0
-    //  }
 
-    //   const responsefrommeetings= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/MainApp/createmeetings',objsend);
-    //   console.log(responsefrommeetings);
+        user.tblSuggestedMeetings.map (async (each)=>{
 
-  
+          const placeinfo= await getPlaceDetails(each.place.place_id);
+          each.place= placeinfo;
+
+        }
+        )
+
+        user.tblSuggestedMeetings1.map (async (each)=>{
+
+          const placeinfo= await getPlaceDetails(each.place.place_id);
+          each.place= placeinfo;
+
+        }
+        )
+
+
+      }
+
+ 
 
     setSuggestedmeeting(user.tblSuggestedMeetings);
     setSuggestedmeeting1(user.tblSuggestedMeetings1);
@@ -188,28 +233,25 @@ export default function SuggestedMeetingsScreen() {
 
 
 
-    user.tblSuggestedMeetings1.forEach(async (each)=>{
-     if(each.place.Name==null){
-      console.log(each.place);
-      const placedetails= await getPlaceDetails(each.place.PlaceId,'AIzaSyDCCbpFYxI2jGqyWacOIokLnXONGUCUmow');
-      console.log('this is place details')
-      console.log(each);
-      if(placedetails!=null){
-        each.placedetails= placedetails;
-      }
+    if(user.tblSuggestedMeetings1!=null){
+    user.tblSuggestedMeetings1.forEach( (each)=>{
 
-     }
+      console.log(each);
+    }
+    
+    )
+  }
+
+  if(user.tblSuggestedMeetings!=null){
+    user.tblSuggestedMeetings.forEach( (each)=>{
+      console.log(each);
     })
+  }
 
     
       
 
 
-
-
-      //get weekday for each event date
-
-      //set the user events array to the new events array
 
 
   
@@ -232,7 +274,9 @@ export default function SuggestedMeetingsScreen() {
   return (
     
     <SafeAreaView style={styles.areaviewcontainter}>
+      <ScrollView>
     <View style={styles.container}>
+    
    
       <Customheader/>
       <View style={styles.meetingview}> 
@@ -249,19 +293,32 @@ export default function SuggestedMeetingsScreen() {
           selectedIndex={selectedIndex}
           onPress={index => setSelectedIndex(index)}
 
-          //make the Suggested button selected by default
-          
-    
-          //make the Suggested button selected by default
-      
-
-
-
-
           
           />
         </View>
+        <View >
+          {
+           user.tblSuggestedMeetings1!=null && selectedIndex==2 && user.tblSuggestedMeetings1.map((each)=>{
+            return(
+            <Sugmeet meeting={each} key={++index} navigation={navigation} invitedbyfriend={true}  />
+            )
+
+                      }
+            )
+          }
+          {
+            user.tblSuggestedMeetings!=null && selectedIndex==2 && user.tblSuggestedMeetings.map((each)=>{
+              return(
+              <Sugmeet meeting={each} key={++index2} navigation={navigation} invitedbyfriend={false}  />
+              )
+  
+                        }
+              )
+          }
+          
+        </View>
     </View>
+    </ScrollView>
     </SafeAreaView>
   )
 }

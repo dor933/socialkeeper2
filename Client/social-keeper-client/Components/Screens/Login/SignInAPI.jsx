@@ -133,7 +133,8 @@ function SignUpAPI({navigation}) {
         setIsAuthenticated(true);
       }
     } catch (error) {
-      // Add your own error handler here
+      
+      console.log(error);
     }
   };
 

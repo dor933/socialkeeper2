@@ -1,0 +1,65 @@
+{
+    "2023-04-15": [],
+
+    "2023-04-16": [
+      {
+        "id": 1,
+        "name": "Holiday",
+        "height": 80,
+        "day": "2023-04-16"
+      }
+    ],
+
+    "2023-04-17": [
+        {
+          "id": 2,
+          "name": "Meeting with Shlomit",
+          "height": 80,
+          "day": "2023-04-17",
+          "description": "פגישה עם שלומית בבית קפה לנוודר בשעה 21:00"
+        }
+      ],
+
+      "2023-04-18": [
+        {
+          "id": 3,
+          "name": "Meeting with Avi",
+          "height": 80,
+          "day": "2023-04-18",
+          "description": "פגישה עם אבי בקולנוע בשעה 22:00"
+        },
+        {
+            "id": 4,
+            "name": "Zoom Meeting",
+            "height": 80,
+            "day": "2023-04-18",
+            "description": " פגישת זום על פרויקט גמר במערכות מידע, תחילת זום בשעה 16:00 קישור ישלח במודל או שיהיה בווטצאפ"
+          }
+      ],
+
+      "2023-04-19": [
+        {
+          "id": 5,
+          "name": "Meeting with Yuval",
+          "height": 80,
+          "day": "2023-04-19",
+          "description": "פגישה עם יובל בספריה בשעה 18:00"
+          
+        },
+        {
+            "id": 6,
+            "name": "Flight",
+            "height": 80,
+            "day": "2023-04-19",
+            "description": "פרטי טיסה: יעד: פריז, שעת טיסה: 00:35, נחיתה: 06:25 שעון צרפת, טיסה מספר: 123422"
+          },
+          {
+            "id": 7,
+            "name": "Hotel",
+            "height": 80,
+            "day": "2023-04-19",
+            "description": "פרטי המלון מופיעים באתר בוקינג🗼"
+          }
+      ]
+}
+
