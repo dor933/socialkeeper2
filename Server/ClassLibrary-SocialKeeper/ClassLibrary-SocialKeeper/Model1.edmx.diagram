@@ -4,41 +4,41 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="5e2b547a8048405e9d286f25b1565fe2" Name="Diagram1">
-        <EntityTypeShape EntityType="igroup192_prodModel.tblFavoriteContact" Width="1.5" PointX="8.25" PointY="12.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup192_prodModel.tblHobbie" Width="1.5" PointX="8.25" PointY="4.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup192_prodModel.tblInvite" Width="1.5" PointX="5.25" PointY="11.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup192_prodModel.tblLoctation" Width="1.5" PointX="6" PointY="8.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup192_prodModel.tblNewUser" Width="1.5" PointX="0.75" PointY="9.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup192_prodModel.tblPreferredTime" Width="1.5" PointX="5.25" PointY="15.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup192_prodModel.tblSuggestedHobbie" Width="1.5" PointX="10.5" PointY="8.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup192_prodModel.tblSuggestedMeeting" Width="1.5" PointX="8.25" PointY="7.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup192_prodModel.tblUser" Width="1.5" PointX="3" PointY="11.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup192_prodModel.tblUserHobbie" Width="1.5" PointX="8.25" PointY="15.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup192_prodModel.tblActualMeeting" Width="1.5" PointX="13.5" PointY="7.875" IsExpanded="true" />
+      <Diagram DiagramId="f687097bac76466494500c902df6acfe" Name="Diagram1">
+        <EntityTypeShape EntityType="igroup192_prodModel.PossibleFavoriteContact" Width="1.5" PointX="5.25" PointY="16.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.sysdiagrams" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblActualMeeting" Width="1.5" PointX="7.5" PointY="6.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblFavoriteContact" Width="1.5" PointX="8.25" PointY="13.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblHobbie" Width="1.5" PointX="3" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblInvite" Width="1.5" PointX="5.25" PointY="13.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblLoctation" Width="1.5" PointX="3" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblNewUser" Width="1.5" PointX="0.75" PointY="11.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblPreferredTime" Width="1.5" PointX="5.25" PointY="20" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblSuggestedHobbie" Width="1.5" PointX="10.5" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblSuggestedMeeting" Width="1.5" PointX="5.25" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblUser" Width="1.5" PointX="3" PointY="12.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup192_prodModel.tblUserHobbie" Width="1.5" PointX="8.25" PointY="11" IsExpanded="true" />
+        <AssociationConnector Association="igroup192_prodModel.FK__PossibleF__hobbi__3C34F16F" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.FK__PossibleF__phone__3D2915A8" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.FK__PossibleF__phone__3E1D39E1" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.fk1tbltblActualMeeting" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.fk2tbltblActualMeeting" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.fk3tblActualMeeting" ManuallyRouted="false" />
         <AssociationConnector Association="igroup192_prodModel.fk1tblFavoriteContact" ManuallyRouted="false" />
         <AssociationConnector Association="igroup192_prodModel.fk2tblFavoriteContact" ManuallyRouted="false" />
         <AssociationConnector Association="igroup192_prodModel.fk3tblFavoriteContact" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup192_prodModel.fk1tbltblActualMeeting" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup192_prodModel.FK_tblSuggestedMeeting_tblHobbie" ManuallyRouted="false" />
         <AssociationConnector Association="igroup192_prodModel.fk2tblSuggestedHobbie" ManuallyRouted="false" />
         <AssociationConnector Association="igroup192_prodModel.fk2tblUserHobbie" ManuallyRouted="false" />
         <AssociationConnector Association="igroup192_prodModel.fk1tblInvite" ManuallyRouted="false" />
         <AssociationConnector Association="igroup192_prodModel.fk2tblInvite" ManuallyRouted="false" />
         <AssociationConnector Association="igroup192_prodModel.fk3tblSuggestedMeeting" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup192_prodModel.fk3tbltblActualMeeting" ManuallyRouted="false" />
         <AssociationConnector Association="igroup192_prodModel.fk1" ManuallyRouted="false" />
         <AssociationConnector Association="igroup192_prodModel.fk1tblPreferredTime" ManuallyRouted="false" />
         <AssociationConnector Association="igroup192_prodModel.fk1tblSuggestedHobbie" ManuallyRouted="false" />
         <AssociationConnector Association="igroup192_prodModel.fk1tblSuggestedMeeting" ManuallyRouted="false" />
         <AssociationConnector Association="igroup192_prodModel.fk2tblSuggestedMeeting" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup192_prodModel.fk2tbltblActualMeeting" ManuallyRouted="false" />
         <AssociationConnector Association="igroup192_prodModel.fk1tblUserHobbie" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="igroup192_prodModel.PossibleFavoriteContact" Width="1.5" PointX="10.875" PointY="11.875" />
-        <EntityTypeShape EntityType="igroup192_prodModel.sysdiagram" Width="1.5" PointX="0.75" PointY="0.75" />
-        <AssociationConnector Association="igroup192_prodModel.FK__PossibleF__hobbi__6E01572D" />
-        <AssociationConnector Association="igroup192_prodModel.FK__PossibleF__phone__6C190EBB" />
-        <AssociationConnector Association="igroup192_prodModel.FK__PossibleF__phone__6D0D32F4" />
-        <AssociationConnector Association="igroup192_prodModel.FK_tblSuggestedMeeting_tblHobbie" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

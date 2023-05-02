@@ -16,16 +16,24 @@ namespace ClassLibrary_SocialKeeper
         public string phoneNum2 { get; set; }
         public DateTime date { get; set; }
         public string rejectReason { get; set; }
-        public int longitude { get; set; }
-        public int latitude { get; set; }
+        public double longitude { get; set; }
+        public double latitude { get; set; }
 
         public int hobbieNum { get; set; }
 
+        public double prefferedtimerate;
+
+        public double normalizeuserrank { get; set; }
+
+        public double normalizehobbierank { get; set; }
+
         public double rank { get; set; }
-        public List<tblLoctation> loctations { get; set; } = new List<tblLoctation>();
-        public List<tblSuggestedHobbie> suggestedHobbies { get; set; } = new List<tblSuggestedHobbie>();
-        public List<tblActualMeeting> actualMeetings { get; set; } = new List<tblActualMeeting>();
-        public tblUser user1 { get; set; }
-        public tblUser user2 { get; set; }
+        public LoctationDTO locatation { get; set; }
+        public List<suggestedhobbiesdto> suggestedHobbies { get; set; } = new List<suggestedhobbiesdto>();
+        public List<Actualmeetingdto> actualMeetings { get; set; } = new List<Actualmeetingdto>();
+        public ExistsingUsers user1 { get; set; }
+        public ExistsingUsers user2 { get; set; }
+
+        public PlaceResult place = new PlaceResult();
     }
 }

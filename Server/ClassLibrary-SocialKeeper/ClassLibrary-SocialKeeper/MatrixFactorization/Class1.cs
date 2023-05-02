@@ -1,14 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity.Core.Metadata.Edm;
 using System.Dynamic;
+using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.Trainers;
 using Microsoft.SqlServer.Server;
+using Newtonsoft.Json;
+using Google.Cloud.Firestore;
+using Google.Cloud.Firestore.V1;
 
 namespace ClassLibrary_SocialKeeper
 {
@@ -16,22 +22,48 @@ namespace ClassLibrary_SocialKeeper
     {
          public float UserId;
          public int HobbieNum;
-        public int Label;
+        public double Label;
+        public double Minhours;
+       
+        
     }
 
-  
+    public class Place
+    {
+        public string Name { get; set; }
+        public string PlaceId { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public double Rating { get; set; }
+
+        public string formatted_address { get; set; }
+
+
+
+    }
+
+    public class PhotoInfo
+    {
+        public int Height { get; set; }
+        public int Width { get; set; }
+        public string PhotoReference { get; set; }
+    }
+
+
     public class Meetings
     {
+         
         static public Dictionary<string,string> SuggestMeetingTimes(List<RatingData> data, int numSuggestions)
         {
-            int[,] combinedPreferences = new int[7, 3];
+           
+            double[,] combinedPreferences = new double[7, 3];
             for (int i = 0; i < 21; i++)
             {
                 int day = i / 3;
                 int time = i % 3;
 
-                int user1Preference = data[i].Label;
-                int user2Preference = data[i + 21].Label;
+                double user1Preference = data[i].Label;
+                double user2Preference = data[i + 21].Label;
 
                 combinedPreferences[day, time] = user1Preference * user2Preference;
             }
@@ -83,6 +115,435 @@ namespace ClassLibrary_SocialKeeper
             }
         }
 
+        public static async Task<List<SuggestedDTO>> Generatemeetings(Googlecloudservices _googleservices,List<SuggestedDTO> mysuggested, igroup192_prodEntities db, List<RatingData> ratedh)
+        {
+
+            
+            Dictionary<string, string> placetypes = new Dictionary<string, string>();
+            placetypes.Add("Football", "bar");
+            placetypes.Add("Basketball","bar");
+            placetypes.Add("Resturant", "restaurant");
+            placetypes.Add("Movie", "movie_theater");
+            placetypes.Add("Parties", "night_club");
+            placetypes.Add("Coffee", "cafe");
+            placetypes.Add("Gym", "gym");
+            placetypes.Add("Tennis", "park");
+            placetypes.Add("Running", "park");
+            placetypes.Add("Chas", "library");
+            string type = "";
+            string currentplacetype = "";
+            List<PlaceResult> places = new List<PlaceResult>();
+            List<PlaceResult> placetorun= new List<PlaceResult>();
+            List<string> typeswithoutplaces= new List<string>();
+            Dictionary<string, List<PlaceResult>> placeslist= new Dictionary<string, List<PlaceResult>>();
+           
+      
+
+
+
+            foreach (SuggestedDTO sugitem in mysuggested)
+            {
+                RatingData highesthobrank = ratedh.Where(x => x.HobbieNum == sugitem.hobbieNum).FirstOrDefault();
+                List<RatingData> ratedwithouthobbie= ratedh.Where(x=> x.HobbieNum!= sugitem.hobbieNum).ToList();
+                bool placefound = false;
+                int currentDayOfWeek = (int)sugitem.date.DayOfWeek;
+                bool initialrunning = true;
+                placeslist= new Dictionary<string, List<PlaceResult>>();
+                foreach (KeyValuePair<string, string> entry in placetypes)
+                {
+                    if (!placeslist.ContainsKey(entry.Value))
+                    {
+                        placeslist[entry.Value] = new List<PlaceResult>();
+                    }
+                }
+
+                string hobbiename = "";
+
+                double lat1 = Convert.ToDouble(sugitem.user1.citylatt);
+                double lon1 = Convert.ToDouble(sugitem.user1.citylong);
+                double lat2 = Convert.ToDouble(sugitem.user2.citylatt);
+                double lon2 = Convert.ToDouble(sugitem.user2.citylong);
+
+                (double midLat, double midLon) = FindMidpoint(lat1, lon1, lat2, lon2);
+
+                double radius = 10000;
+          
+                while (!placefound)
+                {
+                    placetorun.Clear();
+
+
+                    if (initialrunning)
+                    {
+                         hobbiename = db.tblHobbie.Where(x => x.hobbieNum == sugitem.hobbieNum).FirstOrDefault().hobbieName;
+                         type = placetypes[hobbiename];
+
+                        if (currentplacetype != type)
+                        {
+
+                            QuerySnapshot snapshot= await _googleservices._firestoreDb.Collection("Places").WhereEqualTo("type", type).GetSnapshotAsync();
+                            foreach(DocumentSnapshot docsnap in snapshot.Documents)
+                            {
+                                double docLatitude= docsnap.GetValue<double>("latitude");
+                                double docLongitude= docsnap.GetValue<double>("longitude");
+                                double distance= Googlecloudfunctions.CalculateDistance(midLat, midLon, docLatitude, docLongitude);
+                                double radiuskm = radius / 800;
+                                if(distance <= radiuskm)
+                                {
+                                    string placeid= docsnap.GetValue<string>("Placeid");
+                                    string placejson= await Googlecloudfunctions.Getfilefromcloudstorage($"Places/{placeid}.json",_googleservices);
+                                    PlaceResult pr= JsonConvert.DeserializeObject<PlaceResult>(placejson);
+                                    placetorun.Add(pr);
+                                }
+
+                                if (placetorun.Count > 20)
+                                {
+                                    break;
+                                }
+                               
+                            }
+
+                            if (placetorun.Count >= 13)
+                            {
+                                places = placetorun;
+                            }
+                            else { 
+
+                            //will be request to firestore to check if there is places there according to demands
+     
+                                string response = await GetPlacesAsync(_googleservices.googlemapscred, midLat, midLon, radius, type);
+                                places = Extractingfromjson.ExtractPlacesFromJson(response);
+                                places.Sort((x, y) => y.Rating.CompareTo(x.Rating));
+                                SinglePlaceroot prsing = new SinglePlaceroot();
+                                PlaceResult pr= new PlaceResult();
+                                foreach (PlaceResult placeto in places)
+                                {
+                                string fullplace = await openinghours(_googleservices.googlemapscred, placeto.PlaceId);
+                                 prsing = JsonConvert.DeserializeObject<SinglePlaceroot>(fullplace);
+                                    pr = prsing.Result;
+                                string prconverted= JsonConvert.SerializeObject(pr);
+                                string ifexist = await Googlecloudfunctions.Getfilefromcloudstorage($"Places/{pr.PlaceId}",_googleservices);
+                                if (ifexist== null)
+                                {
+                                    CollectionReference collection= _googleservices._firestoreDb.Collection("Places");
+                                    GeoPoint gepoint= new GeoPoint(pr.Geometry.Location.Latitude,pr.Geometry.Location.Longitude);
+                                    Dictionary<string, object> docdata = new Dictionary<string, object>
+                                    {
+                                        {"Placeid", pr.PlaceId },
+                                        {"latitude", gepoint.Latitude },
+                                        {"longitude", gepoint.Longitude },
+                                        {"type", type }
+                                    };
+
+                                        DocumentReference docref = await collection.AddAsync(docdata);
+                                    await Googlecloudfunctions.UploadJsonToGoogleCloudStorage(prconverted, $"Places/{pr.PlaceId}.json",_googleservices);
+                                        placetorun.Add(pr);
+                                    
+                                }
+                                else
+                                {
+                                    
+                                     pr = JsonConvert.DeserializeObject<PlaceResult>(ifexist);
+                                    placetorun.Add(pr);
+
+                                }
+                            }
+                                places = placetorun;
+
+
+                                }
+                            currentplacetype = type;
+                            
+                            
+                        }
+                       
+                    }
+                    else
+                    {
+                        if (ratedwithouthobbie.Count > 0)
+                        {
+
+                            while(ratedwithouthobbie.Count>0)
+                            {
+                                RatingData firstplacerate = ratedwithouthobbie[0];
+                                int hobbienum = firstplacerate.HobbieNum;
+                                ratedwithouthobbie.RemoveAt(0);
+                                 hobbiename = db.tblHobbie.Where(x => x.hobbieNum == hobbienum).FirstOrDefault().hobbieName;
+                                type = placetypes[hobbiename];
+                                if (currentplacetype != type  && (sugitem.endTime - sugitem.startTime >= TimeSpan.FromHours(firstplacerate.Minhours)))
+                                {
+                                    double hobbierank = ratedh.Where(x => x.HobbieNum == hobbienum).FirstOrDefault().Label;
+                                    sugitem.normalizehobbierank = (hobbierank - 1.0) / (25.0 - 1.0);
+                                    sugitem.rank = calculatemeetingscore(sugitem.normalizehobbierank, sugitem.prefferedtimerate, sugitem.normalizeuserrank);
+                                    if (placeslist[type].Count == 20)
+                                    {
+                                        places = placeslist[type];
+                                    }
+                                    else
+                                    {
+                                        places = new List<PlaceResult>();
+                                        QuerySnapshot snapshot = await _googleservices._firestoreDb.Collection("Places").WhereEqualTo("type", type).GetSnapshotAsync();
+                                        foreach (DocumentSnapshot docsnap in snapshot.Documents)
+                                        {
+                                            double docLatitude = docsnap.GetValue<double>("latitude");
+                                            double docLongitude = docsnap.GetValue<double>("longitude");
+                                            double distance = Googlecloudfunctions.CalculateDistance(midLat, midLon, docLatitude, docLongitude);
+                                            double radiuskm = radius / 800;
+                                            if (distance <= radiuskm)
+                                            {
+                                                string placeid = docsnap.GetValue<string>("Placeid");
+                                                string placejson = await Googlecloudfunctions.Getfilefromcloudstorage($"Places/{placeid}.json", _googleservices);
+                                                PlaceResult pr = JsonConvert.DeserializeObject<PlaceResult>(placejson);
+                                                placetorun.Add(pr);
+                                            }
+
+                                        }
+
+                                        if (placetorun.Count >= 13)
+                                        {
+                                            places = placetorun;
+                                        }
+                                        else
+                                        {
+                                            string response = await GetPlacesAsync(_googleservices.googlemapscred, midLat, midLon, radius, type);
+                                            places = Extractingfromjson.ExtractPlacesFromJson(response);
+                                            SinglePlaceroot prsing = new SinglePlaceroot();
+                                            PlaceResult pr = new PlaceResult();
+                                            foreach (PlaceResult placeto in places)
+                                            {
+                                                string fullplace = await openinghours(_googleservices.googlemapscred, placeto.PlaceId);
+                                                prsing = JsonConvert.DeserializeObject<SinglePlaceroot>(fullplace);
+                                                pr = prsing.Result;
+                                                string prconverted = JsonConvert.SerializeObject(pr);
+                                                string ifexist = await Googlecloudfunctions.Getfilefromcloudstorage($"Places/{pr.PlaceId}.json", _googleservices);
+                                                if (ifexist == null)
+                                                {
+                                                    CollectionReference collection = _googleservices._firestoreDb.Collection("Places");
+                                                    GeoPoint gepoint = new GeoPoint(pr.Geometry.Location.Latitude, pr.Geometry.Location.Longitude);
+                                                    Dictionary<string, object> docdata = new Dictionary<string, object>
+                                                   {
+                                        {"Placeid", pr.PlaceId },
+                                        {"latitude", gepoint.Latitude },
+                                        {"longitude", gepoint.Longitude },
+                                        {"type", type }
+                                                };
+
+                                                    DocumentReference docref = await collection.AddAsync(docdata);
+                                                    await Googlecloudfunctions.UploadJsonToGoogleCloudStorage(prconverted, $"Places/{pr.PlaceId}.json", _googleservices);
+                                                    placetorun.Add(pr);
+
+                                                }
+                                                else
+                                                {
+
+                                                    pr = JsonConvert.DeserializeObject<PlaceResult>(ifexist);
+                                                    placetorun.Add(pr);
+
+                                                }
+
+
+                                            }
+                                        
+
+
+                                        }
+                                    }
+
+                                    places = placetorun;
+                                    places.Sort((x, y) => y.Rating.CompareTo(x.Rating));
+                                    currentplacetype = type;
+                                    break;
+                                }
+
+                            }
+
+                        
+
+                          
+                        }
+                        else
+                        {
+                            placefound = true;
+                            continue;
+                        }
+
+
+                    }
+
+
+
+                    foreach (PlaceResult place in places)
+                        {
+                            if (placefound)
+                            {
+                                break;
+                            }
+
+                        OpeningHoursDetails openingHoursDetails = place.OpeningHours;
+
+                            if (openingHoursDetails != null || type=="park")
+                            {
+
+                            if (type == "park")
+                            {
+                                LoctationDTO dtoloc = new LoctationDTO();
+                                tblLoctation loctocheck = db.tblLoctation.Where(x => x.longitude == place.Geometry.Location.Longitude && x.latitude == place.Geometry.Location.Latitude).FirstOrDefault();
+                                if (loctocheck == null)
+                                {
+                                    tblLoctation locationnew = new tblLoctation();
+                                    locationnew.latitude = place.Geometry.Location.Latitude;
+                                    locationnew.longitude = place.Geometry.Location.Longitude;
+                                    locationnew.city = place.Name;
+                                    locationnew.Placeid= place.PlaceId;
+                                    db.tblLoctation.Add(locationnew);
+                                    db.SaveChanges();
+                                    dtoloc.latitude = locationnew.latitude;
+                                    dtoloc.longitude = locationnew.longitude;
+                                    dtoloc.city = locationnew.city;
+                                    sugitem.locatation = dtoloc;
+                                    sugitem.longitude = dtoloc.longitude;
+                                    sugitem.latitude = dtoloc.latitude;
+                                }
+                                else
+                                {
+                                    dtoloc.latitude = loctocheck.latitude;
+                                    dtoloc.longitude = loctocheck.longitude;
+                                    dtoloc.city = loctocheck.city;
+                                    if (loctocheck.Placeid == null)
+                                    {
+                                        loctocheck.Placeid=place.PlaceId;
+                                        db.SaveChanges();
+                                    }
+                                    sugitem.locatation = dtoloc;
+                                    sugitem.latitude = loctocheck.latitude;
+                                    sugitem.longitude = loctocheck.longitude;
+                                }
+                                sugitem.place = place;
+                                placefound = true;
+                                break;
+
+                            }
+                            else
+                            {
+
+                                List<Period> opcloseday = openingHoursDetails.Periods.Where(x => x.Open.Day == currentDayOfWeek && x.Close.Day == currentDayOfWeek).ToList();
+
+                                foreach (Period period in opcloseday)
+                                {
+                                    TimeSpan timeopen = TimeSpan.ParseExact(period.Open.Time, "hhmm", CultureInfo.InvariantCulture);
+                                    TimeSpan timeclose = TimeSpan.ParseExact(period.Close.Time, "hhmm", CultureInfo.InvariantCulture);
+
+                                    if (sugitem.startTime >= timeopen && sugitem.endTime <= timeclose)
+                                    {
+                                        LoctationDTO dtoloc = new LoctationDTO();
+                                        tblLoctation loctocheck = db.tblLoctation.Where(x => x.longitude == place.Geometry.Location.Longitude && x.latitude == place.Geometry.Location.Latitude).FirstOrDefault();
+                                        if (loctocheck == null)
+                                        {
+                                            tblLoctation locationnew = new tblLoctation();
+                                            locationnew.latitude = place.Geometry.Location.Latitude;
+                                            locationnew.longitude = place.Geometry.Location.Longitude;
+                                            locationnew.city = place.Name;
+                                            locationnew.Placeid = place.PlaceId;
+                                            db.tblLoctation.Add(locationnew);
+                                            db.SaveChanges();
+                                            dtoloc.latitude = locationnew.latitude;
+                                            dtoloc.longitude = locationnew.longitude;
+                                            dtoloc.city = locationnew.city;
+                                            sugitem.locatation = dtoloc;
+                                            sugitem.longitude = dtoloc.longitude;
+                                            sugitem.latitude = dtoloc.latitude;
+                                        }
+                                        else
+                                        {
+                                            dtoloc.latitude = loctocheck.latitude;
+                                            dtoloc.longitude = loctocheck.longitude;
+                                            dtoloc.city = loctocheck.city;
+                                            dtoloc.Placeid = place.PlaceId;
+                                            sugitem.locatation = dtoloc;
+                                            sugitem.latitude = loctocheck.latitude;
+                                            sugitem.longitude = loctocheck.longitude;
+                                        }
+                                        sugitem.place = place;
+                                        placefound = true;
+                                        break;
+
+
+
+
+                                    }
+                                }
+                            }
+                            }
+
+                            PlaceResult place1= placeslist[type].Where(x=> x.PlaceId==place.PlaceId).FirstOrDefault();
+
+                        if (place1==null)
+                        {
+                            placeslist[type].Add(place);
+
+                        }
+
+
+
+                    }
+                    initialrunning = false;
+                    
+                }
+
+
+
+               
+
+            }
+            return mysuggested;
+
+
+        }
+        static async Task<string> GetPlacesAsync(string apiKey, double lat, double lon, double radius, string type)
+        {
+            string url = $"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lon}&radius={radius}&type={type}&key={apiKey}";
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
+            
+
+        }
+
+        static async Task<string> openinghours(string apiKey, string placeid)
+        {
+            string url = $"https://maps.googleapis.com/maps/api/place/details/json?place_id={placeid}&key={apiKey}";
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response= await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
+
+        }
+
+        static (double, double) FindMidpoint(double lat1, double lon1, double lat2, double lon2)
+        {
+            double lat1Radians = DegreeToRadians(lat1);
+            double lon1Radians = DegreeToRadians(lon1);
+            double lat2Radians = DegreeToRadians(lat2);
+            double lon2Radians = DegreeToRadians(lon2);
+
+            double midLatRadians = (lat1Radians + lat2Radians) / 2;
+            double midLonRadians = (lon1Radians + lon2Radians) / 2;
+
+            double midLat = RadiansToDegrees(midLatRadians);
+            double midLon = RadiansToDegrees(midLonRadians);
+
+            return (midLat, midLon);
+        }
+        static double DegreeToRadians(double degree)
+        {
+            return degree * (Math.PI / 180);
+        }
+
+        static double RadiansToDegrees(double radians)
+        {
+            return radians * (180 / Math.PI);
+        }
         public static List<Tuple<TimeSpan, TimeSpan>>  Findifcollapse(Tuple<TimeSpan,TimeSpan> Timecheck, List<Events> userevents, List<Events> user1events)
         {
             List<Tuple<TimeSpan, TimeSpan>> newlistspan = new List<Tuple<TimeSpan, TimeSpan>>();
@@ -100,7 +561,7 @@ namespace ClassLibrary_SocialKeeper
                 {
                     if (e.starttime <= newTimecheck.Item1 && e.endtime >= newTimecheck.Item2)
                     {
-                        return null;
+                    return eventstoreturn;
                     }
                     else if ((e.starttime >= newTimecheck.Item1 && e.endtime <= newTimecheck.Item2))
                     {
@@ -132,7 +593,7 @@ namespace ClassLibrary_SocialKeeper
                     if (e.starttime < Timecheck.Item1)
                     {
                         TimeSpan tempspan = Timecheck.Item1;
-                        restirct.Add(new Tuple<TimeSpan, TimeSpan>(tempspan, newTimecheck.Item2));
+                        newTimecheck = new Tuple<TimeSpan, TimeSpan>(tempspan, e.endtime);
                     }
                     else
                     {
@@ -336,7 +797,7 @@ namespace ClassLibrary_SocialKeeper
                 currentStartTime = restrictedPeriod.Item2;
             }
 
-            if(Timecheck.Item2-currentStartTime> TimeSpan.FromHours(1))
+            if(Timecheck.Item2-currentStartTime >= TimeSpan.FromHours(1))
             {
                 eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(currentStartTime,Timecheck.Item2));
             }

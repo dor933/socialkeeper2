@@ -1,8 +1,16 @@
-﻿using System;
+﻿using Autofac;
+using Autofac.Integration.WebApi;
+using ClassLibrary_SocialKeeper;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using WebApplication1;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using System.Web.Http.Dependencies;
 
 namespace WebApplication1
 {
@@ -22,6 +30,12 @@ namespace WebApplication1
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+          
+
         }
+
+    
     }
+  
 }

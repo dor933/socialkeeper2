@@ -17,29 +17,30 @@ namespace ClassLibrary_SocialKeeper
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tblHobbie()
         {
-            this.tblFavoriteContacts = new HashSet<tblFavoriteContact>();
-            this.tblActualMeetings = new HashSet<tblActualMeeting>();
-            this.tblSuggestedHobbies = new HashSet<tblSuggestedHobbie>();
-            this.tblUserHobbies = new HashSet<tblUserHobbie>();
-            this.PossibleFavoriteContacts = new HashSet<PossibleFavoriteContact>();
-            this.tblSuggestedMeetings = new HashSet<tblSuggestedMeeting>();
+            this.PossibleFavoriteContact = new HashSet<PossibleFavoriteContact>();
+            this.tblActualMeeting = new HashSet<tblActualMeeting>();
+            this.tblFavoriteContact = new HashSet<tblFavoriteContact>();
+            this.tblSuggestedMeeting = new HashSet<tblSuggestedMeeting>();
+            this.tblSuggestedHobbie = new HashSet<tblSuggestedHobbie>();
+            this.tblUserHobbie = new HashSet<tblUserHobbie>();
         }
     
         public int hobbieNum { get; set; }
         public string hobbieName { get; set; }
         public string imageuri { get; set; }
+        public Nullable<float> Minhours { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblFavoriteContact> tblFavoriteContacts { get; set; }
+        public virtual ICollection<PossibleFavoriteContact> PossibleFavoriteContact { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblActualMeeting> tblActualMeetings { get; set; }
+        public virtual ICollection<tblActualMeeting> tblActualMeeting { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblSuggestedHobbie> tblSuggestedHobbies { get; set; }
+        public virtual ICollection<tblFavoriteContact> tblFavoriteContact { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblUserHobbie> tblUserHobbies { get; set; }
+        public virtual ICollection<tblSuggestedMeeting> tblSuggestedMeeting { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PossibleFavoriteContact> PossibleFavoriteContacts { get; set; }
+        public virtual ICollection<tblSuggestedHobbie> tblSuggestedHobbie { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblSuggestedMeeting> tblSuggestedMeetings { get; set; }
+        public virtual ICollection<tblUserHobbie> tblUserHobbie { get; set; }
     }
 }

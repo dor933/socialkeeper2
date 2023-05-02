@@ -17,14 +17,14 @@ namespace ClassLibrary_SocialKeeper
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tblNewUser()
         {
-            this.tblInvites = new HashSet<tblInvite>();
+            this.tblInvite = new HashSet<tblInvite>();
         }
     
         public string phoneNum1 { get; set; }
         public string nickName { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblInvite> tblInvites { get; set; }
+        public virtual ICollection<tblInvite> tblInvite { get; set; }
         public virtual tblUser tblUser { get; set; }
     }
 }

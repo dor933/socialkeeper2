@@ -17,17 +17,18 @@ namespace ClassLibrary_SocialKeeper
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tblLoctation()
         {
-            this.tblSuggestedMeetings = new HashSet<tblSuggestedMeeting>();
-            this.tblActualMeetings = new HashSet<tblActualMeeting>();
+            this.tblActualMeeting = new HashSet<tblActualMeeting>();
+            this.tblSuggestedMeeting = new HashSet<tblSuggestedMeeting>();
         }
     
-        public int longitude { get; set; }
-        public int latitude { get; set; }
+        public double longitude { get; set; }
+        public double latitude { get; set; }
         public string city { get; set; }
+        public string Placeid { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblSuggestedMeeting> tblSuggestedMeetings { get; set; }
+        public virtual ICollection<tblActualMeeting> tblActualMeeting { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblActualMeeting> tblActualMeetings { get; set; }
+        public virtual ICollection<tblSuggestedMeeting> tblSuggestedMeeting { get; set; }
     }
 }

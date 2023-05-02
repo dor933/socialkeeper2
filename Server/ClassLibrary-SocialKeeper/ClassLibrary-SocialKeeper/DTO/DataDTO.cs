@@ -11,5 +11,7 @@ namespace ClassLibrary_SocialKeeper
         public string userdto { get; set; }
         public List<Events> userinviteeve { get; set; }
 
+        public int numberofmeetings { get; set; }
+
     }
 }

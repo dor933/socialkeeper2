@@ -12,17 +12,24 @@ using System.Threading.Tasks;
 using Google.Cloud.Storage.V1;
 using Google.Apis.Storage.v1.Data;
 using System.Text.RegularExpressions;
+using System.Web.UI.WebControls;
+using System.Data;
 
 namespace WebApplication1.Controllers
 {
     public class DefaultController : ApiController
     {
-        igroup192_DbContext db = new igroup192_DbContext();
-        private readonly Googlecloudservices _googleservices;
+        
+        igroup192_prodEntities _db;
+        public Googlecloudservices _googleservices;
 
         public DefaultController()
         {
-            _googleservices= new Googlecloudservices();
+            _googleservices = Creategooglecloudservice.Googlecloudservices();
+            
+
+            _db = dbcontext._db;
+        
         }
 
 
@@ -46,7 +53,7 @@ namespace WebApplication1.Controllers
 
 
 
-                var user = db.tblUsers.Where(u => u.email == email).FirstOrDefault();
+                var user = _db.tblUser.Where(u => u.email == email).FirstOrDefault();
                 if (user != null)
                 {
                     UserDTO usertoret = GetUser(user);
@@ -80,7 +87,7 @@ namespace WebApplication1.Controllers
 
             List<FavoriteContactsDTO> FavoriteContactsDTOs = new List<FavoriteContactsDTO>();
 
-            foreach (tblFavoriteContact favo in checkifuser.tblFavoriteContacts)
+            foreach (tblFavoriteContact favo in checkifuser.tblFavoriteContact)
             {
 
                 FavoriteContactsDTO favodto = new FavoriteContactsDTO();
@@ -107,7 +114,7 @@ namespace WebApplication1.Controllers
             }
             List<FavoriteContactsDTO> FavoriteContactsDTOs1 = new List<FavoriteContactsDTO>();
 
-            foreach (tblFavoriteContact favo in checkifuser.tblFavoriteContacts1)
+            foreach (tblFavoriteContact favo in checkifuser.tblFavoriteContact1)
             {
 
                 FavoriteContactsDTO favodto = new FavoriteContactsDTO();
@@ -115,13 +122,16 @@ namespace WebApplication1.Controllers
                 favodto.phoneNum2 = favo.phoneNum2;
                 favodto.hobbieNum = favo.hobbieNum;
                 Usersummary user1dto = new Usersummary();
-                user1dto.phoneNum1 = favo.tblUser1.phoneNum1;
-                user1dto.userName = favo.tblUser1.userName;
-                user1dto.birthDate = Convert.ToDateTime(favo.tblUser1.birthDate);
-                user1dto.city = favo.tblUser1.city;
-                user1dto.gender = favo.tblUser1.gender;
-                user1dto.email = favo.tblUser1.email;
-                user1dto.imageUri = favodto.tblUser1.imageUri;
+                user1dto.phoneNum1 = favo.tblUser.phoneNum1;
+                user1dto.userName = favo.tblUser.userName;
+                user1dto.birthDate = Convert.ToDateTime(favo.tblUser.birthDate);
+                user1dto.city = favo.tblUser.city;
+                user1dto.gender = favo.tblUser.gender;
+                user1dto.email = favo.tblUser.email;
+                if (favo.tblUser1.imageUri != null)
+                {
+                    user1dto.imageUri = favo.tblUser.imageUri;
+                }
                 favodto.tblUser1 = user1dto;
                 tblhobbieDTO hobbieDTO = new tblhobbieDTO();
                 hobbieDTO.hobbieNum = favo.tblHobbie.hobbieNum;
@@ -138,7 +148,7 @@ namespace WebApplication1.Controllers
 
             List<tblPrefferedtimesDTO> preferredTimeDTOs = new List<tblPrefferedtimesDTO>();
 
-            foreach (tblPreferredTime preff in checkifuser.tblPreferredTimes)
+            foreach (tblPreferredTime preff in checkifuser.tblPreferredTime)
             {
                 tblPrefferedtimesDTO prefferedtdo = new tblPrefferedtimesDTO();
                 prefferedtdo.startTime = preff.startTime;
@@ -156,13 +166,13 @@ namespace WebApplication1.Controllers
             //will be done through algorhitm
 
             List<UserhobbiesDTO> userhobbiesDTOs = new List<UserhobbiesDTO>();
-            foreach (tblUserHobbie item in checkifuser.tblUserHobbies)
+            foreach (tblUserHobbie item in checkifuser.tblUserHobbie)
             {
                 UserhobbiesDTO hobbieDTO = new UserhobbiesDTO();
                 hobbieDTO.phoneNum1 = item.phoneNum1;
                 hobbieDTO.hobbieNum = item.hobbieNum;
                 hobbieDTO.rank = item.rank;
-                tblHobbie ushob = db.tblHobbies.Where(x => x.hobbieNum == item.hobbieNum).FirstOrDefault();
+                tblHobbie ushob = _db.tblHobbie.Where(x => x.hobbieNum == item.hobbieNum).FirstOrDefault();
                 hobbieDTO.hobbiename = ushob.hobbieName;
                 hobbieDTO.hobbieimage = ushob.imageuri;
                 userhobbiesDTOs.Add(hobbieDTO);
@@ -172,7 +182,7 @@ namespace WebApplication1.Controllers
             List<tblPossibleDTO> possibleinvite = new List<tblPossibleDTO>();
             List<tblPossibleDTO> possibleinvited = new List<tblPossibleDTO>();
 
-            foreach (PossibleFavoriteContact pos in checkifuser.PossibleFavoriteContacts)
+            foreach (PossibleFavoriteContact pos in checkifuser.PossibleFavoriteContact)
             {
                 tblPossibleDTO posdto = new tblPossibleDTO();
                 posdto.phonenuminvite = pos.phonenuminvite;
@@ -207,7 +217,7 @@ namespace WebApplication1.Controllers
                 possibleinvite.Add(posdto);
             }
 
-            foreach (PossibleFavoriteContact posinvited in checkifuser.PossibleFavoriteContacts1)
+            foreach (PossibleFavoriteContact posinvited in checkifuser.PossibleFavoriteContact1)
             {
                 tblPossibleDTO posdoinviteddto = new tblPossibleDTO();
                 posdoinviteddto.phonenuminvite = posinvited.phonenuminvite;
@@ -240,6 +250,110 @@ namespace WebApplication1.Controllers
             usertoret.possibleFavoriteContacts_invite_DTO = possibleinvite;
             usertoret.possibleFavoriteContacts_invited_DTO = possibleinvited;
 
+            List<SuggestedDTO> suggestedbyuser= new List<SuggestedDTO>();
+            List<SuggestedDTO> suggestedbyfriend= new List<SuggestedDTO>();
+            foreach(tblSuggestedMeeting sugit in checkifuser.tblSuggestedMeeting1)
+            {
+                DateTime currentDate = new DateTime(sugit.date.Year, sugit.date.Month, sugit.date.Day);
+                DateTime datetocheck = currentDate.AddHours(sugit.startTime.Hours);
+
+
+                if (datetocheck >= DateTime.Now)
+                {
+                    SuggestedDTO suggested = new SuggestedDTO();
+                    string placeid = _db.tblLoctation.Where(x => x.latitude == sugit.latitude && x.longitude == sugit.longitude).FirstOrDefault().Placeid;
+                    
+                    suggested.place.PlaceId = placeid;
+                    suggested.phoneNum1= sugit.phoneNum1;
+                    suggested.date= sugit.date;
+                    suggested.phoneNum2= sugit.phoneNum2;
+                    suggested.meetingNum= sugit.meetingNum;
+                    suggested.startTime = sugit.startTime;
+                    suggested.endTime = sugit.endTime;
+                    suggested.rank = Convert.ToDouble(sugit.rank);
+                    suggested.hobbieNum = int.Parse(sugit.hobbieNum.ToString());
+                    suggested.longitude= sugit.longitude;
+                    suggested.latitude= sugit.latitude;
+                    suggested.status= sugit.status;
+                    tblUser user1= _db.tblUser.Where(x => x.phoneNum1 == sugit.phoneNum1).FirstOrDefault();
+                    tblUser user2= _db.tblUser.Where(x => x.phoneNum1 == sugit.phoneNum2).FirstOrDefault();
+                    ExistsingUsers userexist= new ExistsingUsers();
+                    ExistsingUsers userexist2= new ExistsingUsers();
+                    userexist.userName = user1.userName;
+                    userexist.phonenumbers.Add(user1.phoneNum1);
+                    userexist.birthDate = Convert.ToDateTime(user1.birthDate);
+                    userexist.imageUri = user1.imageUri;
+                    userexist.email = user1.email;
+                    userexist.gender = user1.gender;
+                    userexist.city  =user1.city;
+                    userexist2.userName = user2.userName;
+                    userexist2.phonenumbers.Add(user2.phoneNum1);
+                    userexist2.birthDate = Convert.ToDateTime(user2.birthDate);
+                    userexist2.imageUri = user2.imageUri;
+                    userexist2.email = user2.email;
+                    userexist2.gender = user2.gender;
+                    userexist2.city = user2.city;
+                    suggested.user1 = userexist;
+                    suggested.user2 = userexist2;
+
+
+                    suggestedbyfriend.Add(suggested);
+                }
+                
+            }
+
+            foreach(tblSuggestedMeeting sugitm in checkifuser.tblSuggestedMeeting)
+            {
+                DateTime currentDate = new DateTime(sugitm.date.Year, sugitm.date.Month, sugitm.date.Day);
+                DateTime datetocheck = currentDate.AddHours(sugitm.startTime.Hours);
+
+                if (datetocheck >= DateTime.Now)
+                {
+
+                    SuggestedDTO suggested = new SuggestedDTO();
+                    string placeid = _db.tblLoctation.Where(x => x.latitude == sugitm.latitude && x.longitude == sugitm.longitude).FirstOrDefault().Placeid;
+                    suggested.place.PlaceId = placeid;
+                    suggested.date= sugitm.date;
+                    suggested.phoneNum1 = sugitm.phoneNum1;
+                    suggested.phoneNum2 = sugitm.phoneNum2;
+                    suggested.meetingNum = sugitm.meetingNum;
+                    
+                    suggested.startTime = sugitm.startTime;
+                    suggested.endTime = sugitm.endTime;
+                    suggested.rank = Convert.ToDouble(sugitm.rank);
+                    suggested.hobbieNum = int.Parse(sugitm.hobbieNum.ToString());
+                    suggested.longitude = sugitm.longitude;
+                    suggested.latitude = sugitm.latitude;
+                    suggested.status = sugitm.status;
+                    tblUser user1 = _db.tblUser.Where(x => x.phoneNum1 == sugitm.phoneNum1).FirstOrDefault();
+                    tblUser user2 = _db.tblUser.Where(x => x.phoneNum1 == sugitm.phoneNum2).FirstOrDefault();
+                    ExistsingUsers userexist = new ExistsingUsers();
+                    ExistsingUsers userexist2 = new ExistsingUsers();
+                    userexist.userName = user1.userName;
+                    userexist.phonenumbers.Add(user1.phoneNum1);
+                    userexist.birthDate = Convert.ToDateTime(user1.birthDate);
+                    userexist.imageUri = user1.imageUri;
+                    userexist.email = user1.email;
+                    userexist.gender = user1.gender;
+                    userexist.city = user1.city;
+                    userexist2.userName = user2.userName;
+                    userexist2.phonenumbers.Add(user2.phoneNum1);
+                    userexist2.birthDate = Convert.ToDateTime(user2.birthDate);
+                    userexist2.imageUri = user2.imageUri;
+                    userexist2.email = user2.email;
+                    userexist2.gender = user2.gender;
+                    userexist2.city = user2.city;
+                    suggested.user1 = userexist;
+                    suggested.user2 = userexist2;
+                    suggestedbyuser.Add(suggested);
+                }
+                
+            }
+
+            usertoret.tblSuggestedMeetings = suggestedbyuser;
+            usertoret.tblSuggestedMeetings1 = suggestedbyfriend;
+
+
             return usertoret;
 
 
@@ -247,21 +361,7 @@ namespace WebApplication1.Controllers
         }
 
 
-        [HttpPost]
-        [Route("api/Default/Addsuggestedmeeting")]
-        public HttpResponseMessage Addsugmeeting(SuggestedDTO suggestdto)
-        {
-
-            // Will generate a number of suggested meetings and insert them to a list.
-            // Will create suggested hobbies also. will happen due to chosen parameters that will fit
-            // to the user 
-            // Here it will create a suggested hoobie for the meeting
-            List<SuggestedDTO> newsugmeetinglist = new List<SuggestedDTO>();
-            return Request.CreateResponse(HttpStatusCode.OK, newsugmeetinglist);
-
-
-
-        }
+ 
 
         [HttpPost]
         [Route("api/Default/getexistingmembers")]
@@ -269,7 +369,7 @@ namespace WebApplication1.Controllers
         {
 
 
-            List<tblUser> listtblusers= db.tblUsers.ToList();
+            List<tblUser> listtblusers= _db.tblUser.ToList();
             List<ExistsingUsers> existsingUsers= new List<ExistsingUsers>();
 
             foreach(ExistsingUsers existuser in ExistingUsereser)
@@ -293,13 +393,13 @@ namespace WebApplication1.Controllers
                         Existinguser.email = usera.email;
                         List<UserhobbiesDTO> listuserhobbiesdto = new List<UserhobbiesDTO>();
 
-                        foreach (tblUserHobbie hob in usera.tblUserHobbies)
+                        foreach (tblUserHobbie hob in usera.tblUserHobbie)
                         {
                             UserhobbiesDTO userhobdto = new UserhobbiesDTO();
                             userhobdto.hobbieNum = hob.hobbieNum;
                             userhobdto.phoneNum1 = hob.phoneNum1;
                             userhobdto.rank = hob.rank;
-                            tblHobbie ushob= db.tblHobbies.Where(x => x.hobbieNum == hob.hobbieNum).FirstOrDefault();
+                            tblHobbie ushob= _db.tblHobbie.Where(x => x.hobbieNum == hob.hobbieNum).FirstOrDefault();
                             userhobdto.hobbiename = ushob.hobbieName;
                             userhobdto.hobbieimage = ushob.imageuri;
                             listuserhobbiesdto.Add(userhobdto);
@@ -333,7 +433,7 @@ namespace WebApplication1.Controllers
         {
             var httpRequest = HttpContext.Current.Request;
             string identi = httpRequest["identis"];
-            tblUser myusertosave = db.tblUsers.Where(x => x.phoneNum1 == identi).FirstOrDefault();
+            tblUser myusertosave = _db.tblUser.Where(x => x.phoneNum1 == identi).FirstOrDefault();
 
             if (httpRequest.Files.Count > 0)
             {
@@ -346,7 +446,7 @@ namespace WebApplication1.Controllers
                 string remotefilepath = $"Images/Profiles/{identi}";
                 string downloadurl = await UploadToGoogleCloudStorage(fileContents, postedFile.ContentType, remotefilepath);
                 myusertosave.imageUri = downloadurl;
-                db.SaveChanges();
+                _db.SaveChanges();
 
                 UserDTO usertoret = GetUser(myusertosave);
 
@@ -368,7 +468,7 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                List<tblHobbie> listhobbies = db.tblHobbies.ToList();
+                List<tblHobbie> listhobbies = _db.tblHobbie.ToList();
                 List<tblhobbieDTO> listhobbiesdto = new List<tblhobbieDTO>();
                 foreach (tblHobbie item in listhobbies)
                 {
@@ -444,8 +544,8 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                var checkifuserphone = db.tblUsers.Where(u => u.phoneNum1 == Mynewuser.phoneNum1).FirstOrDefault();
-                var checkifusername= db.tblUsers.Where(u => u.userName == Mynewuser.userName).FirstOrDefault();
+                var checkifuserphone = _db.tblUser.Where(u => u.phoneNum1 == Mynewuser.phoneNum1).FirstOrDefault();
+                var checkifusername= _db.tblUser.Where(u => u.userName == Mynewuser.userName).FirstOrDefault();
                 if (checkifuserphone != null)
                 {
                     return "Phone Number already exists";
@@ -459,14 +559,15 @@ namespace WebApplication1.Controllers
 
                 else
                 {
-                    tblNewUser newuserif = db.tblNewUsers.Where(x => x.phoneNum1 == Mynewuser.phoneNum1).FirstOrDefault();
+                    tblNewUser newuserif = _db.tblNewUser.Where(x => x.phoneNum1 == Mynewuser.phoneNum1).FirstOrDefault();
                     if (newuserif == null)
                     {
                         newuserif=new tblNewUser();
                         newuserif.phoneNum1=Mynewuser.phoneNum1;
                         newuserif.nickName = "NR";
-                        db.tblNewUsers.Add(newuserif);
-                        db.SaveChanges();
+                        
+                        _db.tblNewUser.Add(newuserif);
+                        _db.SaveChanges();
                     }
                     tblUser newuser = new tblUser();
                     newuser.phoneNum1 = newuserif.phoneNum1;
@@ -483,23 +584,23 @@ namespace WebApplication1.Controllers
                     foreach (UserhobbiesDTO userhob in Mynewuser.tblUserHobbiesDTO)
                     {
                         tblUserHobbie newuserhobbie = new tblUserHobbie();
-                        tblHobbie hobbie = db.tblHobbies.Where(h => h.hobbieNum == userhob.hobbieNum).FirstOrDefault();
+                        tblHobbie hobbie = _db.tblHobbie.Where(h => h.hobbieNum == userhob.hobbieNum).FirstOrDefault();
                         newuserhobbie.hobbieNum = userhob.hobbieNum;
                         newuserhobbie.phoneNum1 = Mynewuser.phoneNum1;
                         newuserhobbie.rank = userhob.rank;
                         newuserhobbie.tblUser = newuser;
                         newuserhobbie.tblHobbie = hobbie;
-                        hobbie.tblUserHobbies.Add(newuserhobbie);
+                        hobbie.tblUserHobbie.Add(newuserhobbie);
                         userhoobies.Add(newuserhobbie);
-                        db.tblUserHobbies.Add(newuserhobbie);
+                        _db.tblUserHobbie.Add(newuserhobbie);
 
 
                     }
-                    newuser.tblUserHobbies = userhoobies;
+                    newuser.tblUserHobbie = userhoobies;
                     List<tblPreferredTime> userpreflist = new List<tblPreferredTime>();
 
                     //bring me the last row in the table tblprefeeredtimes
-                    int lastrow = db.tblPreferredTimes.OrderByDescending(x => x.id).FirstOrDefault().id;
+                    int lastrow = _db.tblPreferredTime.OrderByDescending(x => x.id).FirstOrDefault().id;
                     lastrow++;
 
 
@@ -514,30 +615,30 @@ namespace WebApplication1.Controllers
                         newuserpref.phoneNum1 = Mynewuser.phoneNum1;
                         newuserpref.tblUser = newuser;
                         userpreflist.Add(newuserpref);
-                        db.tblPreferredTimes.Add(newuserpref);
+                        _db.tblPreferredTime.Add(newuserpref);
                     }
-                    newuser.tblPreferredTimes = userpreflist;
+                    newuser.tblPreferredTime = userpreflist;
                     List<PossibleFavoriteContact> tblpossFavoriteContacts = new List<PossibleFavoriteContact>();
                     foreach (tblPossibleDTO favcontact in Mynewuser.possibleFavoriteContacts_invite_DTO)
                     {
                         PossibleFavoriteContact newpossfavcontact = new PossibleFavoriteContact();
                         tblUser user1 = newuser;
-                        tblUser user2 = db.tblUsers.Where(x => x.phoneNum1 == favcontact.phonenuminvited).FirstOrDefault();
+                        tblUser user2 = _db.tblUser.Where(x => x.phoneNum1 == favcontact.phonenuminvited).FirstOrDefault();
                         newpossfavcontact.phonenuminvite = favcontact.phonenuminvite;
                         newpossfavcontact.phonenuminvited = favcontact.phonenuminvited;
-                        tblHobbie hobbie = db.tblHobbies.Where(h => h.hobbieNum == favcontact.hobbieNum).FirstOrDefault();
+                        tblHobbie hobbie = _db.tblHobbie.Where(h => h.hobbieNum == favcontact.hobbieNum).FirstOrDefault();
                         newpossfavcontact.tblHobbie = hobbie;
                         newpossfavcontact.hobbieNum = newpossfavcontact.tblHobbie.hobbieNum;
-                        hobbie.PossibleFavoriteContacts.Add(newpossfavcontact);
+                        hobbie.PossibleFavoriteContact.Add(newpossfavcontact);
                         tblpossFavoriteContacts.Add(newpossfavcontact);
-                        user2.PossibleFavoriteContacts1.Add(newpossfavcontact);
+                        user2.PossibleFavoriteContact1.Add(newpossfavcontact);
                         newpossfavcontact.tblUser = user1;
                         newpossfavcontact.tblUser1 = user2;
-                        db.PossibleFavoriteContacts.Add(newpossfavcontact);
+                        _db.PossibleFavoriteContact.Add(newpossfavcontact);
                         
                     }
 
-                    newuser.PossibleFavoriteContacts = tblpossFavoriteContacts;
+                    newuser.PossibleFavoriteContact = tblpossFavoriteContacts;
 
                     foreach (tblInvitesDTO invite in Mynewuser.tblInvitesDTO)
                     {
@@ -547,26 +648,26 @@ namespace WebApplication1.Controllers
                         newinvite.date = DateTime.Now;
                         newinvite.status = invite.status;
                         tblUser user1invite = newuser;
-                        tblNewUser user2invite = db.tblNewUsers.Where(x => x.phoneNum1 == newinvite.phoneNum2).FirstOrDefault();
+                        tblNewUser user2invite = _db.tblNewUser.Where(x => x.phoneNum1 == newinvite.phoneNum2).FirstOrDefault();
                         if (user2invite == null)
                         {
                             user2invite = new tblNewUser();
                             user2invite.phoneNum1 = newinvite.phoneNum2;
                             user2invite.nickName = invite.Nickname;
-                            db.tblNewUsers.Add(user2invite);
+                            _db.tblNewUser.Add(user2invite);
 
 
                         }
                         newinvite.tblUser = user1invite;
                         newinvite.tblNewUser = user2invite;
-                        newuser.tblInvites.Add(newinvite);
-                        user2invite.tblInvites.Add(newinvite);
-                        db.tblInvites.Add(newinvite);
+                        newuser.tblInvite.Add(newinvite);
+                        user2invite.tblInvite.Add(newinvite);
+                        _db.tblInvite.Add(newinvite);
 
                     }
 
-                    db.tblUsers.Add(newuser);
-                    db.SaveChanges();
+                    _db.tblUser.Add(newuser);
+                    _db.SaveChanges();
                     return "User added";
 
                 }

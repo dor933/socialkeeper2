@@ -13,10 +13,10 @@ namespace ClassLibrary_SocialKeeper
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class igroup192_DbContext : DbContext
+    public partial class igroup192_prodEntities : DbContext
     {
-        public igroup192_DbContext()
-            : base("name=igroup192_DbContext")
+        public igroup192_prodEntities()
+            : base("name=igroup192_prodEntities")
         {
         }
     
@@ -25,18 +25,18 @@ namespace ClassLibrary_SocialKeeper
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<tblFavoriteContact> tblFavoriteContacts { get; set; }
-        public virtual DbSet<tblHobbie> tblHobbies { get; set; }
-        public virtual DbSet<tblInvite> tblInvites { get; set; }
-        public virtual DbSet<tblLoctation> tblLoctations { get; set; }
-        public virtual DbSet<tblNewUser> tblNewUsers { get; set; }
-        public virtual DbSet<tblPreferredTime> tblPreferredTimes { get; set; }
-        public virtual DbSet<tblSuggestedHobbie> tblSuggestedHobbies { get; set; }
-        public virtual DbSet<tblSuggestedMeeting> tblSuggestedMeetings { get; set; }
-        public virtual DbSet<tblUser> tblUsers { get; set; }
-        public virtual DbSet<tblUserHobbie> tblUserHobbies { get; set; }
-        public virtual DbSet<tblActualMeeting> tblActualMeetings { get; set; }
-        public virtual DbSet<PossibleFavoriteContact> PossibleFavoriteContacts { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
+        public virtual DbSet<PossibleFavoriteContact> PossibleFavoriteContact { get; set; }
+        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
+        public virtual DbSet<tblActualMeeting> tblActualMeeting { get; set; }
+        public virtual DbSet<tblFavoriteContact> tblFavoriteContact { get; set; }
+        public virtual DbSet<tblHobbie> tblHobbie { get; set; }
+        public virtual DbSet<tblInvite> tblInvite { get; set; }
+        public virtual DbSet<tblLoctation> tblLoctation { get; set; }
+        public virtual DbSet<tblNewUser> tblNewUser { get; set; }
+        public virtual DbSet<tblPreferredTime> tblPreferredTime { get; set; }
+        public virtual DbSet<tblSuggestedHobbie> tblSuggestedHobbie { get; set; }
+        public virtual DbSet<tblSuggestedMeeting> tblSuggestedMeeting { get; set; }
+        public virtual DbSet<tblUser> tblUser { get; set; }
+        public virtual DbSet<tblUserHobbie> tblUserHobbie { get; set; }
     }
 }

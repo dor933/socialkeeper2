@@ -5,10 +5,10 @@
     "\\Server\\ClassLibrary-SocialKeeper",
     "\\Server\\ClassLibrary-SocialKeeper\\ClassLibrary-SocialKeeper",
     "\\Server\\ClassLibrary-SocialKeeper\\ClassLibrary-SocialKeeper\\DTO",
+    "\\Server\\ClassLibrary-SocialKeeper\\ClassLibrary-SocialKeeper\\MatrixFactorization",
     "\\Server\\ClassLibrary-SocialKeeper\\WebApplication1",
-    "\\Server\\ClassLibrary-SocialKeeper\\WebApplication1\\Controllers",
-    "\\Server\\ClassLibrary-SocialKeeper\\WebApplication1\\Googlecloud"
+    "\\Server\\ClassLibrary-SocialKeeper\\WebApplication1\\Controllers"
   ],
-  "SelectedNode": "\\Server\\ClassLibrary-SocialKeeper\\WebApplication1\\Controllers\\MainAppController.cs",
+  "SelectedNode": "\\Server\\ClassLibrary-SocialKeeper\\ClassLibrary-SocialKeeper\\MatrixFactorization\\OpeningHoursDetailsResponse.cs",
   "PreviewInSolutionExplorer": false
 }
