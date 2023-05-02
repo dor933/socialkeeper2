@@ -72,6 +72,7 @@ export default function FavoriteContacts({ navigation }, props) {
     const { pageX, pageY } = event.nativeEvent;
     setOverlayPosition({ x: pageX+200, y: pageY-100 });
     setSelectedContact(item);
+    console.log("selectedcontact",item)
     setOverlayVisible(true);
   };
 
@@ -104,6 +105,7 @@ export default function FavoriteContacts({ navigation }, props) {
 
     
     loadContacts();
+    console.log(selectedContact)
   }, []);
 
   useEffect(() => {
@@ -260,7 +262,9 @@ export default function FavoriteContacts({ navigation }, props) {
       // birthDate://will be the birth date from datapickercomponent
       email:personaldetails.email, // will be saved through the authentication with google and facebook not from the form
       gender:personaldetails.gender,
-      city:personaldetails.address,
+      city:personaldetails.address.englishname,
+      citylatt:personaldetails.address.latt,
+      citylong:personaldetails.address.long,
       birthDate:personaldetails.birthDate,
       tblInvitesDTO: invitedcontacts,
       tblprefferdDTO:newprefferdtimes,
@@ -500,32 +504,32 @@ export default function FavoriteContacts({ navigation }, props) {
 
     setModalHobbiesVisible(true);
 
-    console.log("selectedContact",selectedContact)
-    console.log("alreadymembers",alreadymembers)
+    // console.log("selectedContact",selectedContact)
+    // console.log("alreadymembers",alreadymembers)
 
-    const updatedAlreadyMembers = filteredalreadymebers.map((contact) => {
-      console.log('contact is',contact)
-      if (contact.phonenumbers[0] === selectedContact.phonenumbers[0]) {
+    // const updatedAlreadyMembers = filteredalreadymebers.map((contact) => {
+    //   console.log('contact is',contact)
+    //   if (contact.phonenumbers[0] === selectedContact.phonenumbers[0]) {
 
-        return { ...contact, addedtofav: true };
-      }
-      return contact;
-    });
+    //     return { ...contact, addedtofav: true };
+    //   }
+    //   return contact;
+    // });
 
 
   
-    setFilteredAlreadyMembers(updatedAlreadyMembers);
-    setAlreadyMembers(updatedAlreadyMembers);
-    const newselected= updatedAlreadyMembers.find((contact) => contact.phonenumbers[0] === selectedContact.phonenumbers[0]);
-    setSelectedContact(newselected);
-    const possiblefavorite={
-      phonenuminvite: personaldetails.phoneNumber,
-      phonenuminvited:newselected.phonenumbers[0],
-      // hobbieNum:selectedhobbies[0].hobbienumber
-      //will be after the hobbie screen
-    }
+    // setFilteredAlreadyMembers(updatedAlreadyMembers);
+    // setAlreadyMembers(updatedAlreadyMembers);
+    // const newselected= updatedAlreadyMembers.find((contact) => contact.phonenumbers[0] === selectedContact.phonenumbers[0]);
+    // setSelectedContact(newselected);
+    // const possiblefavorite={
+    //   phonenuminvite: personaldetails.phoneNumber,
+    //   phonenuminvited:newselected.phonenumbers[0],
+    //   // hobbieNum:selectedhobbies[0].hobbienumber
+    //   //will be after the hobbie screen
+    // }
 
-    setPossibleFavoriteContacts([...possiblefavoritecontacts,possiblefavorite]);
+    // setPossibleFavoriteContacts([...possiblefavoritecontacts,possiblefavorite]);
 
   };
 
@@ -931,7 +935,7 @@ const renderItem = ({ item }) => {
 </View>
 </TouchableOpacity>
 
-{selectedContact.addedtofav == false ? (
+{typeof selectedContact.addedtofav =="undefined"  ? (
   <TouchableOpacity onPress={()=> addtofavorite()}>
 
   <View style={{height:60,width:Dimensions.get('window').width-20,marginTop:10,justifyContent:'space-between',flexDirection:'row-reverse'}}>
@@ -1008,7 +1012,7 @@ const renderItem = ({ item }) => {
                 </SafeAreaView>
       </Modal>
       <View>
-        <Mymodal modalhobbiesvisible={modalhobbiesvisible} setModalHobbiesVisible={setModalHobbiesVisible} selectedContact={selectedContact} setCommonHobbie={setCommonHobbie} commonhobbie={commonhobbie} />
+        <Mymodal setSelectedContact={setSelectedContact} modalhobbiesvisible={modalhobbiesvisible} setModalHobbiesVisible={setModalHobbiesVisible} selectedContact={selectedContact} setCommonHobbie={setCommonHobbie} commonhobbie={commonhobbie} />
       </View>
 
       </View>

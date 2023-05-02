@@ -1,15 +1,17 @@
 
 import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, SafeAreaView,FlatList } from 'react-native'
-  import { useState, useEffect } from 'react';
+  import { useState, useEffect,useContext } from 'react';
   import Logo from '../..//..//assets/Images/RandomImages/SocialKeeper.jpeg'
   import HobbiesComponent from './HobbiesComponent.jsx'
   import { Ionicons } from '@expo/vector-icons';
   import axios from 'axios';
+  import { RegistContext } from '../..//..//RegistContext.jsx';
   
   export default function PreferredHoobies ({navigation}) {
     // number of pressing on heart button
     const [count, setCount] = useState(0);
     const [hobbies, setHobbies] = useState([]);
+    const {selectedhobbies, setSelectedHobbies} = useContext(RegistContext);
 
     const counting = (number) => {
       let temp = number + count
@@ -21,6 +23,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, Safe
 
     useEffect(() => {
 
+      setSelectedHobbies([]);
       gethobbies();
 
     },[])
@@ -41,6 +44,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, Safe
   
     const handleContinue = () => {
       if (count === 4) {
+        console.log("selectedhobbies",selectedhobbies);
         navigation.navigate('PreferredMeetingTimes');
       } else {
         Alert.alert('You must choose 4 hobbies, can\'t choose less😢');

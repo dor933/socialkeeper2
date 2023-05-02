@@ -9,6 +9,7 @@ import axios from 'axios';
 import { RegistContext } from '..//../..//RegistContext.jsx';
 import { MainAppcontext } from '../MainApp/MainAppcontext.jsx';
 import AuthContext from '../../../Authcontext.jsx';
+import firebaseInstance from '../../../assets/Firebase/firebaseconfig.js';
 
 
 function SignUpAPI({navigation}) {
@@ -16,6 +17,7 @@ function SignUpAPI({navigation}) {
   const {personaldetails, setPersonalDetails} = useContext(RegistContext);
   const {setUser} = useContext(MainAppcontext);
   const {setIsAuthenticated}= React.useContext(AuthContext);
+  const {firebaseuser, setFirebaseuser} = useContext(MainAppcontext);
 
   WebBrowser.maybeCompleteAuthSession();
 
@@ -50,6 +52,11 @@ function SignUpAPI({navigation}) {
 
     useProxy: true,
     redirectUri: RedirectUrl,
+    //brign the id token with all the user info
+    
+
+    
+
     
 
   });
@@ -57,8 +64,9 @@ function SignUpAPI({navigation}) {
   useEffect(() => {
     console.log('into edffect');
     if (response?.type === "success") {
-      console.log('got here');
+      console.log('got here this is my resonse look');
       console.log(response);
+      
       setToken(response.authentication.accessToken);
       getUserInfo();
     }
@@ -82,9 +90,35 @@ function SignUpAPI({navigation}) {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+
+      console.log(token)
+
+      console.log('im got here')
       const user = await response.json();
+      console.log(user)
       setUserInfo(user);
-      console.log(user);
+      //authenticate user with firebase and google
+      const credential= firebaseInstance.GoogleAuthProvider.credential(null,token);
+      firebaseInstance.signInWithCredential(firebaseInstance.auth, credential).then((result)=>{
+        console.log('this is firebase result')
+        console.log(result._tokenResponse);
+        setFirebaseuser(result._tokenResponse)
+      }).catch((error)=>{
+        console.log('this is firebase error')
+        console.log(error);
+      })
+      // const credential = firebaseInstance.auth.GoogleAuthProvider.credential(response.authentication.idToken);
+      // firebaseInstance.auth().signInWithCredential(credential).then((result)=>{
+      //   console.log(result);
+
+      // }).catch((error)=>{
+      //   console.log(error);
+      // })
+
+      
+
+    
+    
       const ifuser= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin',{email:user.email});
       if(ifuser.data=='no user was found'){
 
@@ -115,7 +149,7 @@ function SignUpAPI({navigation}) {
       const ifuser= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin',{email:user.email});
       if(ifuser.data=='no user was found'){
 
-        personaldetails.email=user.email;
+        setPersonalDetails({email:user.email});
         navigation.navigate('CreateProfile');
       }
       else if(typeof ifuser.data.imageUri == 'string'){
@@ -129,7 +163,6 @@ function SignUpAPI({navigation}) {
     }
   }
 
-        
 
 
 
@@ -160,6 +193,39 @@ function SignUpAPI({navigation}) {
 
       
       <View style={styles.elipseButtom}></View>
+    <SafeAreaView style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.elipseTop}></View>
+        {/* Connect text */}
+        <Text style={styles.text}>Sign In</Text>
+        <Image style={styles.logo} source={require('../../../assets/Images/RandomImages/social-keeper-low-resolution-logo-color-on-transparent-background.png')} />
+
+        {/* Login with google button */}
+        <TouchableOpacity onPress={async () => {
+
+          for(let i=0; i<2; i++){
+          promptAsync();
+          }
+
+        } }>
+          <View style={styles.container}>
+            <Image style={styles.googleLogo} source={require('../../../assets/Images/Logos/GoogleLogo.png')} ></Image>
+            <Text style={styles.textForButton}>Sign in with Google</Text>
+          </View>
+        </TouchableOpacity>
+
+        {/* Login with outlook button */}
+        <TouchableOpacity onPress={async () => promptAsync2()}>
+          <View style={styles.container2}>
+            <Image style={styles.outLookLogo} source={require('../../../assets/Images/Logos/facebook.png')} ></Image>
+            <Text style={styles.textForButton}>Login with Facebook</Text>
+          </View>
+        </TouchableOpacity>
+
+
+        <View style={styles.elipseButtom}></View>
+      </SafeAreaView>
+    </SafeAreaView>
     </SafeAreaView>
     </SafeAreaView>
   )
