@@ -324,7 +324,22 @@ function Favoritecont ({user}) {
 
             />
             <ListItem.Content>
-            <ListItem.Title style={styles.listaccordiontext}>Friend requests</ListItem.Title>
+            <ListItem.Title style={styles.listaccordiontext}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+    <Text style={[styles.listaccordiontext]}>Friend requests</Text>
+    {user.possibleFavoriteContacts_invite_DTO.length > 0 && (
+      <View style={{ paddingLeft: 10 }}>
+        <Badge
+          status="error"
+          value={user.possibleFavoriteContacts_invite_DTO.length}
+          containerStyle={{ position: 'relative' }}
+        />
+      </View>
+    )}
+  </View>
+         
+            
+            </ListItem.Title>
             </ListItem.Content>
             </>
         }
@@ -351,13 +366,7 @@ function Favoritecont ({user}) {
 
          >
            
-            {user.possibleFavoriteContacts_invite_DTO.length > 0 &&
-            <Badge
-            status="error"
-            value={user.possibleFavoriteContacts_invite_DTO.length}
-            containerStyle={{ position: 'absolute', right: 200, top: -38 }}
-
-            />}
+         
             {user.possibleFavoriteContacts_invite_DTO.map((item, i) => (
                 <ListItem key={i} bottomDivider
 
@@ -459,7 +468,7 @@ const styles = StyleSheet.create({
       },
       listaccordionsubtext:{
             fontFamily: 'Lato_400Regular',
-            fontSize: 14,
+            fontSize: 12,
             color:'rgba(255, 255, 255, 0.7)',
             fontStyle: 'normal',
             lineHeight: 19,
@@ -489,14 +498,14 @@ const styles = StyleSheet.create({
         buttonapprove:{
             backgroundColor:"#056DFA",
             borderRadius: 20,
-            width:68,
-            height:32
+            width:60,
+            height:29
         },
         buttondecline:{
             backgroundColor:"#FF2849",
             borderRadius: 20,
-            width:68,
-            height:32
+            width:60,
+            height:29
         },
         buttondeclinetext:{
             fontFamily: 'Lato_400Regular',
