@@ -14,9 +14,9 @@ namespace ClassLibrary_SocialKeeper
     
     public partial class PossibleFavoriteContact
     {
+        public int hobbieNum { get; set; }
         public string phonenuminvite { get; set; }
         public string phonenuminvited { get; set; }
-        public int hobbieNum { get; set; }
         public int id { get; set; }
     
         public virtual tblHobbie tblHobbie { get; set; }

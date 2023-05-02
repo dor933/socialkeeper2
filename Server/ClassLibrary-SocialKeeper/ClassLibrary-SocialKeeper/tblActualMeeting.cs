@@ -18,11 +18,11 @@ namespace ClassLibrary_SocialKeeper
         public string rankUser1 { get; set; }
         public int hobbieNum { get; set; }
         public string rankUser2 { get; set; }
-        public int longitude { get; set; }
-        public int latitude { get; set; }
+        public double longitude { get; set; }
+        public double latitude { get; set; }
     
         public virtual tblHobbie tblHobbie { get; set; }
-        public virtual tblLoctation tblLoctation { get; set; }
         public virtual tblSuggestedMeeting tblSuggestedMeeting { get; set; }
+        public virtual tblLoctation tblLoctation { get; set; }
     }
 }

@@ -17,8 +17,8 @@ namespace ClassLibrary_SocialKeeper
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tblSuggestedMeeting()
         {
-            this.tblSuggestedHobbies = new HashSet<tblSuggestedHobbie>();
-            this.tblActualMeetings = new HashSet<tblActualMeeting>();
+            this.tblActualMeeting = new HashSet<tblActualMeeting>();
+            this.tblSuggestedHobbie = new HashSet<tblSuggestedHobbie>();
         }
     
         public int meetingNum { get; set; }
@@ -29,18 +29,18 @@ namespace ClassLibrary_SocialKeeper
         public string phoneNum2 { get; set; }
         public System.DateTime date { get; set; }
         public string rejectReason { get; set; }
-        public int longitude { get; set; }
-        public int latitude { get; set; }
+        public double longitude { get; set; }
+        public double latitude { get; set; }
         public Nullable<int> hobbieNum { get; set; }
         public Nullable<float> rank { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tblActualMeeting> tblActualMeeting { get; set; }
+        public virtual tblHobbie tblHobbie { get; set; }
         public virtual tblLoctation tblLoctation { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblSuggestedHobbie> tblSuggestedHobbies { get; set; }
+        public virtual ICollection<tblSuggestedHobbie> tblSuggestedHobbie { get; set; }
         public virtual tblUser tblUser { get; set; }
         public virtual tblUser tblUser1 { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblActualMeeting> tblActualMeetings { get; set; }
-        public virtual tblHobbie tblHobbie { get; set; }
     }
 }

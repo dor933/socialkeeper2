@@ -26,8 +26,8 @@ namespace ClassLibrary_SocialKeeper
         public virtual ICollection<tblInvitesDTO> tblInvitesDTO { get; set; }
         public virtual NewUserDTO tblNewUserDTO { get; set; }
         public virtual ICollection<tblPrefferedtimesDTO> tblprefferdDTO { get; set; }
-        public virtual ICollection<tblSuggestedMeeting> tblSuggestedMeetings { get; set; }
-        public virtual ICollection<tblSuggestedMeeting> tblSuggestedMeetings1 { get; set; }
+        public virtual ICollection<SuggestedDTO> tblSuggestedMeetings { get; set; }
+        public virtual ICollection<SuggestedDTO> tblSuggestedMeetings1 { get; set; }
         public virtual ICollection<UserhobbiesDTO> tblUserHobbiesDTO { get; set; }
 
         public virtual ICollection<tblPossibleDTO> possibleFavoriteContacts_invite_DTO { get; set; }
