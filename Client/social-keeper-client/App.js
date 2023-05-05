@@ -1,9 +1,22 @@
 
 //Dor's code
-
+// import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
+//import usefonts
+import { useFonts } from 'expo-font';
+//import fonts
+import { Lato_100Thin, Lato_300Light, Lato_400Regular, Lato_700Bold, Lato_900Black } from '@expo-google-fonts/lato';
+import { Inter_100Thin, Inter_200ExtraLight, Inter_300Light, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold, Inter_800ExtraBold, Inter_900Black } from '@expo-google-fonts/inter';
+import { NunitoSans_200ExtraLight,
+  NunitoSans_300Light,
+  NunitoSans_400Regular,
+  NunitoSans_600SemiBold,
+  NunitoSans_700Bold,
+  NunitoSans_800ExtraBold,
+  NunitoSans_900Black,
+} from "@expo-google-fonts/nunito-sans";
 //import me the favorite contacts screen
 import FavoriteContacts from './Components/Screens/Settings/FavoriteContacts';
 import RegistrationContext from './RegistContext';
@@ -18,6 +31,11 @@ import PreviousMeetingsScreen from './Components/Screens//MainApp/PreviousMeetin
 import MainAppcontext from './Components/Screens/MainApp/MainAppcontext';
 const Registrationstack = createStackNavigator();
 const Mainappstack = createStackNavigator();
+
+
+// SplashScreen.preventAutoHideAsync();
+
+
 
 const RegistrationStackScreen = () => {
   return (
@@ -50,10 +68,48 @@ const MainAppStackScreen = () => {
 export default function App() {
 
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [appIsReady, setAppIsReady] = useState(false);
+
+  let [fontsLoaded] = useFonts({
+    Lato_100Thin,
+    Lato_300Light,
+    Lato_400Regular,
+    Lato_700Bold,
+    Lato_900Black,
+    Inter_100Thin,
+    Inter_200ExtraLight,
+    Inter_300Light,
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
+    Inter_800ExtraBold,
+    Inter_900Black,
+    NunitoSans_200ExtraLight,
+    NunitoSans_300Light,
+    NunitoSans_400Regular,
+    NunitoSans_600SemiBold,
+    NunitoSans_700Bold,
+    NunitoSans_800ExtraBold,
+    NunitoSans_900Black,
+  });
+
+  useEffect(() => {
+    if(fontsLoaded){
+      setAppIsReady(true)
+    }
+  }, [fontsLoaded])
+
+  if(!appIsReady){
+    return null;
+  }
+  
+
 
 
 
   return (
+
     <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
     <RegistrationContext>
       <MainAppcontext>

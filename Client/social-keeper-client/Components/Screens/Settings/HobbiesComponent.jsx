@@ -3,14 +3,7 @@ import { useState,useContext } from 'react';
 import StarRating from 'react-native-star-rating-widget';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Dimensions } from 'react-native';
-import {
-  useFonts,
-  Lato_100Thin,
-  Lato_300Light,
-  Lato_400Regular,
-  Lato_700Bold, 
-  Lato_900Black,
-} from '@expo-google-fonts/lato';
+
 import { RegistContext } from '../..//..//RegistContext.jsx';
 
 function HobbiesComponent({navigation,myitem,counting,count}) {
@@ -19,14 +12,7 @@ function HobbiesComponent({navigation,myitem,counting,count}) {
 
   
 
-  let [fontsLoaded] = useFonts({
-    Lato_100Thin,
-    Lato_300Light,
-    Lato_400Regular,
-    Lato_700Bold,
-    Lato_900Black,
-   
-    });
+
 
   const item=myitem;
 
@@ -142,9 +128,9 @@ const styles = StyleSheet.create({
    
     fontSize: 11,
     marginTop: 5,
-    fontFamily: 'Lato_700Bold',
+    fontFamily: 'Lato_400Regular',
     paddingRight: 80,
-    fontWeight: 'bold',
+  
     
 
 

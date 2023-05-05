@@ -6,6 +6,8 @@ import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, Safe
   import { Ionicons } from '@expo/vector-icons';
   import axios from 'axios';
   import { RegistContext } from '../..//..//RegistContext.jsx';
+  //import usefonts
+  import { useFonts } from 'expo-font';
   
   export default function PreferredHoobies ({navigation}) {
     // number of pressing on heart button
@@ -17,6 +19,9 @@ import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, Safe
       let temp = number + count
       setCount(temp)
     }
+
+
+      
 
   
 

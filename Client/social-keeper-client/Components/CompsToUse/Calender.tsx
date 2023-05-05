@@ -60,7 +60,8 @@ export default function CalendarScreen({route}) {
             endtime:meeting.endTime,
             starttime:meeting.startTime,
             height:80,
-            name:"meeting with " + usertomeeting
+            name:"meeting with " + usertomeeting,
+            meetingplace:meeting.place.name
         }
 
         if(prevevent[eventdate]){
