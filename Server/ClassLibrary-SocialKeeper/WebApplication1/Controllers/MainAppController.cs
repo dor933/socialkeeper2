@@ -135,10 +135,13 @@ namespace WebApplication1.Controllers
             userdto.phoneNum1 = datarec.userdto;
             List<Events> userinviteeve = datarec.userinviteeve;
             List<RatingData> ratedhobbies = new List<RatingData>();
+            List<SuggestedDTO> existingsugmeetings = datarec.existingsuggested;
+
             int numbermeetings = 0;
             int totalmeetingsnumber = datarec.numberofmeetings;
             List<SuggestedDTO> suggestedmeet= new List<SuggestedDTO>();
             double totalmeetingrank;
+            bool existingperiod = false;
             int meetingnumber = _db.tblSuggestedMeeting.OrderByDescending(x => x.meetingNum).FirstOrDefault().meetingNum + 1;
 
 
@@ -269,78 +272,95 @@ namespace WebApplication1.Controllers
                                         }
                                     }
                                 }
-                            }                      
-                                foreach(Events comtime in commontimeperiods2)
-                                {
-                                if (numbermeetings == 3 )
+                            }
+                            foreach (Events comtime in commontimeperiods2)
+                            {
+                                existingperiod = false;
+
+                                if (numbermeetings == 3)
                                 {
                                     break;
                                 }
-                                DateTime thedate = Meetings.GetDateForWeekday(comtime.weekday);
-                                    List<Events> userinviteevefixed= new List<Events> ();
+                                DateTime thedate = Meetings.GetDateForWeekday(comtime.weekday,comtime.starttime);
+                                List<Events> userinviteevefixed = new List<Events>();
                                 List<Events> userinvitedfixed = new List<Events>();
-                                    foreach(Events eve in userinviteeve)
+                                foreach (Events eve in userinviteeve)
+                                {
+                                    if (eve.weekday == comtime.weekday)
                                     {
-                                        if (eve.weekday == comtime.weekday)
-                                        {
-                                            userinviteevefixed.Add(eve);
-                                        }
+                                        userinviteevefixed.Add(eve);
                                     }
-                                    foreach(Events eve2 in userinvitedeve)
+                                }
+                                foreach (Events eve2 in userinvitedeve)
                                 {
                                     if (eve2.weekday == comtime.weekday)
                                     {
                                         userinvitedfixed.Add(eve2);
                                     }
                                 }
-
-                                List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(comtime.starttime, comtime.endtime), userinviteevefixed, userinvitedfixed);
-                                 foreach(var lismatchitems in listmatch)
+                                foreach (SuggestedDTO itesug in existingsugmeetings)
                                 {
-                                    if (numbermeetings == 3 )
+                                    if (itesug.startTime == comtime.starttime && itesug.endTime == comtime.endtime && itesug.date == thedate)
                                     {
+
+                                        existingperiod = true;
                                         break;
                                     }
-                                    SuggestedDTO sugdto = new SuggestedDTO();
-                                    sugdto.status = "P";
-                                    sugdto.prefferedtimerate = 1.0;
-                                    sugdto.date = thedate;
-                                    sugdto.user1 = usertomeetingexist;
-                                    sugdto.user2 = user1exist;
-                                    sugdto.startTime= lismatchitems.Item1;
-                                    sugdto.endTime=lismatchitems.Item2;
-                                    sugdto.phoneNum1 = usertomeetingexist.phonenumbers[0];
-                                    sugdto.phoneNum2 = user1exist.phonenumbers[0];
-                                    foreach(RatingData rat in ratedhobbies)
-                                    {
-                                        if(lismatchitems.Item2-lismatchitems.Item1>= TimeSpan.FromHours(rat.Minhours))
-                                        {
-                                            sugdto.hobbieNum = rat.HobbieNum;
-                                            ratemax = rat;
-                                            break;
-                                        }
-                                    }
-                                    sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (25.0 - 1.0);
-                                    sugdto.normalizeuserrank = (Convert.ToDouble(item.rank) - 1.0) / (5.0 - 1.0);
-                                    totalmeetingrank = Meetings.calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate, sugdto.normalizeuserrank);
-                                    sugdto.rank = totalmeetingrank;
-                                    //need to add hobbienum to tblsuggestedmeeting
-                                    // need to normalize it and calculate score
-                                    //if score is under some limit its not added at all.
-                                    suggestedmeet.Add(sugdto);
-                                    numbermeetings++;
-                                    
-                                  
                                 }
 
+                                if (!existingperiod)
+                                {
+
+                                    List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(comtime.starttime, comtime.endtime), userinviteevefixed, userinvitedfixed);
+                                    foreach (var lismatchitems in listmatch)
+                                    {
+                                        if (numbermeetings == 3)
+                                        {
+                                            break;
+                                        }
+                                        SuggestedDTO sugdto = new SuggestedDTO();
+                                        sugdto.status = "P";
+                                        sugdto.prefferedtimerate = 1.0;
+                                        sugdto.date = thedate;
+                                        sugdto.user1 = usertomeetingexist;
+                                        sugdto.user2 = user1exist;
+                                        sugdto.startTime = lismatchitems.Item1;
+                                        sugdto.endTime = lismatchitems.Item2;
+                                        sugdto.phoneNum1 = usertomeetingexist.phonenumbers[0];
+                                        sugdto.phoneNum2 = user1exist.phonenumbers[0];
+                                        foreach (RatingData rat in ratedhobbies)
+                                        {
+                                            if (lismatchitems.Item2 - lismatchitems.Item1 >= TimeSpan.FromHours(rat.Minhours))
+                                            {
+                                                sugdto.hobbieNum = rat.HobbieNum;
+                                                ratemax = rat;
+                                                break;
+                                            }
+                                        }
+                                        sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (25.0 - 1.0);
+                                        sugdto.normalizeuserrank = (Convert.ToDouble(item.rank) - 1.0) / (5.0 - 1.0);
+                                        totalmeetingrank = Meetings.calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate, sugdto.normalizeuserrank);
+                                        sugdto.rank = totalmeetingrank;
+                                        //need to add hobbienum to tblsuggestedmeeting
+                                        // need to normalize it and calculate score
+                                        //if score is under some limit its not added at all.
+                                        suggestedmeet.Add(sugdto);
+                                        numbermeetings++;
+
+
+                                    }
+
                                 }
+                            }
                                 foreach(tblPreferredTime prefit in usertomeeting.tblPreferredTime)
                                 {
-                                DateTime thedate = Meetings.GetDateForWeekday(prefit.weekDay);
+                                DateTime thedate = Meetings.GetDateForWeekday(prefit.weekDay,prefit.startTime);
                                 TimeSpan starttime = prefit.startTime;
                                 TimeSpan endtime = prefit.endTime;
-                               
-                               
+                                existingperiod = false;
+
+
+
                                 List<Events> userinviteevefixed = new List<Events>();
                                 List<Events> userinvitedfixed = new List<Events>();
                                 foreach (Events eve in userinviteeve)
@@ -357,44 +377,56 @@ namespace WebApplication1.Controllers
                                         userinvitedfixed.Add(eve2);
                                     }
                                 }
-                                List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(prefit.startTime, prefit.endTime), userinviteevefixed, userinvitedfixed);
-                                foreach (var lismatchitems in listmatch)
+                                foreach (SuggestedDTO itesug in existingsugmeetings)
                                 {
-                                    if (numbermeetings == 3)
+                                    if (itesug.startTime == prefit.startTime && itesug.endTime == prefit.endTime && itesug.date == thedate)
                                     {
+
+                                        existingperiod = true;
                                         break;
                                     }
-
-                                    SuggestedDTO sugdto = new SuggestedDTO();
-                                    sugdto.date = thedate;
-                                    sugdto.status = "P";
-                                    sugdto.prefferedtimerate = 0.5;
-                                    sugdto.user1 = usertomeetingexist;
-                                    sugdto.user2 = user1exist;
-                                    sugdto.startTime = lismatchitems.Item1;
-                                    sugdto.endTime = lismatchitems.Item2;
-                                    sugdto.phoneNum1 = usertomeetingexist.phonenumbers[0];
-                                    sugdto.phoneNum2 = user1exist.phonenumbers[0];
-                                    foreach (RatingData rat in ratedhobbies)
+                                }
+                                if (!existingperiod)
+                                {
+                                    List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(prefit.startTime, prefit.endTime), userinviteevefixed, userinvitedfixed);
+                                    foreach (var lismatchitems in listmatch)
                                     {
-                                        if (lismatchitems.Item2 - lismatchitems.Item1 >= TimeSpan.FromHours(rat.Minhours))
+                                        if (numbermeetings == 3)
                                         {
-                                            sugdto.hobbieNum = rat.HobbieNum;
-                                            ratemax = rat;
                                             break;
                                         }
-                                    }
-                                    sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (25.0 - 1.0);
-                                    sugdto.normalizeuserrank = (Convert.ToDouble(item.rank) - 1.0) / (5.0 - 1.0);
-                                    totalmeetingrank = Meetings.calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate, sugdto.normalizeuserrank);
-                                    sugdto.rank = totalmeetingrank;                                    
-                                    //need to add hobbienum to tblsuggestedmeeting
-                                    // need to normalize it and calculate score
-                                    //if score is under some limit its not added at all.
-                                    suggestedmeet.Add(sugdto);
-                                    numbermeetings++;
-                                
 
+                                        SuggestedDTO sugdto = new SuggestedDTO();
+                                        sugdto.date = thedate;
+                                        sugdto.status = "P";
+                                        sugdto.prefferedtimerate = 0.5;
+                                        sugdto.user1 = usertomeetingexist;
+                                        sugdto.user2 = user1exist;
+                                        sugdto.startTime = lismatchitems.Item1;
+                                        sugdto.endTime = lismatchitems.Item2;
+                                        sugdto.phoneNum1 = usertomeetingexist.phonenumbers[0];
+                                        sugdto.phoneNum2 = user1exist.phonenumbers[0];
+                                        foreach (RatingData rat in ratedhobbies)
+                                        {
+                                            if (lismatchitems.Item2 - lismatchitems.Item1 >= TimeSpan.FromHours(rat.Minhours))
+                                            {
+                                                sugdto.hobbieNum = rat.HobbieNum;
+                                                ratemax = rat;
+                                                break;
+                                            }
+                                        }
+                                        sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (25.0 - 1.0);
+                                        sugdto.normalizeuserrank = (Convert.ToDouble(item.rank) - 1.0) / (5.0 - 1.0);
+                                        totalmeetingrank = Meetings.calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate, sugdto.normalizeuserrank);
+                                        sugdto.rank = totalmeetingrank;
+                                        //need to add hobbienum to tblsuggestedmeeting
+                                        // need to normalize it and calculate score
+                                        //if score is under some limit its not added at all.
+                                        suggestedmeet.Add(sugdto);
+                                        numbermeetings++;
+
+
+                                    }
                                 }
 
 
@@ -411,10 +443,11 @@ namespace WebApplication1.Controllers
 
                             }
 
-                            while (numbermeetings < 3 )
+                            while (numbermeetings < 3)
                             {
                                 TimeSpan limitedhourtimespan = new TimeSpan(22, 0, 0);
                                 double limitedhour = limitedhourtimespan.Hours;
+                                existingperiod = false;
 
 
                                 List<Events> userinviteevefixed = new List<Events>();
@@ -441,57 +474,71 @@ namespace WebApplication1.Controllers
                                         userinvitedfixed.Add(eve2);
                                     }
                                 }
-                                List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(startimespan, endtimespan), userinviteevefixed, userinvitedfixed);
-                                foreach (var lismatchitems in listmatch)
+                                foreach (SuggestedDTO itesug in existingsugmeetings)
                                 {
-                                    if (numbermeetings == 3)
+                                    if (itesug.startTime == startimespan && itesug.endTime == endtimespan && itesug.date == new DateTime(dateto.Year, dateto.Month, dateto.Day))
                                     {
+
+                                        existingperiod = true;
                                         break;
                                     }
+                                }
 
-                                    SuggestedDTO sugdto = new SuggestedDTO();
-                                    sugdto.prefferedtimerate = 0;
-                                    sugdto.status = "P";
-                                    sugdto.date = dateto;
-                                    sugdto.startTime = lismatchitems.Item1;
-                                    sugdto.user1 = usertomeetingexist;
-                                    sugdto.user2 = user1exist;
-                                    sugdto.endTime = lismatchitems.Item2;
-                                    sugdto.phoneNum1 = usertomeetingexist.phonenumbers[0];
-                                    sugdto.phoneNum2 = user1exist.phonenumbers[0];
-                                    foreach (RatingData rat in ratedhobbies)
+                                if (!existingperiod)
+                                {
+
+                                    List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(startimespan, endtimespan), userinviteevefixed, userinvitedfixed);
+                                    foreach (var lismatchitems in listmatch)
                                     {
-                                        if (lismatchitems.Item2 - lismatchitems.Item1 >= TimeSpan.FromHours(rat.Minhours))
+                                        if (numbermeetings == 3)
                                         {
-                                            sugdto.hobbieNum = rat.HobbieNum;
-                                            ratemax = rat;
                                             break;
                                         }
+
+                                        SuggestedDTO sugdto = new SuggestedDTO();
+                                        sugdto.prefferedtimerate = 0;
+                                        sugdto.status = "P";
+                                        sugdto.date = dateto;
+                                        sugdto.startTime = lismatchitems.Item1;
+                                        sugdto.user1 = usertomeetingexist;
+                                        sugdto.user2 = user1exist;
+                                        sugdto.endTime = lismatchitems.Item2;
+                                        sugdto.phoneNum1 = usertomeetingexist.phonenumbers[0];
+                                        sugdto.phoneNum2 = user1exist.phonenumbers[0];
+                                        foreach (RatingData rat in ratedhobbies)
+                                        {
+                                            if (lismatchitems.Item2 - lismatchitems.Item1 >= TimeSpan.FromHours(rat.Minhours))
+                                            {
+                                                sugdto.hobbieNum = rat.HobbieNum;
+                                                ratemax = rat;
+                                                break;
+                                            }
+                                        }
+                                        sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (25.0 - 1.0);
+                                        sugdto.normalizeuserrank = (Convert.ToDouble(item.rank) - 1.0) / (5.0 - 1.0);
+                                        totalmeetingrank = Meetings.calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate, sugdto.normalizeuserrank);
+                                        sugdto.rank = totalmeetingrank;
+                                        //need to add hobbienum to tblsuggestedmeeting
+                                        // need to normalize it and calculate score
+                                        //if score is under some limit its not added at all.
+                                        suggestedmeet.Add(sugdto);
+                                        numbermeetings++;
+
+
                                     }
-                                    sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (25.0 - 1.0);
-                                    sugdto.normalizeuserrank = (Convert.ToDouble(item.rank) - 1.0) / (5.0 - 1.0);
-                                    totalmeetingrank = Meetings.calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate, sugdto.normalizeuserrank);
-                                    sugdto.rank = totalmeetingrank;
-                                    //need to add hobbienum to tblsuggestedmeeting
-                                    // need to normalize it and calculate score
-                                    //if score is under some limit its not added at all.
-                                    suggestedmeet.Add(sugdto);
-                                    numbermeetings++;
-                                   
-
                                 }
 
-                                dateto = dateto.AddHours(2);
-                                if(dateto.Hour> limitedhour || (dateto.Hour >= 00 && dateto.Hour < 09))
-                                {
-                                    int hoursUntilNextMorning = (9 - dateto.Hour + 24) % 24;
-                                    dateto = dateto.AddHours(hoursUntilNextMorning).AddMinutes(-dateto.Minute).AddSeconds(-dateto.Second).AddMilliseconds(-dateto.Millisecond);
+                                    dateto = dateto.AddHours(2);
+                                    if (dateto.Hour > limitedhour || (dateto.Hour >= 00 && dateto.Hour < 09))
+                                    {
+                                        int hoursUntilNextMorning = (9 - dateto.Hour + 24) % 24;
+                                        dateto = dateto.AddHours(hoursUntilNextMorning).AddMinutes(-dateto.Minute).AddSeconds(-dateto.Second).AddMilliseconds(-dateto.Millisecond);
 
-                                }
+                                    }
+                                
+
+
                             }
-
-
-
 
                         }
                        
@@ -585,11 +632,13 @@ namespace WebApplication1.Controllers
 
                             foreach (Events comtime in commontimeperiods2)
                             {
+                                existingperiod = false;
+
                                 if (numbermeetings == 3)
                                 {
                                     break;
                                 }
-                                DateTime thedate = Meetings.GetDateForWeekday(comtime.weekday);
+                                DateTime thedate = Meetings.GetDateForWeekday(comtime.weekday,comtime.starttime);
                                 List<Events> userinviteevefixed = new List<Events>();
                                 List<Events> userinvitedfixed = new List<Events>();
                                 foreach (Events eve in userinviteeve)
@@ -606,51 +655,65 @@ namespace WebApplication1.Controllers
                                         userinvitedfixed.Add(eve2);
                                     }
                                 }
-
-                                List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(comtime.starttime, comtime.endtime), userinviteevefixed, userinvitedfixed);
-                                foreach (var lismatchitems in listmatch)
-                                { 
-                                    if (numbermeetings == 3)
+                                foreach (SuggestedDTO itesug in existingsugmeetings)
+                                {
+                                    if (itesug.startTime == comtime.starttime && itesug.endTime == comtime.endtime && itesug.date == thedate)
                                     {
+
+                                        existingperiod = true;
                                         break;
                                     }
+                                }
+                                if (!existingperiod)
+                                {
 
-                                    SuggestedDTO sugdto = new SuggestedDTO();
-                                    sugdto.prefferedtimerate = 1;
-                                    sugdto.date = thedate;
-                                    sugdto.status = "P";
-                                    sugdto.startTime = lismatchitems.Item1;
-                                    sugdto.endTime = lismatchitems.Item2;
-                                    sugdto.phoneNum1 = usertomeetingexist.phonenumbers[0];
-                                    sugdto.phoneNum2 = user1exist.phonenumbers[0];
-                                    sugdto.user1 = usertomeetingexist;
-                                    sugdto.user2 = user1exist;
-                                    foreach (RatingData rat in ratedhobbies)
+                                    List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(comtime.starttime, comtime.endtime), userinviteevefixed, userinvitedfixed);
+                                    foreach (var lismatchitems in listmatch)
                                     {
-                                        if (lismatchitems.Item2 - lismatchitems.Item1 >= TimeSpan.FromHours(rat.Minhours))
+                                        if (numbermeetings == 3)
                                         {
-                                            sugdto.hobbieNum = rat.HobbieNum;
-                                            ratemax = rat;
                                             break;
                                         }
-                                    }
-                                    sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (25.0 - 1.0);
-                                    sugdto.normalizeuserrank = (Convert.ToDouble(item.rank) - 1.0) / (5.0 - 1.0);
-                                    totalmeetingrank = Meetings.calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate, sugdto.normalizeuserrank);
-                                    sugdto.rank = totalmeetingrank;
-                                    //need to add hobbienum to tblsuggestedmeeting
-                                    // need to normalize it and calculate score
-                                    //if score is under some limit its not added at all.
-                                    suggestedmeet.Add(sugdto);
-                                    numbermeetings++;
 
+                                        SuggestedDTO sugdto = new SuggestedDTO();
+                                        sugdto.prefferedtimerate = 1;
+                                        sugdto.date = thedate;
+                                        sugdto.status = "P";
+                                        sugdto.startTime = lismatchitems.Item1;
+                                        sugdto.endTime = lismatchitems.Item2;
+                                        sugdto.phoneNum1 = usertomeetingexist.phonenumbers[0];
+                                        sugdto.phoneNum2 = user1exist.phonenumbers[0];
+                                        sugdto.user1 = usertomeetingexist;
+                                        sugdto.user2 = user1exist;
+                                        foreach (RatingData rat in ratedhobbies)
+                                        {
+                                            if (lismatchitems.Item2 - lismatchitems.Item1 >= TimeSpan.FromHours(rat.Minhours))
+                                            {
+                                                sugdto.hobbieNum = rat.HobbieNum;
+                                                ratemax = rat;
+                                                break;
+                                            }
+                                        }
+                                        sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (25.0 - 1.0);
+                                        sugdto.normalizeuserrank = (Convert.ToDouble(item.rank) - 1.0) / (5.0 - 1.0);
+                                        totalmeetingrank = Meetings.calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate, sugdto.normalizeuserrank);
+                                        sugdto.rank = totalmeetingrank;
+                                        //need to add hobbienum to tblsuggestedmeeting
+                                        // need to normalize it and calculate score
+                                        //if score is under some limit its not added at all.
+                                        suggestedmeet.Add(sugdto);
+                                        numbermeetings++;
+
+
+                                    }
 
                                 }
-
                             }
+
                             foreach (tblPreferredTime prefit in usertomeeting.tblPreferredTime)
                             {
-                                DateTime thedate = Meetings.GetDateForWeekday(prefit.weekDay);
+                                existingperiod = false;
+                                DateTime thedate = Meetings.GetDateForWeekday(prefit.weekDay,prefit.startTime);
                                 TimeSpan starttime = prefit.startTime;
                                 TimeSpan endtime = prefit.endTime;
                                 List<Events> userinviteevefixed = new List<Events>();
@@ -669,44 +732,58 @@ namespace WebApplication1.Controllers
                                         userinvitedfixed.Add(eve2);
                                     }
                                 }
-                                List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(prefit.startTime, prefit.endTime), userinviteevefixed, userinvitedfixed);
-                                foreach (var lismatchitems in listmatch)
+                                foreach (SuggestedDTO itesug in existingsugmeetings)
                                 {
-                                    if (numbermeetings == 3  )
+                                    if (itesug.startTime == prefit.startTime && itesug.endTime == prefit.endTime && itesug.date == thedate)
                                     {
+
+                                        existingperiod = true;
                                         break;
                                     }
+                                }
 
-                                    SuggestedDTO sugdto = new SuggestedDTO();
-                                    sugdto.date = thedate;
-                                    sugdto.prefferedtimerate = 0.5;
-                                    sugdto.status = "P";
-                                    sugdto.user1 = usertomeetingexist;
-                                    sugdto.user2 = user1exist;
-                                    sugdto.startTime = lismatchitems.Item1;
-                                    sugdto.endTime = lismatchitems.Item2;
-                                    sugdto.phoneNum1 = usertomeetingexist.phonenumbers[0];
-                                    sugdto.phoneNum2 = user1exist.phonenumbers[0];
-                                    foreach (RatingData rat in ratedhobbies)
+                                if (!existingperiod)
+                                {
+
+                                    List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(prefit.startTime, prefit.endTime), userinviteevefixed, userinvitedfixed);
+                                    foreach (var lismatchitems in listmatch)
                                     {
-                                        if (lismatchitems.Item2 - lismatchitems.Item1 >= TimeSpan.FromHours(rat.Minhours))
+                                        if (numbermeetings == 3)
                                         {
-                                            sugdto.hobbieNum = rat.HobbieNum;
-                                            ratemax = rat;
                                             break;
                                         }
-                                    }
-                                    sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (25.0 - 1.0);
-                                    sugdto.normalizeuserrank = (Convert.ToDouble(item.rank) - 1.0) / (5.0 - 1.0);
-                                    totalmeetingrank = Meetings.calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate, sugdto.normalizeuserrank);
-                                    sugdto.rank = totalmeetingrank;
-                                    //need to add hobbienum to tblsuggestedmeeting
-                                    // need to normalize it and calculate score
-                                    //if score is under some limit its not added at all.
-                                    suggestedmeet.Add(sugdto);
-                                    numbermeetings++;
-                                  
 
+                                        SuggestedDTO sugdto = new SuggestedDTO();
+                                        sugdto.date = thedate;
+                                        sugdto.prefferedtimerate = 0.5;
+                                        sugdto.status = "P";
+                                        sugdto.user1 = usertomeetingexist;
+                                        sugdto.user2 = user1exist;
+                                        sugdto.startTime = lismatchitems.Item1;
+                                        sugdto.endTime = lismatchitems.Item2;
+                                        sugdto.phoneNum1 = usertomeetingexist.phonenumbers[0];
+                                        sugdto.phoneNum2 = user1exist.phonenumbers[0];
+                                        foreach (RatingData rat in ratedhobbies)
+                                        {
+                                            if (lismatchitems.Item2 - lismatchitems.Item1 >= TimeSpan.FromHours(rat.Minhours))
+                                            {
+                                                sugdto.hobbieNum = rat.HobbieNum;
+                                                ratemax = rat;
+                                                break;
+                                            }
+                                        }
+                                        sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (25.0 - 1.0);
+                                        sugdto.normalizeuserrank = (Convert.ToDouble(item.rank) - 1.0) / (5.0 - 1.0);
+                                        totalmeetingrank = Meetings.calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate, sugdto.normalizeuserrank);
+                                        sugdto.rank = totalmeetingrank;
+                                        //need to add hobbienum to tblsuggestedmeeting
+                                        // need to normalize it and calculate score
+                                        //if score is under some limit its not added at all.
+                                        suggestedmeet.Add(sugdto);
+                                        numbermeetings++;
+
+
+                                    }
                                 }
 
 
@@ -726,6 +803,7 @@ namespace WebApplication1.Controllers
 
                             while (numbermeetings < 3 )
                             {
+                                existingperiod = false;
                                 TimeSpan limitedhourtimespan = new TimeSpan(22, 0, 0);
                                 double limitedhour = limitedhourtimespan.Hours;
                                 List<Events> userinviteevefixed = new List<Events>();
@@ -752,53 +830,67 @@ namespace WebApplication1.Controllers
                                         userinvitedfixed.Add(eve2);
                                     }
                                 }
-                                List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(startimespan, endtimespan), userinviteevefixed, userinvitedfixed);
-                                foreach (var lismatchitems in listmatch)
+                                foreach (SuggestedDTO itesug in existingsugmeetings)
                                 {
-                                    if (numbermeetings == 3 )
+                                    if (itesug.startTime == startimespan && itesug.endTime == endtimespan && itesug.date == new DateTime(dateto.Year,dateto.Month,dateto.Day))
                                     {
+
+                                        existingperiod = true;
                                         break;
                                     }
+                                }
 
-                                    SuggestedDTO sugdto = new SuggestedDTO();
-                                    sugdto.date = dateto;
-                                    sugdto.prefferedtimerate = 0;
-                                    sugdto.user1 = usertomeetingexist;
-                                    sugdto.status = "P";
-                                    sugdto.user2 = user1exist;
-                                    sugdto.startTime = startimespan;
-                                    sugdto.endTime = endtimespan;
-                                    sugdto.phoneNum1 = usertomeetingexist.phonenumbers[0];
-                                    sugdto.phoneNum2 = user1exist.phonenumbers[0];
-                                    foreach (RatingData rat in ratedhobbies)
+                                if (!existingperiod)
+                                {
+                                    List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(startimespan, endtimespan), userinviteevefixed, userinvitedfixed);
+                                    foreach (var lismatchitems in listmatch)
                                     {
-                                        if (lismatchitems.Item2 - lismatchitems.Item1 >= TimeSpan.FromHours(rat.Minhours))
+                                        if (numbermeetings == 3)
                                         {
-                                            sugdto.hobbieNum = rat.HobbieNum;
-                                            ratemax = rat;
                                             break;
                                         }
+
+                                        SuggestedDTO sugdto = new SuggestedDTO();
+                                        sugdto.date = dateto;
+                                        sugdto.prefferedtimerate = 0;
+                                        sugdto.user1 = usertomeetingexist;
+                                        sugdto.status = "P";
+                                        sugdto.user2 = user1exist;
+                                        sugdto.startTime = startimespan;
+                                        sugdto.endTime = endtimespan;
+                                        sugdto.phoneNum1 = usertomeetingexist.phonenumbers[0];
+                                        sugdto.phoneNum2 = user1exist.phonenumbers[0];
+                                        foreach (RatingData rat in ratedhobbies)
+                                        {
+                                            if (lismatchitems.Item2 - lismatchitems.Item1 >= TimeSpan.FromHours(rat.Minhours))
+                                            {
+                                                sugdto.hobbieNum = rat.HobbieNum;
+                                                ratemax = rat;
+                                                break;
+                                            }
+                                        }
+                                        sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (25.0 - 1.0);
+                                        sugdto.normalizeuserrank = (Convert.ToDouble(item.rank) - 1.0) / (5.0 - 1.0);
+                                        totalmeetingrank = Meetings.calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate, sugdto.normalizeuserrank);
+                                        sugdto.rank = totalmeetingrank;
+                                        //need to add hobbienum to tblsuggestedmeeting
+                                        // need to normalize it and calculate score
+                                        //if score is under some limit its not added at all.
+                                        suggestedmeet.Add(sugdto);
+                                        numbermeetings++;
+
+
                                     }
-                                    sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (25.0 - 1.0);
-                                    sugdto.normalizeuserrank = (Convert.ToDouble(item.rank) - 1.0) / (5.0 - 1.0);
-                                    totalmeetingrank = Meetings.calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate, sugdto.normalizeuserrank);
-                                    sugdto.rank = totalmeetingrank;
-                                    //need to add hobbienum to tblsuggestedmeeting
-                                    // need to normalize it and calculate score
-                                    //if score is under some limit its not added at all.
-                                    suggestedmeet.Add(sugdto);
-                                    numbermeetings++;
-                                  
-
                                 }
 
-                                dateto = dateto.AddHours(2);
-                                if (dateto.Hour > 22 || (dateto.Hour >= 00 && dateto.Hour < 09))
-                                {
-                                    int hoursUntilNextMorning = (9 - dateto.Hour + 24) % 24;
-                                    dateto = dateto.AddHours(hoursUntilNextMorning).AddMinutes(-dateto.Minute).AddSeconds(-dateto.Second).AddMilliseconds(-dateto.Millisecond);
+                                    dateto = dateto.AddHours(2);
+                                    if (dateto.Hour > 22 || (dateto.Hour >= 00 && dateto.Hour < 09))
+                                    {
+                                        int hoursUntilNextMorning = (9 - dateto.Hour + 24) % 24;
+                                        dateto = dateto.AddHours(hoursUntilNextMorning).AddMinutes(-dateto.Minute).AddSeconds(-dateto.Second).AddMilliseconds(-dateto.Millisecond);
 
-                                }
+                                    }
+                                
                             }
 
 
@@ -812,6 +904,8 @@ namespace WebApplication1.Controllers
                     List<SuggestedDTO> suggestedsorted= suggestedmeet.OrderByDescending(x=> x.rank).ToList();
                     List<SuggestedDTO> top5Suggestions = suggestedsorted.Take(5-totalmeetingsnumber).ToList();
                     List<SuggestedDTO> meetingslist= await Meetings.Generatemeetings(_googleservices,top5Suggestions,_db,ratedhobbies);
+                    meetingslist.Sort((x, y) => y.rank.CompareTo(x.rank));
+
                     List<SuggestedDTO> meetingstoreturn= new List<SuggestedDTO>();
                     foreach(SuggestedDTO meetitem in meetingslist)
                     {

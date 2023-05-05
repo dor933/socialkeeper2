@@ -813,18 +813,26 @@ namespace ClassLibrary_SocialKeeper
 
             
         }
-        static public DateTime GetDateForWeekday(string dayOfWeek)
+        static public DateTime GetDateForWeekday(string dayOfWeek, TimeSpan starttime)
         {
             int dayofweekint = int.Parse(dayOfWeek);
             DateTime today = DateTime.Today;
             int currentDayOfWeek = (int)today.DayOfWeek;
             int daysUntilTargetDay;
+            TimeSpan additional = new TimeSpan(5, 0, 0);
+            TimeSpan newtimestart= starttime.Add(additional);
+            
 
            
                 daysUntilTargetDay = dayofweekint - currentDayOfWeek;
                 if (daysUntilTargetDay < 0) // Ensure the result is positive
                 {
                     daysUntilTargetDay += 7;
+                }
+
+                if(daysUntilTargetDay==0 && today.TimeOfDay<newtimestart)
+            {
+                    daysUntilTargetDay = 7;
                 }
             
 

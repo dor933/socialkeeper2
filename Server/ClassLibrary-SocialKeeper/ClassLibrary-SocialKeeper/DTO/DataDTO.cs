@@ -13,5 +13,7 @@ namespace ClassLibrary_SocialKeeper
 
         public int numberofmeetings { get; set; }
 
+       public List<SuggestedDTO> existingsuggested = new List<SuggestedDTO>();
+
     }
 }
