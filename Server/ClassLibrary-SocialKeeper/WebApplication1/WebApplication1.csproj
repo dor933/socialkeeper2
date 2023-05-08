@@ -457,6 +457,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MainappactionsController.cs" />
     <Compile Include="Controllers\MainAppController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Dbcontext\dbcontext.cs" />

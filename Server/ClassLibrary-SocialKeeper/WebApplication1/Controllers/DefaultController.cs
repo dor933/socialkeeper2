@@ -258,7 +258,7 @@ namespace WebApplication1.Controllers
                 DateTime datetocheck = currentDate.AddHours(sugit.startTime.Hours);
 
 
-                if (datetocheck >= DateTime.Now)
+                if (datetocheck >= DateTime.Now && (sugit.status=="W" || sugit.status=="A"))
                 {
                     SuggestedDTO suggested = new SuggestedDTO();
                     string placeid = _db.tblLoctation.Where(x => x.latitude == sugit.latitude && x.longitude == sugit.longitude).FirstOrDefault().Placeid;
@@ -307,7 +307,7 @@ namespace WebApplication1.Controllers
                 DateTime currentDate = new DateTime(sugitm.date.Year, sugitm.date.Month, sugitm.date.Day);
                 DateTime datetocheck = currentDate.AddHours(sugitm.startTime.Hours);
 
-                if (datetocheck >= DateTime.Now)
+                if (datetocheck >= DateTime.Now && sugitm.status!="R")
                 {
 
                     SuggestedDTO suggested = new SuggestedDTO();
