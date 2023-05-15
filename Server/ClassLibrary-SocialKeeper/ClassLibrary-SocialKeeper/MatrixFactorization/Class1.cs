@@ -167,7 +167,14 @@ namespace ClassLibrary_SocialKeeper
                 (double midLat, double midLon) = FindMidpoint(lat1, lon1, lat2, lon2);
 
                 double radius = 10000;
-          
+                double radiusinkm= radius/ 1000;
+                double northLatitude = midLat + (radiusinkm / 111.0);
+                double southLatitude = midLat - (radiusinkm / 111.0);
+                double eastlongitude = midLon + (radiusinkm / 111.0);
+                double westlongitude = midLon - (radiusinkm / 111.0);
+
+
+
                 while (!placefound)
                 {
                     placetorun.Clear();
@@ -182,7 +189,18 @@ namespace ClassLibrary_SocialKeeper
                         {
 
                             QuerySnapshot snapshot= await _googleservices._firestoreDb.Collection("Places").WhereEqualTo("type", type).GetSnapshotAsync();
-                            foreach(DocumentSnapshot docsnap in snapshot.Documents)
+
+
+                            var filteredPlaces = snapshot.Documents
+                     .Where(placeDoc =>
+                 placeDoc.GetValue<double>("latitude") >= southLatitude &&
+            placeDoc.GetValue<double>("latitude") <= northLatitude &&
+            placeDoc.GetValue<double>("longitude") >= westlongitude &&
+            placeDoc.GetValue<double>("longitude") <= eastlongitude)
+            .ToList();
+
+
+                            foreach (DocumentSnapshot docsnap in filteredPlaces)
                             {
                                 double docLatitude= docsnap.GetValue<double>("latitude");
                                 double docLongitude= docsnap.GetValue<double>("longitude");
@@ -191,9 +209,27 @@ namespace ClassLibrary_SocialKeeper
                                 if(distance <= radiuskm)
                                 {
                                     string placeid= docsnap.GetValue<string>("Placeid");
-                                    string placejson= await Googlecloudfunctions.Getfilefromcloudstorage($"Places/{placeid}.json",_googleservices);
-                                    PlaceResult pr= JsonConvert.DeserializeObject<PlaceResult>(placejson);
-                                    placetorun.Add(pr);
+                                    string placejson= await Googlecloudfunctions.Getfilefromcloudstorage($"Places/{placeid}",_googleservices);
+                                    if(placejson!=null)
+                                    {
+
+                                        PlaceResult pr = new PlaceResult();
+                                         pr= JsonConvert.DeserializeObject<PlaceResult>(placejson);
+                                        if (pr.PlaceId == null)
+                                        {
+                                            SinglePlaceroot prsing = new SinglePlaceroot();
+                                            prsing= JsonConvert.DeserializeObject<SinglePlaceroot>(placejson);
+                                            pr = prsing.Result;
+
+
+                                        }
+
+                                        if (pr.UserRatingsTotal >= 10 && pr.Rating>4)
+                                        {
+                                            placetorun.Add(pr);
+                                        }
+                                    }
+                                   
                                 }
 
                                 if (placetorun.Count > 20)
@@ -236,7 +272,7 @@ namespace ClassLibrary_SocialKeeper
                                     };
 
                                         DocumentReference docref = await collection.AddAsync(docdata);
-                                    await Googlecloudfunctions.UploadJsonToGoogleCloudStorage(prconverted, $"Places/{pr.PlaceId}.json",_googleservices);
+                                    await Googlecloudfunctions.UploadJsonToGoogleCloudStorage(prconverted, $"Places/{pr.PlaceId}",_googleservices);
                                         placetorun.Add(pr);
                                     
                                 }
@@ -256,6 +292,11 @@ namespace ClassLibrary_SocialKeeper
                             
                             
                         }
+                        places= places.Where(x=> x.UserRatingsTotal>=5).ToList();
+                        places.Sort((x, y) => y.Rating.CompareTo(x.Rating));
+                        //filter if total rating is less than 5
+
+                        
                        
                     }
                     else
@@ -275,6 +316,7 @@ namespace ClassLibrary_SocialKeeper
                                     double hobbierank = ratedh.Where(x => x.HobbieNum == hobbienum).FirstOrDefault().Label;
                                     sugitem.normalizehobbierank = (hobbierank - 1.0) / (25.0 - 1.0);
                                     sugitem.rank = calculatemeetingscore(sugitem.normalizehobbierank, sugitem.prefferedtimerate, sugitem.normalizeuserrank);
+                                    sugitem.hobbieNum= hobbienum;
                                     if (placeslist[type].Count == 20)
                                     {
                                         places = placeslist[type];
@@ -283,7 +325,17 @@ namespace ClassLibrary_SocialKeeper
                                     {
                                         places = new List<PlaceResult>();
                                         QuerySnapshot snapshot = await _googleservices._firestoreDb.Collection("Places").WhereEqualTo("type", type).GetSnapshotAsync();
-                                        foreach (DocumentSnapshot docsnap in snapshot.Documents)
+                                        var filteredPlaces = snapshot.Documents
+                                        .Where(placeDoc =>
+                                         placeDoc.GetValue<double>("latitude") >= southLatitude &&
+                                         placeDoc.GetValue<double>("latitude") <= northLatitude &&
+                                         placeDoc.GetValue<double>("longitude") >= westlongitude &&
+                                         placeDoc.GetValue<double>("longitude") <= eastlongitude)
+                                         .ToList();
+
+                                        //לבצע סינון לפני הרצת הלולאה לפי דירוג וכמות מדרגים
+
+                                        foreach (DocumentSnapshot docsnap in filteredPlaces)
                                         {
                                             double docLatitude = docsnap.GetValue<double>("latitude");
                                             double docLongitude = docsnap.GetValue<double>("longitude");
@@ -292,9 +344,25 @@ namespace ClassLibrary_SocialKeeper
                                             if (distance <= radiuskm)
                                             {
                                                 string placeid = docsnap.GetValue<string>("Placeid");
-                                                string placejson = await Googlecloudfunctions.Getfilefromcloudstorage($"Places/{placeid}.json", _googleservices);
-                                                PlaceResult pr = JsonConvert.DeserializeObject<PlaceResult>(placejson);
-                                                placetorun.Add(pr);
+                                                string placejson = await Googlecloudfunctions.Getfilefromcloudstorage($"Places/{placeid}", _googleservices);
+                                                if(placejson!=null)
+                                                {
+                                                    PlaceResult pr = new PlaceResult();
+                                                    pr = JsonConvert.DeserializeObject<PlaceResult>(placejson);
+                                                    if (pr.PlaceId == null)
+                                                    {
+                                                        SinglePlaceroot prsing = new SinglePlaceroot();
+                                                        prsing = JsonConvert.DeserializeObject<SinglePlaceroot>(placejson);
+                                                        pr = prsing.Result;
+
+
+                                                    }
+                                                    if (pr.UserRatingsTotal >= 10 && pr.Rating>4)
+                                                    {
+                                                        placetorun.Add(pr);
+                                                    }
+                                                }
+                                               
                                             }
 
                                         }
@@ -315,7 +383,7 @@ namespace ClassLibrary_SocialKeeper
                                                 prsing = JsonConvert.DeserializeObject<SinglePlaceroot>(fullplace);
                                                 pr = prsing.Result;
                                                 string prconverted = JsonConvert.SerializeObject(pr);
-                                                string ifexist = await Googlecloudfunctions.Getfilefromcloudstorage($"Places/{pr.PlaceId}.json", _googleservices);
+                                                string ifexist = await Googlecloudfunctions.Getfilefromcloudstorage($"Places/{pr.PlaceId}", _googleservices);
                                                 if (ifexist == null)
                                                 {
                                                     CollectionReference collection = _googleservices._firestoreDb.Collection("Places");
@@ -329,7 +397,7 @@ namespace ClassLibrary_SocialKeeper
                                                 };
 
                                                     DocumentReference docref = await collection.AddAsync(docdata);
-                                                    await Googlecloudfunctions.UploadJsonToGoogleCloudStorage(prconverted, $"Places/{pr.PlaceId}.json", _googleservices);
+                                                    await Googlecloudfunctions.UploadJsonToGoogleCloudStorage(prconverted, $"Places/{pr.PlaceId}", _googleservices);
                                                     placetorun.Add(pr);
 
                                                 }
@@ -350,6 +418,7 @@ namespace ClassLibrary_SocialKeeper
                                     }
 
                                     places = placetorun;
+                                    places = places.Where(x => x.UserRatingsTotal >= 5).ToList();
                                     places.Sort((x, y) => y.Rating.CompareTo(x.Rating));
                                     currentplacetype = type;
                                     break;
