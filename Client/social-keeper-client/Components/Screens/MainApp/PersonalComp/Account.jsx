@@ -265,10 +265,10 @@ function Favoritecont ({user}) {
             <ListItem.Title style={styles.listaccordiontext}>Favorite Contacts
                   
             </ListItem.Title>
-            {user.possibleFavoriteContacts_invite_DTO.length > 0 && 
+            {user.possibleFavoriteContacts_invited_DTO.length > 0 && 
             <Badge
             status="error"
-            value={user.possibleFavoriteContacts_invite_DTO.length}
+            value={user.possibleFavoriteContacts_invited_DTO.length}
             containerStyle={{ position: 'absolute', top: 0, right: 150 }}
             
             />}  
@@ -327,11 +327,11 @@ function Favoritecont ({user}) {
             <ListItem.Title style={styles.listaccordiontext}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
     <Text style={[styles.listaccordiontext]}>Friend requests</Text>
-    {user.possibleFavoriteContacts_invite_DTO.length > 0 && (
+    {user.possibleFavoriteContacts_invited_DTO.length > 0 && (
       <View style={{ paddingLeft: 10 }}>
         <Badge
           status="error"
-          value={user.possibleFavoriteContacts_invite_DTO.length}
+          value={user.possibleFavoriteContacts_invited_DTO.length}
           containerStyle={{ position: 'relative' }}
         />
       </View>
@@ -367,7 +367,7 @@ function Favoritecont ({user}) {
          >
            
          
-            {user.possibleFavoriteContacts_invite_DTO.map((item, i) => (
+            {user.possibleFavoriteContacts_invited_DTO.map((item, i) => (
                 <ListItem key={i} bottomDivider
 
                 containerStyle={{backgroundColor:'rgba(255, 255, 255, 0.05)', borderBottomWidth: 1, borderBottomColor: 'rgba(255, 255, 255, 0.1)', flexDirection:'row-reverse',
@@ -375,7 +375,7 @@ function Favoritecont ({user}) {
             
             }}
                 >
-                <Avatar source={{uri: item.tblUser1.imageUri}}
+                <Avatar source={{uri: item.tblUser.imageUri}}
                 rounded
                 size="medium"
                 />
@@ -393,8 +393,9 @@ function Favoritecont ({user}) {
 
                     <ListItem.Title
                     style={styles.listaccordiontext}
-                    >{item.tblUser1.userName} </ListItem.Title>
-                    <ListItem.Subtitle style={styles.listaccordionsubtext}>{item.tblUser1.email}</ListItem.Subtitle>
+                    >{item.tblUser.userName} </ListItem.Title>
+                    {console.log('this is tbluser',item.tblUser)}
+                    <ListItem.Subtitle style={styles.listaccordionsubtext}>{item.tblUser.email}</ListItem.Subtitle>
                     </View>
 
                   
@@ -419,7 +420,6 @@ function Favoritecont ({user}) {
                 </ListItem>
             ))}
 
-            {console.log(user.possibleFavoriteContacts_invite_DTO)}
 
              
         </ListItem.Accordion>

@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity,Dimensions,use } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import StarRating from 'react-native-star-rating';
 
 export default function StarsRatingComp(props) {
   const [starRating, setStarRating] = useState(null);

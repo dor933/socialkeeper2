@@ -10,15 +10,31 @@ let index=0;
 
 
 
-export default function CalendarScreen({route}) {
+export default function CalendarScreen({route, navigation}) {
 
     const [selectedEvent, setSelectedEvent] = useState<AgendaEntry | null>(null);
     const [items, setItems] = useState<AgendaSchedule>({});
     const {userevents, setUserevents} = useContext(MainAppcontext);
-   console.log(userevents);
+    const {hobbienumtypes} = useContext(MainAppcontext);
+
    const meeting= route.params.meeting;
    const invitedbyfriend= route.params.invitedbyfriend;
    console.log('this is meet',meeting); 
+   const locationplace={
+    latitude: meeting.latitude,
+    longitude: meeting.longitude,
+   }
+   const typename= hobbienumtypes.find((hob)=>hob.hobbienum==meeting.hobbieNum);
+    const type= typename.hobbie;
+   const locationname= meeting.place.name;
+   console.log('this is location',locationplace);
+    console.log('this is type',type);
+    console.log('this is locationname',locationname);
+    const objtosend={
+       meeting:meeting,
+       type:type,
+
+    }
    
 
    
@@ -45,22 +61,24 @@ export default function CalendarScreen({route}) {
         const meetingdate= meeting.date;
         //convert date to string without time
         const eventdate=meetingdate.slice(0, 10);
-        let usertomeeting;
+        let usertosend;
 
         if(invitedbyfriend){
-            usertomeeting=meeting.user1.userName;
+            usertosend=meeting.user1;
 
         }
         else{
-            usertomeeting=meeting.user2.userName;
+            usertosend=meeting.user2;
         }
+
+        objtosend['usertosend']=usertosend;
 
         const meetingadd={
             day:eventdate,
             endtime:meeting.endTime,
             starttime:meeting.startTime,
             height:80,
-            name:"meeting with " + usertomeeting,
+            name:"meeting with " + usertosend.userName,
             meetingplace:meeting.place.name
         }
 
@@ -192,7 +210,9 @@ export default function CalendarScreen({route}) {
         <TouchableOpacity style={styles.refuseButton} onPress={() => console.log("Refuse pressed")}>
           <Text style={styles.buttonText}>Refuse</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.acceptButton} onPress={() => console.log("Agree pressed")}>
+        <TouchableOpacity style={styles.acceptButton} onPress={() => 
+        navigation.navigate('MapLocationForHobbies', {information: objtosend}) 
+        }>
           <Text style={styles.buttonText}>Accept</Text>
         </TouchableOpacity>
       </View>

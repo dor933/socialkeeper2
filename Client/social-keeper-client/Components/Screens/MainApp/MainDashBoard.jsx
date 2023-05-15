@@ -14,6 +14,11 @@ import {getPlaceDetails} from '../../..//assets/Utils/places';
 import { useState,useEffect,useContext } from 'react';
 import Loadingcomp from '../../CompsToUse/Loadingcomp';
 import axios from 'axios';
+import MapLocationForHobbies from './/MapLocationForHobbies';
+import Meetdetails from '../../CompsToUse/Meetdetails';
+
+
+
 
 
 
@@ -21,15 +26,30 @@ import axios from 'axios';
 const Tab = createBottomTabNavigator();
 
 const SuggestedMeetingsStack = createStackNavigator(); // Add this line
+const PreviousMeetingsStack = createStackNavigator(); // Add this line
 
 function SuggestedMeetingsStackScreen() {
+  
     return (
       <SuggestedMeetingsStack.Navigator initialRouteName="SuggestedMeetings">
-        <SuggestedMeetingsStack.Screen name="SuggestedMeetings" component={SuggestedMeetingsScreen} options={{headerShown:false}} />
+        <SuggestedMeetingsStack.Screen name="SuggestedMeetings" component={SuggestedMeetingsScreen } options={{headerShown:false}} 
+       />
         <SuggestedMeetingsStack.Screen name="SuggestedMeetingCalender" component={Calender} options={{headerShown:false}} />
+        <SuggestedMeetingsStack.Screen name="MapLocationForHobbies" component={MapLocationForHobbies} options={{headerShown:false}} />
+        <SuggestedMeetingsStack.Screen name="Meetdetails" component={Meetdetails} options={{headerShown:false}} />
       </SuggestedMeetingsStack.Navigator>
     );
   }
+
+  function PreviousMeetingsStackScreen() {
+    return (
+      <PreviousMeetingsStack.Navigator initialRouteName="PreviousMeetings">
+        <PreviousMeetingsStack.Screen name="PreviousMeetings" component={PreviousMeetingsScreen} options={{headerShown:false}} />
+        </PreviousMeetingsStack.Navigator>
+    );
+
+  }
+
 export default function MainDashBoard() {
 
     const {user, setUser} = useContext(MainAppcontext);
@@ -38,8 +58,7 @@ export default function MainDashBoard() {
 
   useEffect( () => {
 
-    console.log('this is the user')
-    console.log(user)
+    
     
      rungetcalenders();
     
@@ -47,8 +66,139 @@ export default function MainDashBoard() {
 
 
   const rungetcalenders= async () => {
-    await getcalendars();
+   const newevents= await getcalendars();   
+   let newsugmeetings=await fetchAndProcessMeetings( newevents);
+   if(user.tblSuggestedMeetings.length>0){
+
+    await getplaceinfo(newsugmeetings);
+    
+
   }
+  if(user.tblSuggestedMeetings1.length>0){
+
+    await getplaceinfo2();
+
+  }
+  if(user.tblactualmeetings.length>0){
+
+    await getplaceinfoended(true);
+
+  }
+  if(user.tblactualmeetings1.length>0){
+
+    await getplaceinfoended(false);
+
+  }
+    await setmeetingscorrectly(newsugmeetings);
+    setScreenisready(true);
+  }
+  
+
+  const getplaceinfo = async (newsugmeetings) => {
+
+    for(let i=0; i<newsugmeetings.length; i++){
+      const placeinfo = await getPlaceDetails(newsugmeetings[i].place.place_id);
+      newsugmeetings[i].place = placeinfo;
+    }
+
+    return newsugmeetings;
+
+  }
+
+  const getplaceinfo2 = async () => {
+    const newtblsuggest1his= user.tblSuggestedMeetings1;
+    for(let i=0; i<newtblsuggest1his.length; i++){
+      const placeinfo = await getPlaceDetails(newtblsuggest1his[i].place.place_id);
+      newtblsuggest1his[i].place = placeinfo;
+    }
+    setUser({
+      ...user,
+      tblSuggestedMeetings1: newtblsuggest1his,
+    });
+
+  }
+
+  const getplaceinfoended = async (isinvite) => {
+    if(isinvite){
+      const newtblactualmeeting= user.tblactualmeetings;
+      for(let i=0; i<newtblactualmeeting.length; i++){
+        const placeinfo = await getPlaceDetails(newtblactualmeeting[i].tblSuggestedMeeting.place.place_id);
+        newtblactualmeeting[i].tblSuggestedMeeting.place = placeinfo;
+      }
+      setUser({
+        ...user,
+        tblactualmeetings: newtblactualmeeting,
+      });
+    }
+    else{
+      const newtblactualmeeting1= user.tblactualmeetings1;
+      for(let i=0; i<newtblactualmeeting1.length; i++){
+        const placeinfo = await getPlaceDetails(newtblactualmeeting1[i].tblSuggestedMeeting.place.place_id);
+        newtblactualmeeting1[i].tblSuggestedMeeting.place = placeinfo;
+      }
+      setUser({
+        ...user,
+        tblactualmeetings1: newtblactualmeeting1,
+      });
+    }
+  }
+
+
+
+
+
+
+  const setmeetingscorrectly= async (newsugmeetings)=>{
+    newsugmeetings= newsugmeetings.map((each)=>{
+      if(each.place.result){
+        return{
+          ...each,
+          place: each.place.result
+        }
+      }
+      else{
+        return each;
+      }
+    })
+
+   
+
+    let newtblsuggest1this= user.tblSuggestedMeetings1;
+      newtblsuggest1this= newtblsuggest1this.map((each)=>{
+
+        if(each.place.result){
+          return{
+            ...each,
+            place: each.place.result
+          }
+        }
+        else{
+          return each;
+        }
+      }
+      )
+
+      console.log('this is newtblsuggesthis final from database after getplaceinfo')
+      console.log(newsugmeetings.length)
+      console.log('this is newtblsuggest1this final from database after getplaceinfo')
+      console.log(newtblsuggest1this.length)
+
+   //set user with prev
+     setUser({
+      ...user,
+      tblSuggestedMeetings: newsugmeetings,
+      tblSuggestedMeetings1: newtblsuggest1this
+    })
+
+    
+
+  }
+
+
+
+
+
+  
 
  
 
@@ -119,6 +269,7 @@ export default function MainDashBoard() {
         };
       });
 
+
       const eventobject= newevents.reduce((acc, event,index) => {
         const date = event.date.toISOString().split('T')[0];
         if (!acc[date]) {
@@ -171,130 +322,90 @@ console.log(eventobject)
   
   
       }
+      return newevents;
 
-      if(user.tblSuggestedMeetings.length>0){
+  }
 
-        //run on tblsuggestedmeetings
+}
 
-        await getplaceinfo();
-
-
-      }
-      if(user.tblSuggestedMeetings1.length>0){
-
-        await getplaceinfo2();
-        
-
-
-      }
-
+  const fetchAndProcessMeetings = async(newevents) => {
  
 
-  
-    let numbermeetings= user.tblSuggestedMeetings1.length+ user.tblSuggestedMeetings.length;
-    console.log('number of meetings suggesteedmeetingsuser')
-    console.log(user.tblSuggestedMeetings.length)
-    console.log(numbermeetings);
 
-    let missingmeetings= 5-numbermeetings;
-    console.log('missing meetings')
-    console.log(missingmeetings);
-    if(missingmeetings>0){
-         const eventstosend= newevents.map((each)=>{
-        return{
-          starttime: each.starttime,
-          endtime: each.endtime,
-          weekday: each.weekday,
+  let numbermeetings= user.tblSuggestedMeetings1.length+ user.tblSuggestedMeetings.length;
+  console.log('number of meetings suggesteedmeetingsuser',numbermeetings)
 
-        }
-      })
-
+ 
+  if(numbermeetings<5){
     
+  
+    const eventstosend = newevents.map((each) => ({
+      starttime: each.starttime,
+      endtime: each.endtime,
+      weekday: each.weekday,
+    }));
+  
+    let existingsuggested = [];
+    let existingsuggested1 = [];
 
-      const existingsuggested=[];
-      const existingsuggested1=[];
-
-      if(user.tblSuggestedMeetings.length>0){
-
-      existingsuggested=user.tblSuggestedMeetings.map((each)=>{
-        return{
-          starttime: each.startTime,
-          endtime: each.endTime,
-          //made date without time 
-          date: each.date.split('T')[0],
-        }
-      })
+    if (user.tblSuggestedMeetings.length > 0) {
+      existingsuggested = user.tblSuggestedMeetings.map((each) => ({
+        starttime: each.startTime,
+        endtime: each.endTime,
+        date: each.date.split('T')[0],
+      }));
     }
-   
-    if(user.tblSuggestedMeetings1.length>0){
-       existingsuggested1=user.tblSuggestedMeetings1.map((each)=>{
-        return{
-          starttime: each.starttime,
-          endtime: each.endtime,
-          //made date without time
-          date: each.date.toISOString().split('T')[0],
-        }
-      })
-    }
-
-      //concat the two arrays
-      const existingsuggestedconcat= existingsuggested.concat(existingsuggested1);
-
-      const objsend={
-        userdto: user.phoneNum1,
-        userinviteeve: eventstosend,
-        numberofmeetings: numbermeetings,
-        existingsuggested: existingsuggestedconcat,
-       }
-
-       console.log('this is objsend')
-        console.log(objsend)
-
-
-
-      const responsefrommeetings= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/MainApp/createmeetings',objsend);
-      const newmeetings= responsefrommeetings.data;
-      //add the new meetings in addition to the old ones in suugessted meetings state
-      const newsugmeetings= newmeetings.concat(user.tblSuggestedMeetings);
-      newsugmeetings.concat(newmeetings);
-      
-      setUser({...user, tblSuggestedMeetings: newsugmeetings});
-
-
-
+  
+    if (user.tblSuggestedMeetings1.length > 0) {
+      existingsuggested1 = user.tblSuggestedMeetings1.map((each) => ({
+        starttime: each.starttime,
+        endtime: each.endtime,
+        date: each.date.toISOString().split('T')[0],
+      }));
     }
 
+    const existingsuggestedconcat = existingsuggested.concat(existingsuggested1);
 
-      
-    }
-
-    setScreenisready(true);
+  const objsend = {
+    userdto: user.phoneNum1,
+    userinviteeve: eventstosend,
+    numberofmeetings: numbermeetings,
+    existingsuggested: existingsuggestedconcat,
   };
 
-  const getplaceinfo = async () => {
+  console.log('this is objsend', objsend);
 
-    
-    const mysuggestedmeeting = [...user.tblSuggestedMeetings]; // Create a shallow copy of the array
-
-    for (let i = 0; i < mysuggestedmeeting.length; i++) {
-      const placeinfo = await getPlaceDetails(mysuggestedmeeting[i].place.place_id);
-      mysuggestedmeeting[i].place = placeinfo;
-    }
+  const responsefrommeetings = await axios.post(
+    'http://cgroup92@194.90.158.74/cgroup92/prod/api/MainApp/createmeetings',
+    objsend
+  );
   
-    setUser({ ...user, tblSuggestedMeetings: mysuggestedmeeting })
+  const newmeetings =  responsefrommeetings.data;
+  const newsugmeetings = [...newmeetings, ...user.tblSuggestedMeetings];
+
+  newsugmeetings.forEach((each) => {
+    if (each.place.result) {
+      each.place = each.place.result;
+    }
+  });
+
+
+  console.log('this is newsugmeetings', newsugmeetings);
+  console.log('this is newsugmeetingsd length', newsugmeetings.length);
+
+  //set user without prev
+
+  return newsugmeetings;
+  
+}
+else{
+  let newsugmeetings= user.tblSuggestedMeetings;
+  return newsugmeetings;
+}
   }
 
-  const getplaceinfo2 = async () => {
 
-    const mysuggestedmeeting1 = [...user.tblSuggestedMeetings1]; // Create a shallow copy of the array
 
-    for (let i = 0; i < mysuggestedmeeting1.length; i++) {
-      const placeinfo = await getPlaceDetails(mysuggestedmeeting1[i].place.place_id);
-      mysuggestedmeeting1[i].place = placeinfo;
-    }
-  
-    setUser({ ...user, tblSuggestedMeetings1: mysuggestedmeeting1 })
-  }
 
   if(!screenisready){
     return(
@@ -352,7 +463,7 @@ console.log(eventobject)
             }}  />
 
 
-            <Tab.Screen name="Previous Meetings" component={PreviousMeetingsScreen} />
+            <Tab.Screen name="Previous Meetings" component={PreviousMeetingsStackScreen} />
 
 
 
@@ -363,7 +474,9 @@ console.log(eventobject)
             <Tab.Screen name="Suggested Meetings" component={SuggestedMeetingsStackScreen} 
             options={{
                 headerShown: false,
-            }} />
+            }}
+
+            />
         </Tab.Navigator>
 
     );
@@ -378,4 +491,5 @@ const styles = StyleSheet.create({
         inactiveTintColor: '#ffffff',
         
       },
-});
+})
+
