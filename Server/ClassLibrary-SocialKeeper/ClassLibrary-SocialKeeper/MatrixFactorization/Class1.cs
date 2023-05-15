@@ -292,6 +292,11 @@ namespace ClassLibrary_SocialKeeper
                             
                             
                         }
+                        places= places.Where(x=> x.UserRatingsTotal>=5).ToList();
+                        places.Sort((x, y) => y.Rating.CompareTo(x.Rating));
+                        //filter if total rating is less than 5
+
+                        
                        
                     }
                     else
@@ -413,6 +418,7 @@ namespace ClassLibrary_SocialKeeper
                                     }
 
                                     places = placetorun;
+                                    places = places.Where(x => x.UserRatingsTotal >= 5).ToList();
                                     places.Sort((x, y) => y.Rating.CompareTo(x.Rating));
                                     currentplacetype = type;
                                     break;

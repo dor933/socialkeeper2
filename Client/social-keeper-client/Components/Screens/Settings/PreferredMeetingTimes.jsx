@@ -1,28 +1,9 @@
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, SafeAreaView, Alert, Image, FlatList } from 'react-native';
 import React, { useState,useEffect } from 'react';
 import { Picker } from '@react-native-picker/picker';
-import {
-    useFonts,
-    Lato_100Thin,
-    Lato_300Light,
-    Lato_400Regular,
-    Lato_700Bold,
-    
-    Lato_900Black,
-  } from '@expo-google-fonts/lato';
   import Days from './PrefComp/Days';
 import Timepicker from './PrefComp/Timepicker';
-import {
-    Inter_100Thin,
-    Inter_200ExtraLight,
-    Inter_300Light,
-    Inter_400Regular,
-    Inter_500Medium,
-    Inter_600SemiBold,
-    Inter_700Bold,
-    Inter_800ExtraBold,
-    Inter_900Black,
-  } from '@expo-google-fonts/inter';
+
 import { Button } from 'react-native-paper';
 import {RegistContext} from "../..//..//RegistContext.jsx";
 import StarRating from 'react-native-star-rating-widget';
@@ -47,22 +28,7 @@ const days = [
 export default function PreferredMeetingTimes({ navigation }, props) {
     const {prefferdtimes,setPrefferdTimes}= React.useContext(RegistContext);
     const [selectedDay, setSelectedDay] = useState({});
-    let [fontsLoaded] = useFonts({
-        Lato_100Thin,
-        Lato_300Light,
-        Lato_400Regular,
-        Lato_700Bold,
-        Lato_900Black,
-        Inter_100Thin,
-        Inter_200ExtraLight,
-        Inter_300Light,
-        Inter_400Regular,
-        Inter_500Medium,
-        Inter_600SemiBold,
-        Inter_700Bold,
-        Inter_800ExtraBold,
-        Inter_900Black,
-        });
+ 
        
         const [valuestart, setValuestart] = useState(null);
         const [valueend, setValueend] = useState(null);

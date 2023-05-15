@@ -959,8 +959,9 @@ namespace WebApplication1.Controllers
                 }
                 else
                 {
+                    List<SuggestedDTO> list = new List<SuggestedDTO>();
 
-                    return Request.CreateResponse(HttpStatusCode.OK,"no favorite contacts");
+                    return Request.CreateResponse(HttpStatusCode.OK,list);
 
                 }
 

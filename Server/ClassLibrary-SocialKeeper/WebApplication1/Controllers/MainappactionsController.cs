@@ -17,9 +17,23 @@ namespace WebApplication1.Controllers
             _db = dbcontext._db;
         }
 
-    
+        // GET: api/Mainappactions
+        public IEnumerable<string> Get()
+        {
+            return new string[] { "value1", "value2" };
+        }
 
- 
+        // GET: api/Mainappactions/5
+        public string Get(int id)
+        {
+            return "value";
+        }
+
+        // POST: api/Mainappactions
+        public void Post([FromBody]string value)
+        {
+        }
+
 
         [HttpPut]
         [Route("api/MainAppaction/Updmeeting/{meetingnum}/{meetingstat}")]
@@ -127,7 +141,7 @@ namespace WebApplication1.Controllers
             }
             catch (Exception ex)
             {
-                return Request.CreateResponse(HttpStatusCode.NoContent, ex.Message);
+               return Request.CreateResponse(HttpStatusCode.NoContent, ex.Message);
             }
         }
     }
