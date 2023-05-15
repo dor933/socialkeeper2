@@ -975,62 +975,8 @@ namespace WebApplication1.Controllers
 
         }
 
-        // PUT: api/MainApp/5
-        [HttpPut]
-        [Route("api/MainApp/Updfriendrequest")]
-        public HttpResponseMessage Updfriendrequest( [FromBody]RequestResponse item)
-        {
-            try
-            {
-                if (item.isAccepted)
-                {
-                    PossibleFavoriteContact posfavoritereq = _db.PossibleFavoriteContact.Where(x => x.id == item.requestid).FirstOrDefault();
-                    tblUser userinvite= _db.tblUser.Where(x=> x.phoneNum1==posfavoritereq.phonenuminvite).FirstOrDefault();
-                    tblUser userinvited= _db.tblUser.Where(x=> x.phoneNum1==posfavoritereq.phonenuminvited).FirstOrDefault();
-                    tblFavoriteContact favoritecont= new tblFavoriteContact();
-                    favoritecont.phoneNum1 = posfavoritereq.phonenuminvite;
-                    favoritecont.phoneNum2=posfavoritereq.phonenuminvited;
-                    favoritecont.hobbieNum = posfavoritereq.hobbieNum;
-                    favoritecont.tblHobbie = posfavoritereq.tblHobbie;
-                    favoritecont.tblUser = posfavoritereq.tblUser;
-                    favoritecont.tblUser1 = posfavoritereq.tblUser1;
-                    favoritecont.rank = "1";
-                    userinvite.tblFavoriteContact.Add(favoritecont);
-                    userinvited.tblFavoriteContact1.Add(favoritecont);
-                    _db.tblFavoriteContact.Add(favoritecont);
-                    userinvite.PossibleFavoriteContact.Remove(posfavoritereq);
-                    userinvited.PossibleFavoriteContact1.Remove(posfavoritereq);
-                    _db.PossibleFavoriteContact.Remove(posfavoritereq);
-                    _db.SaveChanges();
-                    return Request.CreateResponse(HttpStatusCode.OK);
+       
 
-
-
-                }
-                else
-                {
-                    PossibleFavoriteContact posfavoritereq = _db.PossibleFavoriteContact.Where(x => x.id == item.requestid).FirstOrDefault();
-                    tblUser userinvite = _db.tblUser.Where(x => x.phoneNum1 == posfavoritereq.phonenuminvite).FirstOrDefault();
-                    tblUser userinvited = _db.tblUser.Where(x => x.phoneNum1 == posfavoritereq.phonenuminvited).FirstOrDefault();
-                    userinvite.PossibleFavoriteContact.Remove(posfavoritereq);
-                    userinvited.PossibleFavoriteContact1.Remove(posfavoritereq);
-                    _db.PossibleFavoriteContact.Remove(posfavoritereq);
-                    _db.SaveChanges();
-                    return Request.CreateResponse(HttpStatusCode.OK);
-
-
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,ex.Message);
-            }
-        }
-
-        // DELETE: api/MainApp/5
-        public void Delete(int id)
-        {
-        }
+      
     }
 }

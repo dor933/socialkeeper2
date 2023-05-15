@@ -229,6 +229,7 @@ namespace WebApplication1.Controllers
                 user.birthDate = Convert.ToDateTime(posinvited.tblUser.birthDate);
                 user.gender = posinvited.tblUser.gender;
                 user.city = posinvited.tblUser.city;
+                user.email= posinvited.tblUser.email;
                 user.imageUri = posinvited.tblUser.imageUri;
                 posdoinviteddto.tblUser = user;
                 Usersummary user1 = new Usersummary();
@@ -252,53 +253,112 @@ namespace WebApplication1.Controllers
 
             List<SuggestedDTO> suggestedbyuser= new List<SuggestedDTO>();
             List<SuggestedDTO> suggestedbyfriend= new List<SuggestedDTO>();
+            List<Actualmeetingdto> actualbyuser= new List<Actualmeetingdto>();
+            List<Actualmeetingdto> actualbyfriend= new List<Actualmeetingdto>();
+
             foreach(tblSuggestedMeeting sugit in checkifuser.tblSuggestedMeeting1)
             {
                 DateTime currentDate = new DateTime(sugit.date.Year, sugit.date.Month, sugit.date.Day);
                 DateTime datetocheck = currentDate.AddHours(sugit.startTime.Hours);
 
+             
 
-                if (datetocheck >= DateTime.Now)
+                    if (datetocheck >= DateTime.Now && (sugit.status == "W" || sugit.status == "A"))
+                    {
+                        SuggestedDTO suggested = new SuggestedDTO();
+                        string placeid = _db.tblLoctation.Where(x => x.latitude == sugit.latitude && x.longitude == sugit.longitude).FirstOrDefault().Placeid;
+
+                        suggested.place.PlaceId = placeid;
+                        suggested.phoneNum1 = sugit.phoneNum1;
+                        suggested.date = sugit.date;
+                        suggested.phoneNum2 = sugit.phoneNum2;
+                        suggested.meetingNum = sugit.meetingNum;
+                        suggested.startTime = sugit.startTime;
+                        suggested.endTime = sugit.endTime;
+                        suggested.rank = Convert.ToDouble(sugit.rank);
+                        suggested.hobbieNum = int.Parse(sugit.hobbieNum.ToString());
+                        suggested.longitude = sugit.longitude;
+                        suggested.latitude = sugit.latitude;
+                        suggested.status = sugit.status;
+                        tblUser user1 = _db.tblUser.Where(x => x.phoneNum1 == sugit.phoneNum1).FirstOrDefault();
+                        tblUser user2 = _db.tblUser.Where(x => x.phoneNum1 == sugit.phoneNum2).FirstOrDefault();
+                        ExistsingUsers userexist = new ExistsingUsers();
+                        ExistsingUsers userexist2 = new ExistsingUsers();
+                        userexist.userName = user1.userName;
+                        userexist.phonenumbers.Add(user1.phoneNum1);
+                        userexist.birthDate = Convert.ToDateTime(user1.birthDate);
+                        userexist.imageUri = user1.imageUri;
+                        userexist.email = user1.email;
+                        userexist.gender = user1.gender;
+                        userexist.city = user1.city;
+                        userexist2.userName = user2.userName;
+                        userexist2.phonenumbers.Add(user2.phoneNum1);
+                        userexist2.birthDate = Convert.ToDateTime(user2.birthDate);
+                        userexist2.imageUri = user2.imageUri;
+                        userexist2.email = user2.email;
+                        userexist2.gender = user2.gender;
+                        userexist2.city = user2.city;
+                        suggested.user1 = userexist;
+                        suggested.user2 = userexist2;
+                  
+
+
+                        suggestedbyfriend.Add(suggested);
+                    }
+                    else if(datetocheck<= DateTime.Now && sugit.status !="R")
                 {
-                    SuggestedDTO suggested = new SuggestedDTO();
-                    string placeid = _db.tblLoctation.Where(x => x.latitude == sugit.latitude && x.longitude == sugit.longitude).FirstOrDefault().Placeid;
-                    
-                    suggested.place.PlaceId = placeid;
-                    suggested.phoneNum1= sugit.phoneNum1;
-                    suggested.date= sugit.date;
-                    suggested.phoneNum2= sugit.phoneNum2;
-                    suggested.meetingNum= sugit.meetingNum;
-                    suggested.startTime = sugit.startTime;
-                    suggested.endTime = sugit.endTime;
-                    suggested.rank = Convert.ToDouble(sugit.rank);
-                    suggested.hobbieNum = int.Parse(sugit.hobbieNum.ToString());
-                    suggested.longitude= sugit.longitude;
-                    suggested.latitude= sugit.latitude;
-                    suggested.status= sugit.status;
-                    tblUser user1= _db.tblUser.Where(x => x.phoneNum1 == sugit.phoneNum1).FirstOrDefault();
-                    tblUser user2= _db.tblUser.Where(x => x.phoneNum1 == sugit.phoneNum2).FirstOrDefault();
-                    ExistsingUsers userexist= new ExistsingUsers();
-                    ExistsingUsers userexist2= new ExistsingUsers();
-                    userexist.userName = user1.userName;
-                    userexist.phonenumbers.Add(user1.phoneNum1);
-                    userexist.birthDate = Convert.ToDateTime(user1.birthDate);
-                    userexist.imageUri = user1.imageUri;
-                    userexist.email = user1.email;
-                    userexist.gender = user1.gender;
-                    userexist.city  =user1.city;
-                    userexist2.userName = user2.userName;
-                    userexist2.phonenumbers.Add(user2.phoneNum1);
-                    userexist2.birthDate = Convert.ToDateTime(user2.birthDate);
-                    userexist2.imageUri = user2.imageUri;
-                    userexist2.email = user2.email;
-                    userexist2.gender = user2.gender;
-                    userexist2.city = user2.city;
-                    suggested.user1 = userexist;
-                    suggested.user2 = userexist2;
+                    tblActualMeeting actumeet = _db.tblActualMeeting.Where(x => x.meetingNum == sugit.meetingNum).FirstOrDefault();
+                    if (actumeet != null)
+                    {
+                        Actualmeetingdto actdto = new Actualmeetingdto();
+                        actdto.latitude = actumeet.latitude;
+                        actdto.longitude = actumeet.longitude;
+                        actdto.meetingNum = actumeet.meetingNum;
+                        actdto.hobbieNum = actumeet.hobbieNum;
+                        actdto.rankUser1 = actumeet.rankUser1;
+                        actdto.rankUser2 = actumeet.rankUser2;
+                        SuggestedDTO suggested = new SuggestedDTO();
+                        string placeid = _db.tblLoctation.Where(x => x.latitude == sugit.latitude && x.longitude == sugit.longitude).FirstOrDefault().Placeid;
 
+                        suggested.place.PlaceId = placeid;
+                        suggested.phoneNum1 = sugit.phoneNum1;
+                        suggested.date = sugit.date;
+                        suggested.phoneNum2 = sugit.phoneNum2;
+                        suggested.meetingNum = sugit.meetingNum;
+                        suggested.startTime = sugit.startTime;
+                        suggested.endTime = sugit.endTime;
+                        suggested.rank = Convert.ToDouble(sugit.rank);
+                        suggested.hobbieNum = int.Parse(sugit.hobbieNum.ToString());
+                        suggested.longitude = sugit.longitude;
+                        suggested.latitude = sugit.latitude;
+                        suggested.status = sugit.status;
+                        tblUser user1 = _db.tblUser.Where(x => x.phoneNum1 == sugit.phoneNum1).FirstOrDefault();
+                        tblUser user2 = _db.tblUser.Where(x => x.phoneNum1 == sugit.phoneNum2).FirstOrDefault();
+                        ExistsingUsers userexist = new ExistsingUsers();
+                        ExistsingUsers userexist2 = new ExistsingUsers();
+                        userexist.userName = user1.userName;
+                        userexist.phonenumbers.Add(user1.phoneNum1);
+                        userexist.birthDate = Convert.ToDateTime(user1.birthDate);
+                        userexist.imageUri = user1.imageUri;
+                        userexist.email = user1.email;
+                        userexist.gender = user1.gender;
+                        userexist.city = user1.city;
+                        userexist2.userName = user2.userName;
+                        userexist2.phonenumbers.Add(user2.phoneNum1);
+                        userexist2.birthDate = Convert.ToDateTime(user2.birthDate);
+                        userexist2.imageUri = user2.imageUri;
+                        userexist2.email = user2.email;
+                        userexist2.gender = user2.gender;
+                        userexist2.city = user2.city;
+                        suggested.user1 = userexist;
+                        suggested.user2 = userexist2;
+                        actdto.tblSuggestedMeeting = suggested;
+                        actualbyfriend.Add(actdto);
 
-                    suggestedbyfriend.Add(suggested);
+                    }
+
                 }
+                
                 
             }
 
@@ -307,7 +367,7 @@ namespace WebApplication1.Controllers
                 DateTime currentDate = new DateTime(sugitm.date.Year, sugitm.date.Month, sugitm.date.Day);
                 DateTime datetocheck = currentDate.AddHours(sugitm.startTime.Hours);
 
-                if (datetocheck >= DateTime.Now)
+                if (datetocheck >= DateTime.Now && sugitm.status != "R")
                 {
 
                     SuggestedDTO suggested = new SuggestedDTO();
@@ -316,8 +376,7 @@ namespace WebApplication1.Controllers
                     suggested.date= sugitm.date;
                     suggested.phoneNum1 = sugitm.phoneNum1;
                     suggested.phoneNum2 = sugitm.phoneNum2;
-                    suggested.meetingNum = sugitm.meetingNum;
-                    
+                    suggested.meetingNum = sugitm.meetingNum;                    
                     suggested.startTime = sugitm.startTime;
                     suggested.endTime = sugitm.endTime;
                     suggested.rank = Convert.ToDouble(sugitm.rank);
@@ -347,11 +406,66 @@ namespace WebApplication1.Controllers
                     suggested.user2 = userexist2;
                     suggestedbyuser.Add(suggested);
                 }
-                
+                else if (datetocheck <= DateTime.Now && sugitm.status != "R")
+                {
+                    tblActualMeeting actumeet = _db.tblActualMeeting.Where(x => x.meetingNum == sugitm.meetingNum).FirstOrDefault();
+                    if (actumeet != null)
+                    {
+                        Actualmeetingdto actdto = new Actualmeetingdto();
+                        actdto.latitude = actumeet.latitude;
+                        actdto.longitude = actumeet.longitude;
+                        actdto.meetingNum = actumeet.meetingNum;
+                        actdto.hobbieNum = actumeet.hobbieNum;
+                        actdto.rankUser1 = actumeet.rankUser1;
+                        actdto.rankUser2 = actumeet.rankUser2;
+                        SuggestedDTO suggested = new SuggestedDTO();
+                        string placeid = _db.tblLoctation.Where(x => x.latitude == sugitm.latitude && x.longitude == sugitm.longitude).FirstOrDefault().Placeid;
+                        suggested.place.PlaceId = placeid;
+                        suggested.date = sugitm.date;
+                        suggested.phoneNum1 = sugitm.phoneNum1;
+                        suggested.phoneNum2 = sugitm.phoneNum2;
+                        suggested.meetingNum = sugitm.meetingNum;
+                        suggested.startTime = sugitm.startTime;
+                        suggested.endTime = sugitm.endTime;
+                        suggested.rank = Convert.ToDouble(sugitm.rank);
+                        suggested.hobbieNum = int.Parse(sugitm.hobbieNum.ToString());
+                        suggested.longitude = sugitm.longitude;
+                        suggested.latitude = sugitm.latitude;
+                        suggested.status = sugitm.status;
+                        tblUser user1 = _db.tblUser.Where(x => x.phoneNum1 == sugitm.phoneNum1).FirstOrDefault();
+                        tblUser user2 = _db.tblUser.Where(x => x.phoneNum1 == sugitm.phoneNum2).FirstOrDefault();
+                        ExistsingUsers userexist = new ExistsingUsers();
+                        ExistsingUsers userexist2 = new ExistsingUsers();
+                        userexist.userName = user1.userName;
+                        userexist.phonenumbers.Add(user1.phoneNum1);
+                        userexist.birthDate = Convert.ToDateTime(user1.birthDate);
+                        userexist.imageUri = user1.imageUri;
+                        userexist.email = user1.email;
+                        userexist.gender = user1.gender;
+                        userexist.city = user1.city;
+                        userexist2.userName = user2.userName;
+                        userexist2.phonenumbers.Add(user2.phoneNum1);
+                        userexist2.birthDate = Convert.ToDateTime(user2.birthDate);
+                        userexist2.imageUri = user2.imageUri;
+                        userexist2.email = user2.email;
+                        userexist2.gender = user2.gender;
+                        userexist2.city = user2.city;
+                        suggested.user1 = userexist;
+                        suggested.user2 = userexist2;
+                        actdto.tblSuggestedMeeting= suggested;
+                        actualbyuser.Add(actdto);
+
+
+                    }
+                }
+
+
             }
 
             usertoret.tblSuggestedMeetings = suggestedbyuser;
             usertoret.tblSuggestedMeetings1 = suggestedbyfriend;
+            usertoret.tblactualmeetings = actualbyuser;
+            usertoret.tblactualmeetings1 = actualbyfriend;
 
 
             return usertoret;

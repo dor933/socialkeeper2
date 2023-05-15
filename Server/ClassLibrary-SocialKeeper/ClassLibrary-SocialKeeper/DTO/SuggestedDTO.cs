@@ -30,7 +30,6 @@ namespace ClassLibrary_SocialKeeper
         public double rank { get; set; }
         public LoctationDTO locatation { get; set; }
         public List<suggestedhobbiesdto> suggestedHobbies { get; set; } = new List<suggestedhobbiesdto>();
-        public List<Actualmeetingdto> actualMeetings { get; set; } = new List<Actualmeetingdto>();
         public ExistsingUsers user1 { get; set; }
         public ExistsingUsers user2 { get; set; }
 

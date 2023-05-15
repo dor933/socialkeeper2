@@ -14,5 +14,7 @@ namespace ClassLibrary_SocialKeeper
         public string rankUser2 { get; set; }
         public double longitude { get; set; }
         public double latitude { get; set; }
+
+        public SuggestedDTO tblSuggestedMeeting { get; set; } = new SuggestedDTO();
     }
 }
