@@ -37,6 +37,7 @@
     <EntitySetMapping Name="tblFavoriteContact">
       <EntityTypeMapping TypeName="igroup192_prodModel.tblFavoriteContact">
         <MappingFragment StoreEntitySet="tblFavoriteContact">
+          <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
           <ScalarProperty Name="phoneNum2" ColumnName="phoneNum2" />
           <ScalarProperty Name="rank" ColumnName="rank" />

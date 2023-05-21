@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="igroup192_prodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="igroup192_prodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="PossibleFavoriteContact">
           <Key>
             <PropertyRef Name="id" />
@@ -43,11 +43,13 @@
             <PropertyRef Name="phoneNum1" />
             <PropertyRef Name="phoneNum2" />
             <PropertyRef Name="hobbieNum" />
+            <PropertyRef Name="ID" />
           </Key>
           <Property Name="phoneNum1" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="phoneNum2" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="rank" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="hobbieNum" Type="int" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
         <EntityType Name="tblHobbie">
           <Key>
@@ -500,8 +502,7 @@
             <End Role="tblSuggestedMeeting" EntitySet="tblSuggestedMeeting" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="igroup192_prodModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -549,6 +550,7 @@
             <PropertyRef Name="phoneNum1" />
             <PropertyRef Name="phoneNum2" />
             <PropertyRef Name="hobbieNum" />
+            <PropertyRef Name="ID" />
           </Key>
           <Property Name="phoneNum1" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="phoneNum2" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
@@ -557,6 +559,7 @@
           <NavigationProperty Name="tblUser" Relationship="Self.fk1tblFavoriteContact" FromRole="tblFavoriteContact" ToRole="tblUser" />
           <NavigationProperty Name="tblUser1" Relationship="Self.fk2tblFavoriteContact" FromRole="tblFavoriteContact" ToRole="tblUser" />
           <NavigationProperty Name="tblHobbie" Relationship="Self.fk3tblFavoriteContact" FromRole="tblFavoriteContact" ToRole="tblHobbie" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
         <EntityType Name="tblHobbie">
           <Key>
@@ -1084,6 +1087,7 @@
           <EntitySetMapping Name="tblFavoriteContact">
             <EntityTypeMapping TypeName="igroup192_prodModel.tblFavoriteContact">
               <MappingFragment StoreEntitySet="tblFavoriteContact">
+                <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
                 <ScalarProperty Name="phoneNum2" ColumnName="phoneNum2" />
                 <ScalarProperty Name="rank" ColumnName="rank" />

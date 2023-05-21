@@ -18,6 +18,7 @@ namespace ClassLibrary_SocialKeeper
         public string phoneNum2 { get; set; }
         public string rank { get; set; }
         public int hobbieNum { get; set; }
+        public int ID { get; set; }
     
         public virtual tblUser tblUser { get; set; }
         public virtual tblUser tblUser1 { get; set; }

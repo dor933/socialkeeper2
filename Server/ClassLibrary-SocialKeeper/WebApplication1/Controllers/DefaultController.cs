@@ -94,6 +94,7 @@ namespace WebApplication1.Controllers
                 favodto.phoneNum1 = favo.phoneNum1;
                 favodto.phoneNum2 = favo.phoneNum2;
                 favodto.hobbieNum = favo.hobbieNum;
+                favodto.ID = favo.ID;
                 Usersummary user1dto = new Usersummary();
                 user1dto.phoneNum1 = favo.tblUser1.phoneNum1;
                 user1dto.userName = favo.tblUser1.userName;
@@ -103,6 +104,17 @@ namespace WebApplication1.Controllers
                 user1dto.email = favo.tblUser1.email;
                 user1dto.imageUri = favo.tblUser1.imageUri;
                 favodto.tblUser1 = user1dto;
+                List<UserhobbiesDTO> userhobbiesdtolist= new List<UserhobbiesDTO>();   
+                foreach (tblUserHobbie userhobbie in favo.tblUser1.tblUserHobbie)
+                {
+                    UserhobbiesDTO userhobbiedto = new UserhobbiesDTO();
+                    userhobbiedto.hobbieNum = userhobbie.hobbieNum;
+                    userhobbiedto.phoneNum1 = userhobbie.phoneNum1;
+                    tblHobbie hob= _db.tblHobbie.Where(h => h.hobbieNum == userhobbie.hobbieNum).FirstOrDefault();
+                    userhobbiedto.hobbiename = hob.hobbieName;
+                    userhobbiesdtolist.Add(userhobbiedto);
+                }
+                user1dto.tblUserHobbiesDTO= userhobbiesdtolist;
                 tblhobbieDTO hobbieDTO = new tblhobbieDTO();
                 hobbieDTO.hobbieNum = favo.tblHobbie.hobbieNum;
                 hobbieDTO.hobbieName = favo.tblHobbie.hobbieName;
@@ -120,6 +132,7 @@ namespace WebApplication1.Controllers
                 FavoriteContactsDTO favodto = new FavoriteContactsDTO();
                 favodto.phoneNum1 = favo.phoneNum1;
                 favodto.phoneNum2 = favo.phoneNum2;
+                favodto.ID = favo.ID;
                 favodto.hobbieNum = favo.hobbieNum;
                 Usersummary user1dto = new Usersummary();
                 user1dto.phoneNum1 = favo.tblUser.phoneNum1;
@@ -133,6 +146,17 @@ namespace WebApplication1.Controllers
                     user1dto.imageUri = favo.tblUser.imageUri;
                 }
                 favodto.tblUser1 = user1dto;
+                List<UserhobbiesDTO> userhobbiesdtolist = new List<UserhobbiesDTO>();
+                foreach (tblUserHobbie userhobbie in favo.tblUser.tblUserHobbie)
+                {
+                    UserhobbiesDTO userhobbiedto = new UserhobbiesDTO();
+                    userhobbiedto.hobbieNum = userhobbie.hobbieNum;
+                    userhobbiedto.phoneNum1 = userhobbie.phoneNum1;
+                    tblHobbie hob = _db.tblHobbie.Where(h => h.hobbieNum == userhobbie.hobbieNum).FirstOrDefault();
+                    userhobbiedto.hobbiename = hob.hobbieName;
+                    userhobbiesdtolist.Add(userhobbiedto);
+                }
+                user1dto.tblUserHobbiesDTO = userhobbiesdtolist;
                 tblhobbieDTO hobbieDTO = new tblhobbieDTO();
                 hobbieDTO.hobbieNum = favo.tblHobbie.hobbieNum;
                 hobbieDTO.hobbieName = favo.tblHobbie.hobbieName;

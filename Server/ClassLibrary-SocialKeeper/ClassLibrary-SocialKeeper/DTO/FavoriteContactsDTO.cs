@@ -8,6 +8,7 @@ namespace ClassLibrary_SocialKeeper
 {
     public class FavoriteContactsDTO
     {
+        public int ID { get; set; }
         public string phoneNum1 { get; set; }
         public string phoneNum2 { get; set; }
         public string rank { get; set; }

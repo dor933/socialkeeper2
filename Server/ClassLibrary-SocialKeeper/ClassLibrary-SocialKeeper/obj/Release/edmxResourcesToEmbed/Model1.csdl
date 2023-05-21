@@ -44,6 +44,7 @@
       <PropertyRef Name="phoneNum1" />
       <PropertyRef Name="phoneNum2" />
       <PropertyRef Name="hobbieNum" />
+      <PropertyRef Name="ID" />
     </Key>
     <Property Name="phoneNum1" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="phoneNum2" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
@@ -52,6 +53,7 @@
     <NavigationProperty Name="tblUser" Relationship="Self.fk1tblFavoriteContact" FromRole="tblFavoriteContact" ToRole="tblUser" />
     <NavigationProperty Name="tblUser1" Relationship="Self.fk2tblFavoriteContact" FromRole="tblFavoriteContact" ToRole="tblUser" />
     <NavigationProperty Name="tblHobbie" Relationship="Self.fk3tblFavoriteContact" FromRole="tblFavoriteContact" ToRole="tblHobbie" />
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
   </EntityType>
   <EntityType Name="tblHobbie">
     <Key>

@@ -38,11 +38,13 @@
       <PropertyRef Name="phoneNum1" />
       <PropertyRef Name="phoneNum2" />
       <PropertyRef Name="hobbieNum" />
+      <PropertyRef Name="ID" />
     </Key>
     <Property Name="phoneNum1" Type="nvarchar" MaxLength="10" Nullable="false" />
     <Property Name="phoneNum2" Type="nvarchar" MaxLength="10" Nullable="false" />
     <Property Name="rank" Type="char" MaxLength="1" Nullable="false" />
     <Property Name="hobbieNum" Type="int" Nullable="false" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
   </EntityType>
   <EntityType Name="tblHobbie">
     <Key>
