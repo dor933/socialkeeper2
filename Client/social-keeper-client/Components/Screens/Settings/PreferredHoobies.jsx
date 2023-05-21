@@ -6,14 +6,21 @@ import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, Safe
   import { Ionicons } from '@expo/vector-icons';
   import axios from 'axios';
   import { RegistContext } from '../..//..//RegistContext.jsx';
+  import { MainAppcontext } from '../MainApp/MainAppcontext';
+  import {  Icon } from '@rneui/themed';
+
   //import usefonts
   import { useFonts } from 'expo-font';
   
-  export default function PreferredHoobies ({navigation}) {
+  export default function PreferredHoobies ({navigation,route}) {
     // number of pressing on heart button
+    const ifinapp=route.params.ifinapp;
     const [count, setCount] = useState(0);
     const [hobbies, setHobbies] = useState([]);
     const {selectedhobbies, setSelectedHobbies} = useContext(RegistContext);
+    const {personaldetails, setPersonalDetails} = useContext(RegistContext);
+    const {ispersonalactiveated, setIspersonalactiveated} = useContext(MainAppcontext);
+
 
     const counting = (number) => {
       let temp = number + count
@@ -21,15 +28,23 @@ import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, Safe
     }
 
 
-      
-
-  
-
 
     useEffect(() => {
 
-      setSelectedHobbies([]);
+     
       gethobbies();
+      if(!ifinapp){
+        setSelectedHobbies([]);
+        }
+
+        else{
+          counting(selectedhobbies.length)
+        }
+       
+      return () => {
+          setIspersonalactiveated(false);
+        
+      }
 
     },[])
 
@@ -37,27 +52,39 @@ import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, Safe
 
       const response = await axios.get('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/getallhobbies');
       //add rank to each hobbie
-      response.data.forEach(element => {
-        element.rank=0;
-      });
+   
 
       setHobbies(response.data);
+      console.log('this is the hobbies')
       console.log(response.data);
+      console.log('and this is the currently userhobbiesdto')
+      console.log(selectedhobbies);
 
     };
 
   
     const handleContinue = () => {
+      if(!ifinapp){
       if (count === 4) {
         console.log("selectedhobbies",selectedhobbies);
-        navigation.navigate('PreferredMeetingTimes');
+        navigation.navigate('PreferredMeetingTimes',{isfrommainapp:false});
       } else {
         Alert.alert('You must choose 4 hobbies, can\'t choose less😢');
       }
     }
+    else{
+      if (count === 4) {
+        console.log("selectedhobbies",selectedhobbies);
+      } else {
+      }
+
+    }
+    }
 
     const renderhobbies = ({item}) => {
  
+      console.log('this is the item')
+      console.log(item)
       return (
         <HobbiesComponent myitem={item} counting={counting} count={count} />
       
@@ -71,9 +98,12 @@ import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, Safe
       <SafeAreaView style={{flex:1, alignItems:'center', justifyContent:'center',backgroundColor:'#ffffff'}}>
 
       <View style={styles.root}>
+        {
+          !ifinapp&&
         <TouchableOpacity style={styles.arrowButton} onPress={handleContinue}>
           <Ionicons name="arrow-forward-outline" size={23} color="#fff" />
         </TouchableOpacity>
+  }
   
         <Image source={Logo} style={styles.logo} resizeMode="contain" />
   
@@ -84,9 +114,14 @@ import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, Safe
         </Text>
 
         
+        {
+          console.log('this is the hobbies222',hobbies)
+          
+        }
 
         <FlatList
           data={hobbies}
+          
           renderItem={({ item }) => (
         
             <View>
@@ -99,9 +134,23 @@ import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, Safe
           numColumns={2}
         />
   
+  <View style={{position:'absolute',bottom:18}}>
+      <TouchableOpacity onPress={handleContinue}>
+        <Icon
+          name="check-circle"
+          size={70}
+          type="MaterialIcons"
+          color="rgba(204,89,90,255)"
+
+        />
+
+      </TouchableOpacity>
+      <Text style={{textAlign:'center',fontSize:16,fontFamily:'Lato_700Bold',fontWeight:'700',color:"rgba(204,89,90,255)"}}>Set Hobbies</Text>
+      </View>
   
         
       </View>
+   
       </SafeAreaView>
       
     );

@@ -37,7 +37,6 @@ export default function SuggestedMeetingsScreen({navigation}) {
     }
 
    
-    console.log(user.tblactualmeetings[0].tblSuggestedMeeting);
 
   }, [user])
 
@@ -54,7 +53,7 @@ export default function SuggestedMeetingsScreen({navigation}) {
    
       <Customheader/>
       <View style={styles.meetingview}> 
-        <Text style={styles.meetingtext}> Meetings</Text>
+        <Text style={styles.meetingtext}>My Meetings</Text>
       </View>
       <View style={styles.rectengelbuttongroup}>
         <ButtonGroup
@@ -98,7 +97,10 @@ export default function SuggestedMeetingsScreen({navigation}) {
           newtblsuggesthis.map((each, index2) => {
             if(each.status=="P"){
 
+              console.log("each",each.place)
+
             return(
+
 
             <Sugmeet
               meeting={each}
@@ -242,7 +244,9 @@ const styles= StyleSheet.create({
     fontStyle: 'normal',
     lineHeight: 29,
     letterSpacing: 0.03,
-    fontWeight: 'bold',
+    //move it to left
+    paddingRight:180
+    
 
   },
   rectengelbuttongroup:{

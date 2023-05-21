@@ -1,5 +1,5 @@
 import {View, Text, StyleSheet, ImageBackground, TouchableOpacity, SafeAreaView } from 'react-native';
-import { useState,useContext } from 'react';
+import { useState,useContext,useEffect } from 'react';
 import StarRating from 'react-native-star-rating-widget';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Dimensions } from 'react-native';
@@ -10,14 +10,25 @@ function HobbiesComponent({navigation,myitem,counting,count}) {
 
   const {selectedhobbies, setSelectedHobbies,personaldetails} = useContext(RegistContext);
 
-  
-
-
-
   const item=myitem;
 
   const [rating, setRating] = useState(0);
   const [activeHeart, setActiveHeart] = useState(false);
+
+  useEffect(() => {
+ 
+    //search the hobbie in the selectedhobbies array
+    const hobbie=selectedhobbies.find((hobbie)=>hobbie.hobbieNum===myitem.hobbieNum);
+    if(hobbie){
+      setActiveHeart(true);
+      setRating(hobbie.rank);
+    }
+    else{
+      setActiveHeart(false);
+      setRating(0);
+    }
+
+  },[])
 
   //count of heart btn pressing and logic (ניתן ללחוץ לייק רק 4 פעמים לא יותר)
   const toggleHeart = () => {
@@ -80,8 +91,7 @@ function HobbiesComponent({navigation,myitem,counting,count}) {
       </View>
 
       {activeHeart ?
-        // rating code (רק שלוחצים על האייקון לב מופיע הדירוג כוכבים)
-        // נצטרך לשלוח את הדירוג של התחביבים ממסך זה בהמשך 
+
         <StarRating
           starSize={22}
           maxStars={5}

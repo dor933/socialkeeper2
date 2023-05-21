@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { StyleSheet, View,Button, TouchableOpacity } from 'react-native';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { Input } from "@rneui/themed";
@@ -6,12 +6,21 @@ import { RegistContext } from '../..//RegistContext.jsx';
 import { useContext } from 'react';
 
 
-export default () => {
+export default (props) => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const {personaldetails, setPersonalDetails} = useContext(RegistContext);
+  const [hasDateBeenSelected, setHasDateBeenSelected] = useState(false);
+  const keyboardshow = props.keyboardshow;
+  const isfrommainapp = props.isfrommainapp;
+  console.log(isfrommainapp)
 
-  const handlePress = () => setOpen(!open);
+ 
+
+  const handlePress = () => {
+      
+    setOpen(!open);
+  };
 
   const onChange = (event, selectedDate) => {
     if (event.type === 'set') {
@@ -37,20 +46,27 @@ export default () => {
       //set the date to the date string
       setDate(currentDate);
       setPersonalDetails({...personaldetails, birthDate: datestring});
+      setHasDateBeenSelected(true);
       console.log(personaldetails);
     }
     setOpen(false);
   };
   };
 
+  if(!keyboardshow){
+
   return (
+
+
     <>
-      <TouchableOpacity onPress={handlePress}>
+    
+      <TouchableOpacity onPress={handlePress} >
         <Input
           placeholder="Date of Birth"
-          value={date.toDateString()}
+          value={hasDateBeenSelected ? date.toDateString() : 'Date of Birth'}
           editable={false}
           leftIcon={{ type: 'font-awesome', name: 'calendar' }}
+          style={{color: isfrommainapp? '#ffffff': hasDateBeenSelected? "black" : "#8d97a0"}}
         />
       </TouchableOpacity>
 
@@ -67,9 +83,19 @@ export default () => {
             borderRadius: 5,
             borderWidth: 1,
             borderColor: 'black',
+            
           }}
         />
       )}
     </>
   );
+  }
+  else{
+    return(
+      <>
+      
+
+      </>
+    )
+  }
 };

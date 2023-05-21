@@ -11,6 +11,8 @@ import { MainAppcontext } from '../MainApp/MainAppcontext.jsx';
 import AuthContext from '../../../Authcontext.jsx';
 import firebaseInstance from '../../../assets/Firebase/firebaseconfig.js';
 import Loadingcomp from '../../CompsToUse/Loadingcomp.jsx';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+
 
 
 function SignUpAPI({navigation}) {
@@ -63,6 +65,8 @@ function SignUpAPI({navigation}) {
 
   });
 
+  
+
   useEffect(() => {
     console.log('into edffect');
     if (response?.type === "success") {
@@ -86,7 +90,6 @@ function SignUpAPI({navigation}) {
 
   const getUserInfo = async () => {
     
-    setIsloading(true);
     try {
       const response = await fetch(
         "https://www.googleapis.com/userinfo/v2/me",
@@ -129,10 +132,11 @@ function SignUpAPI({navigation}) {
         if(user.email!=undefined) {
 
         personaldetails.email=user.email;
-        navigation.navigate('CreateProfile');
+        navigation.navigate('CreateProfile',{isfrommainapp:false});
         }
       }
       else if(typeof ifuser.data.imageUri == 'string'){
+        setIsloading(true);
         setUser(ifuser.data);
         setIsAuthenticated(true);
       }
@@ -155,7 +159,7 @@ function SignUpAPI({navigation}) {
       if(ifuser.data=='no user was found'){
 
         setPersonalDetails({email:user.email});
-        navigation.navigate('CreateProfile');
+        navigation.navigate('CreateProfile',{isfrommainapp:false});
       }
       else if(typeof ifuser.data.imageUri == 'string'){
         setUser(ifuser.data);
@@ -308,6 +312,7 @@ const styles = StyleSheet.create({
     height: 932,
     backgroundColor: '#FFF1F1',
     borderRadius: 50,
+    marginTop:25,
     
   },
 
@@ -352,8 +357,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 380,
     height: 364,
-    left:212,
-    top: 650,
+    left:240,
+    top: 720,
     borderRadius: 200,
     backgroundColor: '#FFAEAE',
   },
