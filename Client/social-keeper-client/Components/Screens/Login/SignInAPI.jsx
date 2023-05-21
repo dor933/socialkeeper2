@@ -10,6 +10,7 @@ import { RegistContext } from '..//../..//RegistContext.jsx';
 import { MainAppcontext } from '../MainApp/MainAppcontext.jsx';
 import AuthContext from '../../../Authcontext.jsx';
 import firebaseInstance from '../../../assets/Firebase/firebaseconfig.js';
+import Loadingcomp from '../../CompsToUse/Loadingcomp.jsx';
 
 
 function SignUpAPI({navigation}) {
@@ -18,6 +19,7 @@ function SignUpAPI({navigation}) {
   const {setUser} = useContext(MainAppcontext);
   const {setIsAuthenticated}= React.useContext(AuthContext);
   const {firebaseuser, setFirebaseuser} = useContext(MainAppcontext);
+  const [isloading, setIsloading] = useState(false);
 
   WebBrowser.maybeCompleteAuthSession();
 
@@ -83,6 +85,8 @@ function SignUpAPI({navigation}) {
   }, [response2,token]);
 
   const getUserInfo = async () => {
+    
+    setIsloading(true);
     try {
       const response = await fetch(
         "https://www.googleapis.com/userinfo/v2/me",
@@ -164,6 +168,11 @@ function SignUpAPI({navigation}) {
     }
   }
 
+if(isloading){
+  return(
+    <Loadingcomp/>
+  )
+}
 
 
 

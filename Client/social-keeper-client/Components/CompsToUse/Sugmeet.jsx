@@ -1,10 +1,11 @@
 //create react function component
-import React, { useEffect } from "react";
+import React, { useEffect,useState,useContext } from "react";
 //import react native components
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Dimensions, Button, Image } from "react-native";
 //import icons
 import { ListItem } from '@rneui/themed';
 import { Ionicons } from "@expo/vector-icons";
+import {MainAppcontext} from "../Screens/MainApp/MainAppcontext";
 import { List } from "react-native-paper";
 //import lato font
 
@@ -12,13 +13,25 @@ import { List } from "react-native-paper";
 
 
 //create function component
-export default function Sugmeet({ meeting, navigation, invitedbyfriend}) {
+export default function Sugmeet({ meeting, navigation, invitedbyfriend, meetingtype}) {
 
   //re rub the function when the meeting changes
   
     //load lato font
+    const [hobbietype, sethobbietype] = useState('');
+
   
     const datetime= meeting.date;
+    const {hobbienumtypes} = useContext(MainAppcontext);
+
+    useEffect(() => {
+      const hobbietype= hobbienumtypes.find((each)=>{
+        return each.hobbienum===meeting.hobbieNum
+      })
+      sethobbietype(hobbietype.hobbie)
+    }, [meeting])
+
+    
 
     
 
@@ -46,9 +59,38 @@ export default function Sugmeet({ meeting, navigation, invitedbyfriend}) {
                 style={styles.infoButton}
                 
                 onPress={() => {
-
-                    console.log('this is meetingonemoemntbefore', meeting)
+                  {
+                    meetingtype==='suggested' && 
                     navigation.navigate('SuggestedMeetingCalender', {meeting:meeting,invitedbyfriend:invitedbyfriend})
+    
+                  }
+                 {
+                  meetingtype==='waiting' && invitedbyfriend &&
+                  navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user1, meetingtype:meetingtype, type:hobbietype})
+                 }
+                  {
+                    meetingtype==='waiting' && !invitedbyfriend &&
+                    navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user2, meetingtype:meetingtype, type:hobbietype})
+                  }
+                  {
+                    meetingtype==='approved' && invitedbyfriend &&
+                    navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user1, meetingtype:meetingtype, type:hobbietype})
+                  }
+                  {
+                    meetingtype==='approved' && !invitedbyfriend &&
+                    navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user2, meetingtype:meetingtype, type:hobbietype})
+                  }
+                  {
+                    meetingtype==='Ended' && invitedbyfriend &&
+                    navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user1, meetingtype:meetingtype, type:hobbietype})
+                  }
+                  {
+                    meetingtype==='Ended' && !invitedbyfriend &&
+                    navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user2, meetingtype:meetingtype, type:hobbietype})
+                  }
+                
+
+                   
                 }}
                 >
                 <Ionicons name="information-circle" size={24} color="white" />

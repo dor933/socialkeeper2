@@ -5,7 +5,7 @@ import axios from 'axios';
 
 
 const getPlaceDetails = async (placeId) => {
-    const fileName = `${placeId}.json`;
+    const fileName = `${placeId}`;
     // Create a reference to the file we want to download
     const fileRef = ref(firebaseInstance.storage, `Places/${fileName}`);
    

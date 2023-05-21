@@ -110,6 +110,8 @@ export default function App() {
 
   return (
 
+
+
     <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
     <RegistrationContext>
       <MainAppcontext>

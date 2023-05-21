@@ -15,8 +15,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Loadingcomp from '../../CompsToUse/Loadingcomp';
 
 
-let index=0;
-let index2=0;
+
 
 
 
@@ -24,10 +23,25 @@ let index2=0;
 export default function SuggestedMeetingsScreen({navigation}) {
 
 
-
   const [selectedIndex, setSelectedIndex] = useState(2);
   const {user, setUser} = useContext(MainAppcontext);
+  const [newtblsuggesthis, setnewtblsuggesthis] = useState([]);
+  const [newtblsuggest1this, setnewtblsuggest1this] = useState([]);
 
+  useEffect(() => {
+    if(user.tblSuggestedMeetings){
+      setnewtblsuggesthis(user.tblSuggestedMeetings)
+    }
+    if(user.tblSuggestedMeetings1){
+      setnewtblsuggest1this(user.tblSuggestedMeetings1)
+    }
+
+   
+    console.log(user.tblactualmeetings[0].tblSuggestedMeeting);
+
+  }, [user])
+
+ 
 
 
 
@@ -57,50 +71,133 @@ export default function SuggestedMeetingsScreen({navigation}) {
           />
         </View>
         <View >
-          {
-            console.log('this is suggestedmeetings1',user.tblSuggestedMeetings1)
-          }
+         
           {
            selectedIndex==2
            && user.tblSuggestedMeetings1 
-           && user.tblSuggestedMeetings1.length > 0 ? (
+           && user.tblSuggestedMeetings1.length > 0 && 
 
            
-            user.tblSuggestedMeetings1.map((each,index)=>{
+            newtblsuggest1this.map((each,index)=>{
+              if(each.status=='P'){
             return(
               
-            <Sugmeet meeting={each} key={index} navigation={navigation} invitedbyfriend={true}  />
+            <Sugmeet meeting={each} key={index} navigation={navigation} invitedbyfriend={true} meetingtype="suggested"  />
             )
+              }
 
                       }
             )
          
-          ) : (
-            <></>
-          )
                    }
-                    {
-            console.log('this is suggestedmeetings',user.tblSuggestedMeetings)
-          }
+            
           {
-          
-          
           user.tblSuggestedMeetings &&
-          user.tblSuggestedMeetings.length > 0 ? (
+          user.tblSuggestedMeetings.length > 0 &&
           selectedIndex === 2 &&
-          user.tblSuggestedMeetings.map((each, index2) => (
+          newtblsuggesthis.map((each, index2) => {
+            if(each.status=="P"){
+
+            return(
+
             <Sugmeet
               meeting={each}
               key={index2}
               navigation={navigation}
               invitedbyfriend={false}
+              meetingtype="suggested"
             />
-          ))
-        
-        ) : (
-          <></>
-        )
+            )
+            }
+})
+          
         }
+
+{
+          user.tblSuggestedMeetings &&
+          user.tblSuggestedMeetings.length > 0 &&
+          selectedIndex === 1 &&
+          newtblsuggesthis.map((each, index2) => {
+            if(each.status=="W"){
+
+
+            return(
+
+            <Sugmeet
+              meeting={each}
+              key={index2}
+              navigation={navigation}
+              invitedbyfriend={false}
+              meetingtype="waiting"
+            />
+            )
+            }
+})
+          
+        }
+              {
+           selectedIndex==1
+           && user.tblSuggestedMeetings1 
+           && user.tblSuggestedMeetings1.length > 0 && 
+
+           
+            newtblsuggest1this.map((each,index)=>{
+              if(each.status=='W'){
+            return(
+              
+            <Sugmeet meeting={each}
+             key={index}
+              navigation={navigation} 
+              invitedbyfriend={true}
+               meetingtype="waiting"  />
+            )
+              }
+
+                      }
+            )
+         
+                   }
+                   {
+            selectedIndex==0
+            && user.tblSuggestedMeetings1
+            && user.tblSuggestedMeetings1.length > 0 &&
+            newtblsuggest1this.map((each,index)=>{
+              if(each.status=='A'){
+            return(
+              <Sugmeet
+              meeting={each}
+              key={index}
+              navigation={navigation}
+              invitedbyfriend={true}
+              meetingtype="approved"
+            />
+            )
+                   }
+            })
+          }
+          {
+          user.tblSuggestedMeetings &&
+          user.tblSuggestedMeetings.length > 0 &&
+          selectedIndex === 0 &&
+          newtblsuggesthis.map((each, index2) => {
+            if(each.status=="A"){
+            return(
+
+            <Sugmeet     
+              meeting={each}
+              key={index2}
+              navigation={navigation}
+              invitedbyfriend={false}
+              meetingtype="approved"
+            />
+            )
+            }
+})
+
+}
+
+
+        
 
 
           
@@ -124,7 +221,9 @@ const styles= StyleSheet.create({
   container:{
     backgroundColor: '#ffffff',
     flex:1,
-    marginTop:40
+    marginTop:40,
+    alignItems:'center',
+
   },
 
   meetingview:{
