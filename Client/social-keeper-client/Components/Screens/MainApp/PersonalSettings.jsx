@@ -31,6 +31,7 @@ import { MainAppcontext } from './MainAppcontext';
 export default function SettingDashBoard(props) {
 
 
+
   const [fontsLoaded] = useFonts({
     Lato_100Thin,
     Lato_300Light,
@@ -50,7 +51,7 @@ export default function SettingDashBoard(props) {
 
         
 
-      <AccountSettings/>
+      <AccountSettings />
         <Meetingtimes/>
         <Intersets/>
         <Favoritecont user={user}/>

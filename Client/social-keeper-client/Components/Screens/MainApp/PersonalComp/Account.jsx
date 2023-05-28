@@ -1,5 +1,5 @@
-import { StyleSheet, View, Text, Button, SafeAreaView, TouchableOpacity, Dimensions, Image } from 'react-native'
-import React,{useState} from 'react'
+import { StyleSheet, View, Text, Button, SafeAreaView, TouchableOpacity, Dimensions, Image, ScrollView } from 'react-native'
+import React,{useState,useContext, useEffect} from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
@@ -17,11 +17,45 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { duration } from 'moment';
 import { Avatar, Badge, withBadge } from 'react-native-elements'
 import { List } from 'react-native-paper';
+import { MainAppcontext } from '../MainAppcontext';
+import { RegistContext } from '../../../../RegistContext';
+import { useNavigation } from '@react-navigation/native';
+import Contactdetails from '../../../CompsToUse/Contactdetails';
+
 
 
 //create functional component
 
-function AccountSettings(props) {
+function AccountSettings() {
+
+  const {user, setUser} = useContext(MainAppcontext);
+  const {personaldetails,setPersonalDetails} = useContext(RegistContext);
+  const {selectedImage,setSelectedImage}= useContext(RegistContext);
+  const {ispersonalactiveated, setIspersonalactiveated} = useContext(MainAppcontext);
+  const navigation = useNavigation();
+
+ 
+
+
+  useEffect(() => {
+    console.log(user)
+    const persondet={
+      phoneNumber:user.phoneNum1,
+      email:user.email,
+      gender: user.gender,
+      userName: user.userName,
+
+    }
+    setPersonalDetails(persondet)
+    setSelectedImage(user.imageUri)
+    console.log('this is navigation',navigation)
+    console.log('this is personal details',personaldetails)
+    console.log('this is selected image',selectedImage)
+    
+  }, [])
+
+
+
   const [fontsLoaded] = useFonts({
     Lato_100Thin,
     Lato_300Light,
@@ -33,62 +67,33 @@ function AccountSettings(props) {
 
   return (
     
-<ListItem.Accordion
-        title="Account"
-        style={{backgroundColor: '#222222', borderRadius: 20}}
-        content={
-          <>
+<ListItem 
+  style={{backgroundColor: '#222222', borderRadius: 20}}
+  containerStyle={{
+    flexDirection: 'row-reverse',
+    backgroundColor:'rgba(255, 255, 255, 0.05)',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  }}
+>
+  <MaterialCommunityIcons
+    name="account-cog"
+    size={26}
+    color="rgba(255, 255, 255, 0.5)"
+  />
 
-         <MaterialCommunityIcons
-          name="account-cog"
-          size={26}
-          color="rgba(255, 255, 255, 0.5)"
-          style={{paddingRight:15}}
+   
+  <ListItem.Content>
+  <TouchableOpacity onPress={() => { 
+            setIspersonalactiveated(true)
+            navigation.navigate('CreateProfile', {isfrommainapp: true})} 
 
-        />
-
-          <ListItem.Content>
-        
-            <ListItem.Title style={styles.listaccordiontext}>Profile</ListItem.Title>
-          </ListItem.Content>
-          </>
-        }
-        //make the container style to start from left to right
-        containerStyle={{flexDirection: 'row-reverse',
-        backgroundColor:'rgba(255, 255, 255, 0.05)',
-        borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255, 255, 255, 0.1)',
-      }}
-      icon={() => {
-        if(!expanded){
-        return <MaterialCommunityIcons
-        name="chevron-right"
-        size={24}
-        color="rgba(255, 255, 255, 0.5)"
-
-        />
-        }else{
-            return <MaterialCommunityIcons
-            name="chevron-up"
-            size={24}
-            color="rgba(255, 255, 255, 0.5)"
-
-            />
-
-            }
-      }}
-        isExpanded={expanded}
-        onPress={() => setExpanded(!expanded)}    
-    
-              
-        >
-        <ListItem title="Profile" >
-
-             
-        </ListItem>
-        
-        <ListItem title="Password" />
-        </ListItem.Accordion>
+            
+            } style={styles.listaccordiontext} >
+    <ListItem.Title style={styles.listaccordiontext}>Profile</ListItem.Title>
+    </TouchableOpacity>
+  </ListItem.Content>
+</ListItem>
 
   );
 }
@@ -102,65 +107,58 @@ function Meetingtimes(props) {
         Lato_900Black,
         });
         const [expanded, setExpanded] = React.useState(false);
+        const navigation = useNavigation();
+        const {prefferdtimes,setPrefferdTimes} = useContext(RegistContext);
+        const {ispersonalactiveated, setIspersonalactiveated} = useContext(MainAppcontext);
+        const {user, setUser} = useContext(MainAppcontext);
+
+        useEffect(() => {
+
+          console.log(user.tblprefferdDTO)
+          const prefferdtimesdto=user.tblprefferdDTO;
+          setPrefferdTimes(prefferdtimesdto)
+          console.log('this is preffered times',prefferdtimes)
+        }, [])
+
+
+
 
     return (
-        <ListItem.Accordion
-        title="Meetingtimes"
-        style={{backgroundColor: '#222222', borderRadius: 20}}
-        content={
-          <>
+      <ListItem 
+  style={{backgroundColor: '#222222', borderRadius: 20}}
+  containerStyle={{
+    flexDirection: 'row-reverse',
+    backgroundColor:'rgba(255, 255, 255, 0.05)',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  }}
+>
+  <MaterialCommunityIcons
+    name="calendar-clock"
+    size={26}
+    color="rgba(255, 255, 255, 0.5)"
+  />
 
-         <MaterialCommunityIcons
-          name="calendar-clock"
-          size={26}
-          color="rgba(255, 255, 255, 0.5)"
-          style={{paddingRight:15}}
-
-        />
-
-          <ListItem.Content>
-        
-            <ListItem.Title style={styles.listaccordiontext}>Meeting Times</ListItem.Title>
-          </ListItem.Content>
-          </>
-        }
-        //make the container style to start from left to right
-        containerStyle={{flexDirection: 'row-reverse',
-        backgroundColor:'rgba(255, 255, 255, 0.05)',
-        borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255, 255, 255, 0.1)',
-      }}
-      icon={() => {
-        if(!expanded){
-        return <MaterialCommunityIcons
-        name="chevron-right"
-        size={24}
-        color="rgba(255, 255, 255, 0.5)"
-
-        />
-        }else{
-            return <MaterialCommunityIcons
-            name="chevron-up"
-            size={24}
-            color="rgba(255, 255, 255, 0.5)"
-
-            />
-
-            }
-      }}
-        isExpanded={expanded}
-        onPress={() => setExpanded(!expanded)}    
-
+  <ListItem.Content>
+  <TouchableOpacity onPress={() => {
     
-              
-        >
-      
-        
-        </ListItem.Accordion>
+    setIspersonalactiveated(true)
+    navigation.navigate('PreferredMeetingTimes', {isfrommainapp:true})}} style={styles.listaccordiontext} >
+    <ListItem.Title style={styles.listaccordiontext}>Meeting Times</ListItem.Title>
+    </TouchableOpacity>
+  </ListItem.Content>
+</ListItem>
     );
 }
 
 function Intersets(props) {
+  const {user, setUser} = useContext(MainAppcontext);
+  const {personaldetails,setPersonalDetails} = useContext(RegistContext);
+  const {selectedhobbies,setSelectedHobbies}= useContext(RegistContext);
+  const navigation=useNavigation()
+  const {ispersonalactiveated, setIspersonalactiveated} = useContext(MainAppcontext);
+
+
     const [fontsLoaded] = useFonts({
         Lato_100Thin,
         Lato_300Light,
@@ -170,65 +168,43 @@ function Intersets(props) {
         });
         const [expanded, setExpanded] = React.useState(false);
 
+        useEffect(() => {
+          console.log(user.tblUserHobbiesDTO)
+          const hobbiesdto=user.tblUserHobbiesDTO;
+          setSelectedHobbies(hobbiesdto)
+
+          
+
+        }, [])
+
+
     return (
-        <ListItem.Accordion
-        title="Meetingtimes"
-        style={{backgroundColor: '#222222', borderRadius: 20}}
-        content={
-          <>
-
-         <MaterialCommunityIcons
-          name="heart"
-          size={26}
-          color="rgba(255, 255, 255, 0.5)"
-          style={{paddingRight:15}}
-
-        />
-
-          <ListItem.Content>
-        
-            <ListItem.Title style={styles.listaccordiontext}>Interests</ListItem.Title>
-          </ListItem.Content>
-          </>
-        }
-        //make the container style to start from left to right
-        containerStyle={{flexDirection: 'row-reverse',
+      <ListItem 
+      style={{backgroundColor: '#222222', borderRadius: 20}}
+      containerStyle={{
+        flexDirection: 'row-reverse',
         backgroundColor:'rgba(255, 255, 255, 0.05)',
         borderBottomWidth: 1,
         borderBottomColor: 'rgba(255, 255, 255, 0.1)',
       }}
-      icon={() => {
-        if(!expanded){
-        return <MaterialCommunityIcons
-        name="chevron-right"
-        size={24}
+    >
+      <MaterialCommunityIcons
+        name="heart"
+        size={26}
         color="rgba(255, 255, 255, 0.5)"
-
-        />
-        }else{
-            return <MaterialCommunityIcons
-            name="chevron-up"
-            size={24}
-            color="rgba(255, 255, 255, 0.5)"
-
-            />
-
-            }
-      }}
-        isExpanded={expanded}
-        onPress={() => setExpanded(!expanded)} 
+      />
     
-
     
-              
-        >
-        <ListItem title="Interests" >
-
-             
-        </ListItem>
-        
-        <ListItem title="Interests" />
-        </ListItem.Accordion>
+      <ListItem.Content>
+        <TouchableOpacity onPress={() => {
+          setIspersonalactiveated(true)
+          navigation.navigate('PreferredHoobies', {ifinapp: true})
+        }} style={styles.listaccordiontext} >
+          
+        <ListItem.Title style={styles.listaccordiontext}>Interests</ListItem.Title>
+        </TouchableOpacity>
+      </ListItem.Content>
+    </ListItem>
     );
 }
 
@@ -242,6 +218,18 @@ function Favoritecont ({user}) {
         });
         const [expanded, setExpanded] = React.useState(false);
         const [friendrequestexpanded, setFriendrequestexpanded] = React.useState(false);
+        const [friendexpanded, setFriendexpanded] = React.useState(false);
+        const [modalVisible, setModalVisible] = useState(false);
+
+        const removefriend = (friendid) => {
+          console.log('this is friend id',friendid)
+          console.log('will remove friend from favorite in the future')
+          
+        }
+
+        const sendsms=()=>{
+          console.log('will send sms')
+        }
 
 
     return (
@@ -423,6 +411,201 @@ function Favoritecont ({user}) {
 
              
         </ListItem.Accordion>
+        <ListItem.Accordion title="Friend requests"
+        style={{backgroundColor: '#222222', borderRadius: 20}}
+        containerStyle={{flexDirection: 'row-reverse',
+        backgroundColor:'rgba(255, 255, 255, 0.05)',
+        borderBottomWidth: 1,
+        borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+
+        }}
+        content={
+            <>
+            <MaterialCommunityIcons
+            name="account"
+            size={26}
+            color="rgba(255, 255, 255, 0.5)"
+            style={{paddingRight:15}}
+
+            />
+            <ListItem.Content>
+            <ListItem.Title style={styles.listaccordiontext}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+    <Text style={[styles.listaccordiontext]}>My Friends</Text>
+    {user.possibleFavoriteContacts_invited_DTO.length > 0 && (
+      <View style={{ paddingLeft: 10 }}>
+        <Badge
+          status="error"
+          value={user.possibleFavoriteContacts_invited_DTO.length}
+          containerStyle={{ position: 'relative' }}
+        />
+      </View>
+    )}
+  </View>
+         
+            
+            </ListItem.Title>
+            </ListItem.Content>
+            </>
+        }
+        icon={() => {
+            if(!friendexpanded){
+            return <MaterialCommunityIcons
+            name="chevron-right"
+            size={24}
+            color="rgba(255, 255, 255, 0.5)"
+
+            />
+            }else{
+                return <MaterialCommunityIcons
+                name="chevron-up"
+                size={24}
+                color="rgba(255, 255, 255, 0.5)"
+
+                />
+
+                }
+            }}
+            isExpanded={friendexpanded}
+            onPress={() => setFriendexpanded(!friendexpanded)}
+
+         >
+           
+         
+         <ScrollView>
+            {user.tblFavoriteContacts1.length>0 && user.tblFavoriteContacts1.map((item, i) => (
+                <ListItem key={i} bottomDivider
+
+                containerStyle={{backgroundColor:'rgba(255, 255, 255, 0.05)', borderBottomWidth: 1, borderBottomColor: 'rgba(255, 255, 255, 0.1)', flexDirection:'row-reverse',
+                
+            
+            }}
+                >
+                <Avatar source={{uri: item.tblUser1.imageUri}}
+                rounded
+                size="medium"
+                />
+  <ListItem.Content
+    style={{
+      flex: 1,
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    }}
+  >                    
+                    {console.log('this is the item')}
+                    {console.log(item.hobbieNum)}
+                    <View style={{ flex: 1, justifyContent: 'center' }}>
+
+                    <ListItem.Title
+                    style={styles.listaccordiontext}
+                    >{item.tblUser1.userName} </ListItem.Title>
+                    {console.log('this is tbluser',item.tblUser)}
+                    <ListItem.Subtitle style={styles.listaccordionsubtext}>{item.tblUser1.email}</ListItem.Subtitle>
+                    </View>
+
+                  
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 5 }}>
+                
+                  <TouchableOpacity style={[styles.buttondecline,{marginLeft:15,width:110,backgroundColor:'#898f8b'}]} onPress={
+                    () => {
+                      setModalVisible(true);
+
+                    }
+                  }>
+                    <Text style={styles.approvebuttontext}>Show Profile</Text>
+                  </TouchableOpacity>
+                </View>
+                
+                <Contactdetails addtofavorite={removefriend} modalVisible={modalVisible} setModalVisible={setModalVisible} selectedContact={item.tblUser1} isfrommainapp={true}
+                sendsms={sendsms}
+                 />
+                
+
+                
+                
+                   
+                  
+                    
+             
+                </ListItem.Content>
+           
+             
+            
+                </ListItem>
+            ))}
+            
+            {user.tblFavoriteContacts.length>0 && user.tblFavoriteContacts.map((item, i) => (
+                <ListItem key={i} bottomDivider
+
+                containerStyle={{backgroundColor:'rgba(255, 255, 255, 0.05)', borderBottomWidth: 1, borderBottomColor: 'rgba(255, 255, 255, 0.1)', flexDirection:'row-reverse',
+                
+            
+            }}
+                >
+                <Avatar source={{uri: item.tblUser1.imageUri}}
+                rounded
+                size="medium"
+                />
+  <ListItem.Content
+    style={{
+      flex: 1,
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    }}
+  >                    
+                    {console.log('this is the item')}
+                    {console.log(item.hobbieNum)}
+                    <View style={{ flex: 1, justifyContent: 'center' }}>
+
+                    <ListItem.Title
+                    style={styles.listaccordiontext}
+                    >{item.tblUser1.userName} </ListItem.Title>
+                    {console.log('this is tbluser',item.tblUser)}
+                    <ListItem.Subtitle style={styles.listaccordionsubtext}>{item.tblUser1.email}</ListItem.Subtitle>
+                    </View>
+
+                  
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 5 }}>
+                
+                  <TouchableOpacity style={[styles.buttondecline,{marginLeft:15,width:110}]} onPress={
+                    ()=>{
+                      setModalVisible(true)
+                      console.log('this is modal visible')
+                      console.log(modalVisible)
+
+                    }
+                  
+                  }>
+                    <Text style={styles.approvebuttontext}>Show Profile</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <Contactdetails addtofavorite={removefriend} modalVisible={modalVisible} setModalVisible={setModalVisible} selectedContact={item.tblUser1} isfrommainapp={true}
+                sendsms={sendsms}
+                 />
+                
+                
+                   
+                  
+                    
+             
+                </ListItem.Content>
+           
+             
+            
+                </ListItem>
+            ))}
+            </ScrollView>
+
+           
+            
+
+
+             
+        </ListItem.Accordion>
+        
         
         </ListItem.Accordion>
     );

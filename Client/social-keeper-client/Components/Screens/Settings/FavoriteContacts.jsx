@@ -29,6 +29,7 @@ import Contactdetails from "../..//CompsToUse/Contactdetails.jsx";
 
 
 
+
 export default function FavoriteContacts({ navigation }, props) {
   const {contacts, setContacts} = React.useContext(RegistContext);
   const {filteredContacts, setFilteredContacts} = React.useContext(RegistContext);
@@ -490,8 +491,14 @@ const renderItem = ({ item }) => {
 
   return (
     <SafeAreaView style={{flex:1, alignItems:'center', justifyContent:'center', backgroundColor:"#ffffff"}}>
+            <Image source={require('../../../assets/Images/RandomImages/SocialKeeper.jpeg')} style={{width:180,height:180, 
+            top:"3%"
+            
+            }} />
+
 
     <SafeAreaView style={styles.container}>
+      
       <View style={styles.Title}>
         <Text style={styles.Titletext}> My Contacts </Text>
        
@@ -631,7 +638,7 @@ const renderItem = ({ item }) => {
   </Overlay>
   {
     alreadymembers.includes(selectedContact) && (
-      <Contactdetails sendsms={sendsms} addtofavorite={addtofavorite}  modalVisible={modalVisible} setModalVisible={setModalVisible} selectedContact={selectedContact} />
+      <Contactdetails isfrommainapp={false} sendsms={sendsms} addtofavorite={addtofavorite}  modalVisible={modalVisible} setModalVisible={setModalVisible} selectedContact={selectedContact} />
     )
 
   }
@@ -642,7 +649,21 @@ const renderItem = ({ item }) => {
 
       </View>
 
-      <Button title="Submit" onPress={onsubmit} />
+       <View style={{paddingBottom:20}}>
+      <TouchableOpacity onPress={onsubmit}>
+        <Icon
+          name="check-circle"
+          size={70}
+          type="MaterialIcons"
+          color="rgba(204,89,90,255)"
+
+        />
+
+      </TouchableOpacity>
+      <Text style={{textAlign:'center',fontSize:16,fontFamily:'Lato_700Bold'}}>Press when you're Done</Text>
+      </View>
+
+
     </SafeAreaView>
     </SafeAreaView>
   );
@@ -652,7 +673,7 @@ const styles = StyleSheet.create({
   container: {
   
     flex:1,
-    marginTop: 40,
+    marginTop: -20,
   } ,
   contactRow: {
     paddingBottom: 16,

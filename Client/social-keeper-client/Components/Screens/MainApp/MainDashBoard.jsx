@@ -16,6 +16,13 @@ import Loadingcomp from '../../CompsToUse/Loadingcomp';
 import axios from 'axios';
 import MapLocationForHobbies from './/MapLocationForHobbies';
 import Meetdetails from '../../CompsToUse/Meetdetails';
+import PreferredHoobies from '../Settings/PreferredHoobies';
+import { AccountSettings } from './PersonalComp/Account';
+import PreferredMeetingTimes from '../Settings/PreferredMeetingTimes';
+import { Intersets } from './PersonalComp/Account';
+import {Favoritecont} from './PersonalComp/Account';
+import CreateProfile from '..//Profile/CreateProfile';
+
 
 
 
@@ -27,6 +34,7 @@ const Tab = createBottomTabNavigator();
 
 const SuggestedMeetingsStack = createStackNavigator(); // Add this line
 const PreviousMeetingsStack = createStackNavigator(); // Add this line
+const PersonalSettingsStack = createStackNavigator(); // Add this line
 
 function SuggestedMeetingsStackScreen() {
   
@@ -45,16 +53,38 @@ function SuggestedMeetingsStackScreen() {
     return (
       <PreviousMeetingsStack.Navigator initialRouteName="PreviousMeetings">
         <PreviousMeetingsStack.Screen name="PreviousMeetings" component={PreviousMeetingsScreen} options={{headerShown:false}} />
+        <PreviousMeetingsStack.Screen name="Meetdetails" component={Meetdetails} options={{headerShown:false}} />
+      
+
+
         </PreviousMeetingsStack.Navigator>
     );
 
   }
+
+  function PersonalSettingsStackScreen() {
+    return (
+      <PersonalSettingsStack.Navigator initialRouteName="SettingDashBoard">
+        <PersonalSettingsStack.Screen name="SettingDashBoard" component={SettingDashBoard} options={{headerShown:false}} />
+        <PersonalSettingsStack.Screen name="PreferredHoobies" component={PreferredHoobies} options={{headerShown:false}} />
+        <PersonalSettingsStack.Screen name="AccountSettings" component={AccountSettings} options={{headerShown:false}} />
+        <PersonalSettingsStack.Screen name="PreferredMeetingTimes" component={PreferredMeetingTimes} options={{headerShown:false}} />
+        <PersonalSettingsStack.Screen name="Intersets" component={Intersets} options={{headerShown:false}} />
+        <PersonalSettingsStack.Screen name="Favoritecont" component={Favoritecont} options={{headerShown:false}} />
+        <PersonalSettingsStack.Screen name="CreateProfile" component={CreateProfile} options={{headerShown:false}} />
+        
+        </PersonalSettingsStack.Navigator>
+    );
+
+  }
+
 
 export default function MainDashBoard() {
 
     const {user, setUser} = useContext(MainAppcontext);
   const {userevents, setUserevents} = useContext(MainAppcontext);
   const [screenisready, setScreenisready] = useState(false);
+  const {ispersonalactiveated, setIspersonalactiveated} = useContext(MainAppcontext);
 
   useEffect( () => {
 
@@ -68,6 +98,7 @@ export default function MainDashBoard() {
   const rungetcalenders= async () => {
    const newevents= await getcalendars();   
    let newsugmeetings=await fetchAndProcessMeetings( newevents);
+   if(newsugmeetings!='no favorite contacts'){
    if(user.tblSuggestedMeetings.length>0){
 
     await getplaceinfo(newsugmeetings);
@@ -90,6 +121,7 @@ export default function MainDashBoard() {
 
   }
     await setmeetingscorrectly(newsugmeetings);
+}
     setScreenisready(true);
   }
   
@@ -381,13 +413,23 @@ console.log(eventobject)
   );
   
   const newmeetings =  responsefrommeetings.data;
+  
+  if(newmeetings=='no favorite contacts'){
+    return 'no favorite contacts'
+  }
+
   const newsugmeetings = [...newmeetings, ...user.tblSuggestedMeetings];
+
+  
+
 
   newsugmeetings.forEach((each) => {
     if (each.place.result) {
       each.place = each.place.result;
     }
   });
+
+
 
 
   console.log('this is newsugmeetings', newsugmeetings);
@@ -456,9 +498,9 @@ else{
             initialRouteName="Suggested Meetings"
 
         >
-            <Tab.Screen name="Personal" component={SettingDashBoard} options={{
+            <Tab.Screen name="Personal" component={PersonalSettingsStackScreen} options={{
                 headerShown: false,
-                tabBarStyle: styles.personalmeetingbar,
+                tabBarStyle: ispersonalactiveated? styles.tabBarhidden : styles.personalmeetingbar,
                 
             }}  />
 
@@ -485,6 +527,12 @@ const styles = StyleSheet.create({
   
     tabBar: {
         backgroundColor: '#fff',
+        
+    },
+
+    tabBarhidden: {
+        backgroundColor: '#fff',
+        display: 'none',
     },
     personalmeetingbar: {
         backgroundColor: '#222222',

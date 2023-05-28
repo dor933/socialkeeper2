@@ -1,12 +1,11 @@
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, SafeAreaView, Alert, Image, FlatList } from 'react-native';
 import React, { useState,useEffect } from 'react';
-import { Picker } from '@react-native-picker/picker';
   import Days from './PrefComp/Days';
 import Timepicker from './PrefComp/Timepicker';
 
 import { Button } from 'react-native-paper';
 import {RegistContext} from "../..//..//RegistContext.jsx";
-import StarRating from 'react-native-star-rating-widget';
+import { MainAppcontext } from '../MainApp/MainAppcontext';
 
 
 
@@ -25,24 +24,39 @@ const days = [
     { index: 2, letter: 'M' },
   ];
 
-export default function PreferredMeetingTimes({ navigation }, props) {
+export default function PreferredMeetingTimes({ navigation,route }, props) {
     const {prefferdtimes,setPrefferdTimes}= React.useContext(RegistContext);
     const [selectedDay, setSelectedDay] = useState({});
- 
-       
-        const [valuestart, setValuestart] = useState(null);
-        const [valueend, setValueend] = useState(null);
-        const [rating, setRating] = useState(0);
+    const isfrommainapp=route.params.isfrommainapp;
+    const [valuestart, setValuestart] = useState(null);
+    const [valueend, setValueend] = useState(null);
+    const {ispersonalactiveated, setIspersonalactiveated}= React.useContext(MainAppcontext);
 
         useEffect(() => {
+            if(!isfrommainapp){
             setPrefferdTimes([]);
+            }
+            else{
+                const newprefferd=prefferdtimes.map ((item) => {
+
+                    const newday=days.find((day) => day.index == item.weekDay);
+                    return {...item,day:newday};
+                });
+
+                console.log('this is the new prefferd times')
+            console.log(newprefferd);
+            setPrefferdTimes(newprefferd);
+            }
+
+
+           return () => {
+
+            setIspersonalactiveated(false);
+              }
+
         }, []);
 
-        const handlerating = (rating) => {
-            const roundedrating=Math.round(rating);
-            setRating(roundedrating);
-         
-          }
+     
 
         const handlevaluestart = (value) => {
             setValuestart(value);
@@ -63,13 +77,9 @@ export default function PreferredMeetingTimes({ navigation }, props) {
             }
             else {
               
-                let therank = rating;
-                if(therank===0){
-                    therank=1;
-                }
+             
                 
-                setPrefferdTimes([...prefferdtimes, { day: selectedDay, startTime: valuestart, endTime: valueend, rank: therank }]);
-                setRating(0);
+                setPrefferdTimes([...prefferdtimes, { day: selectedDay, startTime: valuestart, endTime: valueend}]);
                 console.log(prefferdtimes);
                 setSelectedDay({});
               
@@ -106,16 +116,22 @@ export default function PreferredMeetingTimes({ navigation }, props) {
         <SafeAreaView style={{flex:1, alignItems:'center', justifyContent:'center',backgroundColor:'#ffffff'}}>
         <View style={styles.container}>
             <View style={styles.header}>
+                {!isfrommainapp &&
                 <TouchableOpacity onPress={() => submittimes()}>
             <Image source={require('../../../assets/Images/Pref/arrowkeeper.png')} style={{backfaceVisibility:'#E04747'}}  />
             </TouchableOpacity>
+}
             </View>
             <View style={styles.keeperview}>
             <Image source={require('../../..//assets/Images/RandomImages/SocialKeeper.jpeg')} style={styles.keeperview} />
             </View>
             <View style={styles.TextViews}>
                 <Text style={{fontFamily:'Lato_700Bold',fontWeight:"800", fontSize: 24, color: '#E04747', lineHeight:29,letterSpacing:0.03,textAlign:'center' }}>Preferred Meeting Times</Text>
+                {!isfrommainapp ?
                 <Text style={{fontFamily:'Lato_400Regular',fontWeight:"400", fontSize: 16, color: '#E04747', lineHeight:19,letterSpacing:0.03,textAlign:'center',color:"rgba(0,0,0,0.7)",top:8 }}>Select the days and hours you prefer to meet</Text>
+                :
+                <Text style={{fontFamily:'Lato_400Regular',fontWeight:"400", fontSize: 16, color: '#E04747', lineHeight:19,letterSpacing:0.03,textAlign:'center',color:"rgba(0,0,0,0.7)",top:8 }}>Update the days and hours you prefer to meet</Text>
+                }
             </View>
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems:'center' ,height:Dimensions.get('window').height*0.15,alignContent:'center', width: Dimensions.get('window').width * 0.9, top: Dimensions.get('window').height * 0.02 }}>
@@ -174,9 +190,17 @@ export default function PreferredMeetingTimes({ navigation }, props) {
                 <FlatList
                     data={prefferdtimes}
                     renderItem={({ item,index }) => (
+
+                        console.log('this is the item',item),
+                        
                         
                    <View style={styles.preferredTimeItem}>
-                    <Text style={styles.preferredTimeText}>{`${item.day.letter} ${item.startTime}-${item.endTime}`}</Text>
+                    <Text style={styles.preferredTimeText}>
+                        {item.day?.letter == undefined ? null : item.day.letter} 
+                        
+                        {` , ${item.startTime}-${item.endTime}`}
+                        
+                        </Text>
                    <TouchableOpacity style={styles.removeButton} onPress={() => removeTimeFromArray(index)}>
                    <Text style={styles.removeButtonText}>X</Text>
                   </TouchableOpacity>
@@ -185,23 +209,8 @@ export default function PreferredMeetingTimes({ navigation }, props) {
                 />
             </View>
 
-            <View style={{marginTop:5}}>
-                <Text style={{fontFamily:'Lato_700Bold',fontWeight:"400", fontSize: 16, color: '#E04747', lineHeight:19,letterSpacing:0.03,textAlign:'center',marginBottom:5,color:"rgba(0,0,0,0.7)"}} > Rank </Text>
-            <StarRating
-          starSize={22}
-          maxStars={5}
-          rating={rating}
-          onChange={handlerating}
-          style={styles.rating}
-        />
-
-            </View>
-
-   
-                        
-
-      
-              
+                 {
+                    !isfrommainapp?
                 <View style={styles.buttonsviews}>
                
                     <TouchableOpacity style={styles.submitbox} onPress={()=> submittimes()}>
@@ -211,6 +220,15 @@ export default function PreferredMeetingTimes({ navigation }, props) {
                         <Text style={styles.buttonstext}>Add</Text>
                         </TouchableOpacity>
                     </View>
+                    :
+                    <View style={[styles.buttonsviews,{justifyContent:'center',width:500}]}>
+                    <TouchableOpacity style={[styles.addtimearraybox]} onPress={()=> submittimes()}>
+                        <Text style={styles.buttonstext}>Update Preffered Times</Text>
+                        </TouchableOpacity>
+
+                    </View>
+
+}
         </View>
         </SafeAreaView>
     );
@@ -233,14 +251,13 @@ const styles = StyleSheet.create({
     } ,
 
     buttonstext:{
-        fontFamily:'Inter_700Bold',
+        fontFamily:'Lato_700Bold',
         fontSize: 16,
         fontStyle: 'normal',
         lineHeight: 19,
         letterSpacing:0.01,
         textAlign: 'center',
-        color:'rgba(255, 255, 255, 0.8)',
-        fontWeight:'700'
+        color:'rgba(255, 255, 255, 1)',
 
     } ,
 
@@ -278,7 +295,7 @@ const styles = StyleSheet.create({
 
     buttonsviews:{
         width: Dimensions.get('window').width * 0.9,
-        height: Dimensions.get('window').height * 0.13,
+        height: Dimensions.get('window').height * 0.2,
         top: Dimensions.get('window').height * 0.005,
         alignItems:'center',
         justifyContent:'center',
