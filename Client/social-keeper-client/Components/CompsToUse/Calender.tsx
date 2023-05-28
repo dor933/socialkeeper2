@@ -16,6 +16,7 @@ export default function CalendarScreen({route, navigation}) {
     const [items, setItems] = useState<AgendaSchedule>({});
     const {userevents, setUserevents} = useContext(MainAppcontext);
     const {hobbienumtypes} = useContext(MainAppcontext);
+    const [objtosend, setObjtosend] = useState<any>(null);
 
    const meeting= route.params.meeting;
    const invitedbyfriend= route.params.invitedbyfriend;
@@ -30,16 +31,22 @@ export default function CalendarScreen({route, navigation}) {
    console.log('this is location',locationplace);
     console.log('this is type',type);
     console.log('this is locationname',locationname);
-    const objtosend={
-       meeting:meeting,
-       type:type,
+  
 
-    }
+      
    
 
    
    
    useEffect(() => {
+    let myobjtosend={
+      meeting:meeting,
+      type:type,
+      
+  }
+  setObjtosend(myobjtosend);
+
+  console.log('this is objtosend',objtosend);
     if (meeting) {
         console.log('setting meeting');
         const prevevent=userevents;
@@ -71,7 +78,7 @@ export default function CalendarScreen({route, navigation}) {
             usertosend=meeting.user2;
         }
 
-        objtosend['usertosend']=usertosend;
+        myobjtosend['usertosend']=usertosend;
 
         const meetingadd={
             day:eventdate,
@@ -88,6 +95,15 @@ export default function CalendarScreen({route, navigation}) {
         else{
             prevevent[eventdate]=[{...meetingadd,isMeeting:true}];
         }
+
+        //sort the events inside the date by start time by looping on the array and sorting it
+
+
+for (let key in prevevent) {
+  prevevent[key].sort(function(a, b) {
+    return a.starttime.localeCompare(b.starttime);
+  });
+}
 
         console.log('this is prevevent',prevevent);
         setUserevents(prevevent);
@@ -148,16 +164,12 @@ export default function CalendarScreen({route, navigation}) {
 
   const renderEmptyDate = () => {
     return (
-        <EventItem
-            reservation={{ name: "No events", height: 15, day: "" }}
-            onPress={() => {
-                console.log("Empty date pressed");
-            }}
-        />
+       <View />
     );
   };
 
   const closeModal = () => {
+
     setSelectedEvent(null);
   }
 
@@ -172,7 +184,7 @@ export default function CalendarScreen({route, navigation}) {
         <Text>{name}</Text>
         
 
-        <Pressable onPress={() => {
+        <Pressable onPress={() => { 
           const message = `Hi, I'm interested in the event "${name}" on ${selectedEvent.day}. Will we meet?`;
           const url = `whatsapp://send?text=${encodeURIComponent(message)}`;
           Linking.openURL(url);
@@ -207,13 +219,14 @@ export default function CalendarScreen({route, navigation}) {
         {modalContent()}
       </Modal>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.refuseButton} onPress={() => console.log("Refuse pressed")}>
-          <Text style={styles.buttonText}>Refuse</Text>
-        </TouchableOpacity>
+       
         <TouchableOpacity style={styles.acceptButton} onPress={() => 
         navigation.navigate('MapLocationForHobbies', {information: objtosend}) 
         }>
-          <Text style={styles.buttonText}>Accept</Text>
+          <Text style={styles.buttonText}>Continue</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.refuseButton} onPress={() => navigation.navigate('SuggestedMeetings')}>
+          <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -278,7 +291,7 @@ const styles = StyleSheet.create({
 
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     marginVertical: 20,
     width: '100%',
     paddingHorizontal: 15,

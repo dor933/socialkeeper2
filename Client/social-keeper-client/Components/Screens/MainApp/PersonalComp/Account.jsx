@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Button, SafeAreaView, TouchableOpacity, Dimensions, Image, ScrollView } from 'react-native'
+import { StyleSheet, View, Text, Button, SafeAreaView,Animated, TouchableOpacity, Dimensions, Image, ScrollView } from 'react-native'
 import React,{useState,useContext, useEffect} from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -21,6 +21,8 @@ import { MainAppcontext } from '../MainAppcontext';
 import { RegistContext } from '../../../../RegistContext';
 import { useNavigation } from '@react-navigation/native';
 import Contactdetails from '../../../CompsToUse/Contactdetails';
+import AnimatedIcon from '../../../CompsToUse/AnimatedIcon';
+import axios from 'axios';
 
 
 
@@ -112,13 +114,7 @@ function Meetingtimes(props) {
         const {ispersonalactiveated, setIspersonalactiveated} = useContext(MainAppcontext);
         const {user, setUser} = useContext(MainAppcontext);
 
-        useEffect(() => {
-
-          console.log(user.tblprefferdDTO)
-          const prefferdtimesdto=user.tblprefferdDTO;
-          setPrefferdTimes(prefferdtimesdto)
-          console.log('this is preffered times',prefferdtimes)
-        }, [])
+ 
 
 
 
@@ -141,7 +137,8 @@ function Meetingtimes(props) {
 
   <ListItem.Content>
   <TouchableOpacity onPress={() => {
-    
+       const prefferdtimesdto=user.tblprefferdDTO;
+       setPrefferdTimes(prefferdtimesdto)
     setIspersonalactiveated(true)
     navigation.navigate('PreferredMeetingTimes', {isfrommainapp:true})}} style={styles.listaccordiontext} >
     <ListItem.Title style={styles.listaccordiontext}>Meeting Times</ListItem.Title>
@@ -208,7 +205,7 @@ function Intersets(props) {
     );
 }
 
-function Favoritecont ({user}) {
+function Favoritecont ({user,setUser}) {
     const [fontsLoaded] = useFonts({
         Lato_100Thin,
         Lato_300Light,
@@ -220,6 +217,8 @@ function Favoritecont ({user}) {
         const [friendrequestexpanded, setFriendrequestexpanded] = React.useState(false);
         const [friendexpanded, setFriendexpanded] = React.useState(false);
         const [modalVisible, setModalVisible] = useState(false);
+        const [selectedcontact, setSelectedcontact] = useState(null);
+        
 
         const removefriend = (friendid) => {
           console.log('this is friend id',friendid)
@@ -230,6 +229,29 @@ function Favoritecont ({user}) {
         const sendsms=()=>{
           console.log('will send sms')
         }
+
+        const handlefreindrequest = async (friendid,ifapproved) => {
+          console.log('this is friend id',friendid)
+          const item={
+            requestid:friendid,
+            isAccepted:ifapproved
+          }
+
+          const response= await axios.put('http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/Updfriendrequest',item)
+          if(response.status==200){
+            console.log('friend request updated')
+            const newtblpossibleinvited=user.possibleFavoriteContacts_invited_DTO.filter((item)=>item.id!=friendid)
+            setUser({...user,possibleFavoriteContacts_invited_DTO:newtblpossibleinvited})
+            //add response.data to tblFavoriteContacts1
+
+            const newtblFavoriteContacts1=[...user.tblFavoriteContacts1,response.data]
+            setUser({...user,tblFavoriteContacts1:newtblFavoriteContacts1})
+
+          }
+
+        }
+        
+          
 
 
     return (
@@ -269,26 +291,15 @@ function Favoritecont ({user}) {
         borderBottomWidth: 1,
         borderBottomColor: 'rgba(255, 255, 255, 0.1)',
       }}
-      icon={() => {
-        if(!expanded){
-        return <MaterialCommunityIcons
-        name="chevron-right"
-        size={24}
-        color="rgba(255, 255, 255, 0.5)"
+      icon={
+        <AnimatedIcon 
+        isExpanded={expanded}
+        toggle={setExpanded}
 
         />
-        }else{
-            return <MaterialCommunityIcons
-            name="chevron-up"
-            size={24}
-            color="rgba(255, 255, 255, 0.5)"
-
-            />
-
-            }
-      }}
+      }
       isExpanded={expanded}
-        onPress={() => setExpanded(!expanded)}
+    
       
 
     
@@ -331,26 +342,14 @@ function Favoritecont ({user}) {
             </ListItem.Content>
             </>
         }
-        icon={() => {
-            if(!friendrequestexpanded){
-            return <MaterialCommunityIcons
-            name="chevron-right"
-            size={24}
-            color="rgba(255, 255, 255, 0.5)"
-
-            />
-            }else{
-                return <MaterialCommunityIcons
-                name="chevron-up"
-                size={24}
-                color="rgba(255, 255, 255, 0.5)"
-
-                />
-
-                }
-            }}
+        icon={
+            <AnimatedIcon
             isExpanded={friendrequestexpanded}
-            onPress={() => setFriendrequestexpanded(!friendrequestexpanded)}
+            toggle={setFriendrequestexpanded}
+            />
+        }
+        isExpanded={friendrequestexpanded}
+     
 
          >
            
@@ -385,13 +384,20 @@ function Favoritecont ({user}) {
                     {console.log('this is tbluser',item.tblUser)}
                     <ListItem.Subtitle style={styles.listaccordionsubtext}>{item.tblUser.email}</ListItem.Subtitle>
                     </View>
+                    {
+                      console.log('this is item222',item)
+                    }
 
                   
                     <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 5 }}>
                   <TouchableOpacity style={[styles.buttondecline,{ marginRight: 10 }]}>
                     <Text style={styles.buttondeclinetext}>Decline</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.buttonapprove}>
+                  <TouchableOpacity style={styles.buttonapprove} onPress={()=>  {
+
+                    console.log('item',item)
+                    handlefreindrequest(item.id,true)
+                  }}>
                     <Text style={styles.approvebuttontext}>Approve</Text>
                   </TouchableOpacity>
                 </View>
@@ -411,7 +417,7 @@ function Favoritecont ({user}) {
 
              
         </ListItem.Accordion>
-        <ListItem.Accordion title="Friend requests"
+        <ListItem.Accordion title="My Friends"
         style={{backgroundColor: '#222222', borderRadius: 20}}
         containerStyle={{flexDirection: 'row-reverse',
         backgroundColor:'rgba(255, 255, 255, 0.05)',
@@ -432,15 +438,7 @@ function Favoritecont ({user}) {
             <ListItem.Title style={styles.listaccordiontext}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
     <Text style={[styles.listaccordiontext]}>My Friends</Text>
-    {user.possibleFavoriteContacts_invited_DTO.length > 0 && (
-      <View style={{ paddingLeft: 10 }}>
-        <Badge
-          status="error"
-          value={user.possibleFavoriteContacts_invited_DTO.length}
-          containerStyle={{ position: 'relative' }}
-        />
-      </View>
-    )}
+
   </View>
          
             
@@ -448,31 +446,12 @@ function Favoritecont ({user}) {
             </ListItem.Content>
             </>
         }
-        icon={() => {
-            if(!friendexpanded){
-            return <MaterialCommunityIcons
-            name="chevron-right"
-            size={24}
-            color="rgba(255, 255, 255, 0.5)"
-
-            />
-            }else{
-                return <MaterialCommunityIcons
-                name="chevron-up"
-                size={24}
-                color="rgba(255, 255, 255, 0.5)"
-
-                />
-
-                }
-            }}
+        icon={<AnimatedIcon isExpanded={friendexpanded} toggle={setFriendexpanded} />}
             isExpanded={friendexpanded}
-            onPress={() => setFriendexpanded(!friendexpanded)}
 
          >
            
          
-         <ScrollView>
             {user.tblFavoriteContacts1.length>0 && user.tblFavoriteContacts1.map((item, i) => (
                 <ListItem key={i} bottomDivider
 
@@ -509,6 +488,7 @@ function Favoritecont ({user}) {
                 
                   <TouchableOpacity style={[styles.buttondecline,{marginLeft:15,width:110,backgroundColor:'#898f8b'}]} onPress={
                     () => {
+                      setSelectedcontact(item.tblUser1)
                       setModalVisible(true);
 
                     }
@@ -517,14 +497,10 @@ function Favoritecont ({user}) {
                   </TouchableOpacity>
                 </View>
                 
-                <Contactdetails addtofavorite={removefriend} modalVisible={modalVisible} setModalVisible={setModalVisible} selectedContact={item.tblUser1} isfrommainapp={true}
-                sendsms={sendsms}
-                 />
+               
                 
 
-                
-                
-                   
+                         
                   
                     
              
@@ -569,8 +545,9 @@ function Favoritecont ({user}) {
                   
                     <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 5 }}>
                 
-                  <TouchableOpacity style={[styles.buttondecline,{marginLeft:15,width:110}]} onPress={
+                  <TouchableOpacity style={[styles.buttondecline,{marginLeft:15,width:110,backgroundColor:'#898f8b'}]} onPress={
                     ()=>{
+                      setSelectedcontact(item.tblUser1)
                       setModalVisible(true)
                       console.log('this is modal visible')
                       console.log(modalVisible)
@@ -582,9 +559,7 @@ function Favoritecont ({user}) {
                   </TouchableOpacity>
                 </View>
 
-                <Contactdetails addtofavorite={removefriend} modalVisible={modalVisible} setModalVisible={setModalVisible} selectedContact={item.tblUser1} isfrommainapp={true}
-                sendsms={sendsms}
-                 />
+            
                 
                 
                    
@@ -597,7 +572,13 @@ function Favoritecont ({user}) {
             
                 </ListItem>
             ))}
-            </ScrollView>
+
+            {selectedcontact &&
+
+<Contactdetails addtofavorite={removefriend} modalVisible={modalVisible} setModalVisible={setModalVisible} selectedContact={selectedcontact} isfrommainapp={true}
+                sendsms={sendsms}
+                 />
+            }
 
            
             

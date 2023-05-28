@@ -62,6 +62,8 @@ function SuggestedMeetingsStackScreen() {
 
   }
 
+ 
+
   function PersonalSettingsStackScreen() {
     return (
       <PersonalSettingsStack.Navigator initialRouteName="SettingDashBoard">
@@ -249,9 +251,15 @@ export default function MainDashBoard() {
      //get all the calendars id's and set them in an array except the data about holidays
      
       const calendarIds = calendars.map(each => each.id);
-      const cal= [];
-      cal.push(4)
-      console.log('this is calendar id')
+      
+      //bring events from all the calendars
+      
+
+
+      
+        
+     
+      console.log('this is calendar idS')
       console.log(calendarIds)
 
       //make a new date object and set it to today
@@ -264,7 +272,8 @@ export default function MainDashBoard() {
       
 
         
-      const events = await Calendar.getEventsAsync(cal, startDate, endDate);
+      const events = await Calendar.getEventsAsync(calendarIds, startDate, endDate);
+      console.log('this is events')
       console.log({ events });
       //create a new object which contain the events date, weekday of the date, starttime, endtime, and drop the events
       //that last exactly one day and their starttime and endtime are the same
@@ -279,10 +288,11 @@ export default function MainDashBoard() {
         StartDateplusondeday.setDate(StartDateplusondeday.getDate() + 7);
     
         // Return false if the condition is met, which removes the item from the array
-        return !(
+        return !( (
           EndDate.getFullYear() === StartDateplusondeday.getFullYear() &&
           EndDate.getMonth() === StartDateplusondeday.getMonth() &&
           EndDate.getDate() === StartDateplusondeday.getDate()
+        ) || (StartDate.getHours() === EndDate.getHours() && StartDate.getMinutes() === EndDate.getMinutes())
         );
       })
       .map((each) => {
@@ -392,7 +402,7 @@ console.log(eventobject)
       existingsuggested1 = user.tblSuggestedMeetings1.map((each) => ({
         starttime: each.starttime,
         endtime: each.endtime,
-        date: each.date.toISOString().split('T')[0],
+        date: each.date.split('T')[0],
       }));
     }
 
@@ -467,7 +477,7 @@ else{
                     let iconName;
                     if (route.name === 'Previous Meetings') {
                         iconName = focused ? 'ios-timer-outline' : 'ios-timer-outline';
-                    } else if (route.name === 'Random Meeting') {
+                    } else if (route.name === 'Add Friends') {
                         iconName = focused ? 'person-add' : 'person-add-outline';
                     } else if (route.name === 'Personal') {
                         //sliders icon for settings
@@ -509,7 +519,7 @@ else{
 
 
 
-            <Tab.Screen name="Random Meeting" component={FutureMeetingScreen}
+            <Tab.Screen name="Add Friends" component={FutureMeetingScreen}
             options={{
                 headerShown: false,
             }} />

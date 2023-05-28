@@ -11,7 +11,8 @@ import { MainAppcontext } from '../MainApp/MainAppcontext.jsx';
 import AuthContext from '../../../Authcontext.jsx';
 import firebaseInstance from '../../../assets/Firebase/firebaseconfig.js';
 import Loadingcomp from '../../CompsToUse/Loadingcomp.jsx';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { SocialIcon } from 'react-native-elements'
+
 
 
 
@@ -185,26 +186,8 @@ if(isloading){
     <SafeAreaView style={{flex:1, alignItems:'center', justifyContent:'center'}}>
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.elipseTop}></View>
-      {/* Connect text */}
       <Text style={styles.text}>Sign In</Text>
-      <Image style={styles.logo} source={require('../../../assets/Images/RandomImages/social-keeper-low-resolution-logo-color-on-transparent-background.png')} />
-
-      {/* Login with google button */}
-      <TouchableOpacity onPress={async() => promptAsync()}>
-        <View style={styles.container}>
-          <Image style={styles.googleLogo} source={require('../../../assets/Images/Logos/GoogleLogo.png')} ></Image>
-          <Text style={styles.textForButton}>Sign in with Google</Text>
-        </View>
-      </TouchableOpacity>
-
-      {/* Login with outlook button */}
-      <TouchableOpacity onPress={async() => promptAsync2()}>
-        <View style={styles.container2}>
-          <Image style={styles.outLookLogo} source={require('../../../assets/Images/Logos/facebook.png')} ></Image>
-          <Text style={styles.textForButton}>Login with Facebook</Text>
-        </View>
-      </TouchableOpacity>
-
+ 
       
       <View style={styles.elipseButtom}></View>
     <SafeAreaView style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -217,12 +200,28 @@ if(isloading){
         {/* Login with google button */}
         <TouchableOpacity onPress={async () => {
 
-          for(let i=0; i<2; i++){
           promptAsync();
-          }
 
         } }>
+                 {/* <TouchableOpacity onPress={async () => {
+               const ifuser= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin',{email:'grogo@example.com'});
+               if(ifuser.data=='no user was found'){
+         
+                 if(user.email!=undefined) {
+         
+                 personaldetails.email=user.email;
+                 navigation.navigate('CreateProfile',{isfrommainapp:false});
+                 }
+               }
+               else if(typeof ifuser.data.imageUri == 'string'){
+                 setIsloading(true);
+                 setUser(ifuser.data);
+                 console.log('this is the user my user test',ifuser.data);
+                 setIsAuthenticated(true);
+               }
+              }}> */}
           <View style={styles.container}>
+            
             <Image style={styles.googleLogo} source={require('../../../assets/Images/Logos/GoogleLogo.png')} ></Image>
             <Text style={styles.textForButton}>Sign in with Google</Text>
           </View>
@@ -230,8 +229,17 @@ if(isloading){
 
         {/* Login with outlook button */}
         <TouchableOpacity onPress={async () => promptAsync2()}>
+ 
+
           <View style={styles.container2}>
-            <Image style={styles.outLookLogo} source={require('../../../assets/Images/Logos/facebook.png')} ></Image>
+            <SocialIcon
+              title='Sign In With Facebook'
+              type='facebook'
+              style={styles.outLookLogo}
+
+            />
+
+            {/* <Image style={styles.outLookLogo} source={require('../../../assets/Images/Logos/facebook.png')} ></Image> */}
             <Text style={styles.textForButton}>Login with Facebook</Text>
           </View>
         </TouchableOpacity>
@@ -258,7 +266,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 141,
     height: 28,
-    left: 125,
+    left: 137,
     top: 353,
     fontStyle: 'normal',
     fontWeight: '800',
@@ -379,16 +387,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 32,
     height: 32,
-    top: 16,
-    left: 16,
+    top: 8,
+    left: 5,
   },
 
   //CSS for google logo
   googleLogo: {
     position: 'absolute',
-    width: 37,
-    height: 36,
-    top: 14,
+    width: 30,
+    height: 30,
+    top: 18,
     left: 14,
   }
 });

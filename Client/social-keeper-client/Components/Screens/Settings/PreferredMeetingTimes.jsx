@@ -2,10 +2,11 @@ import { View, Text, StyleSheet, Dimensions, TouchableOpacity, SafeAreaView, Ale
 import React, { useState,useEffect } from 'react';
   import Days from './PrefComp/Days';
 import Timepicker from './PrefComp/Timepicker';
-
+import axios from 'axios';
 import { Button } from 'react-native-paper';
 import {RegistContext} from "../..//..//RegistContext.jsx";
 import { MainAppcontext } from '../MainApp/MainAppcontext';
+import { Ionicons } from '@expo/vector-icons';
 
 
 
@@ -31,19 +32,21 @@ export default function PreferredMeetingTimes({ navigation,route }, props) {
     const [valuestart, setValuestart] = useState(null);
     const [valueend, setValueend] = useState(null);
     const {ispersonalactiveated, setIspersonalactiveated}= React.useContext(MainAppcontext);
+    const {user, setUser}= React.useContext(MainAppcontext);
 
         useEffect(() => {
             if(!isfrommainapp){
             setPrefferdTimes([]);
             }
             else{
+               
                 const newprefferd=prefferdtimes.map ((item) => {
 
                     const newday=days.find((day) => day.index == item.weekDay);
                     return {...item,day:newday};
                 });
 
-                console.log('this is the new prefferd times')
+                console.log('this is the new prefferd times22')
             console.log(newprefferd);
             setPrefferdTimes(newprefferd);
             }
@@ -51,6 +54,7 @@ export default function PreferredMeetingTimes({ navigation,route }, props) {
 
            return () => {
 
+            setPrefferdTimes([]);
             setIspersonalactiveated(false);
               }
 
@@ -80,17 +84,53 @@ export default function PreferredMeetingTimes({ navigation,route }, props) {
              
                 
                 setPrefferdTimes([...prefferdtimes, { day: selectedDay, startTime: valuestart, endTime: valueend}]);
-                console.log(prefferdtimes);
+                console.log('this is',prefferdtimes);
                 setSelectedDay({});
               
             }
         }
 
 
-        const submittimes= () => {
+        const submittimes= async () => {
+
+            if(!isfrommainapp){
 
             console.log(prefferdtimes);
-            navigation.navigate('FavoriteContacts');
+            navigation.navigate('FavoriteContacts',{isfrommainapp:false});
+            }
+            else{
+           
+               const prefferafteradjustment= prefferdtimes.map((item) => {
+                    return {
+                        weekDay:item.day.index,
+                        startTime:item.startTime,
+                        endTime:item.endTime,
+                        phoneNum1:user.phoneNum1,
+                        rank:1,
+                    };
+                });
+
+
+                console.log('pereffred times after')
+                console.log(prefferafteradjustment);
+                
+                const response=await axios.put("http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/Updmeetingstimes", 
+                prefferafteradjustment
+              )
+
+
+                if(response.status==200){
+                    console.log('updated successfully');
+                    setUser({...user,tblprefferdDTO:response.data});
+                    Alert.alert('Updated successfully');
+                   
+                }
+                else{
+                    Alert.alert('Error');
+                }
+            
+      
+        }
 
         }
 
@@ -117,8 +157,13 @@ export default function PreferredMeetingTimes({ navigation,route }, props) {
         <View style={styles.container}>
             <View style={styles.header}>
                 {!isfrommainapp &&
-                <TouchableOpacity onPress={() => submittimes()}>
-            <Image source={require('../../../assets/Images/Pref/arrowkeeper.png')} style={{backfaceVisibility:'#E04747'}}  />
+                <TouchableOpacity onPress={() => submittimes()} style={styles.arrowButton}>
+                    <View>
+                    <Ionicons name="arrow-forward-outline" size={23} color="#fff"/>
+
+                        
+                    </View>
+            {/* <Image source={require('../../../assets/Images/Pref/arrowkeeper.png')} style={{backfaceVisibility:'#E04747'}}  /> */}
             </TouchableOpacity>
 }
             </View>
@@ -191,7 +236,6 @@ export default function PreferredMeetingTimes({ navigation,route }, props) {
                     data={prefferdtimes}
                     renderItem={({ item,index }) => (
 
-                        console.log('this is the item',item),
                         
                         
                    <View style={styles.preferredTimeItem}>
@@ -221,11 +265,14 @@ export default function PreferredMeetingTimes({ navigation,route }, props) {
                         </TouchableOpacity>
                     </View>
                     :
-                    <View style={[styles.buttonsviews,{justifyContent:'center',width:500}]}>
-                    <TouchableOpacity style={[styles.addtimearraybox]} onPress={()=> submittimes()}>
-                        <Text style={styles.buttonstext}>Update Preffered Times</Text>
+                    <View style={styles.buttonsviews}>
+               
+                    <TouchableOpacity style={[styles.submitbox,{width:"60%"}]} onPress={()=> submittimes()}>
+                        <Text style={styles.buttonstext}>Update Prefferd Times</Text>
                         </TouchableOpacity>
-
+                        <TouchableOpacity style={[styles.addtimearraybox,{width:"35%"}]} onPress={()=> addtimetoarray()}>
+                        <Text style={styles.buttonstext}>Add</Text>
+                        </TouchableOpacity>
                     </View>
 
 }
@@ -372,6 +419,11 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
       },
+      arrowButton:{
+        backgroundColor: '#E04747',
+        borderRadius: 50,
+        padding:13
+      }
    
 
 
