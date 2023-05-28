@@ -53,47 +53,7 @@ namespace ClassLibrary_SocialKeeper
     public class Meetings
     {
          
-        static public Dictionary<string,string> SuggestMeetingTimes(List<RatingData> data, int numSuggestions)
-        {
-           
-            double[,] combinedPreferences = new double[7, 3];
-            for (int i = 0; i < 21; i++)
-            {
-                int day = i / 3;
-                int time = i % 3;
-
-                double user1Preference = data[i].Label;
-                double user2Preference = data[i + 21].Label;
-
-                combinedPreferences[day, time] = user1Preference * user2Preference;
-            }
-
-            List<Tuple<int, int>> sortedIndices = new List<Tuple<int, int>>();
-            for (int i = 0; i < 7; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    sortedIndices.Add(new Tuple<int, int>(i, j));
-                }
-            }
-
-            sortedIndices.Sort((a, b) => combinedPreferences[b.Item1, b.Item2].CompareTo(combinedPreferences[a.Item1, a.Item2]));
-            Dictionary<string,string> bestMeetingTimes = new Dictionary<string, string>();
-            string[] times = { "morning", "evening", "night" };
-
-            for (int i = 0; i < numSuggestions; i++)
-            {
-                int day = sortedIndices[i].Item1;
-                string daystring= day.ToString();
-                int time = sortedIndices[i].Item2;
-                string timestring= times[time].ToString();
-                bestMeetingTimes.Add(daystring, timestring);
-            }
-
-            return bestMeetingTimes;
-
-
-        }
+       
         public static Tuple<TimeSpan, TimeSpan> FindCommonTimePeriod(TimeSpan start1, TimeSpan end1, TimeSpan start2, TimeSpan end2)
         {
             TimeSpan maxStart = start1 > start2 ? start1 : start2;
@@ -450,6 +410,7 @@ namespace ClassLibrary_SocialKeeper
 
                         OpeningHoursDetails openingHoursDetails = place.OpeningHours;
 
+
                             if (openingHoursDetails != null || type=="park")
                             {
 
@@ -494,8 +455,19 @@ namespace ClassLibrary_SocialKeeper
                             }
                             else
                             {
+                                
 
-                                List<Period> opcloseday = openingHoursDetails.Periods.Where(x => x.Open.Day == currentDayOfWeek && x.Close.Day == currentDayOfWeek).ToList();
+                                List<Period> opcloseday = new List<Period>();
+                                foreach (Period period in openingHoursDetails.Periods)
+                                {
+                                    if(period.Open!=null && period.Close != null)
+                                    {
+                                        if(period.Open.Day==currentDayOfWeek && period.Close.Day== currentDayOfWeek)
+                                        {
+                                            opcloseday.Add(period);
+                                        }
+                                    }
+                                }
 
                                 foreach (Period period in opcloseday)
                                 {
@@ -717,7 +689,9 @@ namespace ClassLibrary_SocialKeeper
                 
                     if (Timecheck.Item2 - Timecheck.Item1 > TimeSpan.FromHours(3))
                     {
-                        double j = int.Parse((Timecheck.Item2 - Timecheck.Item1).ToString());
+                        TimeSpan difference= Timecheck.Item2 - Timecheck.Item1;
+                        int j= difference.Hours;
+                    
                         TimeSpan resultimespan = new TimeSpan();
 
                         while (j > 0)
@@ -727,12 +701,13 @@ namespace ClassLibrary_SocialKeeper
                                 TimeSpan add3hours = TimeSpan.FromHours(3);
                                 resultimespan = currentstat.Add(add3hours);
                                 eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(currentstat, resultimespan));
+                                currentstat = resultimespan;
                             }
                             else
                             {
                                 TimeSpan addhours = TimeSpan.FromHours(j);
                                 resultimespan.Add(addhours);
-                            if (Timecheck.Item2 - resultimespan > TimeSpan.FromHours(1))
+                            if (Timecheck.Item2 - resultimespan >= TimeSpan.FromHours(1))
                             {
                                 eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(resultimespan, Timecheck.Item2));
                             }

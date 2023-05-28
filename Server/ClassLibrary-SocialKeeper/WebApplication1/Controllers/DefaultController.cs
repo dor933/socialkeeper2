@@ -247,6 +247,7 @@ namespace WebApplication1.Controllers
                 posdoinviteddto.phonenuminvite = posinvited.phonenuminvite;
                 posdoinviteddto.phonenuminvited = posinvited.phonenuminvited;
                 posdoinviteddto.hobbieNum = posinvited.hobbieNum;
+                posdoinviteddto.id = posinvited.id;
                 Usersummary user = new Usersummary();
                 user.userName = posinvited.tblUser.userName;
                 user.phoneNum1 = posinvited.tblUser.phoneNum1;

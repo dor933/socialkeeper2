@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core.Metadata.Edm;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -104,7 +105,63 @@ namespace WebApplication1.Controllers
                     userinvited.PossibleFavoriteContact1.Remove(posfavoritereq);
                     _db.PossibleFavoriteContact.Remove(posfavoritereq);
                     _db.SaveChanges();
-                    return Request.CreateResponse(HttpStatusCode.OK);
+                    FavoriteContactsDTO favdto= new FavoriteContactsDTO();
+                    favdto.phoneNum1 = favoritecont.phoneNum1;
+                    favdto.phoneNum2 = favoritecont.phoneNum2;
+                    favdto.hobbieNum = favoritecont.hobbieNum;
+                    favdto.rank = favoritecont.rank;
+                    favdto.ID = favoritecont.ID;
+                    tblhobbieDTO hobdto= new tblhobbieDTO();
+                    hobdto.hobbieName= favoritecont.tblHobbie.hobbieName;
+                    hobdto.hobbieNum= favoritecont.tblHobbie.hobbieNum;
+                    hobdto.imageuri= favoritecont.tblHobbie.imageuri;
+                    favdto.tblHobbie = hobdto;
+                    Usersummary usersum1= new Usersummary();
+                    usersum1.phoneNum1 = userinvite.phoneNum1;
+                    usersum1.userName = userinvite.userName;
+                    usersum1.birthDate = Convert.ToDateTime(userinvite.birthDate);
+                    usersum1.gender = userinvite.gender;
+                    usersum1.imageUri = userinvite.imageUri;
+                    usersum1.city = userinvite.city;
+                    usersum1.email = userinvite.email;
+
+            
+                    List<UserhobbiesDTO> userhobbiesdtolist1 = new List<UserhobbiesDTO>();
+                    foreach (tblUserHobbie userhobbie in userinvite.tblUserHobbie)
+                    {
+                        UserhobbiesDTO userhobbiedto = new UserhobbiesDTO();
+                        userhobbiedto.hobbieNum = userhobbie.hobbieNum;
+                        userhobbiedto.phoneNum1 = userhobbie.phoneNum1;
+                        tblHobbie hob = _db.tblHobbie.Where(h => h.hobbieNum == userhobbie.hobbieNum).FirstOrDefault();
+                        userhobbiedto.hobbiename = hob.hobbieName;
+                        userhobbiedto.rank = userhobbie.rank;
+                        userhobbiedto.hobbieimage= hob.imageuri;
+                        userhobbiesdtolist1.Add(userhobbiedto);
+                    }
+                    usersum1.tblUserHobbiesDTO = userhobbiesdtolist1;
+
+                    List<tblPrefferedtimesDTO> preferredTimeDTOs = new List<tblPrefferedtimesDTO>();
+
+                
+
+                    List<tblPrefferedtimesDTO> preferredTimeDTOs1 = new List<tblPrefferedtimesDTO>();
+                    foreach (tblPreferredTime preff in userinvite.tblPreferredTime)
+                    {
+                        tblPrefferedtimesDTO prefferedtdo = new tblPrefferedtimesDTO();
+                        prefferedtdo.startTime = preff.startTime;
+                        prefferedtdo.endTime = preff.endTime;
+                        prefferedtdo.weekDay = preff.weekDay;
+                        prefferedtdo.phoneNum1 = preff.phoneNum1;
+                        prefferedtdo.id = preff.id;
+                        prefferedtdo.rank = preff.rank;
+                        preferredTimeDTOs1.Add(prefferedtdo);
+                    }
+                    usersum1.tblprefferdDTO = preferredTimeDTOs1;
+                    favdto.tblUser1= usersum1;
+                   
+
+
+                    return Request.CreateResponse(HttpStatusCode.OK,favdto);
 
 
 
@@ -161,8 +218,12 @@ namespace WebApplication1.Controllers
 
             try
             {
-                List<tblUserHobbie> userhobbiestoupd = _db.tblUserHobbie.Where(x => x.phoneNum1 == userhobbiesdto[0].phoneNum1).ToList();
+                string phonenumber= userhobbiesdto[0].phoneNum1;
+                List<tblUserHobbie> userhobbiestoupd = _db.tblUserHobbie.Where(x => x.phoneNum1 == phonenumber).ToList();
+                if (userhobbiestoupd.Count > 0) { 
                 _db.tblUserHobbie.RemoveRange(userhobbiestoupd);
+                _db.SaveChanges();
+                    }
                 bool hobbieisfound = false;
                 List<tblUserHobbie> newuserhobbies = new List<tblUserHobbie>();
 
@@ -190,6 +251,7 @@ namespace WebApplication1.Controllers
 
 
                     }
+                    hobbieisfound = false;
                 }
 
                 _db.tblUserHobbie.AddRange(newuserhobbies);
@@ -223,8 +285,12 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                List<tblPreferredTime> prefferedexisting = _db.tblPreferredTime.Where(x => x.phoneNum1 == tblPrefferedtimesDTOs[0].phoneNum1).ToList();
-                _db.tblPreferredTime.RemoveRange(prefferedexisting);
+                string phonenumber= tblPrefferedtimesDTOs[0].phoneNum1;
+                List<tblPreferredTime> prefferedexisting = _db.tblPreferredTime.Where(x => x.phoneNum1 == phonenumber).ToList();
+                if (prefferedexisting.Count > 0) {
+                    _db.tblPreferredTime.RemoveRange(prefferedexisting);
+                    _db.SaveChanges();
+                }
                 List<tblPreferredTime> userpreflist = new List<tblPreferredTime>();
                 foreach (tblPrefferedtimesDTO userpref in tblPrefferedtimesDTOs)
                 {
@@ -249,19 +315,55 @@ namespace WebApplication1.Controllers
                     prefferedtdo.endTime = preff.endTime;
                     prefferedtdo.weekDay = preff.weekDay;
                     prefferedtdo.phoneNum1 = preff.phoneNum1;
-                    prefferedtdo.id = preff.id;
                     prefferedtdo.rank = preff.rank;
+                    prefferedtdo.id = preff.id;
                     preferredTimeDTOs.Add(prefferedtdo);
                 }
 
                 return Request.CreateResponse(HttpStatusCode.OK, preferredTimeDTOs);
             }
-            catch (Exception ex)
+            catch (DbEntityValidationException ex)
             {
+                foreach (var error in ex.EntityValidationErrors)
+                {
+                    foreach (var validationError in error.ValidationErrors)
+                    {
+                        Console.WriteLine($"Property: {validationError.PropertyName} Error: {validationError.ErrorMessage}");
+                    }
+                }
 
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);
             }
+            //catch velidation errors
 
+
+        }
+
+        [HttpPost]
+        [Route("api/MainAppaction/addfriendrequest")]
+        public HttpResponseMessage Addfriendrequest([FromBody] tblPossibleDTO possibledto)
+        {
+            
+            try
+                {
+                PossibleFavoriteContact possible = new PossibleFavoriteContact();
+                possible.phonenuminvite = possibledto.phonenuminvite;
+                possible.phonenuminvited = possibledto.phonenuminvited;
+                tblHobbie hob= _db.tblHobbie.Where(x=> x.hobbieNum==possibledto.hobbieNum).FirstOrDefault();
+                if (hob != null)
+                {
+                    possible.hobbieNum = hob.hobbieNum;
+                }
+                _db.PossibleFavoriteContact.Add(possible);
+                _db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+                {
+
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        
         }
 
 

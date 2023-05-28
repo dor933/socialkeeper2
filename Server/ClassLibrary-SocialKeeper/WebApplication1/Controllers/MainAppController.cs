@@ -298,21 +298,23 @@ namespace WebApplication1.Controllers
                                         userinvitedfixed.Add(eve2);
                                     }
                                 }
-                                foreach (SuggestedDTO itesug in existingsugmeetings)
-                                {
-                                    if (itesug.startTime == comtime.starttime && itesug.endTime == comtime.endtime && itesug.date == thedate)
-                                    {
+                       
 
-                                        existingperiod = true;
-                                        break;
-                                    }
-                                }
-
-                                if (!existingperiod)
-                                {
+                             
 
                                     List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(comtime.starttime, comtime.endtime), userinviteevefixed, userinvitedfixed);
-                                    foreach (var lismatchitems in listmatch)
+                                foreach (var lismatchitems in listmatch)
+                                {
+                                    foreach (SuggestedDTO itesug in existingsugmeetings)
+                                    {
+                                        if (itesug.startTime == lismatchitems.Item1 && lismatchitems.Item2 == itesug.endTime && itesug.date == thedate)
+                                        {
+
+                                            existingperiod = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!existingperiod)
                                     {
                                         if (numbermeetings == 3)
                                         {
@@ -350,7 +352,9 @@ namespace WebApplication1.Controllers
 
                                     }
 
+                                    existingperiod = false;
                                 }
+                                
                             }
                                 foreach(tblPreferredTime prefit in usertomeeting.tblPreferredTime)
                                 {
@@ -377,19 +381,30 @@ namespace WebApplication1.Controllers
                                         userinvitedfixed.Add(eve2);
                                     }
                                 }
-                                foreach (SuggestedDTO itesug in existingsugmeetings)
-                                {
-                                    if (itesug.startTime == prefit.startTime && itesug.endTime == prefit.endTime && itesug.date == thedate)
-                                    {
-
-                                        existingperiod = true;
-                                        break;
-                                    }
-                                }
-                                if (!existingperiod)
-                                {
+       
+                               
                                     List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(prefit.startTime, prefit.endTime), userinviteevefixed, userinvitedfixed);
-                                    foreach (var lismatchitems in listmatch)
+                                foreach (var lismatchitems in listmatch)
+                                {
+                                    foreach (SuggestedDTO itesug in existingsugmeetings)
+                                    {
+                                        if (itesug.startTime == lismatchitems.Item1 && itesug.endTime == lismatchitems.Item2 && itesug.date == thedate)
+                                        {
+
+                                            existingperiod = true;
+                                            break;
+                                        }
+                                    }
+                                    foreach(SuggestedDTO sugdto in suggestedmeet)
+                                    {
+                                        if(lismatchitems.Item1==sugdto.startTime && lismatchitems.Item2==sugdto.endTime && sugdto.date==thedate && sugdto.phoneNum2 == item.phoneNum2)
+                                        {
+                                            existingperiod = true;
+                                            break;
+                                        }
+                                    }
+                                    //to check if the meeting is already suggested or not in suggestedmeet
+                                    if (!existingperiod)
                                     {
                                         if (numbermeetings == 3)
                                         {
@@ -427,9 +442,11 @@ namespace WebApplication1.Controllers
 
 
                                     }
+
+                                    existingperiod = false;
+
+
                                 }
-
-
 
 
                             }
@@ -474,21 +491,30 @@ namespace WebApplication1.Controllers
                                         userinvitedfixed.Add(eve2);
                                     }
                                 }
-                                foreach (SuggestedDTO itesug in existingsugmeetings)
-                                {
-                                    if (itesug.startTime == startimespan && itesug.endTime == endtimespan && itesug.date == new DateTime(dateto.Year, dateto.Month, dateto.Day))
-                                    {
+                            
 
-                                        existingperiod = true;
-                                        break;
-                                    }
-                                }
-
-                                if (!existingperiod)
-                                {
 
                                     List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(startimespan, endtimespan), userinviteevefixed, userinvitedfixed);
-                                    foreach (var lismatchitems in listmatch)
+                                foreach (var lismatchitems in listmatch)
+                                {
+                                    foreach (SuggestedDTO itesug in existingsugmeetings)
+                                    {
+                                        if (itesug.startTime == lismatchitems.Item1 && lismatchitems.Item2 == endtimespan && itesug.date == new DateTime(dateto.Year, dateto.Month, dateto.Day))
+                                        {
+
+                                            existingperiod = true;
+                                            break;
+                                        }
+                                    }
+                                    foreach (SuggestedDTO sugdto in suggestedmeet)
+                                    {
+                                        if (lismatchitems.Item1 == sugdto.startTime && lismatchitems.Item2 == sugdto.endTime && sugdto.date == dateto && sugdto.phoneNum2 == item.phoneNum2)
+                                        {
+                                            existingperiod = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!existingperiod)
                                     {
                                         if (numbermeetings == 3)
                                         {
@@ -526,7 +552,9 @@ namespace WebApplication1.Controllers
 
 
                                     }
-                                }
+
+                                    existingperiod = false;
+
 
                                     dateto = dateto.AddHours(2);
                                     if (dateto.Hour > limitedhour || (dateto.Hour >= 00 && dateto.Hour < 09))
@@ -535,9 +563,9 @@ namespace WebApplication1.Controllers
                                         dateto = dateto.AddHours(hoursUntilNextMorning).AddMinutes(-dateto.Minute).AddSeconds(-dateto.Second).AddMilliseconds(-dateto.Millisecond);
 
                                     }
-                                
 
 
+                                }
                             }
 
                         }
@@ -634,10 +662,7 @@ namespace WebApplication1.Controllers
                             {
                                 existingperiod = false;
 
-                                if (numbermeetings == 3)
-                                {
-                                    break;
-                                }
+                           
                                 DateTime thedate = Meetings.GetDateForWeekday(comtime.weekday,comtime.starttime);
                                 List<Events> userinviteevefixed = new List<Events>();
                                 List<Events> userinvitedfixed = new List<Events>();
@@ -655,25 +680,24 @@ namespace WebApplication1.Controllers
                                         userinvitedfixed.Add(eve2);
                                     }
                                 }
-                                foreach (SuggestedDTO itesug in existingsugmeetings)
-                                {
-                                    if (itesug.startTime == comtime.starttime && itesug.endTime == comtime.endtime && itesug.date == thedate)
-                                    {
-
-                                        existingperiod = true;
-                                        break;
-                                    }
-                                }
-                                if (!existingperiod)
-                                {
+                         
+                              
 
                                     List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(comtime.starttime, comtime.endtime), userinviteevefixed, userinvitedfixed);
-                                    foreach (var lismatchitems in listmatch)
+                                foreach (var lismatchitems in listmatch)
+                                {
+                                    foreach (SuggestedDTO itesug in existingsugmeetings)
                                     {
-                                        if (numbermeetings == 3)
+                                        if (itesug.startTime == lismatchitems.Item1 && itesug.endTime == lismatchitems.Item2 && itesug.date == thedate)
                                         {
+
+                                            existingperiod = true;
                                             break;
                                         }
+                                    }
+                                    if (!existingperiod)
+                                    {
+                                     
 
                                         SuggestedDTO sugdto = new SuggestedDTO();
                                         sugdto.prefferedtimerate = 1;
@@ -707,11 +731,15 @@ namespace WebApplication1.Controllers
 
                                     }
 
+                                    existingperiod = false;
                                 }
+
+                                
                             }
 
                             foreach (tblPreferredTime prefit in usertomeeting.tblPreferredTime)
                             {
+                               
                                 existingperiod = false;
                                 DateTime thedate = Meetings.GetDateForWeekday(prefit.weekDay,prefit.startTime);
                                 TimeSpan starttime = prefit.startTime;
@@ -732,26 +760,33 @@ namespace WebApplication1.Controllers
                                         userinvitedfixed.Add(eve2);
                                     }
                                 }
-                                foreach (SuggestedDTO itesug in existingsugmeetings)
-                                {
-                                    if (itesug.startTime == prefit.startTime && itesug.endTime == prefit.endTime && itesug.date == thedate)
-                                    {
+                            
 
-                                        existingperiod = true;
-                                        break;
-                                    }
-                                }
-
-                                if (!existingperiod)
-                                {
+                              
 
                                     List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(prefit.startTime, prefit.endTime), userinviteevefixed, userinvitedfixed);
-                                    foreach (var lismatchitems in listmatch)
+                                foreach (var lismatchitems in listmatch)
+                                {
+                                    foreach (SuggestedDTO itesug in existingsugmeetings)
                                     {
-                                        if (numbermeetings == 3)
+                                        if (itesug.startTime == lismatchitems.Item1 && itesug.endTime == lismatchitems.Item2 && itesug.date == thedate)
                                         {
+
+                                            existingperiod = true;
                                             break;
                                         }
+                                    }
+                                    foreach (SuggestedDTO sugdto in suggestedmeet)
+                                    {
+                                        if (lismatchitems.Item1 == sugdto.startTime && lismatchitems.Item2 == sugdto.endTime && sugdto.date == thedate && sugdto.phoneNum2 == item.phoneNum2)
+                                        {
+                                            existingperiod = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!existingperiod)
+                                    {
+                                       
 
                                         SuggestedDTO sugdto = new SuggestedDTO();
                                         sugdto.date = thedate;
@@ -784,10 +819,12 @@ namespace WebApplication1.Controllers
 
 
                                     }
+
+                                    existingperiod = false;
+
+
+
                                 }
-
-
-
 
                             }
 
@@ -830,20 +867,30 @@ namespace WebApplication1.Controllers
                                         userinvitedfixed.Add(eve2);
                                     }
                                 }
-                                foreach (SuggestedDTO itesug in existingsugmeetings)
-                                {
-                                    if (itesug.startTime == startimespan && itesug.endTime == endtimespan && itesug.date == new DateTime(dateto.Year,dateto.Month,dateto.Day))
-                                    {
+                           
 
-                                        existingperiod = true;
-                                        break;
-                                    }
-                                }
-
-                                if (!existingperiod)
-                                {
+                             
                                     List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(startimespan, endtimespan), userinviteevefixed, userinvitedfixed);
-                                    foreach (var lismatchitems in listmatch)
+                                foreach (var lismatchitems in listmatch)
+                                {
+                                    foreach (SuggestedDTO itesug in existingsugmeetings)
+                                    {
+                                        if (itesug.startTime == lismatchitems.Item1 && itesug.endTime == lismatchitems.Item2 && itesug.date == new DateTime(dateto.Year, dateto.Month, dateto.Day))
+                                        {
+
+                                            existingperiod = true;
+                                            break;
+                                        }
+                                    }
+                                    foreach (SuggestedDTO sugdto in suggestedmeet)
+                                    {
+                                        if (lismatchitems.Item1 == sugdto.startTime && lismatchitems.Item2 == sugdto.endTime && sugdto.date == dateto && sugdto.phoneNum2 == item.phoneNum2)
+                                        {
+                                            existingperiod = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!existingperiod)
                                     {
                                         if (numbermeetings == 3)
                                         {
@@ -881,7 +928,9 @@ namespace WebApplication1.Controllers
 
 
                                     }
-                                }
+
+                                    existingperiod = false;
+
 
                                     dateto = dateto.AddHours(2);
                                     if (dateto.Hour > 22 || (dateto.Hour >= 00 && dateto.Hour < 09))
@@ -890,6 +939,7 @@ namespace WebApplication1.Controllers
                                         dateto = dateto.AddHours(hoursUntilNextMorning).AddMinutes(-dateto.Minute).AddSeconds(-dateto.Second).AddMilliseconds(-dateto.Millisecond);
 
                                     }
+                                }
                                 
                             }
 
