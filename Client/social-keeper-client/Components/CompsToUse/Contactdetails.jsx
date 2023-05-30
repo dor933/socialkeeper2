@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity,Modal } from "react-native";
+import { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Overlay, Icon,CheckBox } from '@rneui/themed';
 import {whatsappcontact,telegramcontact,mailcomposer,callnumber} from '../../assets/Utils/Connectivity';
@@ -9,6 +10,10 @@ import { Dimensions } from 'react-native';
 
 
 export default function Contactdetails({selectedContact,addtofavorite,modalVisible,setModalVisible,sendsms,isfrommainapp}) {
+
+  useEffect(() => {
+    console.log('selectedContact',selectedContact)
+  }, [])
 
 
    if(!isfrommainapp){

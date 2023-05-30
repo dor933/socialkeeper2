@@ -87,6 +87,7 @@ export default function CreateProfile({navigation,route}) {
       city: personaldetails.address.englishname,
       citylatt: personaldetails.address.latt,
       citylong: personaldetails.address.long,
+      birthDate: personaldetails.birthDate,
 
 
     };

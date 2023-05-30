@@ -84,9 +84,10 @@ const Details = ({route,navigation}) => {
 
                             }
                             <TouchableOpacity style={styles.personBtn} onPress={() => { alert('Meetings with Shlomit') }}>
-                                        <View style={styles.greenDot}></View>
                                         <Text style={styles.personBtnText}>Meeting With {usertomeeting.userName}  </Text>
                                         <Image source={{uri:usertomeeting.imageUri}} style={styles.womanIcon} />
+                                        <View style={styles.greenDot}></View>
+
 
                             </TouchableOpacity>
 
@@ -256,13 +257,13 @@ const styles = StyleSheet.create({
     personBtn: {
         flexDirection: 'row-reverse',
         alignItems: 'center',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
         
         paddingVertical: 3,
-        paddingHorizontal: 10,
+        
         backgroundColor: 'rgba(0, 0, 0, 0.06)',
         borderRadius: 15,
-        width: 180,
+        paddingLeft: 15
         
     },
     personBtnText: {
@@ -289,6 +290,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: 'white',
         borderRadius: 25,
+        
     },
     greenDot: {
         width: 7,
@@ -296,10 +298,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'green',
         borderWidth: 1,
         borderColor: 'white',
-        position: 'absolute',
-        bottom: 2,
-        right: 12,
         borderRadius: 25,
+        alignSelf: 'flex-end',
+        right: 7
+       
     },
     item: {
         flexDirection: 'row-reverse',

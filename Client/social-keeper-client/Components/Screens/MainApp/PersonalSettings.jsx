@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Button, SafeAreaView, TouchableOpacity, Dimensions, Image } from 'react-native'
+import { StyleSheet, View, Text, Button, SafeAreaView,ScrollView, TouchableOpacity, Dimensions, Image } from 'react-native'
 import React,{useState} from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -43,6 +43,8 @@ export default function SettingDashBoard(props) {
 
   return (
     <SafeAreaView style={styles.areaviewcontainter}>
+              <ScrollView>
+
       <View style={styles.container}>
         <Customheader ispersonalsettings={true}/>
         <View style={styles.settingsview}>
@@ -54,9 +56,11 @@ export default function SettingDashBoard(props) {
       <AccountSettings />
         <Meetingtimes/>
         <Intersets/>
-        <Favoritecont user={user}/>
+        <Favoritecont user={user} setUser={setUser}/>
 
              </View>
+             </ScrollView>
+
           
     </SafeAreaView>
 

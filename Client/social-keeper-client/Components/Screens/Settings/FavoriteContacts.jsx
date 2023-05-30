@@ -30,7 +30,7 @@ import Contactdetails from "../..//CompsToUse/Contactdetails.jsx";
 
 
 
-export default function FavoriteContacts({ navigation }, props) {
+export default function FavoriteContacts({ isfrommainapp:propIsFromMainApp ,navigation,route }, props) {
   const {contacts, setContacts} = React.useContext(RegistContext);
   const {filteredContacts, setFilteredContacts} = React.useContext(RegistContext);
   const {alreadymembers, setAlreadyMembers} = React.useContext(RegistContext);
@@ -45,7 +45,9 @@ export default function FavoriteContacts({ navigation }, props) {
   const [modalhobbiesvisible,setModalHobbiesVisible]=useState(false)
   const [commonhobbie,setCommonHobbie]=useState([]);
   const { setIsAuthenticated}= React.useContext(AuthContext);
-  const {setUser} = React.useContext(MainAppcontext);
+  const {user,setUser} = React.useContext(MainAppcontext);
+  const routeIsFromMainApp = route?.params?.isfrommainapp;
+  const isfrommainapp = routeIsFromMainApp !== undefined ? routeIsFromMainApp : propIsFromMainApp;
 
 
 
@@ -53,7 +55,6 @@ export default function FavoriteContacts({ navigation }, props) {
     const { pageX, pageY } = event.nativeEvent;
     setOverlayPosition({ x: pageX+200, y: pageY-100 });
     setSelectedContact(item);
-    console.log("selectedcontact",item)
     setOverlayVisible(true);
   };
 
@@ -72,12 +73,9 @@ export default function FavoriteContacts({ navigation }, props) {
 
     
     loadContacts();
-    console.log(selectedContact)
   }, []);
 
   useEffect(() => {
-    console.log("possiblefavoritecontacts",possiblefavoritecontacts)
-    console.log("invitedcontacts",invitedcontacts)
   }, [possiblefavoritecontacts,invitedcontacts]);
 
  
@@ -106,7 +104,6 @@ export default function FavoriteContacts({ navigation }, props) {
           {
             text: "Yes",
             onPress: () => {
-              console.log("im here");
 
               //find from filtered contacts the contact that match to selecetd contact and add it "sendsms" to true
               let newfilteredcontacts=filteredContacts.map((contact)=>{
@@ -131,7 +128,20 @@ export default function FavoriteContacts({ navigation }, props) {
     
             
               setFilteredContacts(newfilteredcontacts)
+              if(isfrommainapp){
+                const userinvitetoadd={
+                  phoneNum1:user.phoneNum1,
+                  phoneNum2:selectedContact.phoneNumbers[0].number,
+                  status:"P",
+                  date:formattedDate,
+                  Nickname:selectedContact.firstName
+                }
+                console.log("userinvitetoadd",userinvitetoadd)
+              }
+              else{
               setInvitedContacts([...invitedcontacts,{phoneNum1:personaldetails.phoneNumber,phoneNum2:selectedContact.phoneNumbers[0].number,status:"P",date:formattedDate,Nickname:selectedContact.firstName}])
+              }
+          
             }
             },
           ,
@@ -198,12 +208,9 @@ export default function FavoriteContacts({ navigation }, props) {
 
     }
 
-    console.log(newuser)
-    console.log(selectedImage)
 
     try{
 
-      console.log("im here to add user")
 
     const response= await axios.post("http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/AddUser",newuser);
     if(response.data=="Phone Number already exists"){
@@ -233,7 +240,6 @@ export default function FavoriteContacts({ navigation }, props) {
       );
     }
     else if(response.data=="User added"){
-      console.log("im here the user added")
       const data = new FormData();
       data.append('img',{ 
         uri: selectedImage,
@@ -266,7 +272,6 @@ export default function FavoriteContacts({ navigation }, props) {
       
     }
     else{
-      console.log("im here the user not added")
       console.log(response.data)
     }
 
@@ -274,7 +279,6 @@ export default function FavoriteContacts({ navigation }, props) {
     console.log(error)
     //bring all the errors to the user
 
-    console.log(error.response.data)
 
 
 
@@ -295,12 +299,26 @@ export default function FavoriteContacts({ navigation }, props) {
       data[i].sendsms=false;
     }
 
+    console.log('this is the data')
+    data.map((contact)=>{
+
+      if(contact.phoneNumbers){
+        if(contact.phoneNumbers[0]){
+
+      console.log(contact.phoneNumbers[0])
+        }
+      }
+    })
+
     const newdata= data.filter((contact)=>{
       if(contact.phoneNumbers){
         if(contact.phoneNumbers[0]){
-          //check if phoneNumbers[0] start with 972 or 0 or +972 or 5 and the second number is between 0-9 regex 5[0-9] 
+       
 
-          if (contact.phoneNumbers[0].number!== undefined && contact.phoneNumbers[0].number.match(/^(972|\+972|0-?5\d(-?\d){7}|5(-?\d){8})$/)) {
+
+
+          if (contact.phoneNumbers[0].number !== undefined && contact.phoneNumbers[0].number.match(/^(972|\+972|0?5\d{1}(-?\d){7})/)) {
+          
 
 
 
@@ -316,6 +334,8 @@ export default function FavoriteContacts({ navigation }, props) {
           }
 
 
+
+
        
           //check if the contact
           
@@ -323,6 +343,10 @@ export default function FavoriteContacts({ navigation }, props) {
       }
  
     })
+
+
+
+    
 
 
 
@@ -354,12 +378,79 @@ export default function FavoriteContacts({ navigation }, props) {
       return contacttoreturnt;
        
   }
-  
-  
+
   );
 
   
   const already= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/getexistingmembers', contactList);
+  console.log('this is already.data')
+  console.log(already.data)
+  if(isfrommainapp){
+
+    already.data= already.data.filter ((contact)=>{
+      let isexist=false;
+
+      user.tblFavoriteContacts.map((favoritecontact)=>{
+        if(favoritecontact.phoneNum2==contact.phonenumbers[0]){
+          isexist=true;
+        }
+      })
+
+      user.tblFavoriteContacts1.map((favoritecontact)=>{
+        if(favoritecontact.phoneNum1==contact.phonenumbers[0]){
+          console.log('is exist is true')
+          isexist=true;
+        }
+      }
+      )
+
+      if(contact.phonenumbers[0]==user.phoneNum1){
+        isexist=true;
+      }
+
+      if(isexist==false){
+        console.log('this is the item that im add')
+        console.log(contact)
+        return true
+      }
+      else{
+        console.log('this is the item that im not add')
+        console.log(contact)
+        return false;
+      }
+
+      
+ 
+
+  }
+    )
+    console.log('this is already data before')
+    console.log(already.data)
+
+    already.data.map((contact)=>{
+      user.possibleFavoriteContacts_invite_DTO.map((possiblecontact)=>{
+        if(possiblecontact.phonenuminvited==contact.phonenumbers[0]){
+          console.log('this is the contact that i added')
+          console.log(contact)
+          contact.addedtofav=true;
+          //return contact
+          
+        }
+      }
+      )
+}
+
+    )
+
+    console.log('this is already data after filter')
+    console.log(already.data)
+}
+
+
+
+        
+
+
   setAlreadyMembers(already.data);
   setFilteredAlreadyMembers(already.data);
 
@@ -403,7 +494,7 @@ export default function FavoriteContacts({ navigation }, props) {
             <Icon
               name="more-horiz"
               size={28}
-              color="#000000"
+              color="#222222"
             />
           </TouchableOpacity>
         </View>
@@ -436,7 +527,7 @@ const renderItem = ({ item }) => {
            <Icon
              name="more-horiz"
              size={28}
-             color="#000000"
+             color="#222222"
            />
  
        
@@ -491,18 +582,60 @@ const renderItem = ({ item }) => {
 
   return (
     <SafeAreaView style={{flex:1, alignItems:'center', justifyContent:'center', backgroundColor:"#ffffff"}}>
+      
+        {!isfrommainapp && (
             <Image source={require('../../../assets/Images/RandomImages/SocialKeeper.jpeg')} style={{width:180,height:180, 
             top:"3%"
             
             }} />
+        )
+        }
+
+          
 
 
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container,{marginTop: isfrommainapp? 0 : -20}]}>
       
       <View style={styles.Title}>
+        { !isfrommainapp ?
         <Text style={styles.Titletext}> My Contacts </Text>
-       
+        :
+        <View style={{flexDirection:'row-reverse',justifyContent:'space-around',width:'100%',marginBottom:20}}>
+        <View style={{
+          width:200,
+          height:30,
+          backgroundColor:'#cb595a',
+          borderRadius:100,
+          alignSelf:'center',
+        }}
+         >
+        <Text style={[styles.Titletext,{color:'#ffffff',fontWeight:'600',paddingLeft:22,top:-2,fontSize:15}]}> Add your Friends! </Text>
+
+        </View>
+        <View >
+        <Image source={{uri:user.imageUri}} style={{
+          width:45,
+          height:45,
+          borderRadius:100,
+          alignSelf:'center',
+          bottom:0
+          
+        }} />
+        </View>
+
+        </View>
+
+  
+}
+
+
+{ !isfrommainapp && (
+
         <Image source={{uri:selectedImage}} style={styles.myimageprofile} />
+        )
+}
+            
+           
       </View>
    
       <View style={styles.headerandsearch}> 
@@ -520,19 +653,28 @@ const renderItem = ({ item }) => {
         placeholder="Search"
         placeholderTextColor="black"
         onChangeText={(text) => {
+
+          if(contacts.length>0){
+
           setFilteredContacts(
             contacts.filter((i) =>
               i.name.toLowerCase().includes(text.toLowerCase())
             )
           );
+        }
 
+              if(alreadymembers!='No Users'){
           setFilteredAlreadyMembers(
             alreadymembers.filter((i) =>
               i.userName.toLowerCase().includes(text.toLowerCase())
             )
             
           )
-        }}
+              }
+            
+              
+        
+            }}
                 
       />
 
@@ -551,7 +693,9 @@ const renderItem = ({ item }) => {
       
      { alreadymembers!='No Users' && (
     <View>
+      { !isfrommainapp &&
       <Text style={styles.alreadymemberscss}>Already Members</Text>
+}
       <FlatList
         data={filteredalreadymebers}
         renderItem={renderfavoriteItem}
@@ -564,10 +708,34 @@ const renderItem = ({ item }) => {
   )}
         
 
-    
+    { (!isfrommainapp || (isfrommainapp && alreadymembers.length==0)) && (
 
       <View>
+        { !isfrommainapp ?
       <Text style={styles.alreadymemberscss}>Invite to join</Text>
+      :
+      <View style={{flexDirection:'row',justifyContent:'center',width:'100%'}}>
+      <View style={{
+        width:Dimensions.get('window').width - 40,
+        height:20,
+        backgroundColor:'#b3b2af',
+        borderRadius:100,
+        marginTop:10,
+        shadowOffset: {
+          width: 2,
+          height: 4,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        shadowColor: '#222222',
+        elevation: 1,
+        
+      }}
+        >
+      <Text style={[styles.alreadymemberscss,{fontSize:10,textAlign:'center',top:0,height:20,fontFamily:'NunitoSans_400Regular',color:'#ffffff'}]}>Your Contacts are not in the app, but don't worry-invite them!</Text>
+      </View>
+      </View>
+        }
 
       <FlatList 
         data={filteredContacts}
@@ -576,6 +744,8 @@ const renderItem = ({ item }) => {
         extraData={filteredContacts}
       />
       </View>
+    )
+}
 
       <Overlay
     isVisible={isOverlayVisible}
@@ -585,13 +755,15 @@ const renderItem = ({ item }) => {
       {
         top: overlayPosition.y + 90, // Adjust the top position
         left: overlayPosition.x - 40, // Adjust the left position
+        backgroundColor:'#e6e4e1',
+        
       },
     ]}
   >
     { alreadymembers.includes(selectedContact) ? (
       <>
 
-     <View style={{flexDirection:'row-reverse',alignItems:'center',justifyContent:'space-around',width:"100%"}}>
+     <View style={{flexDirection:'row-reverse',paddingRight:34,alignItems:'center',backgroundColor:'#e6e4e1',justifyContent:'space-around',width:"100%",height:"40%", borderBottomColor:'#bfbebb',borderBottomWidth:0.5}}>
       <Icon 
          name="info"
           size={15}
@@ -601,30 +773,30 @@ const renderItem = ({ item }) => {
           />
 
 
-        <Text style={styles.overlayText} onPress={()=> setModalVisible(true)}>Show contact details</Text>
+        <Text style={styles.overlayText} onPress={()=> setModalVisible(true)}> Contact Details</Text>
 
 
      </View>
 
-{!selectedContact.addedtofav && (
-   <View style={{flexDirection:'row-reverse',alignItems:'center',justifyContent:'space-around',width:"100%"}}>
+   <View style={{flexDirection:'row-reverse',alignItems:'center',backgroundColor:'#e6e4e1',justifyContent:'space-around',height:"40%",width:"100%"}}>
       
    <Icon
      name="favorite"
      size={15}
      type="AntDesign"
      color="red"
+     opacity={selectedContact.addedtofav? 0.3 : 1}
      />
 
 
 
-   <Text style={[styles.overlayText, { color: "#e06c85" }]} onPress={()=> addtofavorite()}>
-     Send favorite request
+   <Text style={[styles.overlayText, { color: "#e06c85", opacity:!selectedContact.addedtofav? 1 : 0.3 }]} onPress={!selectedContact.addedtofav? ()=> addtofavorite() : null}>
+     Send Favorite Request
    </Text>
    </View>
 
 
-)}
+
      
 
      
@@ -633,7 +805,7 @@ const renderItem = ({ item }) => {
 
       </>
     ) : (
-      <Text style={styles.overlayText} onPress={()=> sendsms()}>Send SMS invitation</Text>
+      <Text style={styles.overlayText} onPress={()=> sendsms()}>Send SMS Invitation</Text>
     )}
   </Overlay>
   {
@@ -644,11 +816,12 @@ const renderItem = ({ item }) => {
   }
 
       <View>
-        <Mymodal setSelectedContact={setSelectedContact} modalhobbiesvisible={modalhobbiesvisible} setModalHobbiesVisible={setModalHobbiesVisible} selectedContact={selectedContact} setCommonHobbie={setCommonHobbie} commonhobbie={commonhobbie} />
+        <Mymodal isfrommainapp={isfrommainapp} setSelectedContact={setSelectedContact} modalhobbiesvisible={modalhobbiesvisible} setModalHobbiesVisible={setModalHobbiesVisible} selectedContact={selectedContact} setCommonHobbie={setCommonHobbie} commonhobbie={commonhobbie} />
       </View>
 
       </View>
 
+{ !isfrommainapp && (
        <View style={{paddingBottom:20}}>
       <TouchableOpacity onPress={onsubmit}>
         <Icon
@@ -662,6 +835,8 @@ const renderItem = ({ item }) => {
       </TouchableOpacity>
       <Text style={{textAlign:'center',fontSize:16,fontFamily:'Lato_700Bold'}}>Press when you're Done</Text>
       </View>
+)
+}
 
 
     </SafeAreaView>
@@ -819,7 +994,7 @@ justifyContent: 'space-around',
     padding: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
   },
 
   overlayText: {
@@ -827,9 +1002,7 @@ justifyContent: 'space-around',
       fontSize: 12,
       fontFamily: 'NunitoSans_200ExtraLight',
       lineHeight: 19,
-      textShadowColor: 'rgba(0, 0, 0, 0.25)',
-      textShadowOffset: { width: 1, height: 1 },
-      textShadowRadius: 0.5,
+      
   },
 
 
@@ -897,7 +1070,7 @@ justifyContent: 'space-around',
     color: "#333333",
     lineHeight: 33,
     textAlign: 'right',
-    marginRight: 5,
+    marginRight: 10,
     fontFamily: "NunitoSans_400Regular",
     top:10
 }

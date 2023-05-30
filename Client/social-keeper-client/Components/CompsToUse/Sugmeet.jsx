@@ -6,7 +6,7 @@ import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Dimensions, But
 import { ListItem } from '@rneui/themed';
 import { Ionicons } from "@expo/vector-icons";
 import {MainAppcontext} from "../Screens/MainApp/MainAppcontext";
-import { List } from "react-native-paper";
+import axios from "axios";
 //import lato font
 
 
@@ -19,8 +19,7 @@ export default function Sugmeet({ meeting, navigation, invitedbyfriend, meetingt
   
     //load lato font
     const [hobbietype, sethobbietype] = useState('');
-
-  
+    const {user, setUser} = useContext(MainAppcontext);
     const datetime= meeting.date;
     const {hobbienumtypes} = useContext(MainAppcontext);
 
@@ -30,6 +29,53 @@ export default function Sugmeet({ meeting, navigation, invitedbyfriend, meetingt
       })
       sethobbietype(hobbietype.hobbie)
     }, [meeting])
+
+
+
+    const changemeetingstatus = async (meetingNum, status) => {
+      try{
+      parseInt(meetingNum);
+      console.log('this is the meetingstatus', status)
+      const url = `http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/Updmeeting/${meetingNum}/${status}`;
+      console.log('this is the url', url)
+  
+      const response = await axios.put(url);
+      console.log('this is the response', response.data)
+      if (response.data) {
+          console.log('this is the response', response.data)
+          return response.data;
+      }
+  }
+  catch (error) {
+      console.log('this is the error', error)
+  
+  }
+  }
+  
+  const cancelmeeting = async () => {
+      const meetingNum = meeting.meetingNum;
+      console.log('this is the meetingNum', meetingNum)
+      const tblsuggestedcopy= user.tblSuggestedMeetings;
+          const tblsuggested1copy= user.tblSuggestedMeetings1;
+          let meetingcopy={};
+          meetingcopy= user.tblSuggestedMeetings.find(meeting => meeting.meetingNum === meetingNum);
+          let data={};
+          if(meetingcopy==undefined){
+              let meetingtochange=tblsuggested1copy.find(meeting => meeting.meetingNum === meetingNum);
+              meetingtochange.status="R";
+              setUser({...user,tblSuggestedMeetings1:tblsuggested1copy});
+              data=await changemeetingstatus(meetingNum,"R");
+  
+          }
+          else{
+              let meetingtochange=tblsuggestedcopy.find(meeting => meeting.meetingNum === meetingNum);
+              meetingtochange.status="R";
+              setUser({...user,tblSuggestedMeetings:tblsuggestedcopy});
+              data=await changemeetingstatus(meetingNum,"R");
+  
+          }
+      }
+  
 
     
 
@@ -45,7 +91,7 @@ export default function Sugmeet({ meeting, navigation, invitedbyfriend, meetingt
                 //make info button
                 <TouchableOpacity
                 style={styles.deleteButton}
-                onPress={() => handlecall()}
+                onPress={cancelmeeting}
                 >
                 <Ionicons name="trash" size={24} color="white" />
                 </TouchableOpacity>
@@ -250,6 +296,7 @@ const styles = StyleSheet.create({
             width:"100%",
             borderRadius: 25,
             marginTop:10,
+            
 
             },
 

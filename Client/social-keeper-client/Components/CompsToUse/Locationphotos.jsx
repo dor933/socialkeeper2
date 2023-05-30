@@ -134,14 +134,7 @@ const LocationPhotos = ({photosarray,typeofmeeting,meeting,navigation}) => {
             {
                 typeofmeeting === 'suggested' &&
                 <View style={[styles.buttonsviews]}>
-                        <TouchableOpacity style={styles.addtimearraybox} onPress={async () => { 
-
-                            await cancelmeeting();
-                            navigation.navigate('SuggestedMeetings');
-
-                         }}>
-                        <Text style={styles.buttonstext}>Cancel the Meeting</Text>
-                    </TouchableOpacity>
+                 
                     <TouchableOpacity style={styles.submitbox} onPress={async () => {
 
                      
@@ -192,6 +185,14 @@ const LocationPhotos = ({photosarray,typeofmeeting,meeting,navigation}) => {
                      }}>
                         <Text style={styles.buttonstext}>Schedule Meeting</Text>
                     </TouchableOpacity>
+                    <TouchableOpacity style={styles.addtimearraybox} onPress={async () => { 
+
+                   await cancelmeeting();
+                 navigation.navigate('SuggestedMeetings');
+
+                      }}>
+                 <Text style={styles.buttonstext}>Cancel the Meeting</Text>
+                  </TouchableOpacity>
                 
 
                 </View>

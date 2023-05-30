@@ -20,6 +20,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, Safe
     const {selectedhobbies, setSelectedHobbies} = useContext(RegistContext);
     const {personaldetails, setPersonalDetails} = useContext(RegistContext);
     const {ispersonalactiveated, setIspersonalactiveated} = useContext(MainAppcontext);
+    const {user, setUser} = useContext(MainAppcontext);
 
 
     const counting = (number) => {
@@ -42,6 +43,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, Safe
         }
        
       return () => {
+        
           setIspersonalactiveated(false);
         
       }
@@ -63,7 +65,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, Safe
     };
 
   
-    const handleContinue = () => {
+    const handleContinue = async () => {
       if(!ifinapp){
       if (count === 4) {
         console.log("selectedhobbies",selectedhobbies);
@@ -75,6 +77,21 @@ import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, Safe
     else{
       if (count === 4) {
         console.log("selectedhobbies",selectedhobbies);
+
+        const response= await axios.put('http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/Updhobbies', 
+        selectedhobbies
+        );
+
+        if(response.status==200){
+          Alert.alert('Your hobbies has been updated successfully');
+          setUser({...user, tblUserHobbiesDTO: response.data})
+
+          
+        }
+          
+          
+
+
       } else {
       }
 
@@ -204,7 +221,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, Safe
       borderRadius: 50,
       padding: 13,
       top: 30,
-      right: 165,
+      right: 150,
     },
   });
   

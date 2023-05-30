@@ -40,6 +40,7 @@ export default function SuggestedMeetingsScreen({navigation}) {
 
   }, [user])
 
+
  
 
 
@@ -138,7 +139,7 @@ export default function SuggestedMeetingsScreen({navigation}) {
           
         }
               {
-           selectedIndex==1
+           selectedIndex==2
            && user.tblSuggestedMeetings1 
            && user.tblSuggestedMeetings1.length > 0 && 
 
@@ -151,7 +152,7 @@ export default function SuggestedMeetingsScreen({navigation}) {
              key={index}
               navigation={navigation} 
               invitedbyfriend={true}
-               meetingtype="waiting"  />
+               meetingtype="suggested"  />
             )
               }
 

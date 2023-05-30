@@ -23,7 +23,7 @@ import { common } from '@mui/material/colors';
 
 
 
-export default function Mymodal({modalhobbiesvisible, setSelectedContact, setModalHobbiesVisible,selectedContact, commonhobbie, setCommonHobbie}) {
+export default function Mymodal({modalhobbiesvisible,isfrommainapp, setSelectedContact, setModalHobbiesVisible,selectedContact, commonhobbie, setCommonHobbie}) {
 
   const {selectedhobbies, setSelectedHobbies} = React.useContext(RegistContext);
   const [commonhobbies, setCommonHobbies] = React.useState([]);
@@ -34,9 +34,6 @@ export default function Mymodal({modalhobbiesvisible, setSelectedContact, setMod
   const {filteredalreadymebers,setFilteredAlreadyMembers}= React.useContext(RegistContext);
 
 
-
-  
-  
 
   useEffect(() => {
 
@@ -92,23 +89,29 @@ export default function Mymodal({modalhobbiesvisible, setSelectedContact, setMod
     });
   };
 
-  const hidemodaladdhobbies = () => {
+  const hidemodaladdhobbies = async () => {
 
    
 
 
     const updatedAlreadyMembers = filteredalreadymebers.map((contact) => {
-      console.log('contact is',contact)
       if (contact.phonenumbers[0] === selectedContact.phonenumbers[0]) {
+        console.log('contact is',contact)
+        console.log('selectedContact is',selectedContact)
 
         return { ...contact, addedtofav: true };
       }
       return contact;
     });
+
+    console.log('this is the updated already members')
+    console.log(updatedAlreadyMembers);
     
     setFilteredAlreadyMembers(updatedAlreadyMembers);
     setAlreadyMembers(updatedAlreadyMembers);
-    const newselected= updatedAlreadyMembers.find((contact) => contact.phonenumbers[0] === selectedContact.phonenumbers[0]);
+    const newselected= updatedAlreadyMembers.find((contact) => contact.phonenumbers[0] == selectedContact.phonenumbers[0]);
+    console.log('this is the new selected')
+    console.log(newselected);
     setSelectedContact(newselected);
     const possiblefavorite={
       phonenuminvite: personaldetails.phoneNumber,
@@ -117,10 +120,39 @@ export default function Mymodal({modalhobbiesvisible, setSelectedContact, setMod
       // hobbieNum:selectedhobbies[0].hobbienumber
       //will be after the hobbie screen
     }
+    console.log('this is the possible favorite')
+    console.log(possiblefavorite);
 
 
 
     setPossibleFavoriteContacts([...possiblefavoritecontacts,possiblefavorite]);
+
+    if(isfrommainapp){
+
+      const response= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/addfriendrequest',
+      possiblefavorite
+      );
+
+      if(response.status==200){
+        alert('Friend request sent');
+        //search in already members and filtered already members and change the addedtofav to true
+        const updatedAlreadyMembers = filteredalreadymebers.map((contact) => {
+
+          if (contact.phonenumbers[0] == selectedContact.phonenumbers[0]) {
+
+            return { ...contact, addedtofav: true };
+          }
+          return contact;
+        }
+        );
+        setFilteredAlreadyMembers(updatedAlreadyMembers);
+        setAlreadyMembers(updatedAlreadyMembers);
+      
+
+
+      }
+
+    }
 
     setModalHobbiesVisible(!modalhobbiesvisible);
   };
@@ -169,6 +201,9 @@ export default function Mymodal({modalhobbiesvisible, setSelectedContact, setMod
         <Text style={styles.textchoice}>
          Found {commonhobbies.length} common hobbies with {selectedContact.userName}
         </Text>
+        <Text style={styles.textdescript}>
+          Choose a hobby to add to your favorites
+        </Text>
       <FlatList
         data={commonhobbies}
         renderItem={({ item }) => (
@@ -209,7 +244,7 @@ export default function Mymodal({modalhobbiesvisible, setSelectedContact, setMod
                     <View style={{alignSelf:'center',marginTop:15}}>
                     <Button
                     mode="contained"
-                    onPress={() => hidemodaladdhobbies()}
+                    onPress={ () =>  hidemodaladdhobbies()}
                     buttonColor="#194169"
                   >
                     <Text> Submit </Text>
