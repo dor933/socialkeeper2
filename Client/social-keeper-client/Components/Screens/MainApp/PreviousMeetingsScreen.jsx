@@ -63,6 +63,7 @@ export default function PreviousMeetingsScreen({navigation}) {
     console.log(date);
     const monthname=monthNames[date.getMonth()];
     console.log(monthname);
+    console.log('this is the item new 2805', item)
 
     return (
       <View style={{width:Dimensions.get('window').width-20, alignSelf:'center'}}>

@@ -1,6 +1,6 @@
 import react from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Dimensions, Image } from 'react-native';
-import { useState,useContext } from 'react';
+import { useState,useContext,useEffect } from 'react';
 import {
     useFonts,
     Lato_100Thin,
@@ -11,9 +11,39 @@ import {
     Lato_900Black,
   } from '@expo-google-fonts/lato';
   import {MainAppcontext} from '../Screens/MainApp/MainAppcontext';
+  import * as Network from 'expo-network';
+
 //create a functional component
 
 export default function Customheader({ispersonalsettings}) {
+
+  const [isconnected, setIsconnected] = useState(true);
+
+  useEffect(() => {
+    checkinternet();
+
+     const intervalid = setInterval(() => {
+      checkinternet();
+    }, 10000);
+
+
+    return () => {
+      clearInterval(intervalid);
+    };
+
+  }, []);
+
+  const checkinternet = async () => {
+    const networkstate = await Network.getNetworkStateAsync();
+    if (networkstate.isConnected == true) {
+      setIsconnected(true);
+    }
+    else {
+      setIsconnected(false);
+    }
+  }
+
+
     let [fontsLoaded] = useFonts({
         Lato_100Thin,
         Lato_300Light,
@@ -27,8 +57,6 @@ export default function Customheader({ispersonalsettings}) {
 
     return (
         <View style={[styles.container,{backgroundColor: ispersonalsettings==true? "#222222" : "#ffffff" , borderColor: ispersonalsettings==true? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)" }]}>
-            {console.log(user)}
-            {console.log(user.userName)}
         {
           // If the user is not undefined
           user !== undefined && (
@@ -38,8 +66,12 @@ export default function Customheader({ispersonalsettings}) {
               <Text style={[styles.textstyle,{color: ispersonalsettings==true? "#ffffff" : "rgba(0,0,0,0.7)"}]}>Hello, {user.userName}</Text>
             </View>
              <View style={styles.box2}>
-             <View style={styles.onlinerectengle}>
-               <Text style={styles.textonlinestyle}>Online</Text>
+             <View style={[styles.onlinerectengle,{borderColor:isconnected?"#AAFFAD" : "#FFADAD" }]}>
+               <Text style={isconnected?styles.textonlinestyle : styles.textoffline}>
+                {isconnected? "Online" : "Offline"}
+                
+               
+               </Text>
              </View>
              <Image
                source={{ uri: user.imageUri}}
@@ -83,10 +115,10 @@ const styles= StyleSheet.create({
         alignItems:'center',
     },
     textstyle:{
-        width:130,
+        width:143,
         height:24,
         fontFamily:'Lato_700Bold',
-        fontSize:17,
+        fontSize:16,
         lineHeight:24,
         color:'rgba(0,0,0,0.7)',
         letterSpacing:0.03,
@@ -100,6 +132,16 @@ const styles= StyleSheet.create({
         fontSize:10,
         lineHeight:12,
         color:"#AAFFAD",
+        letterSpacing:0.03,
+        fontStyle:'normal'
+    },
+
+    textoffline:{
+        height:12,
+        fontFamily:'Lato_400Regular',
+        fontSize:10,
+        lineHeight:12,
+        color:"#FFADAD",
         letterSpacing:0.03,
         fontStyle:'normal'
     },

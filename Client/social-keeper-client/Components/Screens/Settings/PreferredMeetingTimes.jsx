@@ -34,6 +34,7 @@ export default function PreferredMeetingTimes({ navigation,route }, props) {
     const {ispersonalactiveated, setIspersonalactiveated}= React.useContext(MainAppcontext);
     const {user, setUser}= React.useContext(MainAppcontext);
 
+
         useEffect(() => {
             if(!isfrommainapp){
             setPrefferdTimes([]);

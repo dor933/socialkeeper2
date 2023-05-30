@@ -28,6 +28,7 @@ export default function Sugmeet({ meeting, navigation, invitedbyfriend, meetingt
         return each.hobbienum===meeting.hobbieNum
       })
       sethobbietype(hobbietype.hobbie)
+      console.log('this is my meeting', meeting)
     }, [meeting])
 
 

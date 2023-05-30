@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Button, SafeAreaView,Animated, TouchableOpacity, Dimensions, Image, ScrollView } from 'react-native'
+import { StyleSheet, View, Text, Button, SafeAreaView,Animated, TouchableOpacity, Dimensions, Image, ScrollView, Alert } from 'react-native'
 import React,{useState,useContext, useEffect} from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -39,33 +39,6 @@ function AccountSettings() {
  
 
 
-  useEffect(() => {
-    console.log(user)
-    const persondet={
-      phoneNumber:user.phoneNum1,
-      email:user.email,
-      gender: user.gender,
-      userName: user.userName,
-
-    }
-    setPersonalDetails(persondet)
-    setSelectedImage(user.imageUri)
-    console.log('this is navigation',navigation)
-    console.log('this is personal details',personaldetails)
-    console.log('this is selected image',selectedImage)
-    
-  }, [])
-
-
-
-  const [fontsLoaded] = useFonts({
-    Lato_100Thin,
-    Lato_300Light,
-    Lato_400Regular,
-    Lato_700Bold,
-    Lato_900Black,
-  });
-  const [expanded, setExpanded] = React.useState(false);
 
   return (
     
@@ -87,6 +60,15 @@ function AccountSettings() {
    
   <ListItem.Content>
   <TouchableOpacity onPress={() => { 
+      const persondet={
+        phoneNumber:user.phoneNum1,
+        email:user.email,
+        gender: user.gender,
+        userName: user.userName,
+  
+      }
+      setPersonalDetails(persondet)
+      setSelectedImage(user.imageUri)
             setIspersonalactiveated(true)
             navigation.navigate('CreateProfile', {isfrommainapp: true})} 
 
@@ -101,14 +83,7 @@ function AccountSettings() {
 }
 
 function Meetingtimes(props) {
-    const [fontsLoaded] = useFonts({
-        Lato_100Thin,
-        Lato_300Light,
-        Lato_400Regular,
-        Lato_700Bold,
-        Lato_900Black,
-        });
-        const [expanded, setExpanded] = React.useState(false);
+ 
         const navigation = useNavigation();
         const {prefferdtimes,setPrefferdTimes} = useContext(RegistContext);
         const {ispersonalactiveated, setIspersonalactiveated} = useContext(MainAppcontext);
@@ -156,17 +131,9 @@ function Intersets(props) {
   const {ispersonalactiveated, setIspersonalactiveated} = useContext(MainAppcontext);
 
 
-    const [fontsLoaded] = useFonts({
-        Lato_100Thin,
-        Lato_300Light,
-        Lato_400Regular,
-        Lato_700Bold,
-        Lato_900Black,
-        });
-        const [expanded, setExpanded] = React.useState(false);
+  
 
         useEffect(() => {
-          console.log(user.tblUserHobbiesDTO)
           const hobbiesdto=user.tblUserHobbiesDTO;
           setSelectedHobbies(hobbiesdto)
 
@@ -205,49 +172,99 @@ function Intersets(props) {
     );
 }
 
-function Favoritecont ({user,setUser}) {
-    const [fontsLoaded] = useFonts({
-        Lato_100Thin,
-        Lato_300Light,
-        Lato_400Regular,
-        Lato_700Bold,
-        Lato_900Black,
-        });
+function Favoritecont () {
+   
         const [expanded, setExpanded] = React.useState(false);
         const [friendrequestexpanded, setFriendrequestexpanded] = React.useState(false);
         const [friendexpanded, setFriendexpanded] = React.useState(false);
         const [modalVisible, setModalVisible] = useState(false);
         const [selectedcontact, setSelectedcontact] = useState(null);
+        const [friendid,setFriendid]=useState(null)
+        const {user, setUser} = React.useContext(MainAppcontext);
+
+        const navigation=useNavigation()
+
         
 
-        const removefriend = (friendid) => {
-          console.log('this is friend id',friendid)
-          console.log('will remove friend from favorite in the future')
-          
-        }
+    
 
         const sendsms=()=>{
           console.log('will send sms')
         }
 
         const handlefreindrequest = async (friendid,ifapproved) => {
-          console.log('this is friend id',friendid)
           const item={
             requestid:friendid,
             isAccepted:ifapproved
           }
 
+
+          if(ifapproved==true){
+
           const response= await axios.put('http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/Updfriendrequest',item)
           if(response.status==200){
-            console.log('friend request updated')
-            const newtblpossibleinvited=user.possibleFavoriteContacts_invited_DTO.filter((item)=>item.id!=friendid)
-            setUser({...user,possibleFavoriteContacts_invited_DTO:newtblpossibleinvited})
-            //add response.data to tblFavoriteContacts1
-
+            //remove response.data from possibleFavoriteContacts_invited_DTO
+            const newtblpossibleinvited1=user.possibleFavoriteContacts_invited_DTO.filter((item)=>item.id!=friendid)
             const newtblFavoriteContacts1=[...user.tblFavoriteContacts1,response.data]
-            setUser({...user,tblFavoriteContacts1:newtblFavoriteContacts1})
+            setUser({...user,tblFavoriteContacts1:newtblFavoriteContacts1,possibleFavoriteContacts_invited_DTO:newtblpossibleinvited1})
+          }
+        }
+          else{
+            const response= await axios.put('http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/Updfriendrequest',item)
+            if(response.status==200){
+              //remove response.data from possibleFavoriteContacts_invited_DTO
+              const newtblpossibleinvited1=user.possibleFavoriteContacts_invited_DTO.filter((item)=>item.id!=friendid)
+              setUser({...user,possibleFavoriteContacts_invited_DTO:newtblpossibleinvited1})
+
+            }
+            
+
+
 
           }
+
+        }
+        const removefriend= async()=>{
+            
+          //make an alert to confirm
+          Alert.alert(
+            "Did you want to remove this friend?",
+            "Press Remove to remove this friend from your list",
+            [
+              {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel"
+              },
+              { 
+                text: "Remove", 
+                onPress: async() => {
+                  console.log('this is friend id',friendid)
+                  //chcek the type of friendid if its a number or a string
+
+                  
+            
+                   
+                  const response=await axios.delete(`http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/deletefriendship/${friendid}`)
+          
+                  if(response.status==200){
+                    console.log('friend deleted')
+                    const newtblFavoriteContacts1=user.tblFavoriteContacts1.filter((item)=>item.ID!=friendid)
+                    const newtblFavoriteContacts=user.tblFavoriteContacts.filter((item)=>item.ID!=friendid)
+                    const suggestedeltenumbers= response.data;
+                    //run on tblsuggestedmeetings and delete rows if the number is in the array
+                    const newtblsuggestedmeetings=user.tblSuggestedMeetings.filter((item)=>!suggestedeltenumbers.includes(item.meetingNum))
+                    const newtblsuggestedmeetings1=user.tblSuggestedMeetings1.filter((item)=>!suggestedeltenumbers.includes(item.meetingNum))
+                    setUser({...user,tblSuggestedMeetings:newtblsuggestedmeetings,tblSuggestedMeetings1:newtblsuggestedmeetings1,tblFavoriteContacts1:newtblFavoriteContacts1,tblFavoriteContacts:newtblFavoriteContacts})
+                    setModalVisible(false)
+
+                    
+                  }
+                }
+              }
+            ]
+          );
+      
 
         }
         
@@ -270,7 +287,6 @@ function Favoritecont ({user,setUser}) {
         />
 
           <ListItem.Content>
-            {console.log(user.possibleFavoriteContacts_invite_DTO.length)}
         
             <ListItem.Title style={styles.listaccordiontext}>Favorite Contacts
                   
@@ -279,7 +295,7 @@ function Favoritecont ({user,setUser}) {
             <Badge
             status="error"
             value={user.possibleFavoriteContacts_invited_DTO.length}
-            containerStyle={{ position: 'absolute', top: 0, right: 150 }}
+            containerStyle={{ position: 'absolute', top: 0, right: 138 }}
             
             />}  
           </ListItem.Content>
@@ -374,28 +390,22 @@ function Favoritecont ({user,setUser}) {
       justifyContent: 'space-between',
     }}
   >                    
-                    {console.log('this is the item')}
-                    {console.log(item.hobbieNum)}
                     <View style={{ flex: 1, justifyContent: 'center' }}>
 
                     <ListItem.Title
                     style={styles.listaccordiontext}
                     >{item.tblUser.userName} </ListItem.Title>
-                    {console.log('this is tbluser',item.tblUser)}
                     <ListItem.Subtitle style={styles.listaccordionsubtext}>{item.tblUser.email}</ListItem.Subtitle>
                     </View>
-                    {
-                      console.log('this is item222',item)
-                    }
+                  
 
                   
                     <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 5 }}>
-                  <TouchableOpacity style={[styles.buttondecline,{ marginRight: 10 }]}>
+                  <TouchableOpacity style={[styles.buttondecline,{ marginRight: 10 }]} onPress={()=> {handlefreindrequest(item.id,false)}}>
                     <Text style={styles.buttondeclinetext}>Decline</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.buttonapprove} onPress={()=>  {
 
-                    console.log('item',item)
                     handlefreindrequest(item.id,true)
                   }}>
                     <Text style={styles.approvebuttontext}>Approve</Text>
@@ -472,14 +482,11 @@ function Favoritecont ({user,setUser}) {
       justifyContent: 'space-between',
     }}
   >                    
-                    {console.log('this is the item')}
-                    {console.log(item.hobbieNum)}
                     <View style={{ flex: 1, justifyContent: 'center' }}>
 
                     <ListItem.Title
                     style={styles.listaccordiontext}
                     >{item.tblUser1.userName} </ListItem.Title>
-                    {console.log('this is tbluser',item.tblUser)}
                     <ListItem.Subtitle style={styles.listaccordionsubtext}>{item.tblUser1.email}</ListItem.Subtitle>
                     </View>
 
@@ -489,6 +496,7 @@ function Favoritecont ({user,setUser}) {
                   <TouchableOpacity style={[styles.buttondecline,{marginLeft:15,width:110,backgroundColor:'#898f8b'}]} onPress={
                     () => {
                       setSelectedcontact(item.tblUser1)
+                      setFriendid(item.ID)
                       setModalVisible(true);
 
                     }
@@ -531,14 +539,11 @@ function Favoritecont ({user,setUser}) {
       justifyContent: 'space-between',
     }}
   >                    
-                    {console.log('this is the item')}
-                    {console.log(item.hobbieNum)}
                     <View style={{ flex: 1, justifyContent: 'center' }}>
 
                     <ListItem.Title
                     style={styles.listaccordiontext}
                     >{item.tblUser1.userName} </ListItem.Title>
-                    {console.log('this is tbluser',item.tblUser)}
                     <ListItem.Subtitle style={styles.listaccordionsubtext}>{item.tblUser1.email}</ListItem.Subtitle>
                     </View>
 
@@ -548,8 +553,8 @@ function Favoritecont ({user,setUser}) {
                   <TouchableOpacity style={[styles.buttondecline,{marginLeft:15,width:110,backgroundColor:'#898f8b'}]} onPress={
                     ()=>{
                       setSelectedcontact(item.tblUser1)
+                      setFriendid(item.ID)
                       setModalVisible(true)
-                      console.log('this is modal visible')
                       console.log(modalVisible)
 
                     }
@@ -576,7 +581,7 @@ function Favoritecont ({user,setUser}) {
             {selectedcontact &&
 
 <Contactdetails addtofavorite={removefriend} modalVisible={modalVisible} setModalVisible={setModalVisible} selectedContact={selectedcontact} isfrommainapp={true}
-                sendsms={sendsms}
+                sendsms={sendsms} friendid={friendid} 
                  />
             }
 

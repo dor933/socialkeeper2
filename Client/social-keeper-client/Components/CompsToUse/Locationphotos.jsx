@@ -1,6 +1,7 @@
 import React, { useState,useEffect, useContext  } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Dimensions } from 'react-native';
 import { MainAppcontext } from '../Screens/MainApp/MainAppcontext';
+import * as Calendar from 'expo-calendar';
 import axios from 'axios';
 
 //lower component
@@ -65,7 +66,6 @@ const LocationPhotos = ({photosarray,typeofmeeting,meeting,navigation}) => {
                 meetingtochange.status="R";
                 setUser({...user,tblSuggestedMeetings1:tblsuggested1copy});
                 data=await changemeetingstatus(meetingNum,"R");
-
             }
             else{
                 let meetingtochange=tblsuggestedcopy.find(meeting => meeting.meetingNum === meetingNum);
@@ -144,16 +144,55 @@ const LocationPhotos = ({photosarray,typeofmeeting,meeting,navigation}) => {
                          let meetingcopy={};
                          meetingcopy= user.tblSuggestedMeetings.find(meeting => meeting.meetingNum === meetingNum);
                          let data={};
+                         const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
+
 
                         if(meetingcopy==undefined){
                             //run on the array and find the meeting with the same meetingNum and change the status to 'A'
 
                             let meetingtochange=tblsuggested1copy.find(meeting => meeting.meetingNum === meetingNum);
-                            //change the status to 'A'
                             meetingtochange.status="A";
                             setUser({...user,tblSuggestedMeetings1:tblsuggested1copy});
                              data=await changemeetingstatus(meetingNum,"A");
-                            console.log('this is data', data)
+                             let mystartdate=new Date(meetingtochange.date);
+                             mystartdate.setHours(parseInt(meetingtochange.startTime.substring(0,2)));
+                                mystartdate.setMinutes(parseInt(meetingtochange.startTime.substring(3,5)));
+                                mystartdate.setSeconds(0);
+                                let myenddate=new Date(meetingtochange.date);
+                                myenddate.setHours(parseInt(meetingtochange.endTime.substring(0,2)));
+                                myenddate.setMinutes(parseInt(meetingtochange.endTime.substring(3,5)));
+                                myenddate.setSeconds(0);
+                             const eventobjecttoadd={
+                                 title: 'Meeting with '+meetingtochange.user1.userName ,
+                                 startDate: mystartdate,
+                                 endDate: myenddate,
+                                 location: meetingtochange.place.name,
+                                 timeZone: 'Asia/Jerusalem',
+                                 notes: 'Meeting with '+meetingtochange.user1.userName ,
+                                 
+                                 
+                               }
+             
+                                   try {
+                                     const eventId = await Calendar.createEventAsync(calendars[0].id, eventobjecttoadd);
+                                     //add to calendar default
+             
+                                     if(Calendar.DEFAULT?.id!=undefined){
+                                     const eventId2 = await Calendar.createEventAsync(Calendar.DEFAULT, eventobjecttoadd)
+                                     }
+                                     
+                                     console.log(`Created event with id: ${eventId} in calendar: ${calendars[0].title}`);
+                                   } catch(error) {
+                                     console.log('this is the error', error)
+                                   }
+                           
+                           
+
+
+
+                          
+
+
 
 
                         }

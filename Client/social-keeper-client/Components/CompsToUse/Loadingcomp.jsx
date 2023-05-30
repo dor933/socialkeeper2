@@ -13,6 +13,7 @@ const Loadingcomp = () => {
                 </View>
                 <View style={{height:150}}>
                 <Text style={styles.text}>Preparing your meetings...</Text>
+                <Text style={styles.text}>This could take between 2 to 3 minutes</Text>
 
                 </View>
             </ImageBackground>
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
         alignItems:'center',
         backgroundColor:'#ffffff',
         width:'100%',
-        bottom:20,
+        bottom:45,
 
 
     },
@@ -57,6 +58,7 @@ const styles = StyleSheet.create({
         paddingLeft:5,
         paddingTop:5,
         height: 50,
+        textAlign: 'center',
         
 
         },

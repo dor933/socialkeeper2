@@ -27,6 +27,7 @@ export default function SuggestedMeetingsScreen({navigation}) {
   const {user, setUser} = useContext(MainAppcontext);
   const [newtblsuggesthis, setnewtblsuggesthis] = useState([]);
   const [newtblsuggest1this, setnewtblsuggest1this] = useState([]);
+  const {screenisready, setScreenisready} = useContext(MainAppcontext);
 
   useEffect(() => {
     if(user.tblSuggestedMeetings){
@@ -56,6 +57,7 @@ export default function SuggestedMeetingsScreen({navigation}) {
       <View style={styles.meetingview}> 
         <Text style={styles.meetingtext}>My Meetings</Text>
       </View>
+  
       <View style={styles.rectengelbuttongroup}>
         <ButtonGroup
           buttons={['Approved', 'Waiting','Suggested']}

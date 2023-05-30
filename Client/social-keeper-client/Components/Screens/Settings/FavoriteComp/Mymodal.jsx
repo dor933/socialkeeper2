@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, Image, Text, StyleSheet, View, TouchableOpacity, Dimensions, Modal,FlatList} from 'react-native';
+import { SafeAreaView, Image, Text, StyleSheet, View, TouchableOpacity, Dimensions, Modal,FlatList,Alert} from 'react-native';
 import { RegistContext } from '..//../..//../RegistContext.jsx';
 import { CheckBox } from '@rneui/themed';
 import { useEffect } from 'react';
@@ -117,11 +117,9 @@ export default function Mymodal({modalhobbiesvisible,isfrommainapp, setSelectedC
       phonenuminvite: personaldetails.phoneNumber,
       phonenuminvited:newselected.phonenumbers[0],
       hobbieNum:commonhobbie.hobbieNum
-      // hobbieNum:selectedhobbies[0].hobbienumber
-      //will be after the hobbie screen
+      
     }
-    console.log('this is the possible favorite')
-    console.log(possiblefavorite);
+    
 
 
 
@@ -134,22 +132,9 @@ export default function Mymodal({modalhobbiesvisible,isfrommainapp, setSelectedC
       );
 
       if(response.status==200){
-        alert('Friend request sent');
-        //search in already members and filtered already members and change the addedtofav to true
-        const updatedAlreadyMembers = filteredalreadymebers.map((contact) => {
-
-          if (contact.phonenumbers[0] == selectedContact.phonenumbers[0]) {
-
-            return { ...contact, addedtofav: true };
-          }
-          return contact;
-        }
-        );
-        setFilteredAlreadyMembers(updatedAlreadyMembers);
-        setAlreadyMembers(updatedAlreadyMembers);
+        Alert.alert('Friend request sent')
       
-
-
+    
       }
 
     }

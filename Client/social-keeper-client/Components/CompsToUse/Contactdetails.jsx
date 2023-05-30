@@ -9,7 +9,7 @@ import { Dimensions } from 'react-native';
 
 
 
-export default function Contactdetails({selectedContact,addtofavorite,modalVisible,setModalVisible,sendsms,isfrommainapp}) {
+export default function Contactdetails({selectedContact,friendid,addtofavorite,modalVisible,setModalVisible,sendsms,isfrommainapp}) {
 
   useEffect(() => {
     console.log('selectedContact',selectedContact)
@@ -485,15 +485,14 @@ type="MaterialCommunityIcons"
 </View>
 </TouchableOpacity>
 
-<TouchableOpacity onPress={()=> addtofavorite()}>
+
 
 <View style={{height:60,width:Dimensions.get('window').width-20,marginTop:10,justifyContent:'space-between',flexDirection:'row-reverse'}}>
 
-<View>
-
+<TouchableOpacity onPress={addtofavorite}>
 <Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333",marginTop:10}}>Remove From Friends</Text>
 
-</View>
+</TouchableOpacity>
 <View style={{marginTop:10,right:15,flexDirection:'row'}}>
 
 <View style={{height:26,width:26,alignItems:'center',justifyContent:'center'}}>
@@ -512,7 +511,6 @@ type="MaterialCommunityIcons"
 </View>
 
 </View>
-</TouchableOpacity>
 
 
 

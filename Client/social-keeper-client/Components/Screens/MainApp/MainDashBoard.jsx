@@ -183,6 +183,10 @@ export default function MainDashBoard() {
 
 
   const setmeetingscorrectly= async (newsugmeetings)=>{
+    let newactualmeetings= user.tblactualmeetings;
+    let newactualmeetings1= user.tblactualmeetings1;
+
+
     newsugmeetings= newsugmeetings.map((each)=>{
       if(each.place.result){
         return{
@@ -212,16 +216,50 @@ export default function MainDashBoard() {
       }
       )
 
-      console.log('this is newtblsuggesthis final from database after getplaceinfo')
-      console.log(newsugmeetings.length)
-      console.log('this is newtblsuggest1this final from database after getplaceinfo')
-      console.log(newtblsuggest1this.length)
+      if(user.tblactualmeetings.length>0){
+      newactualmeetings= newactualmeetings.map((each)=>{
+        if(each.tblSuggestedMeeting.place.result){
+          return{
+            ...each,
+            tblSuggestedMeeting: {
+              ...each.tblSuggestedMeeting,
+              place: each.tblSuggestedMeeting.place.result
+            }
+          }
+        }
+        else{
+          return each;
+        }
+      }
+      )
+    }
+    if(user.tblactualmeetings1.length>0){
+      newactualmeetings1= newactualmeetings1.map((each)=>{
+        if(each.tblSuggestedMeeting.place.result){
+          return{
+            ...each,
+            tblSuggestedMeeting: {
+              ...each.tblSuggestedMeeting,
+              place: each.tblSuggestedMeeting.place.result
+            }
+          }
+        }
+        else{
+          return each;
+        }
+      }
+      )
+    }
+
+
 
    //set user with prev
      setUser({
       ...user,
       tblSuggestedMeetings: newsugmeetings,
-      tblSuggestedMeetings1: newtblsuggest1this
+      tblSuggestedMeetings1: newtblsuggest1this,
+      tblactualmeetings: newactualmeetings,
+      tblactualmeetings1: newactualmeetings1,
     })
 
     
@@ -241,7 +279,6 @@ export default function MainDashBoard() {
   const getcalendars = async () => {
     const { status } = await Calendar.requestCalendarPermissionsAsync();
     if (status === 'granted') {
-      console.log('granted')
       //get my calandar with id
       const calendars = await Calendar.getCalendarsAsync();
       console.log('Here are all your calendars:');
@@ -330,8 +367,6 @@ export default function MainDashBoard() {
   return acc;
 }, {});
 
-console.log('this is event object')
-console.log(eventobject)
 
       setUserevents(eventobject);
    

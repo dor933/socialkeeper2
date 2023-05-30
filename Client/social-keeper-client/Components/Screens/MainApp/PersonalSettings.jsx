@@ -1,5 +1,5 @@
 import { StyleSheet, View, Text, Button, SafeAreaView,ScrollView, TouchableOpacity, Dimensions, Image } from 'react-native'
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Customheader from '../../CompsToUse/Customheader'
@@ -41,6 +41,11 @@ export default function SettingDashBoard(props) {
   });
   const {user, setUser} = React.useContext(MainAppcontext);
 
+    useEffect(() => {
+      const tblfavoritefiltered= user.tblFavoriteContacts1.filter((item)=>item.ID!=26)
+      console.log('tblfavoritefiltered',tblfavoritefiltered)
+    },[])
+
   return (
     <SafeAreaView style={styles.areaviewcontainter}>
               <ScrollView>
@@ -56,7 +61,7 @@ export default function SettingDashBoard(props) {
       <AccountSettings />
         <Meetingtimes/>
         <Intersets/>
-        <Favoritecont user={user} setUser={setUser}/>
+        <Favoritecont />
 
              </View>
              </ScrollView>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { SafeAreaView, Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native'
+import { SafeAreaView, Image, Text, StyleSheet, View, TouchableOpacity,Button } from 'react-native'
 import * as Google from "expo-auth-session/providers/google";
 import * as AuthSession from 'expo-auth-session';
 import * as Facebook from 'expo-auth-session/providers/facebook';
@@ -11,7 +11,7 @@ import { MainAppcontext } from '../MainApp/MainAppcontext.jsx';
 import AuthContext from '../../../Authcontext.jsx';
 import firebaseInstance from '../../../assets/Firebase/firebaseconfig.js';
 import Loadingcomp from '../../CompsToUse/Loadingcomp.jsx';
-import { SocialIcon } from 'react-native-elements'
+import { Input, SocialIcon } from 'react-native-elements'
 
 
 
@@ -23,6 +23,7 @@ function SignUpAPI({navigation}) {
   const {setIsAuthenticated}= React.useContext(AuthContext);
   const {firebaseuser, setFirebaseuser} = useContext(MainAppcontext);
   const [isloading, setIsloading] = useState(false);
+  const [guestemail, setGuestemail] = useState('');
 
   WebBrowser.maybeCompleteAuthSession();
 
@@ -69,10 +70,8 @@ function SignUpAPI({navigation}) {
   
 
   useEffect(() => {
-    console.log('into edffect');
     if (response?.type === "success") {
-      console.log('got here this is my resonse look');
-      console.log(response);
+ 
       
       setToken(response.authentication.accessToken);
       getUserInfo();
@@ -80,10 +79,7 @@ function SignUpAPI({navigation}) {
   }, [response,token]);
 
   useEffect(() => {
-    console.log('into edffect');
     if (response2?.type === "success") {
-      console.log('got here');
-      console.log(response2);
       setToken(response2.authentication.accessToken);
       getuserinfofromfacebook();
     }
@@ -99,17 +95,12 @@ function SignUpAPI({navigation}) {
         }
       );
 
-      console.log(token)
 
-      console.log('im got here')
       const user = await response.json();
-      console.log(user)
       setUserInfo(user);
       //authenticate user with firebase and google
       const credential= firebaseInstance.GoogleAuthProvider.credential(null,token);
       firebaseInstance.signInWithCredential(firebaseInstance.auth, credential).then((result)=>{
-        console.log('this is firebase result')
-        console.log(result._tokenResponse);
         setFirebaseuser(result._tokenResponse)
       }).catch((error)=>{
         console.log('this is firebase error')
@@ -150,12 +141,9 @@ function SignUpAPI({navigation}) {
   const getuserinfofromfacebook=async()=>{
     try {
 
-      console.log(token);
-      console.log('got here');
       const response= await axios.get(`https://graph.facebook.com/me?fields=email,id,name&access_token=${token}`)
       const user=response.data;
       setUserInfo(user);
-      console.log(user);
       const ifuser= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin',{email:user.email});
       if(ifuser.data=='no user was found'){
 
@@ -164,7 +152,7 @@ function SignUpAPI({navigation}) {
       }
       else if(typeof ifuser.data.imageUri == 'string'){
         setUser(ifuser.data);
-        console.log(ifuser.data);
+        setPersonalDetails(...personaldetails,{phoneNumber:ifuser.data.phoneNum1,userName:ifuser.data.userName,gender:ifuser.data.gender})
         setIsAuthenticated(true);
       }
     
@@ -172,6 +160,29 @@ function SignUpAPI({navigation}) {
       // Add your own error handler here
     }
   }
+
+  const guestsigin=async(email)=>{
+    try {
+      //check if email structure is valid
+      if(email.includes('@') && email.includes('.')){
+      const ifuser= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin',{email:email});
+      if(ifuser.data=='no user was found'){
+        setPersonalDetails({email:email});
+        navigation.navigate('CreateProfile',{isfrommainapp:false});
+      }
+      else if(typeof ifuser.data.imageUri == 'string'){
+        setUser(ifuser.data);
+        setIsAuthenticated(true);
+      }
+    }
+    else{
+      alert('please enter a valid email')
+    } 
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
 
 if(isloading){
   return(
@@ -201,10 +212,11 @@ if(isloading){
         <TouchableOpacity onPress={async () => {
 
           promptAsync();
+          
 
         } }>
                  {/* <TouchableOpacity onPress={async () => {
-               const ifuser= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin',{email:'grogo@example.com'});
+               const ifuser= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin',{email:'rotinazsd@example.com'});
                if(ifuser.data=='no user was found'){
          
                  if(user.email!=undefined) {
@@ -243,6 +255,18 @@ if(isloading){
             <Text style={styles.textForButton}>Login with Facebook</Text>
           </View>
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => guestsigin(guestemail)} style={{top:590,width:300,alignSelf:'center'}}>
+          <View>
+            <Text style={{textAlign:'center',fontSize:13}}>Continue as a guest (Application in development mode- authentication is not available)</Text>
+          </View>
+    
+<Input placeholder='Enter your email' value={guestemail} onChangeText={(text)=>setGuestemail(text)}></Input>
+
+
+<Button title='Continue as guest' onPress={()=>guestsigin(guestemail)}></Button>
+
+
+          </TouchableOpacity>
 
 
         <View style={styles.elipseButtom}></View>
