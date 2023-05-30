@@ -830,10 +830,7 @@ namespace WebApplication1.Controllers
         {
         }
 
-        // DELETE: api/Default/5
-        public void Delete(int id)
-        {
-        }
+   
 
 
     }

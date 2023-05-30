@@ -160,6 +160,7 @@ namespace ClassLibrary_SocialKeeper
             .ToList();
 
 
+
                             foreach (DocumentSnapshot docsnap in filteredPlaces)
                             {
                                 double docLatitude= docsnap.GetValue<double>("latitude");
@@ -192,14 +193,14 @@ namespace ClassLibrary_SocialKeeper
                                    
                                 }
 
-                                if (placetorun.Count > 20)
+                                if (placetorun.Count > 15)
                                 {
                                     break;
                                 }
                                
                             }
 
-                            if (placetorun.Count >= 13)
+                            if (placetorun.Count >= 10)
                             {
                                 places = placetorun;
                             }
@@ -277,7 +278,7 @@ namespace ClassLibrary_SocialKeeper
                                     sugitem.normalizehobbierank = (hobbierank - 1.0) / (25.0 - 1.0);
                                     sugitem.rank = calculatemeetingscore(sugitem.normalizehobbierank, sugitem.prefferedtimerate, sugitem.normalizeuserrank);
                                     sugitem.hobbieNum= hobbienum;
-                                    if (placeslist[type].Count == 20)
+                                    if (placeslist[type].Count == 10)
                                     {
                                         places = placeslist[type];
                                     }
@@ -324,10 +325,14 @@ namespace ClassLibrary_SocialKeeper
                                                 }
                                                
                                             }
+                                            if (placetorun.Count > 15)
+                                            {
+                                                break;
+                                            }
 
                                         }
 
-                                        if (placetorun.Count >= 13)
+                                        if (placetorun.Count >= 10)
                                         {
                                             places = placetorun;
                                         }
@@ -411,10 +416,10 @@ namespace ClassLibrary_SocialKeeper
                         OpeningHoursDetails openingHoursDetails = place.OpeningHours;
 
 
-                            if (openingHoursDetails != null || type=="park")
+                            if (openingHoursDetails != null || type=="park" )
                             {
 
-                            if (type == "park")
+                            if (type == "park" && openingHoursDetails==null)
                             {
                                 LoctationDTO dtoloc = new LoctationDTO();
                                 tblLoctation loctocheck = db.tblLoctation.Where(x => x.longitude == place.Geometry.Location.Longitude && x.latitude == place.Geometry.Location.Latitude).FirstOrDefault();

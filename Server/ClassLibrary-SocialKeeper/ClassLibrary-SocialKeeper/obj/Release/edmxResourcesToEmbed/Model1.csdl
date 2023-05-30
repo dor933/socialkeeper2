@@ -3,6 +3,8 @@
   <EntityType Name="PossibleFavoriteContact">
     <Key>
       <PropertyRef Name="id" />
+      <PropertyRef Name="phonenuminvite" />
+      <PropertyRef Name="phonenuminvited" />
     </Key>
     <Property Name="hobbieNum" Type="Int32" Nullable="false" />
     <Property Name="phonenuminvite" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />

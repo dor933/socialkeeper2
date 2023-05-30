@@ -6,6 +6,7 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Web.Http;
 
 namespace WebApplication1.Controllers
@@ -369,19 +370,44 @@ namespace WebApplication1.Controllers
 
         // DELETE: api/Mainappactions/5
         [HttpDelete]
-        [Route("api/MainAppaction/deletefriendship")]
-        public HttpResponseMessage Delete([FromBody] FavoriteContactsDTO favtodel)
+        [Route("api/MainAppaction/deletefriendship/{friendid}")]
+        public HttpResponseMessage Delete(int friendid)
         {
             try
             {
-                tblFavoriteContact favtodelorg = _db.tblFavoriteContact.Where(x => x.phoneNum1 == favtodel.phoneNum1 && x.phoneNum2 == favtodel.phoneNum2).FirstOrDefault();
+                int myfriendid = friendid;
+                tblFavoriteContact favtodelorg = _db.tblFavoriteContact.Where(x=> x.ID==myfriendid).FirstOrDefault();
+                List<int> suggestedtodelete= new List<int>();
                 _db.tblFavoriteContact.Remove(favtodelorg);
+                List<tblSuggestedMeeting> suggestedtodel = _db.tblSuggestedMeeting.Where(x => (x.phoneNum1 == favtodelorg.phoneNum1 && x.phoneNum2 == favtodelorg.phoneNum2) ||
+
+                (x.phoneNum1 == favtodelorg.phoneNum2 && x.phoneNum2 == favtodelorg.phoneNum1)).ToList();
+
+                foreach(tblSuggestedMeeting item in suggestedtodel)
+                {
+                    tblSuggestedHobbie sughobbietodel= _db.tblSuggestedHobbie.Where(x=> x.meetingNum==item.meetingNum).FirstOrDefault();
+                    if (sughobbietodel != null)
+                    {
+                        _db.tblSuggestedHobbie.Remove(sughobbietodel);
+                    }
+                    tblActualMeeting acttodel = _db.tblActualMeeting.Where(x => x.meetingNum == item.meetingNum).FirstOrDefault();
+                    if(acttodel!=null)
+                    {
+                        _db.tblActualMeeting.Remove(acttodel);
+                    }
+                    suggestedtodelete.Add(item.meetingNum);
+                    _db.SaveChanges();
+                }
+
+                _db.tblSuggestedMeeting.RemoveRange(suggestedtodel);
+                
+             
                 _db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK, "Favorite object deleted");
+                return Request.CreateResponse(HttpStatusCode.OK, suggestedtodelete);
             }
             catch (Exception ex)
             {
-               return Request.CreateResponse(HttpStatusCode.NoContent, ex.Message);
+               return Request.CreateResponse(HttpStatusCode.NotFound, ex.Message);
             }
         }
     }

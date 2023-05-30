@@ -386,6 +386,10 @@ namespace WebApplication1.Controllers
                                     List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(prefit.startTime, prefit.endTime), userinviteevefixed, userinvitedfixed);
                                 foreach (var lismatchitems in listmatch)
                                 {
+                                    if (numbermeetings == 3)
+                                    {
+                                        break;
+                                    }
                                     foreach (SuggestedDTO itesug in existingsugmeetings)
                                     {
                                         if (itesug.startTime == lismatchitems.Item1 && itesug.endTime == lismatchitems.Item2 && itesug.date == thedate)
@@ -406,10 +410,7 @@ namespace WebApplication1.Controllers
                                     //to check if the meeting is already suggested or not in suggestedmeet
                                     if (!existingperiod)
                                     {
-                                        if (numbermeetings == 3)
-                                        {
-                                            break;
-                                        }
+                                        
 
                                         SuggestedDTO sugdto = new SuggestedDTO();
                                         sugdto.date = thedate;
@@ -553,17 +554,18 @@ namespace WebApplication1.Controllers
 
                                     }
 
+
                                     existingperiod = false;
 
 
-                                    dateto = dateto.AddHours(2);
-                                    if (dateto.Hour > limitedhour || (dateto.Hour >= 00 && dateto.Hour < 09))
-                                    {
-                                        int hoursUntilNextMorning = (9 - dateto.Hour + 24) % 24;
-                                        dateto = dateto.AddHours(hoursUntilNextMorning).AddMinutes(-dateto.Minute).AddSeconds(-dateto.Second).AddMilliseconds(-dateto.Millisecond);
 
-                                    }
 
+                                }
+                                dateto = dateto.AddHours(2);
+                                if (dateto.Hour > limitedhour || (dateto.Hour >= 00 && dateto.Hour < 09))
+                                {
+                                    int hoursUntilNextMorning = (9 - dateto.Hour + 24) % 24;
+                                    dateto = dateto.AddHours(hoursUntilNextMorning).AddMinutes(-dateto.Minute).AddSeconds(-dateto.Second).AddMilliseconds(-dateto.Millisecond);
 
                                 }
                             }
@@ -931,6 +933,7 @@ namespace WebApplication1.Controllers
 
                                     existingperiod = false;
 
+                                }
 
                                     dateto = dateto.AddHours(2);
                                     if (dateto.Hour > 22 || (dateto.Hour >= 00 && dateto.Hour < 09))
@@ -939,7 +942,7 @@ namespace WebApplication1.Controllers
                                         dateto = dateto.AddHours(hoursUntilNextMorning).AddMinutes(-dateto.Minute).AddSeconds(-dateto.Second).AddMilliseconds(-dateto.Millisecond);
 
                                     }
-                                }
+                                
                                 
                             }
 
