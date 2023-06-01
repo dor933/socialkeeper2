@@ -125,6 +125,7 @@
     <EntitySetMapping Name="tblUser">
       <EntityTypeMapping TypeName="igroup192_prodModel.tblUser">
         <MappingFragment StoreEntitySet="tblUser">
+          <ScalarProperty Name="ExpoPushToken" ColumnName="ExpoPushToken" />
           <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
           <ScalarProperty Name="userName" ColumnName="userName" />
           <ScalarProperty Name="birthDate" ColumnName="birthDate" />

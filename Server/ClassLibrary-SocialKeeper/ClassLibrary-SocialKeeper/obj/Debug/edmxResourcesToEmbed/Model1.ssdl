@@ -134,6 +134,7 @@
     <Property Name="imageUri" Type="nvarchar" MaxLength="4000" />
     <Property Name="citylatt" Type="float" />
     <Property Name="citylong" Type="float" />
+    <Property Name="ExpoPushToken" Type="nvarchar" MaxLength="50" />
   </EntityType>
   <EntityType Name="tblUserHobbie">
     <Key>

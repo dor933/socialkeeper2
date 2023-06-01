@@ -14,6 +14,7 @@ using Google.Apis.Storage.v1.Data;
 using System.Text.RegularExpressions;
 using System.Web.UI.WebControls;
 using System.Data;
+using System.Data.Odbc;
 
 namespace WebApplication1.Controllers
 {
@@ -30,6 +31,58 @@ namespace WebApplication1.Controllers
 
             _db = dbcontext._db;
         
+        }
+
+
+        [HttpGet]
+        [Route("api/Default/GetUserByPhoneNum")]
+        public HttpResponseMessage GetAllUserByPhoneNum(string phoneNum)
+        {
+            try
+            {
+                List<UserDTO> users = new List<UserDTO>();
+                var user = _db.tblUser.Where(u => u.phoneNum1 == phoneNum).FirstOrDefault();
+                if (user != null)
+                {
+                    UserDTO usertoret = GetUser(user);
+                    return Request.CreateResponse(HttpStatusCode.OK, usertoret);
+                }
+
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, "no user was found");
+                    //then in the client side, if the user is null, then the user will be redirected to the sign up page
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, ex);
+            }
+        }
+
+
+
+
+
+
+
+
+        //Updating users expoPushToken
+        [HttpPut]
+        [Route("api/Default/UpdateUserExpoPushToken")]
+        public HttpResponseMessage UpdateUserExpoPushToken([FromBody] UserDTO user)
+        {
+            try
+            {
+                tblUser user1 = _db.tblUser.Where(u => u.phoneNum1 == user.phoneNum1).FirstOrDefault();
+                user1.ExpoPushToken = user.ExpoPushToken;
+                _db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK, "ExpoPushToken updated");
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, ex);
+            }
         }
 
 
@@ -501,7 +554,7 @@ namespace WebApplication1.Controllers
 
 
  
-
+        //Get existing members
         [HttpPost]
         [Route("api/Default/getexistingmembers")]
         public HttpResponseMessage Getexistingmembers(ExistsingUsers[] ExistingUsereser)
@@ -565,7 +618,7 @@ namespace WebApplication1.Controllers
          
 
         }
-
+        //Adding image to google cloud storage
         [HttpPost]
         [Route("api/Default/Addimage")]
         public async Task<IHttpActionResult> UploadFile()
@@ -600,6 +653,7 @@ namespace WebApplication1.Controllers
 
         }
 
+        //Get all hobbies
         [HttpGet]
         [Route("api/Default/getallhobbies")]
 
@@ -717,7 +771,10 @@ namespace WebApplication1.Controllers
                     newuser.citylatt= Mynewuser.citylatt;
                     newuser.citylong = Mynewuser.citylong;
                     newuser.email = Mynewuser.email;
+                    newuser.ExpoPushToken = Mynewuser.ExpoPushToken;
+                    
                     newuser.tblNewUser = newuserif;
+                    
 
                     List<tblUserHobbie> userhoobies = new List<tblUserHobbie>();
                     foreach (UserhobbiesDTO userhob in Mynewuser.tblUserHobbiesDTO)

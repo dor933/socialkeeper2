@@ -139,6 +139,7 @@
           <Property Name="imageUri" Type="nvarchar" MaxLength="4000" />
           <Property Name="citylatt" Type="float" />
           <Property Name="citylong" Type="float" />
+          <Property Name="ExpoPushToken" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="tblUserHobbie">
           <Key>
@@ -684,6 +685,7 @@
           <NavigationProperty Name="tblSuggestedMeeting" Relationship="Self.fk1tblSuggestedMeeting" FromRole="tblUser" ToRole="tblSuggestedMeeting" />
           <NavigationProperty Name="tblSuggestedMeeting1" Relationship="Self.fk2tblSuggestedMeeting" FromRole="tblUser" ToRole="tblSuggestedMeeting" />
           <NavigationProperty Name="tblUserHobbie" Relationship="Self.fk1tblUserHobbie" FromRole="tblUser" ToRole="tblUserHobbie" />
+          <Property Name="ExpoPushToken" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tblUserHobbie">
           <Key>
@@ -1181,6 +1183,7 @@
           <EntitySetMapping Name="tblUser">
             <EntityTypeMapping TypeName="igroup192_prodModel.tblUser">
               <MappingFragment StoreEntitySet="tblUser">
+                <ScalarProperty Name="ExpoPushToken" ColumnName="ExpoPushToken" />
                 <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
                 <ScalarProperty Name="userName" ColumnName="userName" />
                 <ScalarProperty Name="birthDate" ColumnName="birthDate" />

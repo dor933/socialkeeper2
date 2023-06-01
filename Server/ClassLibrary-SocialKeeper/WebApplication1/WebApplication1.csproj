@@ -63,6 +63,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Expo.Server.SDK, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Expo.Server.SDK.1.0.2\lib\netstandard2.0\Expo.Server.SDK.dll</HintPath>
+    </Reference>
     <Reference Include="Firebase.Auth, Version=4.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\FirebaseAuthentication.net.4.0.2\lib\netstandard2.0\Firebase.Auth.dll</HintPath>
     </Reference>
