@@ -18,6 +18,7 @@ using System.Data.Odbc;
 
 namespace WebApplication1.Controllers
 {
+
     public class DefaultController : ApiController
     {
         
@@ -34,56 +35,30 @@ namespace WebApplication1.Controllers
         }
 
 
-        [HttpGet]
-        [Route("api/Default/GetUserByPhoneNum")]
-        public HttpResponseMessage GetAllUserByPhoneNum(string phoneNum)
-        {
-            try
-            {
-                List<UserDTO> users = new List<UserDTO>();
-                var user = _db.tblUser.Where(u => u.phoneNum1 == phoneNum).FirstOrDefault();
-                if (user != null)
-                {
-                    UserDTO usertoret = GetUser(user);
-                    return Request.CreateResponse(HttpStatusCode.OK, usertoret);
-                }
-
-                else
-                {
-                    return Request.CreateResponse(HttpStatusCode.OK, "no user was found");
-                    //then in the client side, if the user is null, then the user will be redirected to the sign up page
-                }
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateResponse(HttpStatusCode.OK, ex);
-            }
-        }
 
 
 
 
 
 
-
-
-        //Updating users expoPushToken
         [HttpPut]
-        [Route("api/Default/UpdateUserExpoPushToken")]
-        public HttpResponseMessage UpdateUserExpoPushToken([FromBody] UserDTO user)
+        [Route("api/Default/updpushtoken")]
+        public HttpResponseMessage Updpushtoken([FromBody] UserDTO userdto)
         {
             try
             {
-                tblUser user1 = _db.tblUser.Where(u => u.phoneNum1 == user.phoneNum1).FirstOrDefault();
-                user1.ExpoPushToken = user.ExpoPushToken;
+                tblUser user = _db.tblUser.Where(u => u.phoneNum1 == userdto.phoneNum1).FirstOrDefault();
+                user.ExpoPushToken = userdto.ExpoPushToken;
                 _db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK, "ExpoPushToken updated");
+                return Request.CreateResponse(HttpStatusCode.OK, "pushtoken updated");
             }
             catch (Exception ex)
             {
                 return Request.CreateResponse(HttpStatusCode.OK, ex);
             }
         }
+
+  
 
 
 
@@ -96,6 +71,7 @@ namespace WebApplication1.Controllers
         public HttpResponseMessage Signin([FromBody] EmailDTO email1)
         {
             string email = email1.email;
+            string token = email1.token;
 
             //check with the email after google auth if user exist
             //if yes, return his deatils, if not return null (In client side 
@@ -109,6 +85,8 @@ namespace WebApplication1.Controllers
                 var user = _db.tblUser.Where(u => u.email == email).FirstOrDefault();
                 if (user != null)
                 {
+                    user.ExpoPushToken = token;
+                    _db.SaveChanges();
                     UserDTO usertoret = GetUser(user);
                     return Request.CreateResponse(HttpStatusCode.OK, usertoret);
                 }
@@ -137,6 +115,7 @@ namespace WebApplication1.Controllers
             usertoret.citylatt= Convert.ToDouble(checkifuser.citylatt);
             usertoret.citylong= Convert.ToDouble(checkifuser.citylong);
             usertoret.gender = checkifuser.gender;
+            usertoret.ExpoPushToken = checkifuser.ExpoPushToken;
 
             List<FavoriteContactsDTO> FavoriteContactsDTOs = new List<FavoriteContactsDTO>();
 

@@ -462,6 +462,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MainappactionsController.cs" />
     <Compile Include="Controllers\MainAppController.cs" />
+    <Compile Include="Controllers\NotificationsController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Dbcontext\dbcontext.cs" />
     <Compile Include="Global.asax.cs">

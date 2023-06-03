@@ -9,6 +9,7 @@ namespace ClassLibrary_SocialKeeper
     public class EmailDTO
     {
         public string email;
+        public string token;
 
     }
 }
