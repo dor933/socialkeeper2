@@ -46,6 +46,7 @@ export default function FavoriteContacts({ isfrommainapp:propIsFromMainApp ,navi
   const [commonhobbie,setCommonHobbie]=useState([]);
   const { setIsAuthenticated}= React.useContext(AuthContext);
   const {user,setUser} = React.useContext(MainAppcontext);
+  const {expoPushToken}= React.useContext(RegistContext);
   const routeIsFromMainApp = route?.params?.isfrommainapp;
   const isfrommainapp = routeIsFromMainApp !== undefined ? routeIsFromMainApp : propIsFromMainApp;
 
@@ -265,8 +266,20 @@ export default function FavoriteContacts({ isfrommainapp:propIsFromMainApp ,navi
       if(typeof response2.data.imageUri == "string") {
 
         setUser(response2.data)
+        
+        const usertopush={
+          phoneNum1:response2.data.phoneNum1,
+          ExpoPushToken:expoPushToken
+        }
+        const response3= await axios.put("http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/updpushtoken",
+      usertopush);
+      console.log(response3.data)
 
       setIsAuthenticated(true)
+
+    
+      
+
       }
 
       

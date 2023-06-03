@@ -22,7 +22,7 @@ import PreferredMeetingTimes from '../Settings/PreferredMeetingTimes';
 import { Intersets } from './PersonalComp/Account';
 import {Favoritecont} from './PersonalComp/Account';
 import CreateProfile from '..//Profile/CreateProfile';
-
+import Businesspage from './Businesspage';
 
 
 
@@ -42,6 +42,7 @@ function SuggestedMeetingsStackScreen() {
       <SuggestedMeetingsStack.Navigator initialRouteName="SuggestedMeetings">
         <SuggestedMeetingsStack.Screen name="SuggestedMeetings" component={SuggestedMeetingsScreen } options={{headerShown:false}} 
        />
+        <SuggestedMeetingsStack.Screen name="Businesspage" component={Businesspage} options={{headerShown:false}} />
         <SuggestedMeetingsStack.Screen name="SuggestedMeetingCalender" component={Calender} options={{headerShown:false}} />
         <SuggestedMeetingsStack.Screen name="MapLocationForHobbies" component={MapLocationForHobbies} options={{headerShown:false}} />
         <SuggestedMeetingsStack.Screen name="Meetdetails" component={Meetdetails} options={{headerShown:false}} />
