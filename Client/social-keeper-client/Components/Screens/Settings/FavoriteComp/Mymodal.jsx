@@ -3,6 +3,7 @@ import { SafeAreaView, Image, Text, StyleSheet, View, TouchableOpacity, Dimensio
 import { RegistContext } from '..//../..//../RegistContext.jsx';
 import { CheckBox } from '@rneui/themed';
 import { useEffect } from 'react';
+import { MainAppcontext } from '../../MainApp/MainAppcontext.jsx';
 //import axios
 import axios from 'axios';
 //import flatlist
@@ -32,6 +33,7 @@ export default function Mymodal({modalhobbiesvisible,isfrommainapp, setSelectedC
   const {possiblefavoritecontacts,setPossibleFavoriteContacts}= React.useContext(RegistContext);
   const {alreadymembers, setAlreadyMembers} = React.useContext(RegistContext);
   const {filteredalreadymebers,setFilteredAlreadyMembers}= React.useContext(RegistContext);
+  const {user, setUser} = React.useContext(MainAppcontext);
 
 
 
@@ -133,6 +135,11 @@ export default function Mymodal({modalhobbiesvisible,isfrommainapp, setSelectedC
 
       if(response.status==200){
         Alert.alert('Friend request sent')
+        const newpossibleFavoriteContacts_invite_DTO= user.possibleFavoriteContacts_invite_DTO;
+        newpossibleFavoriteContacts_invite_DTO.push(response.data);
+        setUser({...user, possibleFavoriteContacts_invite_DTO:newpossibleFavoriteContacts_invite_DTO});
+        console.log('this is newpossibleFavoriteContacts_invite_DTO')
+        console.log(newpossibleFavoriteContacts_invite_DTO)
       
     
       }

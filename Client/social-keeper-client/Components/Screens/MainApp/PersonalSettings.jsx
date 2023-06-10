@@ -17,6 +17,7 @@ import { Icon } from '@rneui/themed';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {AccountSettings, Meetingtimes,  Intersets, Favoritecont} from './/PersonalComp/Account.jsx'
 import { MainAppcontext } from './MainAppcontext';
+import AuthContext from '../../../Authcontext';
 
 
 
@@ -28,9 +29,15 @@ import { MainAppcontext } from './MainAppcontext';
 
 
 //this is the navigation container for the setting dashboard
-export default function SettingDashBoard(props) {
+export default function SettingDashBoard({route}) {
 
+ const isnotif = route.params?.isnotif;
+  const notifobj = route.params?.notifobj;
+  const {setIsnotif}= React.useContext(AuthContext);
+  const {numberofnewfriends, setNumberofnewfriends} = React.useContext(AuthContext);
+  const {user, setUser} = React.useContext(MainAppcontext);
 
+  
 
   const [fontsLoaded] = useFonts({
     Lato_100Thin,
@@ -39,18 +46,25 @@ export default function SettingDashBoard(props) {
     Lato_700Bold,
     Lato_900Black,
   });
-  const {user, setUser} = React.useContext(MainAppcontext);
 
     useEffect(() => {
-      const tblfavoritefiltered= user.tblFavoriteContacts1.filter((item)=>item.ID!=26)
-      console.log('tblfavoritefiltered',tblfavoritefiltered)
+     
+      console.log('isnotif', isnotif)
+  //set interval of 30 seconds and then set all the states to 0
+  const interval = setInterval(() => {
+    setNumberofnewfriends(0);
+    setIsnotif(false);
+  }, 300000);
+  return () => clearInterval(interval);
+
     },[])
 
   return (
     <SafeAreaView style={styles.areaviewcontainter}>
-              <ScrollView>
 
       <View style={styles.container}>
+      <ScrollView>
+
         <Customheader ispersonalsettings={true}/>
         <View style={styles.settingsview}>
           <Text style={styles.settingstext}>Settings</Text>
@@ -62,9 +76,9 @@ export default function SettingDashBoard(props) {
         <Meetingtimes/>
         <Intersets/>
         <Favoritecont />
+        </ScrollView>
 
              </View>
-             </ScrollView>
 
           
     </SafeAreaView>

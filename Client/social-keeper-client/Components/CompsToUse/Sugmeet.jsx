@@ -13,7 +13,7 @@ import axios from "axios";
 
 
 //create function component
-export default function Sugmeet({ meeting, navigation, invitedbyfriend, meetingtype}) {
+export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfriend, meetingtype}) {
 
   //re rub the function when the meeting changes
   
@@ -28,7 +28,9 @@ export default function Sugmeet({ meeting, navigation, invitedbyfriend, meetingt
         return each.hobbienum===meeting.hobbieNum
       })
       sethobbietype(hobbietype.hobbie)
-      console.log('this is my meeting', meeting)
+
+      console.log('this is meetingnumnew', meetingnumnew)
+      console.log('this is meeting', meeting.meetingNum)
     }, [meeting])
 
 
@@ -107,16 +109,16 @@ export default function Sugmeet({ meeting, navigation, invitedbyfriend, meetingt
                 
                 onPress={() => {
                   {
-                    meetingtype==='suggested' && 
+                    meetingtype==='suggested' &&  !invitedbyfriend &&
                     navigation.navigate('SuggestedMeetingCalender', {meeting:meeting,invitedbyfriend:invitedbyfriend})
     
                   }
                  {
-                  meetingtype==='waiting' && invitedbyfriend &&
+                  meetingtype==='suggested' && invitedbyfriend &&
                   navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user1, meetingtype:meetingtype, type:hobbietype})
                  }
                   {
-                    meetingtype==='waiting' && !invitedbyfriend &&
+                    meetingtype==='waiting' &&
                     navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user2, meetingtype:meetingtype, type:hobbietype})
                   }
                   {
@@ -164,7 +166,6 @@ export default function Sugmeet({ meeting, navigation, invitedbyfriend, meetingt
         height: 65,
       }}
     >
-      {console.log("this is meeting", meeting)}
 
       <Image style={styles.imagestyle} source={{ uri: meeting.user1.imageUri }} />
 
@@ -180,6 +181,19 @@ export default function Sugmeet({ meeting, navigation, invitedbyfriend, meetingt
           {meeting.startTime}/ {meeting.endTime}
         </Text>
         <Text style={styles.subtextstyle}>{meeting.place.name}</Text>
+     
+     
+        {
+          meetingnumnew==meeting.meetingNum &&
+          
+          <Text style={[styles.subtextstyle, { fontWeight:'800', color:'black', fontSize:10 }]}>New Meeting!
+
+          {console.log('im here')}
+          
+          
+          </Text>
+          
+        }
       </View>
       
     </View>
@@ -191,7 +205,6 @@ export default function Sugmeet({ meeting, navigation, invitedbyfriend, meetingt
       height: 65,
     }}
   >
-    {console.log("this is meeting", meeting)}
 
     <Image style={styles.imagestyle} source={{ uri: meeting.user2.imageUri }} />
 
@@ -205,6 +218,17 @@ export default function Sugmeet({ meeting, navigation, invitedbyfriend, meetingt
         -{meeting.startTime}/ {meeting.endTime}
       </Text>
       <Text style={styles.subtextstyle}>{meeting.place.name}</Text>
+      {
+          meetingnumnew==meeting.meetingNum &&
+          
+          <Text style={[styles.subtextstyle, { fontWeight:'800', color:'black', fontSize:10 }]}>New Activity!
+
+          {console.log('im here')}
+          
+          
+          </Text>
+          
+        }
     </View>
   </View>
                 )}

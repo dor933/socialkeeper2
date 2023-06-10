@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, FacebookAuthProvider, signInWithCredential } from "firebase/auth";
-import { getFirestore, collection, getDocs, doc, writeBatch, deleteDoc } from "firebase/firestore";
+import { getFirestore, collection, getDocs, doc,getDoc, writeBatch, deleteDoc } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 
@@ -33,7 +33,8 @@ const firebaseConfig = {
         deleteDoc,
         GoogleAuthProvider,
         FacebookAuthProvider,
-        signInWithCredential
+        signInWithCredential,
+        getDoc
       };
 
 

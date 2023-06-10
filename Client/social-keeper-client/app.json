@@ -11,6 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+  
     
     "plugins":[
       [
@@ -23,6 +24,13 @@
 
         }
       ] ,
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/Images/RandomImages/Socialkeeper2new.png",
+          "color": "#ffffff"
+        }
+      ],
       [
         "expo-calendar",
         {

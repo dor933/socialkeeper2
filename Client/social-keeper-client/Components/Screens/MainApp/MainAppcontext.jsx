@@ -54,6 +54,11 @@ export default function MainAppcontextfunc(props) {
             hobbienum:10,
             hobbie:'night_club'
         },
+        {
+            hobbienum:1,
+            hobbie:'other'
+        },
+
                 
 
     ]);
