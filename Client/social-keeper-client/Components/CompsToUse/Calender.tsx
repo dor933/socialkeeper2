@@ -42,6 +42,7 @@ export default function CalendarScreen({route, navigation}) {
     let myobjtosend={
       meeting:meeting,
       type:type,
+      invitedbyfriend:invitedbyfriend,
       
   }
   setObjtosend(myobjtosend);
@@ -221,7 +222,7 @@ for (let key in prevevent) {
       <View style={styles.buttonContainer}>
        
         <TouchableOpacity style={styles.acceptButton} onPress={() => 
-        navigation.navigate('MapLocationForHobbies', {information: objtosend}) 
+        navigation.navigate('Businesspage', {information: objtosend}) 
         }>
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>

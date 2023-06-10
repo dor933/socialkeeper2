@@ -21,6 +21,7 @@ function SignUpAPI({navigation}) {
   const {personaldetails, setPersonalDetails} = useContext(RegistContext);
   const {setUser} = useContext(MainAppcontext);
   const {setIsAuthenticated}= React.useContext(AuthContext);
+  const {expoPushToken}= React.useContext(AuthContext);
   const {firebaseuser, setFirebaseuser} = useContext(MainAppcontext);
   const [isloading, setIsloading] = useState(false);
   const [guestemail, setGuestemail] = useState('');
@@ -66,6 +67,10 @@ function SignUpAPI({navigation}) {
     
 
   });
+
+  useEffect(() => {
+    console.log(expoPushToken);
+  },[]);
 
   
 
@@ -118,7 +123,8 @@ function SignUpAPI({navigation}) {
 
     
     
-      const ifuser= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin',{email:user.email});
+      console.log('this is expo push token', expoPushToken);
+      const ifuser= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin',{email:user.email,token:expoPushToken});
       if(ifuser.data=='no user was found'){
 
         if(user.email!=undefined) {

@@ -3,7 +3,7 @@
 // import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import React, { useEffect, useState , useRef } from 'react';
+import React, { useEffect, useState , useRef,useContext } from 'react';
 //import usefonts
 import { useFonts } from 'expo-font';
 //import fonts
@@ -30,6 +30,7 @@ import MainDashBoard from './Components/Screens//MainApp/MainDashBoard';
 import FutureMeetingScreen from './Components/Screens//MainApp/FutureMeetingScreen';
 import PreviousMeetingsScreen from './Components/Screens//MainApp/PreviousMeetingsScreen';
 import MainAppcontext from './Components/Screens/MainApp/MainAppcontext';
+import { RegistContext } from './RegistContext';
 
 //For notifications
 import * as Notifications from 'expo-notifications';
@@ -120,14 +121,14 @@ const MainAppStackScreen = () => {
 export default function App() {
 
   //Notifications listener
-  const [expoPushToken, setExpoPushToken] = useState('');
+
   const [notification, setNotification] = useState(false);
-  const notificationistener = useRef();
+  const notificationListener = useRef();
   const responseListener = useRef();
 
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [appIsReady, setAppIsReady] = useState(false);
-
+  const [expoPushToken, setExpoPushToken] = useState('');
   let [fontsLoaded] = useFonts({
     Lato_100Thin,
     Lato_300Light,
@@ -184,7 +185,7 @@ export default function App() {
 
 
 
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated,expoPushToken,setExpoPushToken }}>
       <RegistrationContext>
         <MainAppcontext>
 
