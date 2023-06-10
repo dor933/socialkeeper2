@@ -1,4 +1,6 @@
 ﻿using ClassLibrary_SocialKeeper;
+using Firebase.Auth;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core.Metadata.Edm;
@@ -7,7 +9,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Web.Http;
+using System.Xml.Linq;
 
 namespace WebApplication1.Controllers
 {
@@ -42,8 +46,30 @@ namespace WebApplication1.Controllers
 
         [HttpPut]
         [Route("api/MainAppaction/Updmeeting/{meetingnum}/{meetingstat}")]
-        public HttpResponseMessage Updatemeetstatus( int meetingnum, string meetingstat)
+        public async Task<HttpResponseMessage> Updatemeetstatus( int meetingnum, string meetingstat, SuggestedDTO sugdto)
         {
+            NotificationDTO notifyfriendrequest = new NotificationDTO();
+
+            if (sugdto != null)
+            {
+                tblLoctation newlocation = _db.tblLoctation.Where(x => x.latitude == sugdto.latitude && x.longitude == sugdto.longitude).FirstOrDefault();
+                if (newlocation == null)
+                {
+                    newlocation = new tblLoctation();
+                    newlocation.latitude = sugdto.latitude;
+                    newlocation.longitude = sugdto.longitude;
+                    newlocation.Placeid = sugdto.place.PlaceId;
+                    newlocation.city = sugdto.place.Name;
+                    _db.tblLoctation.Add(newlocation);
+                    _db.SaveChanges();
+                }
+                tblSuggestedMeeting sugtochange = _db.tblSuggestedMeeting.Where(x => x.meetingNum == sugdto.meetingNum).FirstOrDefault();
+                sugtochange.hobbieNum = sugdto.hobbieNum;
+                sugtochange.latitude= sugdto.latitude;
+                sugtochange.longitude= sugdto.longitude;
+                _db.SaveChanges();
+            }
+
             try
             {
                 if (meetingstat == "W")
@@ -51,6 +77,20 @@ namespace WebApplication1.Controllers
                     tblSuggestedMeeting sugmeet = _db.tblSuggestedMeeting.Where(x => x.meetingNum == meetingnum).FirstOrDefault();
                     sugmeet.status = "W";
                     _db.SaveChanges();
+                    notifyfriendrequest.Notificationtype = "Suggested meeting";
+                    notifyfriendrequest.senderphonenum = sugmeet.phoneNum1;
+                    notifyfriendrequest.targetuserphonenum = sugmeet.phoneNum2;
+                    notifyfriendrequest.Title = "Meeting suggested by friend!";
+                    notifyfriendrequest.Body = $"{sugmeet.tblUser.userName} invite you to a meeting!";
+                    notifyfriendrequest.Data = new Dictionary<string, string>
+                    {
+                        {"meetingnum", $"{meetingnum}" },
+                        {"meetingstat", $"{meetingstat}" },
+                        {"notiftype", "Suggestedmeeting" },
+                         {"notification", JsonConvert.SerializeObject(new {icon="https://firebasestorage.googleapis.com/v0/b/responsive-cab-377615.appspot.com/o/Images%2FSocialkeeper2new.png?alt=media&token=f10bdc4f-3e23-43c7-a7ee-5c988a7b972e&_gl=1*gcy9wx*_ga*NTAyMjQ1MTEuMTY4MTk3OTcyMA..*_ga_CW55HF8NVT*MTY4NTk1MDk2OC4yMy4xLjE2ODU5NTExNzMuMC4wLjA."}) }
+
+                    };
+                    await Notificationsmaker.Notify(notifyfriendrequest);
                     return Request.CreateResponse(HttpStatusCode.OK, "Meeting is waiting");
 
                 }
@@ -69,6 +109,20 @@ namespace WebApplication1.Controllers
                     tblSuggestedMeeting sugmeet = _db.tblSuggestedMeeting.Where(x => x.meetingNum == meetingnum).FirstOrDefault();
                     sugmeet.status = "A";
                     _db.SaveChanges();
+                    notifyfriendrequest.Notificationtype = "Approved meeting";
+                    notifyfriendrequest.senderphonenum = sugmeet.phoneNum2;
+                    notifyfriendrequest.targetuserphonenum = sugmeet.phoneNum1;
+                    notifyfriendrequest.Title = "Meeting has been approved!";
+                    notifyfriendrequest.Body = $"{sugmeet.tblUser1.userName} Aprroved the meeting!";
+                    notifyfriendrequest.Data = new Dictionary<string, string>
+                    {
+                        {"meetingnum", $"{meetingnum}" },
+                        {"meetingstat", $"{meetingstat}" },
+                        {"notiftype", "Approvedmeeting"},
+                       {"notification", JsonConvert.SerializeObject(new {icon="https://firebasestorage.googleapis.com/v0/b/responsive-cab-377615.appspot.com/o/Images%2FSocialkeeper2new.png?alt=media&token=f10bdc4f-3e23-43c7-a7ee-5c988a7b972e&_gl=1*gcy9wx*_ga*NTAyMjQ1MTEuMTY4MTk3OTcyMA..*_ga_CW55HF8NVT*MTY4NTk1MDk2OC4yMy4xLjE2ODU5NTExNzMuMC4wLjA."}) }
+
+                    };
+                    await Notificationsmaker.Notify(notifyfriendrequest);
                     return Request.CreateResponse(HttpStatusCode.OK, "Meeting is Approved");
                 }
             }
@@ -82,7 +136,7 @@ namespace WebApplication1.Controllers
         // PUT: api/Mainappactions/5
         [HttpPut]
         [Route("api/MainAppaction/Updfriendrequest")]
-        public HttpResponseMessage Updfriendrequest([FromBody] RequestResponse item)
+        public async Task<HttpResponseMessage> Updfriendrequest([FromBody] RequestResponse item)
         {
             try
             {
@@ -112,6 +166,7 @@ namespace WebApplication1.Controllers
                     favdto.hobbieNum = favoritecont.hobbieNum;
                     favdto.rank = favoritecont.rank;
                     favdto.ID = favoritecont.ID;
+                    string IDstring= favdto.ID.ToString();
                     tblhobbieDTO hobdto= new tblhobbieDTO();
                     hobdto.hobbieName= favoritecont.tblHobbie.hobbieName;
                     hobdto.hobbieNum= favoritecont.tblHobbie.hobbieNum;
@@ -159,7 +214,23 @@ namespace WebApplication1.Controllers
                     }
                     usersum1.tblprefferdDTO = preferredTimeDTOs1;
                     favdto.tblUser1= usersum1;
-                   
+
+                    NotificationDTO notifyfriendrequest = new NotificationDTO();
+                    notifyfriendrequest.Notificationtype = "Friend Request Approved!";
+                    notifyfriendrequest.senderphonenum = userinvited.phoneNum1;
+                    notifyfriendrequest.targetuserphonenum = userinvite.phoneNum1;
+                    notifyfriendrequest.Title = "Friend Request Approved!";
+                    notifyfriendrequest.Body = $"{userinvite.userName} Approved your friend request!";
+                    notifyfriendrequest.Data = new Dictionary<string, string>
+                        {
+                            {"notiftype", "Approvedfriendrequest" },
+                        {"phonenuminvited",userinvited.phoneNum1 },
+                        {"ID", IDstring },
+                        {"notification", JsonConvert.SerializeObject(new {icon="https://firebasestorage.googleapis.com/v0/b/responsive-cab-377615.appspot.com/o/Images%2FSocialkeeper2new.png?alt=media&token=f10bdc4f-3e23-43c7-a7ee-5c988a7b972e&_gl=1*gcy9wx*_ga*NTAyMjQ1MTEuMTY4MTk3OTcyMA..*_ga_CW55HF8NVT*MTY4NTk1MDk2OC4yMy4xLjE2ODU5NTExNzMuMC4wLjA."}) }
+
+                        };
+
+                    await Notificationsmaker.Notify(notifyfriendrequest);
 
 
                     return Request.CreateResponse(HttpStatusCode.OK,favdto);
@@ -342,7 +413,7 @@ namespace WebApplication1.Controllers
 
         [HttpPost]
         [Route("api/MainAppaction/addfriendrequest")]
-        public HttpResponseMessage Addfriendrequest([FromBody] tblPossibleDTO possibledto)
+        public async Task<HttpResponseMessage> Addfriendrequest([FromBody] tblPossibleDTO possibledto)
         {
             
             try
@@ -350,6 +421,8 @@ namespace WebApplication1.Controllers
                 PossibleFavoriteContact possible = new PossibleFavoriteContact();
                 possible.phonenuminvite = possibledto.phonenuminvite;
                 possible.phonenuminvited = possibledto.phonenuminvited;
+                tblUser userinvite= _db.tblUser.Where(x=> x.phoneNum1==possibledto.phonenuminvite).FirstOrDefault();
+                tblUser userinvited= _db.tblUser.Where(x=> x.phoneNum1==possibledto.phonenuminvited).FirstOrDefault();
                 tblHobbie hob= _db.tblHobbie.Where(x=> x.hobbieNum==possibledto.hobbieNum).FirstOrDefault();
                 if (hob != null)
                 {
@@ -357,7 +430,63 @@ namespace WebApplication1.Controllers
                 }
                 _db.PossibleFavoriteContact.Add(possible);
                 _db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK);
+                tblPossibleDTO posdto = new tblPossibleDTO();
+                posdto.phonenuminvite = possible.phonenuminvite;
+                posdto.phonenuminvited = possible.phonenuminvited;
+                posdto.hobbieNum = possible.hobbieNum;
+                posdto.id = possible.id;
+                string IDstring= possible.id.ToString();
+                Usersummary user = new Usersummary();
+                user.userName = possible.tblUser.userName;
+                user.phoneNum1 = possible.tblUser.phoneNum1;
+                user.birthDate = Convert.ToDateTime(possible.tblUser.birthDate);
+                user.email = possible.tblUser.email;
+                user.gender = possible.tblUser.gender;
+                user.city = possible.tblUser.city;
+                user.imageUri = possible.tblUser.imageUri;
+                posdto.tblUser = user;
+                Usersummary user1 = new Usersummary();
+                user1.userName = possible.tblUser1.userName;
+                user1.phoneNum1 = possible.tblUser1.phoneNum1;
+                user1.birthDate = Convert.ToDateTime(possible.tblUser1.birthDate);
+                user1.email = possible.tblUser1.email;
+                user1.gender = possible.tblUser1.gender;
+                user1.city = possible.tblUser1.city;
+                user1.imageUri = possible.tblUser1.imageUri;
+                List<UserhobbiesDTO> userhobbiesdtolist = new List<UserhobbiesDTO>();
+                foreach (tblUserHobbie userhobbie in possible.tblUser1.tblUserHobbie)
+                {
+                    UserhobbiesDTO userhobbiedto = new UserhobbiesDTO();
+                    userhobbiedto.hobbieNum = userhobbie.hobbieNum;
+                    userhobbiedto.phoneNum1 = userhobbie.phoneNum1;
+                    tblHobbie hobi = _db.tblHobbie.Where(h => h.hobbieNum == userhobbie.hobbieNum).FirstOrDefault();
+                    userhobbiedto.hobbiename = hobi.hobbieName;
+                    userhobbiesdtolist.Add(userhobbiedto);
+                }
+                user1.tblUserHobbiesDTO = userhobbiesdtolist;
+                posdto.tblUser1 = user1;
+                tblhobbieDTO hobbiedto = new tblhobbieDTO();
+                hobbiedto.hobbieName = possible.tblHobbie.hobbieName;
+                hobbiedto.hobbieNum = possible.tblHobbie.hobbieNum;
+                hobbiedto.imageuri = possible.tblHobbie.imageuri;
+                posdto.tblHobbiedto = hobbiedto;
+
+                NotificationDTO notifyfriendrequest = new NotificationDTO();
+                notifyfriendrequest.Notificationtype = "New friend request";
+                notifyfriendrequest.senderphonenum = possibledto.phonenuminvite;
+                notifyfriendrequest.targetuserphonenum = possibledto.phonenuminvited;
+                notifyfriendrequest.Title = "New Friend Request!";
+                notifyfriendrequest.Body = $"You have a new friend request from ${userinvite.userName}!";
+                notifyfriendrequest.Data = new Dictionary<string, string>
+                        {
+                    {"ID", IDstring },
+                            {"notiftype", "newFriendrequest" },
+                           {"notification", JsonConvert.SerializeObject(new {icon="https://firebasestorage.googleapis.com/v0/b/responsive-cab-377615.appspot.com/o/Images%2FSocialkeeper2new.png?alt=media&token=f10bdc4f-3e23-43c7-a7ee-5c988a7b972e&_gl=1*gcy9wx*_ga*NTAyMjQ1MTEuMTY4MTk3OTcyMA..*_ga_CW55HF8NVT*MTY4NTk1MDk2OC4yMy4xLjE2ODU5NTExNzMuMC4wLjA."}) }
+
+
+                        };
+                await Notificationsmaker.Notify(notifyfriendrequest);
+                return Request.CreateResponse(HttpStatusCode.OK,posdto);
             }
             catch (Exception ex)
                 {
@@ -365,6 +494,117 @@ namespace WebApplication1.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
             }
         
+        }
+
+        [HttpGet]
+        [Route("api/MainAppaction/Getnewreq/{reqid}")]
+        public HttpResponseMessage Getnewreq(string reqid)
+        {
+            try
+            {
+                int reqidint = int.Parse(reqid);
+                PossibleFavoriteContact possible = _db.PossibleFavoriteContact.Where(x => x.id == reqidint).FirstOrDefault();
+                tblPossibleDTO posdto = new tblPossibleDTO();
+                posdto.phonenuminvite = possible.phonenuminvite;
+                posdto.phonenuminvited = possible.phonenuminvited;
+                posdto.hobbieNum = possible.hobbieNum;
+                posdto.id = possible.id;
+                string IDstring = possible.id.ToString();
+                Usersummary user = new Usersummary();
+                user.userName = possible.tblUser.userName;
+                user.phoneNum1 = possible.tblUser.phoneNum1;
+                user.birthDate = Convert.ToDateTime(possible.tblUser.birthDate);
+                user.email = possible.tblUser.email;
+                user.gender = possible.tblUser.gender;
+                user.city = possible.tblUser.city;
+                user.imageUri = possible.tblUser.imageUri;
+                posdto.tblUser = user;
+                Usersummary user1 = new Usersummary();
+                user1.userName = possible.tblUser1.userName;
+                user1.phoneNum1 = possible.tblUser1.phoneNum1;
+                user1.birthDate = Convert.ToDateTime(possible.tblUser1.birthDate);
+                user1.email = possible.tblUser1.email;
+                user1.gender = possible.tblUser1.gender;
+                user1.city = possible.tblUser1.city;
+                user1.imageUri = possible.tblUser1.imageUri;
+                List<UserhobbiesDTO> userhobbiesdtolist = new List<UserhobbiesDTO>();
+                foreach (tblUserHobbie userhobbie in possible.tblUser1.tblUserHobbie)
+                {
+                    UserhobbiesDTO userhobbiedto = new UserhobbiesDTO();
+                    userhobbiedto.hobbieNum = userhobbie.hobbieNum;
+                    userhobbiedto.phoneNum1 = userhobbie.phoneNum1;
+                    tblHobbie hobi = _db.tblHobbie.Where(h => h.hobbieNum == userhobbie.hobbieNum).FirstOrDefault();
+                    userhobbiedto.hobbiename = hobi.hobbieName;
+                    userhobbiesdtolist.Add(userhobbiedto);
+                }
+                user1.tblUserHobbiesDTO = userhobbiesdtolist;
+                posdto.tblUser1 = user1;
+                tblhobbieDTO hobbiedto = new tblhobbieDTO();
+                hobbiedto.hobbieName = possible.tblHobbie.hobbieName;
+                hobbiedto.hobbieNum = possible.tblHobbie.hobbieNum;
+                hobbiedto.imageuri = possible.tblHobbie.imageuri;
+                posdto.tblHobbiedto = hobbiedto;
+                return Request.CreateResponse(HttpStatusCode.OK, posdto);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/MainAppaction/Getmeetnew/{meetingnumber}")]
+        public HttpResponseMessage Getmeeting(int meetingnumber)
+        {
+            try
+            {
+                tblSuggestedMeeting sugemmeting= _db.tblSuggestedMeeting.Where(x=> x.meetingNum==meetingnumber).FirstOrDefault();
+                SuggestedDTO suggestedto= new SuggestedDTO();
+                suggestedto.phoneNum1 = sugemmeting.phoneNum1;
+                suggestedto.phoneNum2 = sugemmeting.phoneNum2;
+                suggestedto.meetingNum = sugemmeting.meetingNum;
+                suggestedto.startTime = sugemmeting.startTime;
+                suggestedto.endTime= sugemmeting.endTime;
+                tblLoctation loctmeet= _db.tblLoctation.Where(x=> x.longitude==sugemmeting.longitude && x.latitude==sugemmeting.latitude).FirstOrDefault();
+                suggestedto.place = new PlaceResult();
+                suggestedto.place.PlaceId = loctmeet.Placeid;
+                suggestedto.status = "W";
+                suggestedto.date = sugemmeting.date;
+                tblHobbie hob= _db.tblHobbie.Where(x=> x.hobbieNum==sugemmeting.hobbieNum).FirstOrDefault();
+                suggestedto.hobbieNum = hob.hobbieNum;
+                suggestedto.longitude = sugemmeting.longitude;
+                suggestedto.latitude= sugemmeting.latitude;
+                ExistsingUsers user1 = new ExistsingUsers();
+                user1.phonenumbers.Add(sugemmeting.tblUser.phoneNum1);
+                user1.birthDate = Convert.ToDateTime(sugemmeting.tblUser.birthDate);
+                user1.imageUri = sugemmeting.tblUser.imageUri;
+                user1.city = sugemmeting.tblUser.city;
+                user1.gender = sugemmeting.tblUser.gender;
+                user1.userName= sugemmeting.tblUser.userName;
+                user1.email = sugemmeting.tblUser.email;
+                user1.citylatt = Convert.ToDouble(sugemmeting.tblUser.citylatt);
+                user1.citylong = Convert.ToDouble(sugemmeting.tblUser.citylong);
+                ExistsingUsers user2 = new ExistsingUsers();
+                user2.phonenumbers.Add(sugemmeting.tblUser1.phoneNum1);
+                user2.birthDate = Convert.ToDateTime(sugemmeting.tblUser1.birthDate);
+                user2.imageUri = sugemmeting.tblUser1.imageUri;
+                user2.city = sugemmeting.tblUser1.city;
+                user2.gender = sugemmeting.tblUser1.gender;
+                user2.userName = sugemmeting.tblUser1.userName;
+                user2.email = sugemmeting.tblUser1.email;
+                user2.citylatt = Convert.ToDouble(sugemmeting.tblUser1.citylatt);
+                user2.citylong = Convert.ToDouble(sugemmeting.tblUser1.citylong);
+                suggestedto.user1 = user1;
+                suggestedto.user2 = user2;
+
+                return Request.CreateResponse(HttpStatusCode.OK, suggestedto);
+
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
         }
 
 

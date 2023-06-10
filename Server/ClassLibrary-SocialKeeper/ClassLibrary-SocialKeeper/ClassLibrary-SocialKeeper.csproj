@@ -204,6 +204,7 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="DTO\Actualmeetingdto.cs" />
+    <Compile Include="DTO\NotificationDTO.cs" />
     <Compile Include="DTO\DataDTO.cs" />
     <Compile Include="DTO\EmailDTO.cs" />
     <Compile Include="DTO\Events.cs" />
@@ -224,6 +225,7 @@
     <Compile Include="MatrixFactorization\Class1.cs" />
     <Compile Include="MatrixFactorization\Googlecloudservices.cs" />
     <Compile Include="MatrixFactorization\Googleplaces.cs" />
+    <Compile Include="MatrixFactorization\Notifications.cs" />
     <Compile Include="MatrixFactorization\OpeningHoursDetailsResponse.cs" />
     <Compile Include="Model1.Context.cs">
       <AutoGen>True</AutoGen>
