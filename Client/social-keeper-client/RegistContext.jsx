@@ -17,11 +17,25 @@ export default function RegistrationContext(props) {
     const [invitedcontacts,setInvitedContacts]=useState([])
     const [filteredalreadymebers,setFilteredAlreadyMembers]=useState([])
 
+    const clearregistcontext = () => {
+        setPersonalDetails({});
+        setImageType(null);
+        setSelectedImage(null);
+        setPrefferdTimes([]);
+        setSelectedHobbies([]);
+        setPossibleFavoriteContacts([]);
+        setContacts([]);
+        setFilteredContacts([]);
+        setAlreadyMembers([]);
+        setInvitedContacts([])
+        setFilteredAlreadyMembers([])
+    }
+
 
 
     
     return (
-        <RegistContext.Provider value={{ contacts,filteredalreadymebers,setFilteredAlreadyMembers,setContacts,filteredContacts,setFilteredContacts,alreadymembers,setAlreadyMembers,invitedcontacts,setInvitedContacts, personaldetails,imagetype,setImageType, setPersonalDetails, selectedImage, setSelectedImage, prefferdtimes, setPrefferdTimes, selectedhobbies, setSelectedHobbies, possiblefavoritecontacts, setPossibleFavoriteContacts }}>
+        <RegistContext.Provider value={{ clearregistcontext,contacts,filteredalreadymebers,setFilteredAlreadyMembers,setContacts,filteredContacts,setFilteredContacts,alreadymembers,setAlreadyMembers,invitedcontacts,setInvitedContacts, personaldetails,imagetype,setImageType, setPersonalDetails, selectedImage, setSelectedImage, prefferdtimes, setPrefferdTimes, selectedhobbies, setSelectedHobbies, possiblefavoritecontacts, setPossibleFavoriteContacts }}>
             {props.children}
         </RegistContext.Provider>
     )

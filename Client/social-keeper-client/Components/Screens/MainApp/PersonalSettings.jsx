@@ -15,7 +15,7 @@ import {
 import { ListItem } from '@rneui/themed';
 import { Icon } from '@rneui/themed';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {AccountSettings, Meetingtimes,  Intersets, Favoritecont} from './/PersonalComp/Account.jsx'
+import {AccountSettings, Meetingtimes,  Intersets, Favoritecont,Logout} from './/PersonalComp/Account.jsx'
 import { MainAppcontext } from './MainAppcontext';
 import AuthContext from '../../../Authcontext';
 
@@ -76,6 +76,7 @@ export default function SettingDashBoard({route}) {
         <Meetingtimes/>
         <Intersets/>
         <Favoritecont />
+        <Logout/>
         </ScrollView>
 
              </View>

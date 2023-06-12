@@ -27,7 +27,71 @@ import AuthContext from '../../../../Authcontext';
 
 
 
+
 //create functional component
+function Logout(props) {
+  const {user, setUser} = useContext(MainAppcontext);
+  const {clearregistcontext} = useContext(RegistContext);
+  const {clearmainappcontext} = useContext(MainAppcontext);
+  const {ispersonalactiveated, setIspersonalactiveated} = useContext(MainAppcontext);
+  const {isAuthenticated, setIsAuthenticated} = useContext(AuthContext);
+  const {setIsnotif,setNumberofnewfriends,numberofnewfriends}= useContext(AuthContext);
+
+  const navigation = useNavigation();
+
+  return (
+
+<ListItem
+  style={{backgroundColor: '#222222', borderRadius: 20}}
+  containerStyle={{
+    flexDirection: 'row-reverse',
+    backgroundColor:'rgba(255, 255, 255, 0.05)',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  }}
+>
+  <MaterialCommunityIcons
+    name="logout"
+    
+    
+    size={26}
+    color="rgba(255, 255, 255, 0.5)"
+    style={{paddingLeft: 5,color:'red'}}
+  />
+
+  <ListItem.Content>
+  <TouchableOpacity onPress={() => {
+    
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        {
+          text: "Logout", onPress: () => {
+         
+           setIsAuthenticated(false);
+          }
+        }
+      ],
+    );
+
+
+ 
+
+  }} style={styles.listaccordiontext} >
+    <ListItem.Title style={[styles.listaccordiontext]}>Logout</ListItem.Title>
+    </TouchableOpacity>
+  </ListItem.Content>
+</ListItem>
+
+  );
+
+}
 
 function AccountSettings() {
 
@@ -743,4 +807,4 @@ const styles = StyleSheet.create({
 
 
 
-export {AccountSettings, Meetingtimes, Intersets, Favoritecont}
+export {AccountSettings, Meetingtimes,Logout, Intersets, Favoritecont}

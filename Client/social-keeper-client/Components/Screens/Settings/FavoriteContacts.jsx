@@ -191,7 +191,6 @@ export default function FavoriteContacts({ isfrommainapp:propIsFromMainApp ,navi
         weekDay:time.day.index,
         startTime:time.startTime,
         endTime:time.endTime,
-        rank:time.rank
 
       }
       newprefferdtimes.push(timeobj)

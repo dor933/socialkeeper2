@@ -25,6 +25,7 @@ import CreateProfile from '..//Profile/CreateProfile';
 import Businesspage from './Businesspage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthContext from '../../../Authcontext';
+import { RegistContext } from '../../../RegistContext';
 
 
 
@@ -96,10 +97,13 @@ function SuggestedMeetingsStackScreen({fromnotif,notifobj,navigation}) {
 export default function MainDashBoard({route}) {
 
     const {user, setUser} = useContext(MainAppcontext);
+    const {clearregistcontext} = useContext(RegistContext);
+    const {clearmainappcontext} = useContext(MainAppcontext);
   const {userevents, setUserevents} = useContext(MainAppcontext);
   const [screenisready, setScreenisready] = useState(false);
   const {ispersonalactiveated, setIspersonalactiveated} = useContext(MainAppcontext);
   const {numberofnewfriends, setNumberofnewfriends} = useContext(AuthContext);
+  const {isnotif, setIsnotif} = useContext(AuthContext);
   const fromnotif=route.params?.fromnotif;
   const notifobj=route.params?.notifobj;
 
@@ -115,6 +119,10 @@ export default function MainDashBoard({route}) {
 
     return () => {
       console.log('unmounting')
+      setNumberofnewfriends(0)           
+            setIsnotif(false) 
+            clearregistcontext()
+            clearmainappcontext()
     }
 
    

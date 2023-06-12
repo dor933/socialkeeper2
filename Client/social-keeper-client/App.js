@@ -118,7 +118,6 @@ const MainAppStackScreen = () => {
       <Mainappstack.Screen name="PreviousMeetingsScreen" component={PreviousMeetingsScreen} options={{ headerShown: false }} />
       <Mainappstack.Screen name="SuggestedMeetingsScreen" component={SuggestedMeetingsScreen} options={{ headerShown: false }} />
       <Mainappstack.Screen name="SettingDashBoard" component={SettingDashBoard} options={{ headerShown: false }} />
-      <Registrationstack.Screen name="SignIn" component={SignInAPI} options={{ headerShown: false }} />
     </Mainappstack.Navigator>
   )
 }
@@ -165,9 +164,8 @@ export default function App() {
   //useEFfect getting expo push token from user device and save it in the database when user log in and component did mount
   useEffect( () => {
 
+    setIsAuthenticated(false);
 
-    AsyncStorage.setItem('isAuth', "false");
-    checkisauthenticated();
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
     notificationListener.current = Notifications.addNotificationReceivedListener(async (notification) => {
@@ -190,12 +188,14 @@ export default function App() {
     };
   }, []);
 
-  const checkisauthenticated = async () => {
-    const storedauthentication=await AsyncStorage.getItem('isAuth');
-    console.log("storedauthentication");
-    console.log(storedauthentication);
+  useEffect(() => {
 
-  }
+    console.log("isAuthenticated");
+    console.log(isAuthenticated);
+
+  }, [isAuthenticated]);
+
+
 
 
 
