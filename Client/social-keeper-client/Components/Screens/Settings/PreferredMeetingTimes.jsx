@@ -107,7 +107,6 @@ export default function PreferredMeetingTimes({ navigation,route }, props) {
                         startTime:item.startTime,
                         endTime:item.endTime,
                         phoneNum1:user.phoneNum1,
-                        rank:1,
                     };
                 });
 

@@ -37,11 +37,17 @@ const LocationPhotos = ({photosarray,typeofmeeting,meeting,navigation}) => {
 
     const changemeetingstatus = async (meetingNum, status) => {
         try{
+        const response={};
         parseInt(meetingNum);
         const url = `http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/Updmeeting/${meetingNum}/${status}`;
         console.log('this is the url', url)
+        if(meeting.isplacechanged){
+            response= await axios.put(url,meeting);
+        }
+        else{
 
-        const response = await axios.put(url);
+         response = await axios.put(url);
+        }
         console.log('this is the response', response.data)
         if (response.data) {
             console.log('this is the response', response.data)
@@ -152,6 +158,10 @@ const LocationPhotos = ({photosarray,typeofmeeting,meeting,navigation}) => {
 
                             let meetingtochange=tblsuggested1copy.find(meeting => meeting.meetingNum === meetingNum);
                             meetingtochange.status="A";
+                            if(meeting.isplacechanged){
+                                meetingtochange.place=meeting.place;
+                                meetingtochange.hobbieNum=meeting.hobbieNum;
+                            }
                             setUser({...user,tblSuggestedMeetings1:tblsuggested1copy});
                              data=await changemeetingstatus(meetingNum,"A");
                              let mystartdate=new Date(meetingtochange.date);
@@ -203,6 +213,11 @@ const LocationPhotos = ({photosarray,typeofmeeting,meeting,navigation}) => {
                             let meetingtochange=tblsuggestedcopy.find(meeting => meeting.meetingNum === meetingNum);
                             //change the status to 'A'
                             meetingtochange.status="W";
+                            if(meeting.isplacechanged){
+                                meetingtochange.place=meeting.place;
+                                meetingtochange.hobbieNum=meeting.hobbieNum;
+
+                            }
                             // set tblsuggestedcopy as the new tblsuggestedmeetings
                             setUser({...user,tblSuggestedMeetings:tblsuggestedcopy});
                             data=await changemeetingstatus(meetingNum,"W");

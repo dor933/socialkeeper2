@@ -23,6 +23,9 @@ import { Intersets } from './PersonalComp/Account';
 import {Favoritecont} from './PersonalComp/Account';
 import CreateProfile from '..//Profile/CreateProfile';
 import Businesspage from './Businesspage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import AuthContext from '../../../Authcontext';
+import { RegistContext } from '../../../RegistContext';
 
 
 
@@ -36,12 +39,21 @@ const SuggestedMeetingsStack = createStackNavigator(); // Add this line
 const PreviousMeetingsStack = createStackNavigator(); // Add this line
 const PersonalSettingsStack = createStackNavigator(); // Add this line
 
-function SuggestedMeetingsStackScreen() {
+function SuggestedMeetingsStackScreen({fromnotif,notifobj,navigation}) {
+
   
+  
+
+  console.log('from suggestedmeetingsstackscreen')
+  console.log('fromnotif',fromnotif)
+  console.log('notifobj',notifobj)
     return (
       <SuggestedMeetingsStack.Navigator initialRouteName="SuggestedMeetings">
-        <SuggestedMeetingsStack.Screen name="SuggestedMeetings" component={SuggestedMeetingsScreen } options={{headerShown:false}} 
-       />
+        <SuggestedMeetingsStack.Screen name="SuggestedMeetings"  options={{headerShown:false}} 
+                children={(props) => <SuggestedMeetingsScreen {...props} fromnotif={fromnotif} notifobj={notifobj}
+                
+                  />}
+                />
         <SuggestedMeetingsStack.Screen name="Businesspage" component={Businesspage} options={{headerShown:false}} />
         <SuggestedMeetingsStack.Screen name="SuggestedMeetingCalender" component={Calender} options={{headerShown:false}} />
         <SuggestedMeetingsStack.Screen name="MapLocationForHobbies" component={MapLocationForHobbies} options={{headerShown:false}} />
@@ -82,20 +94,105 @@ function SuggestedMeetingsStackScreen() {
   }
 
 
-export default function MainDashBoard() {
+export default function MainDashBoard({route}) {
 
     const {user, setUser} = useContext(MainAppcontext);
+    const {clearregistcontext} = useContext(RegistContext);
+    const {clearmainappcontext} = useContext(MainAppcontext);
   const {userevents, setUserevents} = useContext(MainAppcontext);
   const [screenisready, setScreenisready] = useState(false);
   const {ispersonalactiveated, setIspersonalactiveated} = useContext(MainAppcontext);
+  const {numberofnewfriends, setNumberofnewfriends} = useContext(AuthContext);
+  const {isnotif, setIsnotif} = useContext(AuthContext);
+  const fromnotif=route.params?.fromnotif;
+  const notifobj=route.params?.notifobj;
 
   useEffect( () => {
 
-    
+    if(!fromnotif){
     
      rungetcalenders();
+    }
+
+    // setIsAuthenticated(false)
+
+
+    return () => {
+      console.log('unmounting')
+      setNumberofnewfriends(0)           
+            setIsnotif(false) 
+            clearregistcontext()
+            clearmainappcontext()
+    }
+
+   
     
   }, []);
+
+  useEffect( () => {
+
+    if(fromnotif){
+      console.log('its from notif new 0706')
+      
+      if(notifobj.notiftype=='Approvedfriendrequest') {
+
+       const possiblefriend= user.possibleFavoriteContacts_invite_DTO.find((item) => item.phonenuminvited == notifobj.phonenuminvited)
+       console.log('this is possible friend',possiblefriend)
+            if(possiblefriend){
+        const newfavoritecontact = {
+          ID: parseInt(notifobj.ID),
+          phoneNum1:possiblefriend.phonenuminvite,
+          phoneNum2:possiblefriend.phonenuminvited,
+          hobbieNum:possiblefriend.hobbieNum,
+          rank:1,
+          tblUser1:possiblefriend.tblUser1,
+                   tblHobbie:possiblefriend.tblHobbiedto
+    }
+    console.log('this is new favorite contact',newfavoritecontact)
+    const newfavoritecontacts = [...user.tblFavoriteContacts,newfavoritecontact]
+    console.log('this is new favorite contacts',newfavoritecontacts)
+
+    const newpossiblefavoritecontacts = user.possibleFavoriteContacts_invite_DTO.filter((item) => item.phonenuminvited !== notifobj.phonenuminvited)
+    console.log('this is new possible favorite contacts',newpossiblefavoritecontacts)
+    const newuser = {
+      ...user,
+      tblFavoriteContacts:newfavoritecontacts,
+      possibleFavoriteContacts_invite_DTO:newpossiblefavoritecontacts
+
+    } 
+    setUser(newuser)
+    //increate number of new friends by 1
+    setNumberofnewfriends(numberofnewfriends+1)
+
+  }
+
+      }
+      else if (notifobj.notiftype=='newFriendrequest') {
+
+        getrequestasync();
+
+
+      }
+    }
+  }, [notifobj]);
+
+
+  const getrequestasync = async () => {
+
+    const response= await axios.get(`http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/Getnewreq/${notifobj.ID}`)
+    const newrequest = response.data;
+    const newtblpossiblefavoriteinvited=user.possibleFavoriteContacts_invited_DTO
+    newtblpossiblefavoriteinvited.push(newrequest)
+    const newuser = {
+      ...user,
+      possibleFavoriteContacts_invited_DTO:newtblpossiblefavoriteinvited
+    }
+    setUser(newuser)
+    
+
+  }
+
+
 
 
   const rungetcalenders= async () => {
@@ -125,6 +222,9 @@ export default function MainDashBoard() {
   }
     await setmeetingscorrectly(newsugmeetings);
 }
+
+AsyncStorage.setItem('isAuth','true');
+
     setScreenisready(true);
   }
   
@@ -541,12 +641,15 @@ else{
 
 
             }}
-            initialRouteName="Suggested Meetings"
+            initialRouteName= "Suggested Meetings"
 
         >
             <Tab.Screen name="Personal" component={PersonalSettingsStackScreen} options={{
                 headerShown: false,
                 tabBarStyle: ispersonalactiveated? styles.tabBarhidden : styles.personalmeetingbar,
+                tabBarBadge: (numberofnewfriends>0 && user.possibleFavoriteContacts_invited_DTO.length==0)? '!'
+                : (user.possibleFavoriteContacts_invited_DTO.length>0)? user.possibleFavoriteContacts_invited_DTO.length : null,
+                 
                 
             }}  />
 
@@ -559,10 +662,14 @@ else{
             options={{
                 headerShown: false,
             }} />
-            <Tab.Screen name="Suggested Meetings" component={SuggestedMeetingsStackScreen} 
+            <Tab.Screen name="Suggested Meetings" 
             options={{
                 headerShown: false,
             }}
+          
+
+            children={(props) => <SuggestedMeetingsStackScreen {...props} fromnotif={fromnotif} notifobj={notifobj}  />}
+            
 
             />
         </Tab.Navigator>

@@ -54,14 +54,32 @@ export default function MainAppcontextfunc(props) {
             hobbienum:10,
             hobbie:'night_club'
         },
+        {
+            hobbienum:1,
+            hobbie:'other'
+        },
+
                 
 
     ]);
 
+    const clearmainappcontext = () => {
+        setUser({});
+        setIspersonalactiveated(false);
+        setUserevents([]);
+        setFirebaseuser({});
+        setSuggestedmeeting({});
+        setSuggestedmeeting1({});
+        setScreenisready(false);
+        setIsappready(false);
+
+    }
+        
+
    
     
     return (
-        <MainAppcontext.Provider value={{ user,setUser,screenisready,setScreenisready, ispersonalactiveated,setIspersonalactiveated, userevents,setUserevents, firebaseuser, setFirebaseuser, suggestedmeeting, setSuggestedmeeting, hobbienumtypes, suggestedmeeting1, setSuggestedmeeting1,isappready,setIsappready }}>
+        <MainAppcontext.Provider value={{ user,clearmainappcontext,setUser,screenisready,setScreenisready, ispersonalactiveated,setIspersonalactiveated, userevents,setUserevents, firebaseuser, setFirebaseuser, suggestedmeeting, setSuggestedmeeting, hobbienumtypes, suggestedmeeting1, setSuggestedmeeting1,isappready,setIsappready }}>
             {props.children}
         </MainAppcontext.Provider>
     )

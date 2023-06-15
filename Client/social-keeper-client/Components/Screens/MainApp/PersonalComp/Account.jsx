@@ -23,10 +23,75 @@ import { useNavigation } from '@react-navigation/native';
 import Contactdetails from '../../../CompsToUse/Contactdetails';
 import AnimatedIcon from '../../../CompsToUse/AnimatedIcon';
 import axios from 'axios';
+import AuthContext from '../../../../Authcontext';
+
 
 
 
 //create functional component
+function Logout(props) {
+  const {user, setUser} = useContext(MainAppcontext);
+  const {clearregistcontext} = useContext(RegistContext);
+  const {clearmainappcontext} = useContext(MainAppcontext);
+  const {ispersonalactiveated, setIspersonalactiveated} = useContext(MainAppcontext);
+  const {isAuthenticated, setIsAuthenticated} = useContext(AuthContext);
+  const {setIsnotif,setNumberofnewfriends,numberofnewfriends}= useContext(AuthContext);
+
+  const navigation = useNavigation();
+
+  return (
+
+<ListItem
+  style={{backgroundColor: '#222222', borderRadius: 20}}
+  containerStyle={{
+    flexDirection: 'row-reverse',
+    backgroundColor:'rgba(255, 255, 255, 0.05)',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  }}
+>
+  <MaterialCommunityIcons
+    name="logout"
+    
+    
+    size={26}
+    color="rgba(255, 255, 255, 0.5)"
+    style={{paddingLeft: 5,color:'red'}}
+  />
+
+  <ListItem.Content>
+  <TouchableOpacity onPress={() => {
+    
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        {
+          text: "Logout", onPress: () => {
+         
+           setIsAuthenticated(false);
+          }
+        }
+      ],
+    );
+
+
+ 
+
+  }} style={styles.listaccordiontext} >
+    <ListItem.Title style={[styles.listaccordiontext]}>Logout</ListItem.Title>
+    </TouchableOpacity>
+  </ListItem.Content>
+</ListItem>
+
+  );
+
+}
 
 function AccountSettings() {
 
@@ -34,6 +99,7 @@ function AccountSettings() {
   const {personaldetails,setPersonalDetails} = useContext(RegistContext);
   const {selectedImage,setSelectedImage}= useContext(RegistContext);
   const {ispersonalactiveated, setIspersonalactiveated} = useContext(MainAppcontext);
+
   const navigation = useNavigation();
 
  
@@ -175,12 +241,20 @@ function Intersets(props) {
 function Favoritecont () {
    
         const [expanded, setExpanded] = React.useState(false);
+        const [isnewfriendaction, setIsnewfriendaction] = React.useState(true);
         const [friendrequestexpanded, setFriendrequestexpanded] = React.useState(false);
         const [friendexpanded, setFriendexpanded] = React.useState(false);
         const [modalVisible, setModalVisible] = useState(false);
         const [selectedcontact, setSelectedcontact] = useState(null);
         const [friendid,setFriendid]=useState(null)
         const {user, setUser} = React.useContext(MainAppcontext);
+        const {isnotif, setIsnotif} = React.useContext(AuthContext);
+        const {numberofnewfriendrequest, setNumberofnewfriendrequest} = React.useContext(AuthContext);
+        const {numberofnewfriends, setNumberofnewfriends} = React.useContext(AuthContext);
+
+     
+     
+        
 
         const navigation=useNavigation()
 
@@ -275,6 +349,7 @@ function Favoritecont () {
         <ListItem.Accordion
         title="Favorite Contacts"
         style={{backgroundColor: '#222222', borderRadius: 20}}
+     
         content={
           <>
 
@@ -298,6 +373,17 @@ function Favoritecont () {
             containerStyle={{ position: 'absolute', top: 0, right: 138 }}
             
             />}  
+            {
+              isnotif && (user.possibleFavoriteContacts_invited_DTO.length==0 && numberofnewfriends>0 )&& (
+                <Badge
+                status="error"
+                value='!'
+                containerStyle={{ position: 'absolute', top: 0, right: 138 }}
+                />
+
+              )
+
+            }
           </ListItem.Content>
           </>
         }
@@ -329,6 +415,7 @@ function Favoritecont () {
         borderBottomColor: 'rgba(255, 255, 255, 0.1)',
 
         }}
+       
         content={
             <>
             <MaterialCommunityIcons
@@ -351,6 +438,7 @@ function Favoritecont () {
         />
       </View>
     )}
+
   </View>
          
             
@@ -362,6 +450,7 @@ function Favoritecont () {
             <AnimatedIcon
             isExpanded={friendrequestexpanded}
             toggle={setFriendrequestexpanded}
+            
             />
         }
         isExpanded={friendrequestexpanded}
@@ -427,6 +516,7 @@ function Favoritecont () {
 
              
         </ListItem.Accordion>
+
         <ListItem.Accordion title="My Friends"
         style={{backgroundColor: '#222222', borderRadius: 20}}
         containerStyle={{flexDirection: 'row-reverse',
@@ -435,6 +525,7 @@ function Favoritecont () {
         borderBottomColor: 'rgba(255, 255, 255, 0.1)',
 
         }}
+     
         content={
             <>
             <MaterialCommunityIcons
@@ -448,16 +539,31 @@ function Favoritecont () {
             <ListItem.Title style={styles.listaccordiontext}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
     <Text style={[styles.listaccordiontext]}>My Friends</Text>
+    {isnotif && numberofnewfriends>0 && (
+      <View style={{ paddingLeft: 10 }}>
+        <Badge
+          status="error"
+          value='!'
+          containerStyle={{ position: 'relative' }}
+        />
 
   </View>
+    )}
+  </View>
+
          
             
             </ListItem.Title>
             </ListItem.Content>
             </>
         }
-        icon={<AnimatedIcon isExpanded={friendexpanded} toggle={setFriendexpanded} />}
+        icon={<AnimatedIcon isExpanded={friendexpanded} toggle={setFriendexpanded}
+
+        
+        />}
             isExpanded={friendexpanded}
+
+            
 
          >
            
@@ -701,4 +807,4 @@ const styles = StyleSheet.create({
 
 
 
-export {AccountSettings, Meetingtimes, Intersets, Favoritecont}
+export {AccountSettings, Meetingtimes,Logout, Intersets, Favoritecont}

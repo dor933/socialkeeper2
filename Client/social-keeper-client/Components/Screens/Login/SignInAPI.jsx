@@ -16,6 +16,7 @@ import { Input, SocialIcon } from 'react-native-elements'
 
 
 
+
 function SignUpAPI({navigation}) {
 
   const {personaldetails, setPersonalDetails} = useContext(RegistContext);

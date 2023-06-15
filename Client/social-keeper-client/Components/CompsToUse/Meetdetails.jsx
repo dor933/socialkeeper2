@@ -1,11 +1,12 @@
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, SafeAreaView, Dimensions } from 'react-native'
 import React from 'react'
 //import usestate
-import { useState, useEffect } from 'react';
+import { useState, useEffect,useContext } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import LocationPhotos from './Locationphotos';
 import Customheader from './Customheader';
 import StarRating from 'react-native-star-rating-widget';
+import AuthContext from '../../Authcontext';
 
 
 //icons
@@ -24,8 +25,19 @@ const Details = ({route,navigation}) => {
     const usertomeeting=route.params.usertomeet;
     const type=route.params.type;
     const meetingtype= route.params.meetingtype;
+    const {isnotif, setIsnotif} = useContext(AuthContext)
+    const setisnotif=route.params?.setisnotif;
     const [rating1, setRating1] = useState(0);
     const [rating2, setRating2] = useState(0);
+
+    useEffect(() => {
+        console.log('this is meeting',meeting);
+        console.log('this is type',type);
+        setIsnotif(false)
+
+       
+
+    }, [])
 
     function getDayOfWeek(dateString) {
         const date = new Date(dateString);

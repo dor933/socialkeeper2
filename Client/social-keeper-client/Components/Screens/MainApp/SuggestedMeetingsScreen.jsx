@@ -13,6 +13,7 @@ import Sugmeet from '../../CompsToUse/Sugmeet';
 import {getPlaceDetails} from '../../..//assets/Utils/places';
 import { ScrollView } from 'react-native-gesture-handler';
 import Loadingcomp from '../../CompsToUse/Loadingcomp';
+import AuthContext from '../../../Authcontext';
 
 
 
@@ -20,7 +21,7 @@ import Loadingcomp from '../../CompsToUse/Loadingcomp';
 
 
 
-export default function SuggestedMeetingsScreen({navigation}) {
+export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj}) {
 
 
   const [selectedIndex, setSelectedIndex] = useState(2);
@@ -28,18 +29,138 @@ export default function SuggestedMeetingsScreen({navigation}) {
   const [newtblsuggesthis, setnewtblsuggesthis] = useState([]);
   const [newtblsuggest1this, setnewtblsuggest1this] = useState([]);
   const {screenisready, setScreenisready} = useContext(MainAppcontext);
+  const [mynotife, setMynotife] = useState(notifobj);
+  const {isnotif, setIsnotif} = useContext(AuthContext)
+
+
 
   useEffect(() => {
+    console.log('is notif is '+isnotif)
+    console.log('my notif is '+mynotife)
+  
+
+  },[])
+
+  useEffect(() => {
+
+    console.log('this is tblsuggested1',user.tblSuggestedMeetings1)
+    if(fromnotif){
+      console.log('im into fromnotif')
+    setMynotife(notifobj)
+    console.log(notifobj)
+    setIsnotif(true)
+    
+
+    if(notifobj.notiftype=='Suggestedmeeting'){
+      console.log('im into suggestedmeeting')
+      setSelectedIndex(2)
+
+      getmeetingfromserver(notifobj.meetingnum)
+    
+    }
+    else if(notifobj.notiftype=='Approvedmeeting'){
+      setSelectedIndex(0)
+      const newtblsuggestedmeetings= user.tblSuggestedMeetings.map((item) => {
+        if(item.meetingNum==notifobj.meetingnum){
+          return {...item,status:'A'};
+        }
+        return item;
+      });
+      const Newuser={...user}
+      Newuser.tblSuggestedMeetings=newtblsuggestedmeetings;
+      setUser(Newuser);
+    }
+    // else if(notifobj.notiftype=='Approvedfriendrequest') {
+
+    //   const possiblefriend= user.possibleFavoriteContacts_invite_DTO.find((item) => item.phonenuminvited == notifobj.phonenuminvited)
+    //   console.log('this is possible friend',possiblefriend)
+  //     if(possiblefriend){
+  //       const newfavoritecontact = {
+  //         ID:notifobj.ID,
+  //         phoneNum1:possiblefriend.phonenuminvite,
+  //         phoneNum2:possiblefriend.phonenuminvited,
+  //         hobbieNum:possiblefriend.hobbienum,
+  //         rank:1,
+  //         tblUser1:possiblefriend.tblUser1,
+  //                  tblHobbie:possiblefriend.tblHobbiedto
+  //   }
+  //   console.log('this is new favorite contact',newfavoritecontact)
+  //   const newfavoritecontacts = [...user.tblFavoriteContacts,newfavoritecontact]
+
+  //   const newpossiblefavoritecontacts = user.possibleFavoriteContacts_invite_DTO.filter((item) => item.phonenuminvited !== notifobj.phonenuminvited)
+  //   console.log('this is new possible favorite contacts',newpossiblefavoritecontacts)
+  //   const newuser = {
+  //     ...user,
+  //     tblFavoriteContacts:newfavoritecontacts,
+  //     possibleFavoriteContacts_invite_DTO:newpossiblefavoritecontacts
+
+  //   } 
+  //   setUser(newuser)
+  
+
+  //  }
+   
+  // }
+    else{
+      setSelectedIndex(2)
+    }
+
+    
+  }
+  else{
+    console.log('im out fromnotif')
+    console.log(fromnotif)
+    setSelectedIndex(2)
+  }
+
+
+  
+   
+
+  
+
+  }, [fromnotif,notifobj])
+
+  useEffect(() => {
+   
     if(user.tblSuggestedMeetings){
       setnewtblsuggesthis(user.tblSuggestedMeetings)
     }
     if(user.tblSuggestedMeetings1){
       setnewtblsuggest1this(user.tblSuggestedMeetings1)
     }
-
-   
-
+  
+  
+  
   }, [user])
+
+  const getmeetingfromserver = async (meetingnum) => {
+    console.log('im into getmeetingfromserver')
+    const newmeeting= await axios.get(`http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/Getmeetnew/${meetingnum}`)
+    const meetingtoret= newmeeting.data;
+    //search if meeting is already in suggestedmeetings1
+    const isinmeetings1= user.tblSuggestedMeetings1.find((item) => item.meetingNum==meetingnum)
+    if(!isinmeetings1){
+    const placedetails= await getPlaceDetails(meetingtoret.place.place_id)
+    meetingtoret.place=placedetails;
+    const newtblsuggested1meetings= user.tblSuggestedMeetings1;
+    newtblsuggested1meetings.push(meetingtoret)
+    const Newuser={...user}
+    Newuser.tblSuggestedMeetings1=newtblsuggested1meetings;
+    setUser(Newuser);
+    }
+    else{
+      console.log('this meeting is already in suggestedmeetings1')
+      setIsnotif(false)
+    }
+   
+    
+  }
+
+
+
+
+  
 
 
  
@@ -84,7 +205,7 @@ export default function SuggestedMeetingsScreen({navigation}) {
               if(each.status=='P'){
             return(
               
-            <Sugmeet meeting={each} key={index} navigation={navigation} invitedbyfriend={true} meetingtype="suggested"  />
+            <Sugmeet meeting={each} setisnotif={setIsnotif} key={index} navigation={navigation} invitedbyfriend={true} meetingtype="suggested"  />
             )
               }
 
@@ -100,7 +221,6 @@ export default function SuggestedMeetingsScreen({navigation}) {
           newtblsuggesthis.map((each, index2) => {
             if(each.status=="P"){
 
-              console.log("each",each.place)
 
             return(
 
@@ -144,6 +264,7 @@ export default function SuggestedMeetingsScreen({navigation}) {
            selectedIndex==2
            && user.tblSuggestedMeetings1 
            && user.tblSuggestedMeetings1.length > 0 && 
+           
 
            
             newtblsuggest1this.map((each,index)=>{
@@ -154,7 +275,9 @@ export default function SuggestedMeetingsScreen({navigation}) {
              key={index}
               navigation={navigation} 
               invitedbyfriend={true}
-               meetingtype="suggested"  />
+               meetingtype="suggested"
+               meetingnumnew={isnotif && notifobj.notiftype=='Suggestedmeeting'? mynotife.meetingnum : null} 
+                />
             )
               }
 
@@ -175,6 +298,7 @@ export default function SuggestedMeetingsScreen({navigation}) {
               navigation={navigation}
               invitedbyfriend={true}
               meetingtype="approved"
+              meetingnumnew={isnotif && notifobj.notiftype=='Approvedmeeting'? mynotife.meetingnum : null}
             />
             )
                    }
@@ -194,6 +318,9 @@ export default function SuggestedMeetingsScreen({navigation}) {
               navigation={navigation}
               invitedbyfriend={false}
               meetingtype="approved"
+              meetingnumnew={isnotif && notifobj.notiftype=='Approvedmeeting' ? mynotife.meetingnum: null}
+
+
             />
             )
             }
@@ -240,15 +367,18 @@ const styles= StyleSheet.create({
   },
 
   meetingtext:{
-    fontFamily: 'Lato_700Bold',
-    fontSize: 24,
-    color: '#000000',
+    fontFamily: 'Pacifico_400Regular',
+    fontSize: 33,
+    color: '#eb6a5e',
     textAlign:'center',
     fontStyle: 'normal',
-    lineHeight: 29,
+    lineHeight: 54,
+  
     letterSpacing: 0.03,
     //move it to left
-    paddingRight:180
+    paddingRight:170,
+    marginTop: 15,
+    marginBottom: 5
     
 
   },

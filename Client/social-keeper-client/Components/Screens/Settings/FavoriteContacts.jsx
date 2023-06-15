@@ -61,12 +61,23 @@ export default function FavoriteContacts({ isfrommainapp:propIsFromMainApp ,navi
 
  
 
+  useEffect(() => {
+
+    if(isfrommainapp){
+      console.log('user is changed from main app')
+      loadContacts();
+    }
+
+    
+  }, [user]);
   
 
 
   const handleClose = () => {
     setOverlayVisible(false);
   };
+
+
 
  
 
@@ -180,7 +191,6 @@ export default function FavoriteContacts({ isfrommainapp:propIsFromMainApp ,navi
         weekDay:time.day.index,
         startTime:time.startTime,
         endTime:time.endTime,
-        rank:time.rank
 
       }
       newprefferdtimes.push(timeobj)
@@ -273,7 +283,6 @@ export default function FavoriteContacts({ isfrommainapp:propIsFromMainApp ,navi
         }
         const response3= await axios.put("http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/updpushtoken",
       usertopush);
-      console.log(response3.data)
 
       setIsAuthenticated(true)
 
@@ -285,7 +294,6 @@ export default function FavoriteContacts({ isfrommainapp:propIsFromMainApp ,navi
       
     }
     else{
-      console.log(response.data)
     }
 
   }catch(error){
@@ -301,8 +309,9 @@ export default function FavoriteContacts({ isfrommainapp:propIsFromMainApp ,navi
   }
        // String value with the number to call
 
-  async function loadContacts() {  
-    if(contacts.length==0 && filteredContacts.length==0) {
+  async function loadContacts() { 
+ 
+    if((contacts.length==0 && filteredContacts.length==0) || isfrommainapp) {
     const { status } = await Contacts.requestPermissionsAsync();
   if (status === "granted") {
     const { data } = await Contacts.getContactsAsync();
@@ -312,13 +321,11 @@ export default function FavoriteContacts({ isfrommainapp:propIsFromMainApp ,navi
       data[i].sendsms=false;
     }
 
-    console.log('this is the data')
     data.map((contact)=>{
 
       if(contact.phoneNumbers){
         if(contact.phoneNumbers[0]){
 
-      console.log(contact.phoneNumbers[0])
         }
       }
     })
@@ -396,8 +403,6 @@ export default function FavoriteContacts({ isfrommainapp:propIsFromMainApp ,navi
 
   
   const already= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/getexistingmembers', contactList);
-  console.log('this is already.data')
-  console.log(already.data)
   if(isfrommainapp){
 
     already.data= already.data.filter ((contact)=>{
@@ -411,7 +416,6 @@ export default function FavoriteContacts({ isfrommainapp:propIsFromMainApp ,navi
 
       user.tblFavoriteContacts1.map((favoritecontact)=>{
         if(favoritecontact.phoneNum1==contact.phonenumbers[0]){
-          console.log('is exist is true')
           isexist=true;
         }
       }
@@ -437,10 +441,9 @@ export default function FavoriteContacts({ isfrommainapp:propIsFromMainApp ,navi
 
   }
     )
-    console.log('this is already data before')
-    console.log(already.data)
 
     already.data.map((contact)=>{
+      if(user.possibleFavoriteContacts_invite_DTO.length>0){
       user.possibleFavoriteContacts_invite_DTO.map((possiblecontact)=>{
         if(possiblecontact.phonenuminvited==contact.phonenumbers[0]){
           console.log('this is the contact that i added')
@@ -451,12 +454,23 @@ export default function FavoriteContacts({ isfrommainapp:propIsFromMainApp ,navi
         }
       }
       )
+    }
+    if(user.possibleFavoriteContacts_invited_DTO.length>0){
+      user.possibleFavoriteContacts_invited_DTO.map((possiblecontact)=>{
+        if(possiblecontact.phonenuminvite==contact.phonenumbers[0]){
+          console.log('this is the contact that i added')
+          console.log(contact)
+          contact.addedtofav=true;
+          //return contact
+          
+        }
+      }
+      )
+    }
 }
 
     )
 
-    console.log('this is already data after filter')
-    console.log(already.data)
 }
 
 

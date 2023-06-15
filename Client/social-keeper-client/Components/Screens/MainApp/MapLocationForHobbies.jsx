@@ -9,6 +9,7 @@ import { MainAppcontext } from './MainAppcontext';
 import { whatsappcontact } from '../../../assets/Utils/Connectivity';
 //import icons
 import { Ionicons } from "@expo/vector-icons";  
+import { savePlace } from '../../../assets/Utils/places';
 
 
 
@@ -24,7 +25,44 @@ const MapLocationForHobbies = ({route,navigation}) => {
   const {hobbienumtypes} = React.useContext(MainAppcontext);
   const [type, setType] = useState(null);
   const [usertomeet, setUsertomeet] = useState(null);
+  const [placereplacement, setPlacereplacement] = useState(null);
   const {information}= route.params;
+  let replacementmeeting= null;
+  let replacetype= null;
+  let replacelocationname= null;
+  let isreplacedplace= false;
+  
+
+
+  
+useEffect(() => {
+  if(placereplacement){
+  let hobbienumreplace=''
+  try{
+   hobbienumreplace= hobbienumtypes.find(hobbie=>hobbie.hobbie==placereplacement.types[0]).hobbienum
+  }
+  catch{
+     hobbienumreplace= hobbienumtypes.find(hobbie=>hobbie.hobbie=='other').hobbienum
+  }
+  console.log(hobbienumreplace)
+  setnewmeetingplace(placereplacement,hobbienumreplace)
+  }
+
+}, [placereplacement])
+
+const setnewmeetingplace= (details,hobbienumreplace) => {
+
+
+  replacementmeeting=[{...mymeeting, place:details, isplacechanged:true, latitude:details.geometry.location.lat, longitude:details.geometry.location.lng,hobbieNum:hobbienumreplace}]
+  setMymeeting({...mymeeting, place:details, isplacechanged:true, latitude:details.geometry.location.lat, longitude:details.geometry.location.lng,hobbieNum:hobbienumreplace})
+  replacelocationname=details.name
+  setLocationname(details.name)
+  replacetype=details.types[0]
+  setType(details.types[0])
+
+
+
+}
   
 
 
@@ -55,6 +93,8 @@ const MapLocationForHobbies = ({route,navigation}) => {
   }, []);
 
 
+
+
   if(!location){
     return <View>
       
@@ -80,10 +120,19 @@ const MapLocationForHobbies = ({route,navigation}) => {
       <View style={styles.bottomrow}>
        
         <TouchableOpacity style={styles.rectengalconfirm} onPress={()=> {
+       if(isreplacedplace){
+         
+        navigation.navigate('Meetdetails',{meeting:replacementmeeting, usertomeet:usertomeet, type:replacetype, meetingtype:'suggested'})
+        }
+        else{
 
           navigation.navigate('Meetdetails',{meeting:mymeeting, usertomeet:usertomeet, type:type, meetingtype:'suggested'})
+        
 
-        }}>
+      }
+
+      }
+      }>
           <Text style={styles.textconfirm}>Confirm Location</Text>
           <View style={styles.icon} >
 
@@ -121,7 +170,7 @@ const MapLocationForHobbies = ({route,navigation}) => {
           
           placeholder='Search'
           fetchDetails={true}
-          onPress={(data, details = null) => {
+          onPress={async (data, details = null) => {
             console.log('im trying to get the location')
 
             console.log('this is the data', data)
@@ -132,11 +181,11 @@ const MapLocationForHobbies = ({route,navigation}) => {
               longitude: details.geometry.location.lng,
             });
 
-            //set the place field in the meeting object to be details
-            // setMymeeting({
-            //   ...mymeeting,
-            //   place: details,
-            // })
+            await savePlace(details)
+            setPlacereplacement(details)
+       
+
+         
 
 
           }}
