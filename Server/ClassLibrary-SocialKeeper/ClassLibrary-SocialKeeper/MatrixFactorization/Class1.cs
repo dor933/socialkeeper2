@@ -57,7 +57,7 @@ namespace ClassLibrary_SocialKeeper
           double prefferdtimerate, List<tblPreferredTime> commontimeperiods2)
         {
             bool existingperiod = false;
-            List<tblPreferredTime> usertblpref = usertomeeting.tblPreferredTime.ToList();
+            List<tblPreferredTime> usertblpref = item.tblUser.tblPreferredTime.ToList();
             List<tblPreferredTime> user1tblpref = item.tblUser1.tblPreferredTime.ToList();
 
 
@@ -91,7 +91,7 @@ namespace ClassLibrary_SocialKeeper
             {
                 existingperiod = false;
 
-                if (numbermeetings == 3)
+                if (numbermeetings == 5)
                 {
                     break;
                 }
@@ -117,7 +117,7 @@ namespace ClassLibrary_SocialKeeper
                     }
                     if (!existingperiod)
                     {
-                        if (numbermeetings == 3)
+                        if (numbermeetings == 5)
                         {
                             break;
                         }
@@ -141,8 +141,7 @@ namespace ClassLibrary_SocialKeeper
                             }
                         }
                         sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (25.0 - 1.0);
-                        sugdto.normalizeuserrank = (Convert.ToDouble(item.rank) - 1.0) / (5.0 - 1.0);
-                        totalmeetingrank = Meetings.calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate, sugdto.normalizeuserrank);
+                        totalmeetingrank = Meetings.calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate);
                         sugdto.rank = totalmeetingrank;
                         //need to add hobbienum to tblsuggestedmeeting
                         // need to normalize it and calculate score
@@ -197,7 +196,7 @@ namespace ClassLibrary_SocialKeeper
 
             }
 
-            while (numbermeetings < 3)
+            while (numbermeetings < 5)
             {
                 TimeSpan limitedhourtimespan = new TimeSpan(22, 0, 0);
                 double limitedhour = limitedhourtimespan.Hours;
@@ -252,7 +251,7 @@ namespace ClassLibrary_SocialKeeper
                     }
                     if (!existingperiod)
                     {
-                        if (numbermeetings == 3)
+                        if (numbermeetings == 5)
                         {
                             break;
                         }
@@ -277,8 +276,7 @@ namespace ClassLibrary_SocialKeeper
                             }
                         }
                         sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (25.0 - 1.0);
-                        sugdto.normalizeuserrank = (Convert.ToDouble(item.rank) - 1.0) / (5.0 - 1.0);
-                        totalmeetingrank = calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate, sugdto.normalizeuserrank);
+                        totalmeetingrank = calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate);
                         sugdto.rank = totalmeetingrank;
                         //need to add hobbienum to tblsuggestedmeeting
                         // need to normalize it and calculate score
@@ -529,7 +527,7 @@ namespace ClassLibrary_SocialKeeper
                                 {
                                     double hobbierank = ratedh.Where(x => x.HobbieNum == hobbienum).FirstOrDefault().Label;
                                     sugitem.normalizehobbierank = (hobbierank - 1.0) / (25.0 - 1.0);
-                                    sugitem.rank = calculatemeetingscore(sugitem.normalizehobbierank, sugitem.prefferedtimerate, sugitem.normalizeuserrank);
+                                    sugitem.rank = calculatemeetingscore(sugitem.normalizehobbierank, sugitem.prefferedtimerate);
                                     sugitem.hobbieNum= hobbienum;
                                     if (placeslist[type].Count == 10)
                                     {
@@ -1141,11 +1139,11 @@ namespace ClassLibrary_SocialKeeper
             return today.AddDays(daysUntilTargetDay);
         }
 
-        static public double calculatemeetingscore(double hobbyranknormalized,double prefferedtimerate,double normalizedfriendrank)
+        static public double calculatemeetingscore(double hobbyranknormalized,double prefferedtimerate)
         {
       
 
-            double sugmeetingrank = (0.4 * hobbyranknormalized) + (0.2 * normalizedfriendrank) + (0.4 * prefferedtimerate);
+            double sugmeetingrank = (0.5 * hobbyranknormalized)  + (0.5 * prefferedtimerate);
             return sugmeetingrank;
 
         }

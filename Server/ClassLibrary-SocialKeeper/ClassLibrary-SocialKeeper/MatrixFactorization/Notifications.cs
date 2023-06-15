@@ -54,6 +54,21 @@ namespace ClassLibrary_SocialKeeper
             }
         }
 
+        static public async Task<String> sendexamplenotif()
+        {
+            {
+            NotificationDTO notification = new NotificationDTO
+            {
+                targetuserphonenum = "0533312224",
+                senderphonenum = "0533312224",
+                Title = "test",
+                Body = "test",
+                Data = new Dictionary<string, string> { { "test", "test" } }
+            };
+            return await Notify(notification);
+            }
+        }
+
 
     }
 }

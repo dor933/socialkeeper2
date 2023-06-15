@@ -49,7 +49,6 @@
           </Key>
           <Property Name="phoneNum1" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="phoneNum2" Type="nvarchar" MaxLength="10" Nullable="false" />
-          <Property Name="rank" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="hobbieNum" Type="int" Nullable="false" />
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
@@ -97,7 +96,6 @@
           <Property Name="startTime" Type="time" Precision="7" Nullable="false" />
           <Property Name="endTime" Type="time" Precision="7" Nullable="false" />
           <Property Name="weekDay" Type="char" MaxLength="1" Nullable="false" />
-          <Property Name="rank" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="phoneNum1" Type="nvarchar" MaxLength="10" Nullable="false" />
         </EntityType>
         <EntityType Name="tblSuggestedHobbie">
@@ -561,7 +559,6 @@
           </Key>
           <Property Name="phoneNum1" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="phoneNum2" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="rank" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="hobbieNum" Type="Int32" Nullable="false" />
           <NavigationProperty Name="tblUser" Relationship="Self.fk1tblFavoriteContact" FromRole="tblFavoriteContact" ToRole="tblUser" />
           <NavigationProperty Name="tblUser1" Relationship="Self.fk2tblFavoriteContact" FromRole="tblFavoriteContact" ToRole="tblUser" />
@@ -624,7 +621,6 @@
           <Property Name="startTime" Type="Time" Nullable="false" Precision="7" />
           <Property Name="endTime" Type="Time" Nullable="false" Precision="7" />
           <Property Name="weekDay" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
-          <Property Name="rank" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="phoneNum1" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="tblUser" Relationship="Self.fk1tblPreferredTime" FromRole="tblPreferredTime" ToRole="tblUser" />
         </EntityType>
@@ -1098,7 +1094,6 @@
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
                 <ScalarProperty Name="phoneNum2" ColumnName="phoneNum2" />
-                <ScalarProperty Name="rank" ColumnName="rank" />
                 <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1148,7 +1143,6 @@
                 <ScalarProperty Name="startTime" ColumnName="startTime" />
                 <ScalarProperty Name="endTime" ColumnName="endTime" />
                 <ScalarProperty Name="weekDay" ColumnName="weekDay" />
-                <ScalarProperty Name="rank" ColumnName="rank" />
                 <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
               </MappingFragment>
             </EntityTypeMapping>

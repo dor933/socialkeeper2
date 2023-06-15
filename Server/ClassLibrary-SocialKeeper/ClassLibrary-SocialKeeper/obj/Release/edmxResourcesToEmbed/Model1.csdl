@@ -50,7 +50,6 @@
     </Key>
     <Property Name="phoneNum1" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="phoneNum2" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="rank" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
     <Property Name="hobbieNum" Type="Int32" Nullable="false" />
     <NavigationProperty Name="tblUser" Relationship="Self.fk1tblFavoriteContact" FromRole="tblFavoriteContact" ToRole="tblUser" />
     <NavigationProperty Name="tblUser1" Relationship="Self.fk2tblFavoriteContact" FromRole="tblFavoriteContact" ToRole="tblUser" />
@@ -113,7 +112,6 @@
     <Property Name="startTime" Type="Time" Nullable="false" Precision="7" />
     <Property Name="endTime" Type="Time" Nullable="false" Precision="7" />
     <Property Name="weekDay" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
-    <Property Name="rank" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
     <Property Name="phoneNum1" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
     <NavigationProperty Name="tblUser" Relationship="Self.fk1tblPreferredTime" FromRole="tblPreferredTime" ToRole="tblUser" />
   </EntityType>
@@ -174,6 +172,7 @@
     <NavigationProperty Name="tblSuggestedMeeting" Relationship="Self.fk1tblSuggestedMeeting" FromRole="tblUser" ToRole="tblSuggestedMeeting" />
     <NavigationProperty Name="tblSuggestedMeeting1" Relationship="Self.fk2tblSuggestedMeeting" FromRole="tblUser" ToRole="tblSuggestedMeeting" />
     <NavigationProperty Name="tblUserHobbie" Relationship="Self.fk1tblUserHobbie" FromRole="tblUser" ToRole="tblUserHobbie" />
+    <Property Name="ExpoPushToken" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="tblUserHobbie">
     <Key>

@@ -16,6 +16,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.Odbc;
 using Newtonsoft.Json;
+using Firebase.Auth;
 
 namespace WebApplication1.Controllers
 {
@@ -51,7 +52,7 @@ namespace WebApplication1.Controllers
                 tblUser user = _db.tblUser.Where(u => u.phoneNum1 == userdto.phoneNum1).FirstOrDefault();
                 user.ExpoPushToken = userdto.ExpoPushToken;
                 _db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK, "pushtoken updated");
+                return Request.CreateResponse(HttpStatusCode.OK, $"push is {userdto.ExpoPushToken}");
             }
             catch (Exception ex)
             {
@@ -213,7 +214,6 @@ namespace WebApplication1.Controllers
                 prefferedtdo.weekDay = preff.weekDay;
                 prefferedtdo.phoneNum1 = preff.phoneNum1;
                 prefferedtdo.id = preff.id;
-                prefferedtdo.rank = preff.rank;
                 preferredTimeDTOs.Add(prefferedtdo);
             }
 
@@ -811,7 +811,6 @@ namespace WebApplication1.Controllers
                         newuserpref.endTime = userpref.endTime;
                         newuserpref.weekDay = userpref.weekDay;
                         newuserpref.id = lastrow;
-                        newuserpref.rank = userpref.rank;
                         newuserpref.phoneNum1 = Mynewuser.phoneNum1;
                         newuserpref.tblUser = newuser;
                         userpreflist.Add(newuserpref);
@@ -835,19 +834,7 @@ namespace WebApplication1.Controllers
                         newpossfavcontact.tblUser = user1;
                         newpossfavcontact.tblUser1 = user2;
                         _db.PossibleFavoriteContact.Add(newpossfavcontact);
-                        NotificationDTO notifyfriendrequest= new NotificationDTO();
-                        notifyfriendrequest.Notificationtype = "New friend request";
-                        notifyfriendrequest.senderphonenum = newpossfavcontact.phonenuminvite;
-                        notifyfriendrequest.targetuserphonenum = newpossfavcontact.phonenuminvited;
-                        notifyfriendrequest.Title = "New Friend Request!";
-                        notifyfriendrequest.Body= $"You have a new friend request from ${user1.userName}!";
-                        notifyfriendrequest.Data = new Dictionary<string, string>
-                        {
-                            {"notiftype", "newFriendrequest" },
-                            {"notification", JsonConvert.SerializeObject(new {icon="https://firebasestorage.googleapis.com/v0/b/responsive-cab-377615.appspot.com/o/Images%2FSocialkeeper2new.png?alt=media&token=f10bdc4f-3e23-43c7-a7ee-5c988a7b972e&_gl=1*gcy9wx*_ga*NTAyMjQ1MTEuMTY4MTk3OTcyMA..*_ga_CW55HF8NVT*MTY4NTk1MDk2OC4yMy4xLjE2ODU5NTExNzMuMC4wLjA."}) }
-                        };
-                        await Notificationsmaker.Notify(notifyfriendrequest);
-
+                 
                         
                     }
 
@@ -881,6 +868,25 @@ namespace WebApplication1.Controllers
 
                     _db.tblUser.Add(newuser);
                     _db.SaveChanges();
+
+                    foreach(PossibleFavoriteContact pos in newuser.PossibleFavoriteContact)
+                    {
+                        string idstring= pos.id.ToString();
+                        NotificationDTO notifyfriendrequest = new NotificationDTO();
+                        notifyfriendrequest.Notificationtype = "New friend request";
+                        notifyfriendrequest.senderphonenum = pos.phonenuminvite;
+                        notifyfriendrequest.targetuserphonenum = pos.phonenuminvited;
+                        notifyfriendrequest.Title = "New Friend Request!";
+                        notifyfriendrequest.Body = $"You have a new friend request from ${pos.tblUser.userName}!";
+                        notifyfriendrequest.Data = new Dictionary<string, string>
+                        {
+                            {"ID", idstring },
+                            {"notiftype", "newFriendrequest" },
+                            {"notification", JsonConvert.SerializeObject(new {icon="https://firebasestorage.googleapis.com/v0/b/responsive-cab-377615.appspot.com/o/Images%2FSocialkeeper2new.png?alt=media&token=f10bdc4f-3e23-43c7-a7ee-5c988a7b972e&_gl=1*gcy9wx*_ga*NTAyMjQ1MTEuMTY4MTk3OTcyMA..*_ga_CW55HF8NVT*MTY4NTk1MDk2OC4yMy4xLjE2ODU5NTExNzMuMC4wLjA."}) }
+                        };
+                        await Notificationsmaker.Notify(notifyfriendrequest);
+                    }
+
                     return "User added";
 
                 }

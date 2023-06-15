@@ -18,7 +18,6 @@ namespace ClassLibrary_SocialKeeper
         public System.TimeSpan startTime { get; set; }
         public System.TimeSpan endTime { get; set; }
         public string weekDay { get; set; }
-        public string rank { get; set; }
         public string phoneNum1 { get; set; }
     
         public virtual tblUser tblUser { get; set; }

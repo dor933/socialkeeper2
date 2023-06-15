@@ -31,10 +31,13 @@ namespace WebApplication1.Controllers
         }
 
         // GET: api/Mainappactions/5
-        public string Get(int id)
+        [HttpGet]
+        [Route("api/MainAppaction/testnotif")]
+        public async Task<string> testnotif()
         {
             
-            return "value";
+            await Notificationsmaker.sendexamplenotif();
+            return "ok";
             
         }
 
@@ -152,7 +155,6 @@ namespace WebApplication1.Controllers
                     favoritecont.tblHobbie = posfavoritereq.tblHobbie;
                     favoritecont.tblUser = posfavoritereq.tblUser;
                     favoritecont.tblUser1 = posfavoritereq.tblUser1;
-                    favoritecont.rank = "1";
                     userinvite.tblFavoriteContact.Add(favoritecont);
                     userinvited.tblFavoriteContact1.Add(favoritecont);
                     _db.tblFavoriteContact.Add(favoritecont);
@@ -164,7 +166,6 @@ namespace WebApplication1.Controllers
                     favdto.phoneNum1 = favoritecont.phoneNum1;
                     favdto.phoneNum2 = favoritecont.phoneNum2;
                     favdto.hobbieNum = favoritecont.hobbieNum;
-                    favdto.rank = favoritecont.rank;
                     favdto.ID = favoritecont.ID;
                     string IDstring= favdto.ID.ToString();
                     tblhobbieDTO hobdto= new tblhobbieDTO();
@@ -209,7 +210,6 @@ namespace WebApplication1.Controllers
                         prefferedtdo.weekDay = preff.weekDay;
                         prefferedtdo.phoneNum1 = preff.phoneNum1;
                         prefferedtdo.id = preff.id;
-                        prefferedtdo.rank = preff.rank;
                         preferredTimeDTOs1.Add(prefferedtdo);
                     }
                     usersum1.tblprefferdDTO = preferredTimeDTOs1;
@@ -220,7 +220,7 @@ namespace WebApplication1.Controllers
                     notifyfriendrequest.senderphonenum = userinvited.phoneNum1;
                     notifyfriendrequest.targetuserphonenum = userinvite.phoneNum1;
                     notifyfriendrequest.Title = "Friend Request Approved!";
-                    notifyfriendrequest.Body = $"{userinvite.userName} Approved your friend request!";
+                    notifyfriendrequest.Body = $"{userinvited.userName} Approved your friend request!";
                     notifyfriendrequest.Data = new Dictionary<string, string>
                         {
                             {"notiftype", "Approvedfriendrequest" },
@@ -370,7 +370,6 @@ namespace WebApplication1.Controllers
                     newuserpref.startTime = userpref.startTime;
                     newuserpref.endTime = userpref.endTime;
                     newuserpref.weekDay = userpref.weekDay;
-                    newuserpref.rank = userpref.rank;
                     newuserpref.phoneNum1 = userpref.phoneNum1;
                     userpreflist.Add(newuserpref);
 
@@ -387,7 +386,6 @@ namespace WebApplication1.Controllers
                     prefferedtdo.endTime = preff.endTime;
                     prefferedtdo.weekDay = preff.weekDay;
                     prefferedtdo.phoneNum1 = preff.phoneNum1;
-                    prefferedtdo.rank = preff.rank;
                     prefferedtdo.id = preff.id;
                     preferredTimeDTOs.Add(prefferedtdo);
                 }

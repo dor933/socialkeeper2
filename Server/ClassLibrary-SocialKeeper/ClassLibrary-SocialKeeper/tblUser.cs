@@ -35,9 +35,9 @@ namespace ClassLibrary_SocialKeeper
         public string city { get; set; }
         public string gender { get; set; }
         public string imageUri { get; set; }
-        public string ExpoPushToken { get; set; }
         public Nullable<double> citylatt { get; set; }
         public Nullable<double> citylong { get; set; }
+        public string ExpoPushToken { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PossibleFavoriteContact> PossibleFavoriteContact { get; set; }
