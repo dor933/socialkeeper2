@@ -30,8 +30,6 @@ const styles = StyleSheet.create({
   image: {
     width: 75,
     height: 75,
-    top: 250,
-    left: 170,
     borderRadius: 100,
     borderWidth: 2,
     borderColor: "white",

@@ -288,7 +288,6 @@ export default function CreateProfile({navigation,route}) {
     
     <SafeAreaView style={{flex:1, alignItems:'center', justifyContent:'center',backgroundColor:'#ffffff'}}>
 
-    <SafeAreaView style={styles.safeArea}>
       
       {/* Logo image */}
       <Image
@@ -308,12 +307,14 @@ export default function CreateProfile({navigation,route}) {
 
       <View style={styles.imageViewer}>
       
-      <ImageViewer placeholderImageSource={placeHolderImage} selectedImage={selectedImage} 
-      />
-      </View>
+      {/* <ImageViewer placeholderImageSource={placeHolderImage} selectedImage={selectedImage} 
+      /> */}
+      <ImageViewer
+        placeholderImageSource={placeHolderImage}
+        selectedImage={selectedImage}
 
-      {/* Button to chnoose image from gallery */}
-      <Button
+      />
+            <Button
         theme="primary"
         title="+"
         buttonStyle={{
@@ -337,13 +338,16 @@ export default function CreateProfile({navigation,route}) {
         containerStyle={{
           width: 35,
           height: 35,
-          marginVertical: 10,
+          top:10,
+          right:22,
           alignSelf: "center",
-          left:-40,
-          top:50
         }}
         onPress={Choosefunctionalty}
       />
+      </View>
+
+      {/* Button to chnoose image from gallery */}
+
       
       <View style={styles.form}>
       <View style={styles.phoneNumber}>
@@ -448,7 +452,6 @@ export default function CreateProfile({navigation,route}) {
       backgroundColor: "#ffffff",
       borderBottomWidth: 1,
       borderRadius: 0,
-      width: 277,
       left: 8.5,
       borderBottomColor: "#9098a1",
       shadowOpacity: 0.05,
@@ -496,11 +499,13 @@ export default function CreateProfile({navigation,route}) {
           letterSpacing: 0.1,
         }}
         containerStyle={{
-          marginHorizontal: 50,
-          width: 200,
-          height: 50,
+          marginHorizontal: 0,
+          width:Dimensions.get('window').width-100,
+          height:Dimensions.get('window').height/15,
           marginVertical: 0,
-          paddingTop: 3,
+          justifyContent:'center',
+          paddingTop: 0,
+          paddingBottom: 10,
           alignSelf: "center",
         }}
         onPress={() => {
@@ -548,30 +553,32 @@ export default function CreateProfile({navigation,route}) {
       </View>
       
     </SafeAreaView>
-    </SafeAreaView>
   );
 }
 
 //Styles for the CreateProfile screen
 const styles = StyleSheet.create({
   //CSS for the SafeAreaView
-  safeArea: {
-    flex:1,
-    width: 430,
-    backgroundColor: "#ffffff",
-    borderRadius: 50,
-    top:55,
-    
-  },
+
 
 
   //CSS for the ScrollView
 
   //CSS for the logo image
   logo: {
-    width: 295,
-    height: 155,
-    left: 60,
+    width:Dimensions.get('window').width,
+    height:Dimensions.get('window').height/5.5,
+
+    alignSelf: "center",
+    marginTop: 20,
+    //fit the image to the size of the image
+    resizeMode: "contain",
+    
+
+    
+ 
+    
+  
   },
   textconfirm:{
     fontSize: 15,
@@ -632,17 +639,11 @@ const styles = StyleSheet.create({
   },
  
   imageViewer: {
-    position: "absolute",
     borderRadius: 50,
-    width: Dimensions.get("window").width,
-    height: 100,
-    alignSelf: "center",
-    top:-50,
-    right:35,
-    marginTop: 15,
-    
-    
-    
+    top: 12,
+    right:6,
+    flexDirection: 'row-reverse',
+     
   },
 
   //CSS for user name
@@ -661,7 +662,8 @@ const styles = StyleSheet.create({
   },
   form: {
     width:Dimensions.get('window').width-100,
-    marginTop: 45,
+    height:Dimensions.get('window').height/1.7,
+    paddingTop:0,
     alignSelf:'center',
   },
 
@@ -684,6 +686,7 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     alignSelf:'center',
     height: 120,
+    paddingRight: 16,
 
 
   },

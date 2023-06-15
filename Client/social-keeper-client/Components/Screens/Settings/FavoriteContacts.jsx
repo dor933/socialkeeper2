@@ -46,7 +46,7 @@ export default function FavoriteContacts({ isfrommainapp:propIsFromMainApp ,navi
   const [commonhobbie,setCommonHobbie]=useState([]);
   const { setIsAuthenticated}= React.useContext(AuthContext);
   const {user,setUser} = React.useContext(MainAppcontext);
-  const {expoPushToken}= React.useContext(RegistContext);
+  const {expoPushToken}= React.useContext(AuthContext);
   const routeIsFromMainApp = route?.params?.isfrommainapp;
   const isfrommainapp = routeIsFromMainApp !== undefined ? routeIsFromMainApp : propIsFromMainApp;
 
@@ -284,7 +284,11 @@ export default function FavoriteContacts({ isfrommainapp:propIsFromMainApp ,navi
         const response3= await axios.put("http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/updpushtoken",
       usertopush);
 
+      if(response3.status==200){
+
+        console.log("pushtoken updated", response3.data)
       setIsAuthenticated(true)
+      }
 
     
       

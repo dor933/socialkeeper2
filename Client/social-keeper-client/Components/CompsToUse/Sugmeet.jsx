@@ -186,7 +186,8 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
         {
           meetingnumnew==meeting.meetingNum &&
           
-          <Text style={[styles.subtextstyle, { fontWeight:'800', color:'black', fontSize:10 }]}>New Meeting!
+          
+          <Text style={[styles.subtextstyle, { fontWeight:'800', color:'red', fontSize:10 }]}>New Activity!
 
           {console.log('im here')}
           
@@ -218,10 +219,12 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
         -{meeting.startTime}/ {meeting.endTime}
       </Text>
       <Text style={styles.subtextstyle}>{meeting.place.name}</Text>
-      {
+
+    </View>
+    {
           meetingnumnew==meeting.meetingNum &&
           
-          <Text style={[styles.subtextstyle, { fontWeight:'800', color:'black', fontSize:10 }]}>New Activity!
+          <Text style={[styles.subtextstyle, { fontFamily:'Pacifico_400Regular',marginRight:14, color:'#eb6a5e', fontSize:12,lineHeight:20 }]}>New Activity!
 
           {console.log('im here')}
           
@@ -229,7 +232,6 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
           </Text>
           
         }
-    </View>
   </View>
                 )}
 

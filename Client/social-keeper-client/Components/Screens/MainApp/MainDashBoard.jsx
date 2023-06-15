@@ -510,7 +510,20 @@ AsyncStorage.setItem('isAuth','true');
  
 
 
-  let numbermeetings= user.tblSuggestedMeetings1.length+ user.tblSuggestedMeetings.length;
+  let numbermeetings=0;
+  
+  user.tblSuggestedMeetings1.forEach((each) => {
+    if(each.status==='P'){
+      numbermeetings=numbermeetings+1;
+    }
+  })
+
+  user.tblSuggestedMeetings.forEach((each) => {
+    if(each.status==='P'){
+      numbermeetings=numbermeetings+1;
+    }
+  })
+
   console.log('number of meetings suggesteedmeetingsuser',numbermeetings)
 
  

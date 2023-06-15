@@ -378,7 +378,7 @@ function Favoritecont () {
                 <Badge
                 status="error"
                 value='!'
-                containerStyle={{ position: 'absolute', top: 0, right: 138 }}
+                containerStyle={{ position: 'absolute', top: 0, right: 155 }}
                 />
 
               )

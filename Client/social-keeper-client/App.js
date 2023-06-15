@@ -165,6 +165,7 @@ export default function App() {
   useEffect( () => {
 
     setIsAuthenticated(false);
+    console.log("useEffect first");
 
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
