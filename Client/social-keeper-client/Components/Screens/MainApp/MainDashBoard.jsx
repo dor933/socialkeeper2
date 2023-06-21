@@ -181,6 +181,8 @@ export default function MainDashBoard({route}) {
 
     const response= await axios.get(`http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/Getnewreq/${notifobj.ID}`)
     const newrequest = response.data;
+    const ifexisting = user.possibleFavoriteContacts_invited_DTO.find((item) => item.id == newrequest.id)
+    if(!ifexisting){
     const newtblpossiblefavoriteinvited=user.possibleFavoriteContacts_invited_DTO
     newtblpossiblefavoriteinvited.push(newrequest)
     const newuser = {
@@ -188,6 +190,10 @@ export default function MainDashBoard({route}) {
       possibleFavoriteContacts_invited_DTO:newtblpossiblefavoriteinvited
     }
     setUser(newuser)
+  }
+  else{
+    console.log('request already exists')
+  }
     
 
   }
@@ -511,7 +517,7 @@ AsyncStorage.setItem('isAuth','true');
 
 
   let numbermeetings=0;
-  
+
   user.tblSuggestedMeetings1.forEach((each) => {
     if(each.status==='P'){
       numbermeetings=numbermeetings+1;

@@ -1,12 +1,14 @@
 //create react function component
-import React, { useEffect,useState,useContext } from "react";
+import React, { useEffect,useState,useRef,useContext } from "react";
 //import react native components
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Dimensions, Button, Image } from "react-native";
+import { View, Text, StyleSheet, ScrollView,TouchableOpacity, SafeAreaView, Dimensions,Animated ,Button, Image } from "react-native";
 //import icons
 import { ListItem } from '@rneui/themed';
 import { Ionicons } from "@expo/vector-icons";
 import {MainAppcontext} from "../Screens/MainApp/MainAppcontext";
 import axios from "axios";
+import * as Calendar from 'expo-calendar';
+
 //import lato font
 
 
@@ -20,8 +22,44 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
     //load lato font
     const [hobbietype, sethobbietype] = useState('');
     const {user, setUser} = useContext(MainAppcontext);
+    const [images, setImages] = useState([]);
     const datetime= meeting.date;
     const {hobbienumtypes} = useContext(MainAppcontext);
+    const [photoindex, setphotoindex] = useState(0);
+    const apikey='AIzaSyDCCbpFYxI2jGqyWacOIokLnXONGUCUmow'
+    const fadeAnim = useRef(new Animated.Value(1)).current;  // Initial value for opacity
+
+
+ 
+
+  useEffect(() => {
+
+ 
+
+    const interval = setInterval(() => {
+      let newindex=photoindex+1;
+      if(newindex>images.length-1){
+        newindex=0;
+      }
+      Animated.timing(fadeAnim, {
+        toValue: 0, // The final opacity value
+        duration: 2000, // Duration of the animation in milliseconds
+        useNativeDriver: true, // Use native driver for better performance
+      }).start(() => {
+        setphotoindex(newindex); // Set the new index here
+    
+        // Fade in
+        Animated.timing(fadeAnim, {
+          toValue: 1, // The final opacity value
+          duration: 2000, // Duration of the animation in milliseconds
+          useNativeDriver: true, // Use native driver for better performance
+        }).start();
+      });
+    
+    }, 4000);  // Change image every 3 seconds
+  
+    return () => clearInterval(interval); // Clear interval on component unmount
+  }, [photoindex,images]);
 
     useEffect(() => {
       const hobbietype= hobbienumtypes.find((each)=>{
@@ -31,6 +69,23 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
 
       console.log('this is meetingnumnew', meetingnumnew)
       console.log('this is meeting', meeting.meetingNum)
+
+      const newImages = [];
+      if (meeting.place.photos.length > 0) {
+          for (let i = 0; i < meeting.place.photos.length; i++) {
+              const photoref = meeting.place.photos[i].photo_reference;
+              const photorequest = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${photoref}&key=${apikey}`;
+              newImages.push({ uri: photorequest });
+              if (i > 5) {
+                  break;
+              }
+          }
+      }
+      setImages(newImages);
+      console.log('this is meeting22', meeting)
+
+  
+
     }, [meeting])
 
 
@@ -105,44 +160,114 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
             }
             leftContent={() => (
                 <TouchableOpacity
-                style={styles.infoButton}
+                style={[styles.infoButton, {  backgroundColor: meetingtype=='suggested'? '#2ecc71' : '#00ADEF'}]}
                 
-                onPress={() => {
-                  {
-                    meetingtype==='suggested' &&  !invitedbyfriend &&
-                    navigation.navigate('SuggestedMeetingCalender', {meeting:meeting,invitedbyfriend:invitedbyfriend})
-    
+                onPress={async () => {
+                  const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
+                  const tblsuggestedcopy= user.tblSuggestedMeetings;
+                  const tblsuggested1copy= user.tblSuggestedMeetings1;
+
+                  
+                   if( meetingtype==='suggested' &&  !invitedbyfriend){
+
+                    const meetingNum = meeting.meetingNum;
+                    let meetingnumparsed=parseInt(meetingNum);
+                    let meetingtochange=tblsuggestedcopy.find(meeting => meeting.meetingNum === meetingNum);
+                    meetingtochange.status="W";
+                    setUser({...user,tblSuggestedMeetings:tblsuggestedcopy});
+                    let data=await changemeetingstatus(meetingnumparsed,"W");
+
+                   
+
                   }
-                 {
-                  meetingtype==='suggested' && invitedbyfriend &&
-                  navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user1, meetingtype:meetingtype, type:hobbietype})
-                 }
-                  {
-                    meetingtype==='waiting' &&
+
+                  else if(meetingtype==='suggested' && invitedbyfriend){
+                    const meetingNum = meeting.meetingNum;
+                    let meetingnumparsed=parseInt(meetingNum);
+                    let meetingtochange=tblsuggested1copy.find(meeting => meeting.meetingNum === meetingNum);
+                    meetingtochange.status="A";
+               
+
+            setUser({...user,tblSuggestedMeetings1:tblsuggested1copy});
+                    let data=await changemeetingstatus(meetingnumparsed,"A");
+                    let mystartdate=new Date(meetingtochange.date);
+                             mystartdate.setHours(parseInt(meetingtochange.startTime.substring(0,2)));
+                                mystartdate.setMinutes(parseInt(meetingtochange.startTime.substring(3,5)));
+                                mystartdate.setSeconds(0);
+                                let myenddate=new Date(meetingtochange.date);
+                                myenddate.setHours(parseInt(meetingtochange.endTime.substring(0,2)));
+                                myenddate.setMinutes(parseInt(meetingtochange.endTime.substring(3,5)));
+                                myenddate.setSeconds(0);
+                             const eventobjecttoadd={
+                                 title: 'Meeting with '+meetingtochange.user1.userName ,
+                                 startDate: mystartdate,
+                                 endDate: myenddate,
+                                 location: meetingtochange.place.name,
+                                 timeZone: 'Asia/Jerusalem',
+                                 notes: 'Meeting with '+meetingtochange.user1.userName ,
+                                 
+                                 
+                               }
+             
+                                   try {
+                                     const eventId = await Calendar.createEventAsync(calendars[0].id, eventobjecttoadd);
+                                     //add to calendar default
+             
+                                     if(Calendar.DEFAULT?.id!=undefined){
+                                     const eventId2 = await Calendar.createEventAsync(Calendar.DEFAULT, eventobjecttoadd)
+                                     }
+                                     
+                                     console.log(`Created event with id: ${eventId} in calendar: ${calendars[0].title}`);
+                                   } catch(error) {
+                                     console.log('this is the error', error)
+                                   }
+                           
+
+                  }
+              
+                  
+                    else if (meetingtype==='waiting'){
                     navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user2, meetingtype:meetingtype, type:hobbietype})
                   }
-                  {
-                    meetingtype==='approved' && invitedbyfriend &&
+                  
+                  
+                    else if(meetingtype==='approved' && invitedbyfriend){
                     navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user1, meetingtype:meetingtype, type:hobbietype})
                   }
-                  {
-                    meetingtype==='approved' && !invitedbyfriend &&
+                  
+                  else if(meetingtype==='approved' && !invitedbyfriend) {
+
                     navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user2, meetingtype:meetingtype, type:hobbietype})
                   }
-                  {
-                    meetingtype==='Ended' && invitedbyfriend &&
+                  
+                  
+                    else if(meetingtype==='Ended' && invitedbyfriend){
                     navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user1, meetingtype:meetingtype, type:hobbietype})
-                  }
-                  {
-                    meetingtype==='Ended' && !invitedbyfriend &&
+                    }
+
+                  
+                  else if(  meetingtype==='Ended' && !invitedbyfriend) {
                     navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user2, meetingtype:meetingtype, type:hobbietype})
+
                   }
                 
 
                    
                 }}
                 >
-                <Ionicons name="information-circle" size={24} color="white" />
+                  {
+                    (meetingtype==='waiting' || meetingtype==='approved'  || meetingtype==='Ended') &&
+                    <Ionicons name="information-circle" size={24} color="white" />
+
+                  }
+                  {
+                    meetingtype==='suggested' &&
+                    <Ionicons
+                    name="checkmark-circle-outline"
+                    size={24}
+                    color="white"
+                  />
+                  }
 
                 </TouchableOpacity>
             )
@@ -155,15 +280,47 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
 
             
           >
-            <View style={styles.rectengle} >
+            <TouchableOpacity style={styles.rectengle} onPress={()=> {
+               {
+                meetingtype==='suggested' &&  !invitedbyfriend &&
+                navigation.navigate('SuggestedMeetingCalender', {meeting:meeting,invitedbyfriend:invitedbyfriend})
+
+              }
+             {
+              meetingtype==='suggested' && invitedbyfriend &&
+              navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user1, meetingtype:meetingtype, type:hobbietype})
+             }
+              {
+                meetingtype==='waiting' &&
+                navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user2, meetingtype:meetingtype, type:hobbietype})
+              }
+              {
+                meetingtype==='approved' && invitedbyfriend &&
+                navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user1, meetingtype:meetingtype, type:hobbietype})
+              }
+              {
+                meetingtype==='approved' && !invitedbyfriend &&
+                navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user2, meetingtype:meetingtype, type:hobbietype})
+              }
+              {
+                meetingtype==='Ended' && invitedbyfriend &&
+                navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user1, meetingtype:meetingtype, type:hobbietype})
+              }
+              {
+                meetingtype==='Ended' && !invitedbyfriend &&
+                navigation.navigate('Meetdetails', {meeting:meeting, usertomeet:meeting.user2, meetingtype:meetingtype, type:hobbietype})
+              }
+              
+            }} >
 
                {invitedbyfriend ? (
     <View
       style={{
         flexDirection: "row-reverse",
         alignItems: "center",
+        justifyContent: "space-between",
         width: Dimensions.get("window").width - 20,
-        height: 65,
+        height: 100,
       }}
     >
 
@@ -174,13 +331,21 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
         <Text style={styles.subtextstyle}>{date}</Text>
       </View>
 
-      <View>
+      <View >
+      <View style={{alignContent:'center'}}>
+
       <Text style={[styles.subtextstyle, { fontWeight:'800', color:'#d99199' }]}>Invited by {meeting.user1.userName}!</Text>
 
         <Text style={styles.subtextstyle}>
+         
+
+
+
           {meeting.startTime}/ {meeting.endTime}
         </Text>
-        <Text style={styles.subtextstyle}>{meeting.place.name}</Text>
+        <Text style={styles.subtextstyle}>{meeting.place.name} </Text>
+
+    
      
      
         {
@@ -193,9 +358,25 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
           
           
           </Text>
+       
           
         }
+
+        </View>
+
+        
+
+
+        
+     
       </View>
+      {
+    photoindex!= undefined  && images[photoindex]?.uri!=undefined &&
+    // <Image source={{uri:images[photoindex].uri} }
+    //       style={{height:70,width:70, borderRadius:20}} />
+    <Animated.Image source={{uri:images[photoindex].uri} }
+          style={{height:70,width:70,paddingRight:5, borderRadius:20, opacity:fadeAnim}} />
+  }  
       
     </View>
   ) : (  <View
@@ -203,7 +384,9 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
       flexDirection: "row-reverse",
       alignItems: "center",
       width: Dimensions.get("window").width - 20,
-      height: 65,
+      justifyContent: "space-between",
+      height: 100,
+
     }}
   >
 
@@ -214,14 +397,12 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
       <Text style={styles.subtextstyle}>{date}</Text>
     </View>
 
-    <View>
+    <View style={{alignContent:'center'}}>
       <Text style={styles.subtextstyle}>
         -{meeting.startTime}/ {meeting.endTime}
       </Text>
       <Text style={styles.subtextstyle}>{meeting.place.name}</Text>
-
-    </View>
-    {
+      {
           meetingnumnew==meeting.meetingNum &&
           
           <Text style={[styles.subtextstyle, { fontFamily:'Pacifico_400Regular',marginRight:14, color:'#eb6a5e', fontSize:12,lineHeight:20 }]}>New Activity!
@@ -232,8 +413,30 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
           </Text>
           
         }
+  
+
+    </View>
+
+
+  {
+    photoindex!= undefined  && images[photoindex]?.uri!=undefined &&
+    // <Image source={{uri:images[photoindex].uri} }
+    //       style={{height:70,width:70, borderRadius:20}} />
+    <Animated.Image source={{uri:images[photoindex].uri} }
+          style={{height:70,width:70,marginLeft:5, borderRadius:20, opacity:fadeAnim}} />
+  }   
+
+ 
+                  
+      
+ 
+  
   </View>
+
+  
                 )}
+
+
 
 
                 
@@ -242,7 +445,7 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
 
 
                 
-            </View>
+            </TouchableOpacity>
           </ListItem.Swipeable>
         </View>
       );
@@ -251,7 +454,7 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
 const styles = StyleSheet.create({
     container: {
         
-        height:65,
+        height:100,
         width:Dimensions.get('window').width-20,
         backgroundColor: '#ffffff',
         alignItems: 'center',
@@ -273,7 +476,7 @@ const styles = StyleSheet.create({
         backgroundColor:'rgba(0, 0, 0, 0.05)',
         borderRadius: 25,
         width:Dimensions.get('window').width-20,
-        height:65,
+        height:100,
         
 
     },
@@ -314,6 +517,7 @@ const styles = StyleSheet.create({
             lineHeight: 16,
             letterSpacing: 0.03,
             fontWeight: 'normal',
+            textAlign:'left',
         },
         infoButton: {
             backgroundColor: '#00ADEF',

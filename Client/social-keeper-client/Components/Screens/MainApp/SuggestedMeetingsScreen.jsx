@@ -138,9 +138,11 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
     console.log('im into getmeetingfromserver')
     const newmeeting= await axios.get(`http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/Getmeetnew/${meetingnum}`)
     const meetingtoret= newmeeting.data;
+    console.log('this is meeting to ret',meetingtoret)
     //search if meeting is already in suggestedmeetings1
     const isinmeetings1= user.tblSuggestedMeetings1.find((item) => item.meetingNum==meetingnum)
-    if(!isinmeetings1){
+    console.log('this is isinmeetings1',isinmeetings1)
+    if( isinmeetings1==undefined ){
     const placedetails= await getPlaceDetails(meetingtoret.place.place_id)
     meetingtoret.place=placedetails;
     const newtblsuggested1meetings= user.tblSuggestedMeetings1;

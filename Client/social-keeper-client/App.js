@@ -169,6 +169,16 @@ export default function App() {
 
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+        
+      }),
+    });
+
+
     notificationListener.current = Notifications.addNotificationReceivedListener(async (notification) => {
       console.log("notification");
       console.log(notification);
