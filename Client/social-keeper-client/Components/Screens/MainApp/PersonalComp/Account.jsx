@@ -200,8 +200,7 @@ function Intersets(props) {
   
 
         useEffect(() => {
-          const hobbiesdto=user.tblUserHobbiesDTO;
-          setSelectedHobbies(hobbiesdto)
+
 
           
 

@@ -10,6 +10,7 @@ function HobbiesComponent({navigation,myitem,counting,count}) {
 
   const {selectedhobbies, setSelectedHobbies,personaldetails} = useContext(RegistContext);
 
+
   const item=myitem;
 
   const [rating, setRating] = useState(0);
