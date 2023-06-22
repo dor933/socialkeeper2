@@ -615,7 +615,7 @@ const renderItem = ({ item }) => {
     <SafeAreaView style={{flex:1, alignItems:'center', justifyContent:'center', backgroundColor:"#ffffff"}}>
       
         {!isfrommainapp && (
-            <Image source={require('../../../assets/Images/RandomImages/SocialKeeper.jpeg')} style={{width:180,height:180, 
+            <Image source={require('../../../assets/Images/RandomImages/SocialKeeper.png')} style={{width:180,height:180, 
             top:"3%"
             
             }} />

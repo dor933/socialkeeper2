@@ -168,7 +168,7 @@ export default function PreferredMeetingTimes({ navigation,route }, props) {
 }
             </View>
             <View style={styles.keeperview}>
-            <Image source={require('../../..//assets/Images/RandomImages/SocialKeeper.jpeg')} style={styles.keeperview} />
+            <Image source={require('../../..//assets/Images/RandomImages/SocialKeeper.png')} style={styles.keeperview} />
             </View>
             <View style={styles.TextViews}>
                 <Text style={{fontFamily:'Lato_700Bold',fontWeight:"800", fontSize: 24, color: '#E04747', lineHeight:29,letterSpacing:0.03,textAlign:'center' }}>Preferred Meeting Times</Text>

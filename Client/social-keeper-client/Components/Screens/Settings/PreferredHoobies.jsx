@@ -1,7 +1,7 @@
 
 import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, SafeAreaView,FlatList } from 'react-native'
   import { useState, useEffect,useContext } from 'react';
-  import Logo from '../..//..//assets/Images/RandomImages/SocialKeeper.jpeg'
+  import Logo from '../..//..//assets/Images/RandomImages/SocialKeeper.png'
   import HobbiesComponent from './HobbiesComponent.jsx'
   import { Ionicons } from '@expo/vector-icons';
   import axios from 'axios';

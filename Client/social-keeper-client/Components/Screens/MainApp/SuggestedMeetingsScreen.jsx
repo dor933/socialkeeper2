@@ -41,7 +41,7 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
 
   },[])
 
-  useEffect(() => {
+  useEffect( () => {
 
     console.log('this is tblsuggested1',user.tblSuggestedMeetings1)
     if(fromnotif){
@@ -70,37 +70,7 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
       Newuser.tblSuggestedMeetings=newtblsuggestedmeetings;
       setUser(Newuser);
     }
-    // else if(notifobj.notiftype=='Approvedfriendrequest') {
 
-    //   const possiblefriend= user.possibleFavoriteContacts_invite_DTO.find((item) => item.phonenuminvited == notifobj.phonenuminvited)
-    //   console.log('this is possible friend',possiblefriend)
-  //     if(possiblefriend){
-  //       const newfavoritecontact = {
-  //         ID:notifobj.ID,
-  //         phoneNum1:possiblefriend.phonenuminvite,
-  //         phoneNum2:possiblefriend.phonenuminvited,
-  //         hobbieNum:possiblefriend.hobbienum,
-  //         rank:1,
-  //         tblUser1:possiblefriend.tblUser1,
-  //                  tblHobbie:possiblefriend.tblHobbiedto
-  //   }
-  //   console.log('this is new favorite contact',newfavoritecontact)
-  //   const newfavoritecontacts = [...user.tblFavoriteContacts,newfavoritecontact]
-
-  //   const newpossiblefavoritecontacts = user.possibleFavoriteContacts_invite_DTO.filter((item) => item.phonenuminvited !== notifobj.phonenuminvited)
-  //   console.log('this is new possible favorite contacts',newpossiblefavoritecontacts)
-  //   const newuser = {
-  //     ...user,
-  //     tblFavoriteContacts:newfavoritecontacts,
-  //     possibleFavoriteContacts_invite_DTO:newpossiblefavoritecontacts
-
-  //   } 
-  //   setUser(newuser)
-  
-
-  //  }
-   
-  // }
     else{
       setSelectedIndex(2)
     }
@@ -143,8 +113,13 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
     const isinmeetings1= user.tblSuggestedMeetings1.find((item) => item.meetingNum==meetingnum)
     console.log('this is isinmeetings1',isinmeetings1)
     if( isinmeetings1==undefined ){
-    const placedetails= await getPlaceDetails(meetingtoret.place.place_id)
+    let placedetails= await getPlaceDetails(meetingtoret.place.place_id)
+    console.log('this is placedetails',placedetails)
+    if(placedetails.result){
+      placedetails=placedetails.result
+    }
     meetingtoret.place=placedetails;
+    console.log('this is meeting to ret after placedetails',meetingtoret)
     const newtblsuggested1meetings= user.tblSuggestedMeetings1;
     newtblsuggested1meetings.push(meetingtoret)
     const Newuser={...user}

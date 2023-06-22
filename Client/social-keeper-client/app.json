@@ -7,23 +7,17 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/Images/RandomImages/SocialKeeper.jpeg",
+      "image": "./assets/Images/RandomImages/SocialKeeper.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-  
-    
-    "plugins":[
+    "plugins": [
       [
         "expo-image-picker",
         {
-   
           "photosPermission": "The app accesses your photos to let you share them with your friends."
-
-
-
         }
-      ] ,
+      ],
       [
         "expo-notifications",
         {
@@ -39,15 +33,17 @@
       ]
     ],
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/8b86c83a-ebbf-43be-9d49-3a4f984131da"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true ,
-      "config": {
-        "googleMapsApiKey:": "AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY"
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCalendarsUsageDescription": "The app accesses your calendar to let you share them with your friends.",
+        "NSRemindersUsageDescription": "Allow $(PRODUCT_NAME) to access your reminders"
       }
     },
     "android": {
@@ -55,15 +51,24 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY"
-        }
-      }
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_CALENDAR",
+        "android.permission.WRITE_CALENDAR"
+      ],
+      "package": "com.dor93.socialkeeperclient"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "scheme": "socialkeeperclient://+/redirect"
+    "scheme": "socialkeeperclient",
+    "extra": {
+      "eas": {
+        "projectId": "8b86c83a-ebbf-43be-9d49-3a4f984131da"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    }
   }
 }

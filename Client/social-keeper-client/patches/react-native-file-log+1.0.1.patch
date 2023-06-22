@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-file-log/android/build.gradle b/node_modules/react-native-file-log/android/build.gradle
+index 83eb099..990aa17 100644
+--- a/node_modules/react-native-file-log/android/build.gradle
++++ b/node_modules/react-native-file-log/android/build.gradle
+@@ -30,6 +30,6 @@ repositories {
+ }
+ 
+ dependencies {
+-    compile 'com.facebook.react:react-native:+'
++    implementation 'com.facebook.react:react-native:+'
+ }
+   
+\ No newline at end of file
