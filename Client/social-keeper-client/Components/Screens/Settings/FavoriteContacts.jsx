@@ -222,6 +222,8 @@ export default function FavoriteContacts({ isfrommainapp:propIsFromMainApp ,navi
 
     try{
 
+      console.log("newuser",newuser)
+      
 
     const response= await axios.post("http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/AddUser",newuser);
     if(response.data=="Phone Number already exists"){

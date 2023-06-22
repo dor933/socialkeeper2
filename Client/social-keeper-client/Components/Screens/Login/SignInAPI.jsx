@@ -33,6 +33,9 @@ function SignUpAPI({navigation}) {
   const [userInfo, setUserInfo] = useState(null);
   const RedirectUrl=AuthSession.makeRedirectUri({
     useProxy:true,
+    native:'socialkeeper://redirect',
+    projectNameForProxy:"@dor93/social-keeper-client"
+    
     
   });
 
@@ -67,7 +70,12 @@ function SignUpAPI({navigation}) {
 
     
 
-  });
+  }
+  ,
+  {
+    projectNameForProxy:"@dor93/social-keeper-client"
+  }
+  );
 
   useEffect(() => {
     console.log(expoPushToken);
