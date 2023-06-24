@@ -202,7 +202,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="DTO\Actualmeetingdto.cs" />
     <Compile Include="DTO\NotificationDTO.cs" />
     <Compile Include="DTO\DataDTO.cs" />
