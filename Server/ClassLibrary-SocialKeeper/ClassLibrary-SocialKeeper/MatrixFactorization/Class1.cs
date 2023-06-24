@@ -106,9 +106,17 @@ namespace ClassLibrary_SocialKeeper
                 List<Tuple<TimeSpan, TimeSpan>> listmatch = Findifcollapse(new Tuple<TimeSpan, TimeSpan>(comtime.startTime, comtime.endTime), userinviteevefixed, userinvitedfixed);
                 foreach (var lismatchitems in listmatch)
                 {
+                    TimeSpan startspan = new TimeSpan(17, 0, 0);
+                    TimeSpan endspan = new TimeSpan(20, 0, 0);
+
+                    if (lismatchitems.Item1 == startspan && lismatchitems.Item2 == endspan)
+                    {
+                        int j = 222;
+
+                    }
                     foreach (SuggestedDTO itesug in existingsugmeetings)
                     {
-                        if (itesug.startTime == lismatchitems.Item1 && lismatchitems.Item2 == itesug.endTime && itesug.date == thedate)
+                        if (itesug.startTime == lismatchitems.Item1 && lismatchitems.Item2 == itesug.endTime && new DateTime(itesug.date.Year,itesug.date.Month,itesug.date.Day) == new DateTime(thedate.Year,thedate.Month,thedate.Day))
                         {
 
                             existingperiod = true;
@@ -140,7 +148,7 @@ namespace ClassLibrary_SocialKeeper
                                 break;
                             }
                         }
-                        sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (25.0 - 1.0);
+                        sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (75.0 - 1.0);
                         totalmeetingrank = Meetings.calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate);
                         sugdto.rank = totalmeetingrank;
                         //need to add hobbienum to tblsuggestedmeeting
@@ -232,9 +240,11 @@ namespace ClassLibrary_SocialKeeper
                 List<Tuple<TimeSpan, TimeSpan>> listmatch = Findifcollapse(new Tuple<TimeSpan, TimeSpan>(startimespan, endtimespan), userinviteevefixed, userinvitedfixed);
                 foreach (var lismatchitems in listmatch)
                 {
+               
+
                     foreach (SuggestedDTO itesug in existingsugmeetings)
                     {
-                        if (itesug.startTime == lismatchitems.Item1 && lismatchitems.Item2 == endtimespan && itesug.date == new DateTime(dateto.Year, dateto.Month, dateto.Day))
+                        if (itesug.startTime == lismatchitems.Item1 && lismatchitems.Item2 == itesug.endTime && new DateTime(itesug.date.Year,itesug.date.Month,itesug.date.Day) == new DateTime(dateto.Year, dateto.Month, dateto.Day))
                         {
 
                             existingperiod = true;
@@ -243,7 +253,7 @@ namespace ClassLibrary_SocialKeeper
                     }
                     foreach (SuggestedDTO sugdto in suggestedmeet)
                     {
-                        if (lismatchitems.Item1 == sugdto.startTime && lismatchitems.Item2 == sugdto.endTime && sugdto.date == dateto && sugdto.phoneNum2 == item.phoneNum2)
+                        if (lismatchitems.Item1 == sugdto.startTime && lismatchitems.Item2 == sugdto.endTime && new DateTime(sugdto.date.Year,sugdto.date.Month,sugdto.date.Day) == new DateTime(dateto.Year,dateto.Month,dateto.Day) )
                         {
                             existingperiod = true;
                             break;
@@ -266,16 +276,33 @@ namespace ClassLibrary_SocialKeeper
                         sugdto.endTime = lismatchitems.Item2;
                         sugdto.phoneNum1 = usertomeetingexist.phonenumbers[0];
                         sugdto.phoneNum2 = user1exist.phonenumbers[0];
-                        foreach (RatingData rat in ratedhobbies)
+                        if (lismatchitems.Item1 > lismatchitems.Item2)
                         {
-                            if (lismatchitems.Item2 - lismatchitems.Item1 >= TimeSpan.FromHours(rat.Minhours))
+                            TimeSpan oneday = TimeSpan.FromDays(1);
+                            TimeSpan newitem2 = lismatchitems.Item2.Add(oneday);
+                            foreach (RatingData rat in ratedhobbies)
                             {
-                                sugdto.hobbieNum = rat.HobbieNum;
-                                ratemax = rat;
-                                break;
+                                if (newitem2 - lismatchitems.Item1 >= TimeSpan.FromHours(rat.Minhours))
+                                {
+                                    sugdto.hobbieNum = rat.HobbieNum;
+                                    ratemax = rat;
+                                    break;
+                                }
                             }
                         }
-                        sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (25.0 - 1.0);
+                        else
+                        {
+                            foreach (RatingData rat in ratedhobbies)
+                            {
+                                if (lismatchitems.Item2 - lismatchitems.Item1 >= TimeSpan.FromHours(rat.Minhours))
+                                {
+                                    sugdto.hobbieNum = rat.HobbieNum;
+                                    ratemax = rat;
+                                    break;
+                                }
+                            }
+                        }
+                        sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (75.0 - 1.0);
                         totalmeetingrank = calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate);
                         sugdto.rank = totalmeetingrank;
                         //need to add hobbienum to tblsuggestedmeeting
@@ -526,7 +553,7 @@ namespace ClassLibrary_SocialKeeper
                                 if (currentplacetype != type  && (sugitem.endTime - sugitem.startTime >= TimeSpan.FromHours(firstplacerate.Minhours)))
                                 {
                                     double hobbierank = ratedh.Where(x => x.HobbieNum == hobbienum).FirstOrDefault().Label;
-                                    sugitem.normalizehobbierank = (hobbierank - 1.0) / (25.0 - 1.0);
+                                    sugitem.normalizehobbierank = (hobbierank - 1.0) / (75.0 - 1.0);
                                     sugitem.rank = calculatemeetingscore(sugitem.normalizehobbierank, sugitem.prefferedtimerate);
                                     sugitem.hobbieNum= hobbienum;
                                     if (placeslist[type].Count == 10)
@@ -847,271 +874,416 @@ namespace ClassLibrary_SocialKeeper
             if (userevents == null) userevents = new List<Events>();
             if (user1events == null) user1events = new List<Events>();
             List<Events> combinedEvents = userevents.Concat(user1events).ToList();
+            combinedEvents = combinedEvents.OrderBy(x => x.starttime).ToList();
+
             List<Tuple<TimeSpan, TimeSpan>> restirct = new List<Tuple<TimeSpan, TimeSpan>>();
-            Tuple<TimeSpan, TimeSpan> newTimecheck = new Tuple<TimeSpan, TimeSpan>(Timecheck.Item1, Timecheck.Item2);
+            TimeSpan periodstarttime = Timecheck.Item1;
+            TimeSpan periodendtime = Timecheck.Item2;
+
+            if (Timecheck.Item1 > Timecheck.Item2)
+            {
+                TimeSpan oneday = TimeSpan.FromDays(1);
+                periodendtime = periodendtime.Add(oneday);
+            }
+            Tuple<TimeSpan, TimeSpan> newTimecheck = new Tuple<TimeSpan, TimeSpan>(periodstarttime, periodendtime);
             List<Tuple<TimeSpan, TimeSpan>> eventstoreturn = new List<Tuple<TimeSpan, TimeSpan>>();
-            bool haschanged = false;
+            List<Tuple<TimeSpan, TimeSpan>> newevreturn = new List<Tuple<TimeSpan, TimeSpan>>();
+
+            TimeSpan currentstarttime = Timecheck.Item1;
+
+
+
 
 
 
             foreach (Events e in combinedEvents)
+            {
+                TimeSpan eventStartTime = e.starttime;
+                TimeSpan eventEndTime = e.endtime;
+
+                if (eventEndTime < eventStartTime) // the event ends on the next day
                 {
-                    if (e.starttime <= newTimecheck.Item1 && e.endtime >= newTimecheck.Item2)
-                    {
+                    eventEndTime = eventEndTime.Add(TimeSpan.FromDays(1));
+                }
+
+                if(currentstarttime>= newTimecheck.Item2)
+                {
+                    break;
+                }
+
+
+
+                if (eventStartTime <= newTimecheck.Item1 && eventEndTime >= newTimecheck.Item2)
+                {
                     return eventstoreturn;
-                    }
-                    else if ((e.starttime >= newTimecheck.Item1 && e.endtime <= newTimecheck.Item2))
-                    {
-                       newTimecheck= new Tuple<TimeSpan, TimeSpan>(e.starttime, e.endtime);
-                    haschanged = true;
-
-                   
-                    }
-                    else if (e.starttime >= newTimecheck.Item1 && e.endtime >= newTimecheck.Item2 && e.starttime<=newTimecheck.Item2)
-                    {
-
-                    if (e.endtime > Timecheck.Item2)
-                    {
-                        TimeSpan tempspan = Timecheck.Item2;
-                        newTimecheck = new Tuple<TimeSpan, TimeSpan>(newTimecheck.Item1, tempspan);
-                    }
-                    else
-                    {
-                        newTimecheck = new Tuple<TimeSpan, TimeSpan>(newTimecheck.Item1, e.starttime);
-                    }
-
-                    haschanged = true;
-
-
-
                 }
-                else if (e.starttime <= newTimecheck.Item1 && e.endtime <= newTimecheck.Item2 && e.endtime>=newTimecheck.Item1)
-                    {
-                    if (e.starttime < Timecheck.Item1)
-                    {
-                        TimeSpan tempspan = Timecheck.Item1;
-                        newTimecheck = new Tuple<TimeSpan, TimeSpan>(tempspan, e.endtime);
-                    }
-                    else
-                    {
-                        newTimecheck = new Tuple<TimeSpan, TimeSpan>(e.starttime, newTimecheck.Item2);
-                    }
-                    haschanged = true;
-
-                }
-                else if(e.starttime<= newTimecheck.Item1 && e.endtime <= newTimecheck.Item1)
-                    {
-                    if (e.starttime < Timecheck.Item1)
-                    {
-                        TimeSpan tempspan = Timecheck.Item1;
-                        restirct.Add(new Tuple<TimeSpan, TimeSpan>(tempspan, e.endtime));
-                    }
-                    else
-                    {
-                        restirct.Add(new Tuple<TimeSpan, TimeSpan>(e.starttime,e.endtime));
-                    }
-                    haschanged = true;
-
-                }
-                else if(e.starttime>= newTimecheck.Item2 && e.starttime<Timecheck.Item2)
+                else if ((e.starttime - currentstarttime >= TimeSpan.FromHours(1)))
                 {
-                    if (e.endtime > Timecheck.Item2)
-                    {
-                        TimeSpan tempspan = Timecheck.Item2;
-                        restirct.Add(new Tuple<TimeSpan, TimeSpan>(e.starttime, tempspan));
-                    }
-                    else
-                    {
 
-                        restirct.Add(new Tuple<TimeSpan, TimeSpan>(e.starttime, e.endtime));
-                    }
-                    haschanged = true;
+                    eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(currentstarttime, eventStartTime));
 
 
                 }
+
+                currentstarttime = eventEndTime > currentstarttime ? eventEndTime : currentstarttime;
+
+
+            }
+            if (newTimecheck.Item2 - currentstarttime >= TimeSpan.FromHours(1))
+            {
+                eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(currentstarttime, newTimecheck.Item2));
             }
 
-            if(Timecheck.Item1>Timecheck.Item2)
-            {
-                TimeSpan tempspan = Timecheck.Item2.Add(TimeSpan.FromDays(1));
-                Timecheck= new Tuple<TimeSpan, TimeSpan>(Timecheck.Item1, tempspan);
-                
-            }
 
-              if(!haschanged)
-            {
-                TimeSpan currentstat = Timecheck.Item1;
 
-                
-                    if (Timecheck.Item2 - Timecheck.Item1 > TimeSpan.FromHours(3))
+            foreach (Tuple<TimeSpan, TimeSpan> e in eventstoreturn)
+            {
+                if (e.Item2 - e.Item1 > TimeSpan.FromHours(3))
+                {
+
+                    double j = (e.Item2 - e.Item1).TotalHours;
+                    TimeSpan resultimespan = new TimeSpan();
+                    TimeSpan oldstart = e.Item1;
+
+                    while (j > 0)
                     {
-                        TimeSpan difference= Timecheck.Item2 - Timecheck.Item1;
-                        int j= difference.Hours;
-                    
-                        TimeSpan resultimespan = new TimeSpan();
-
-                        while (j > 0)
+                        if (j > 3)
                         {
-                            if (j > 3)
+                            TimeSpan add3hours = TimeSpan.FromHours(3);
+                            resultimespan = oldstart.Add(add3hours);
+                            if (resultimespan.Days > 0)
                             {
-                                TimeSpan add3hours = TimeSpan.FromHours(3);
-                                resultimespan = currentstat.Add(add3hours);
-                                eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(currentstat, resultimespan));
-                                currentstat = resultimespan;
+                                TimeSpan resultfixed = new TimeSpan(resultimespan.Hours, resultimespan.Minutes, resultimespan.Seconds);
+                                newevreturn.Add(new Tuple<TimeSpan, TimeSpan>(oldstart, resultfixed));
+
+
                             }
                             else
                             {
-                                TimeSpan addhours = TimeSpan.FromHours(j);
-                                resultimespan.Add(addhours);
-                            if (Timecheck.Item2 - resultimespan >= TimeSpan.FromHours(1))
-                            {
-                                eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(resultimespan, Timecheck.Item2));
+                                newevreturn.Add(new Tuple<TimeSpan, TimeSpan>(oldstart, resultimespan));
                             }
-                            }
-
-                            j = j - 3;
+                            oldstart = resultimespan;
                         }
-                  
+                        else
+                        {
+                            TimeSpan addhours = TimeSpan.FromHours(j);
+                            resultimespan = oldstart.Add(addhours);
+
+                            if (resultimespan - oldstart >= TimeSpan.FromHours(1))
+                            {
+                                if (resultimespan.Days > 0)
+                                {
+                                    TimeSpan resultfixed = new TimeSpan(resultimespan.Hours, resultimespan.Minutes, resultimespan.Seconds);
+                                    newevreturn.Add(new Tuple<TimeSpan, TimeSpan>(oldstart, resultfixed));
+
+
+                                }
+                                else
+                                {
+                                    newevreturn.Add(new Tuple<TimeSpan, TimeSpan>(oldstart, resultimespan));
+                                }
+                            }
+                        }
+
+                        j = j - 3;
                     }
+
+                }
                 else
                 {
-                    eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(Timecheck.Item1, Timecheck.Item2));
-                }
-                return eventstoreturn;
-
-
-            }
-
-                 
-                  List<Tuple<TimeSpan,TimeSpan>> firstres= restirct.Where(x=> x.Item2<=newTimecheck.Item1).ToList();
-                  List<Tuple<TimeSpan, TimeSpan>> lastres = restirct.Where(x => x.Item1 >= newTimecheck.Item2).ToList();
-                  lastres.Sort((x, y) => x.Item1.CompareTo(y.Item1));
-                  firstres.Sort((x, y) => x.Item1.CompareTo(y.Item1));
- 
-
-            TimeSpan currentStartTime = newTimecheck.Item2;
-                  TimeSpan currenttimebefore = Timecheck.Item1;
-
-
-            foreach (Tuple<TimeSpan,TimeSpan> restrictedperiod in firstres)
-            {
-
-                if (currenttimebefore > restrictedperiod.Item1 && currenttimebefore < restrictedperiod.Item2)
-                {
-                    currenttimebefore = restrictedperiod.Item2;
-                }
-                else if (currenttimebefore > restrictedperiod.Item2)
-                {
-                    break;
-                }
-                else if (currenttimebefore < restrictedperiod.Item1)
-                {
-                    if (restrictedperiod.Item1 - currenttimebefore >= TimeSpan.FromHours(1))
+                    if (e.Item2.Days > 0)
                     {
-                        if (restrictedperiod.Item1 - currentStartTime > TimeSpan.FromHours(3))
-                        {
-                            double j = int.Parse((restrictedperiod.Item1 - currentStartTime).ToString());
-                            TimeSpan resultimespan = new TimeSpan();
 
-                            while (j > 0)
-                            {
-                                if (j > 3)
-                                {
-                                    TimeSpan add3hours = TimeSpan.FromHours(3);
-                                    resultimespan = currentStartTime.Add(add3hours);
-                                    eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(currentStartTime, resultimespan));
-                                }
-                                else
-                                {
-                                    TimeSpan addhours = TimeSpan.FromHours(j);
-                                    resultimespan.Add(addhours);
-                                    eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(resultimespan, restrictedperiod.Item1));
-                                }
+                        TimeSpan resultfixed = new TimeSpan(e.Item2.Hours, e.Item2.Minutes, e.Item2.Seconds);
+                        newevreturn.Add(new Tuple<TimeSpan, TimeSpan>(e.Item1, resultfixed));
 
-                                j = j - 3;
-                            }
-                        }
-                        else
-                        {
-                             eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(currentStartTime, restrictedperiod.Item1));
-                        }
-                        return eventstoreturn;
+
                     }
-
-                }
-                currenttimebefore = restrictedperiod.Item2;
-
-            }
-
-                  if(newTimecheck.Item1- currenttimebefore> TimeSpan.FromHours(1))
-            {
-                Tuple<TimeSpan, TimeSpan> timetoreturn = new Tuple<TimeSpan, TimeSpan>(Timecheck.Item1, newTimecheck.Item1);
-                eventstoreturn.Add(timetoreturn);
-            }
-
-            foreach (var restrictedPeriod in lastres)
-            {
-
-                if(currentStartTime> restrictedPeriod.Item1 && currentStartTime < restrictedPeriod.Item2)
-                {
-                    currentStartTime= restrictedPeriod.Item2;
-                }
-                else if ( currentStartTime> restrictedPeriod.Item2)
-                {
-                    break;
-                }
-                else if (currentStartTime < restrictedPeriod.Item1)
-                {
-                    if (restrictedPeriod.Item1 - currentStartTime >= TimeSpan.FromHours(1))
+                    else
                     {
-                        if (restrictedPeriod.Item1 - currentStartTime > TimeSpan.FromHours(3))
-                        {
-                            double j = int.Parse((restrictedPeriod.Item1 - currentStartTime).ToString());
-                            TimeSpan resultimespan = new TimeSpan();
-
-                            while (j > 0)
-                            {
-                                if (j > 3)
-                                {
-                                    TimeSpan add3hours = TimeSpan.FromHours(3);
-                                    resultimespan = currentStartTime.Add(add3hours);
-                                    eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(currentStartTime, resultimespan));
-                                }
-                                else
-                                {
-                                    TimeSpan addhours = TimeSpan.FromHours(j);
-                                    resultimespan.Add(addhours);
-                                    eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(resultimespan, restrictedPeriod.Item1));
-                                }
-
-                                j = j - 3;
-                            }
-                        }
-                        else
-                        {
-                            eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(currentStartTime, restrictedPeriod.Item1));
-                        }
+                        newevreturn.Add(new Tuple<TimeSpan, TimeSpan>(e.Item1, e.Item2));
                     }
-
                 }
-                currentStartTime = restrictedPeriod.Item2;
             }
 
-            if(Timecheck.Item2-currentStartTime >= TimeSpan.FromHours(1))
-            {
-                eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(currentStartTime,Timecheck.Item2));
-            }
-
-            
+            return newevreturn;
 
 
-            return eventstoreturn;
+            //List<Tuple<TimeSpan, TimeSpan>> newlistspan = new List<Tuple<TimeSpan, TimeSpan>>();
+            //if (userevents == null) userevents = new List<Events>();
+            //if (user1events == null) user1events = new List<Events>();
+            //List<Events> combinedEvents = userevents.Concat(user1events).ToList();
+            //List<Tuple<TimeSpan, TimeSpan>> restirct = new List<Tuple<TimeSpan, TimeSpan>>();
+            //Tuple<TimeSpan, TimeSpan> newTimecheck;
+            //if (Timecheck.Item1 > Timecheck.Item2)
+            //{
+
+            //    TimeSpan newitem2 = Timecheck.Item2.Add(TimeSpan.FromDays(1));
+            //    newTimecheck = new Tuple<TimeSpan, TimeSpan>(Timecheck.Item1, newitem2);
 
 
-            
-            
+            //}
+            //else
+            //{
+            //   newTimecheck = new Tuple<TimeSpan, TimeSpan>(Timecheck.Item1, Timecheck.Item2);
+            //}
+            //List<Tuple<TimeSpan, TimeSpan>> eventstoreturn = new List<Tuple<TimeSpan, TimeSpan>>();
+            //bool haschanged = false;
 
-            
+
+
+            //foreach (Events e in combinedEvents)
+            //{
+            //    if (e.starttime <= newTimecheck.Item1 && e.endtime >= newTimecheck.Item2)
+            //    {
+            //        return eventstoreturn;
+            //    }
+            //    else if ((e.starttime >= newTimecheck.Item1 && e.endtime <= newTimecheck.Item2))
+            //    {
+            //        newTimecheck = new Tuple<TimeSpan, TimeSpan>(e.starttime, e.endtime);
+            //        haschanged = true;
+
+
+            //    }
+            //    else if (e.starttime >= newTimecheck.Item1 && e.endtime >= newTimecheck.Item2 && e.starttime <= newTimecheck.Item2)
+            //    {
+
+            //        if (e.endtime > Timecheck.Item2)
+            //        {
+            //            TimeSpan tempspan = Timecheck.Item2;
+            //            newTimecheck = new Tuple<TimeSpan, TimeSpan>(newTimecheck.Item1, tempspan);
+            //        }
+            //        else
+            //        {
+            //            newTimecheck = new Tuple<TimeSpan, TimeSpan>(newTimecheck.Item1, e.starttime);
+            //        }
+
+            //        haschanged = true;
+
+
+
+            //    }
+            //    else if (e.starttime <= newTimecheck.Item1 && e.endtime <= newTimecheck.Item2 && e.endtime >= newTimecheck.Item1)
+            //    {
+            //        if (e.starttime < Timecheck.Item1)
+            //        {
+            //            TimeSpan tempspan = Timecheck.Item1;
+            //            newTimecheck = new Tuple<TimeSpan, TimeSpan>(tempspan, e.endtime);
+            //        }
+            //        else
+            //        {
+            //            newTimecheck = new Tuple<TimeSpan, TimeSpan>(e.starttime, newTimecheck.Item2);
+            //        }
+            //        haschanged = true;
+
+            //    }
+
+            //    else if (e.starttime >= newTimecheck.Item2 && e.starttime < Timecheck.Item2)
+            //    {
+            //        if (e.endtime > Timecheck.Item2)
+            //        {
+            //            TimeSpan tempspan = Timecheck.Item2;
+            //            restirct.Add(new Tuple<TimeSpan, TimeSpan>(e.starttime, tempspan));
+            //        }
+            //        else
+            //        {
+
+            //            restirct.Add(new Tuple<TimeSpan, TimeSpan>(e.starttime, e.endtime));
+            //        }
+            //        haschanged = true;
+
+
+            //    }
+            //}
+
+            //if (Timecheck.Item1 > Timecheck.Item2)
+            //{
+            //    TimeSpan tempspan = Timecheck.Item2.Add(TimeSpan.FromDays(1));
+            //    Timecheck = new Tuple<TimeSpan, TimeSpan>(Timecheck.Item1, tempspan);
+
+            //}
+
+            //if (!haschanged)
+            //{
+            //    TimeSpan currentstat = Timecheck.Item1;
+
+
+            //    if (Timecheck.Item2 - Timecheck.Item1 > TimeSpan.FromHours(3))
+            //    {
+            //        TimeSpan difference = Timecheck.Item2 - Timecheck.Item1;
+            //        int j = difference.Hours;
+
+            //        TimeSpan resultimespan = new TimeSpan();
+
+            //        while (j > 0)
+            //        {
+            //            if (j > 3)
+            //            {
+            //                TimeSpan add3hours = TimeSpan.FromHours(3);
+            //                resultimespan = currentstat.Add(add3hours);
+            //                eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(currentstat, resultimespan));
+            //                currentstat = resultimespan;
+            //            }
+            //            else
+            //            {
+            //                TimeSpan addhours = TimeSpan.FromHours(j);
+            //                resultimespan.Add(addhours);
+            //                if (Timecheck.Item2 - resultimespan >= TimeSpan.FromHours(1))
+            //                {
+            //                    eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(resultimespan, Timecheck.Item2));
+            //                }
+            //            }
+
+            //            j = j - 3;
+            //        }
+
+            //    }
+            //    else
+            //    {
+            //        eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(Timecheck.Item1, Timecheck.Item2));
+            //    }
+            //    return eventstoreturn;
+
+
+            //}
+
+
+            //List<Tuple<TimeSpan, TimeSpan>> firstres = restirct.Where(x => x.Item2 <= newTimecheck.Item1).ToList();
+            //List<Tuple<TimeSpan, TimeSpan>> lastres = restirct.Where(x => x.Item1 >= newTimecheck.Item2).ToList();
+            //lastres.Sort((x, y) => x.Item1.CompareTo(y.Item1));
+            //firstres.Sort((x, y) => x.Item1.CompareTo(y.Item1));
+
+
+            //TimeSpan currentStartTime = newTimecheck.Item2;
+            //TimeSpan currenttimebefore = Timecheck.Item1;
+
+
+            //foreach (Tuple<TimeSpan, TimeSpan> restrictedperiod in firstres)
+            //{
+
+            //    if (currenttimebefore > restrictedperiod.Item1 && currenttimebefore < restrictedperiod.Item2)
+            //    {
+            //        currenttimebefore = restrictedperiod.Item2;
+            //    }
+            //    else if (currenttimebefore > restrictedperiod.Item2)
+            //    {
+            //        break;
+            //    }
+            //    else if (currenttimebefore < restrictedperiod.Item1)
+            //    {
+            //        if (restrictedperiod.Item1 - currenttimebefore >= TimeSpan.FromHours(1))
+            //        {
+            //            if (restrictedperiod.Item1 - currentStartTime > TimeSpan.FromHours(3))
+            //            {
+            //                double j = int.Parse((restrictedperiod.Item1 - currentStartTime).ToString());
+            //                TimeSpan resultimespan = new TimeSpan();
+
+            //                while (j > 0)
+            //                {
+            //                    if (j > 3)
+            //                    {
+            //                        TimeSpan add3hours = TimeSpan.FromHours(3);
+            //                        resultimespan = currentStartTime.Add(add3hours);
+            //                        eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(currentStartTime, resultimespan));
+            //                    }
+            //                    else
+            //                    {
+            //                        TimeSpan addhours = TimeSpan.FromHours(j);
+            //                        resultimespan.Add(addhours);
+            //                        eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(resultimespan, restrictedperiod.Item1));
+            //                    }
+
+            //                    j = j - 3;
+            //                }
+            //            }
+            //            else
+            //            {
+            //                eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(currentStartTime, restrictedperiod.Item1));
+            //            }
+            //            return eventstoreturn;
+            //        }
+
+            //    }
+            //    currenttimebefore = restrictedperiod.Item2;
+
+            //}
+
+            //if (newTimecheck.Item1 - currenttimebefore > TimeSpan.FromHours(1))
+            //{
+            //    Tuple<TimeSpan, TimeSpan> timetoreturn = new Tuple<TimeSpan, TimeSpan>(Timecheck.Item1, newTimecheck.Item1);
+            //    eventstoreturn.Add(timetoreturn);
+            //}
+
+            //foreach (var restrictedPeriod in lastres)
+            //{
+
+            //    if (currentStartTime > restrictedPeriod.Item1 && currentStartTime < restrictedPeriod.Item2)
+            //    {
+            //        currentStartTime = restrictedPeriod.Item2;
+            //    }
+            //    else if (currentStartTime > restrictedPeriod.Item2)
+            //    {
+            //        break;
+            //    }
+            //    else if (currentStartTime < restrictedPeriod.Item1)
+            //    {
+            //        if (restrictedPeriod.Item1 - currentStartTime >= TimeSpan.FromHours(1))
+            //        {
+            //            if (restrictedPeriod.Item1 - currentStartTime > TimeSpan.FromHours(3))
+            //            {
+            //                double j = int.Parse((restrictedPeriod.Item1 - currentStartTime).ToString());
+            //                TimeSpan resultimespan = new TimeSpan();
+
+            //                while (j > 0)
+            //                {
+            //                    if (j > 3)
+            //                    {
+            //                        TimeSpan add3hours = TimeSpan.FromHours(3);
+            //                        resultimespan = currentStartTime.Add(add3hours);
+            //                        eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(currentStartTime, resultimespan));
+            //                    }
+            //                    else
+            //                    {
+            //                        TimeSpan addhours = TimeSpan.FromHours(j);
+            //                        resultimespan.Add(addhours);
+            //                        eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(resultimespan, restrictedPeriod.Item1));
+            //                    }
+
+            //                    j = j - 3;
+            //                }
+            //            }
+            //            else
+            //            {
+            //                eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(currentStartTime, restrictedPeriod.Item1));
+            //            }
+            //        }
+
+            //    }
+            //    currentStartTime = restrictedPeriod.Item2;
+            //}
+
+            //if (Timecheck.Item2 - currentStartTime >= TimeSpan.FromHours(1))
+            //{
+            //    eventstoreturn.Add(new Tuple<TimeSpan, TimeSpan>(currentStartTime, Timecheck.Item2));
+            //}
+
+
+
+
+            //return eventstoreturn;
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
         static public DateTime GetDateForWeekday(string dayOfWeek, TimeSpan starttime)
         {

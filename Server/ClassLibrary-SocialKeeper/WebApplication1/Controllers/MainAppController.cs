@@ -234,7 +234,7 @@ namespace WebApplication1.Controllers
                             double multiplynumber = user1itemlab * user2itemlab;
                             if (hobie.hobbieNum == item.tblHobbie.hobbieNum)
                             {
-                                multiplynumber = multiplynumber * 1.2;
+                                multiplynumber = multiplynumber * 3;
                             
                             }
                             RatingData rated = new RatingData();
@@ -325,7 +325,7 @@ namespace WebApplication1.Controllers
                             double multiplynumber = user1itemlab * user2itemlab;
                             if (hobie.hobbieNum == item.tblHobbie.hobbieNum)
                             {
-                                multiplynumber = multiplynumber * 1.2;
+                                multiplynumber = multiplynumber * 3;
                             }
                             RatingData rated = new RatingData();
                             rated.Label = multiplynumber;
