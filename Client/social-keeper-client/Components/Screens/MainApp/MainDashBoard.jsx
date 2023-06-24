@@ -203,7 +203,9 @@ export default function MainDashBoard({route}) {
 
   const rungetcalenders= async () => {
    const newevents= await getcalendars();   
-   let newsugmeetings=await fetchAndProcessMeetings( newevents);
+   let result=await fetchAndProcessMeetings( newevents);
+   let newsugmeetings=result.newsugmeetings;
+   let newtblsuggestedmeetings1=result.newtblsuggestedmeetings1;
    if(newsugmeetings!='no favorite contacts'){
    if(user.tblSuggestedMeetings.length>0){
 
@@ -226,7 +228,7 @@ export default function MainDashBoard({route}) {
     await getplaceinfoended(false);
 
   }
-    await setmeetingscorrectly(newsugmeetings);
+    await setmeetingscorrectly(newsugmeetings,newtblsuggestedmeetings1);
 }
 
 AsyncStorage.setItem('isAuth','true');
@@ -289,7 +291,7 @@ AsyncStorage.setItem('isAuth','true');
 
 
 
-  const setmeetingscorrectly= async (newsugmeetings)=>{
+  const setmeetingscorrectly= async (newsugmeetings,newtblsuggestedmeetings1)=>{
     let newactualmeetings= user.tblactualmeetings;
     let newactualmeetings1= user.tblactualmeetings1;
 
@@ -308,8 +310,9 @@ AsyncStorage.setItem('isAuth','true');
 
    
 
-    let newtblsuggest1this= user.tblSuggestedMeetings1;
-      newtblsuggest1this= newtblsuggest1this.map((each)=>{
+
+   
+    newtblsuggestedmeetings1= newtblsuggestedmeetings1.map((each)=>{
 
         if(each.place.result){
           return{
@@ -364,7 +367,7 @@ AsyncStorage.setItem('isAuth','true');
      setUser({
       ...user,
       tblSuggestedMeetings: newsugmeetings,
-      tblSuggestedMeetings1: newtblsuggest1this,
+      tblSuggestedMeetings1: newtblsuggestedmeetings1,
       tblactualmeetings: newactualmeetings,
       tblactualmeetings1: newactualmeetings1,
     })
@@ -514,23 +517,120 @@ AsyncStorage.setItem('isAuth','true');
 
   const fetchAndProcessMeetings = async(newevents) => {
  
+    console.log('this is newevents',newevents)
+    console.log('this is tblsuggestedmeetings before',user.tblSuggestedMeetings)
+    console.log('this is tblsuggestedmeetings1 before',user.tblSuggestedMeetings1)
+
+    let newtblsuggestedmeetings = [];
+    let newtblsuggestedmeetings1 = [];
 
 
   let numbermeetings=0;
+  let iscollapsed=false;
 
-  user.tblSuggestedMeetings1.forEach((each) => {
-    if(each.status==='P'){
-      numbermeetings=numbermeetings+1;
+  user.tblSuggestedMeetings1.forEach(async (each) => {
+
+      for(let i=0; i<newevents.length; i++){
+        if(each.date.split('T')[0]===newevents[i].date.toISOString().split('T')[0]){
+          let eachStartTime = new Date("1970-01-01T" + each.startTime + "Z");
+          let eachEndTime = new Date("1970-01-01T" + each.endTime + "Z");
+          let newEventStartTime = new Date("1970-01-01T" + newevents[i].starttime + "Z");
+          let newEventEndTime = new Date("1970-01-01T" + newevents[i].endtime + "Z");
+
+      if(!((eachStartTime < newEventStartTime && eachEndTime <= newEventStartTime) || (eachStartTime >= newEventEndTime))){
+
+
+            iscollapsed=true;
+            console.log('this is the event',newevents[i])
+            console.log('this is the meeting',each)
+    
+
+
+          }
+
     }
+  }
+  if(iscollapsed===false){
+
+    if(each.status==='P'){
+    numbermeetings=numbermeetings+1;
+    }
+    newtblsuggestedmeetings1.push(each);
+
+  }
+  else{
+    const urltosend=`http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/Updmeeting/${each.meetingNum}/R`
+    console.log('this is urltosend',urltosend)
+    const response= await axios.put(urltosend)
+    console.log('this is response',response.data)
+
+
+  }
+
+  iscollapsed=false;
+
+
   })
 
-  user.tblSuggestedMeetings.forEach((each) => {
+  iscollapsed=false;
+
+  user.tblSuggestedMeetings.forEach(async (each) => {
+      for(let i=0; i<newevents.length; i++){
+        if(each.date.split('T')[0]===newevents[i].date.toISOString().split('T')[0]){
+          let eachStartTime = new Date("1970-01-01T" + each.startTime + "Z");
+          let eachEndTime = new Date("1970-01-01T" + each.endTime + "Z");
+          let newEventStartTime = new Date("1970-01-01T" + newevents[i].starttime + "Z");
+          let newEventEndTime = new Date("1970-01-01T" + newevents[i].endtime + "Z");
+
+      if(!((eachStartTime < newEventStartTime && eachEndTime <= newEventStartTime) || (eachStartTime >= newEventEndTime))){
+
+            console.log('this is each.starttime',each.startTime)
+            console.log('this is each.endtime',each.endTime)
+            console.log('this is newevents[i].starttime',newevents[i].starttime)
+            console.log('this is newevents[i].endtime',newevents[i].endtime)
+
+            console.log('this is the event',newevents[i])
+            console.log('this is the meeting',each)
+
+            iscollapsed=true;
+    
+
+
+          }
+
+    }
+  }
+  if(iscollapsed===false){
     if(each.status==='P'){
       numbermeetings=numbermeetings+1;
+      }
+    newtblsuggestedmeetings.push(each);
+  }
+  else{
+    try{
+      const urltosend=`http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/Updmeeting/${each.meetingNum}/R`
+    console.log('this is urltosend',urltosend)
+    const response= await axios.put(urltosend)
+    console.log('this is response',response.data)
+
     }
+    catch(error){
+      console.log('error from this urltosend',urltosend)
+    }
+
+  }
+
+  iscollapsed=false;
+
+
+
+    
   })
 
   console.log('number of meetings suggesteedmeetingsuser',numbermeetings)
+  console.log('this is newtblsuggestedmeetings',newtblsuggestedmeetings)
+  console.log('this is newtblsuggestedmeetings1',newtblsuggestedmeetings1)
+
 
  
   if(numbermeetings<5){
@@ -545,20 +645,24 @@ AsyncStorage.setItem('isAuth','true');
     let existingsuggested = [];
     let existingsuggested1 = [];
 
-    if (user.tblSuggestedMeetings.length > 0) {
-      existingsuggested = user.tblSuggestedMeetings.map((each) => ({
+    if (newtblsuggestedmeetings.length > 0) {
+      existingsuggested = newtblsuggestedmeetings.map((each) => ({
         starttime: each.startTime,
         endtime: each.endTime,
         date: each.date.split('T')[0],
       }));
+
+      console.log('this is existingsuggested',existingsuggested)
     }
   
-    if (user.tblSuggestedMeetings1.length > 0) {
-      existingsuggested1 = user.tblSuggestedMeetings1.map((each) => ({
-        starttime: each.starttime,
-        endtime: each.endtime,
+    if (newtblsuggestedmeetings1.length > 0) {
+      existingsuggested1 = newtblsuggestedmeetings1.map((each) => ({
+        starttime: each.startTime,
+        endtime: each.endTime,
         date: each.date.split('T')[0],
       }));
+
+      console.log('this is existingsuggested1',existingsuggested1)
     }
 
     const existingsuggestedconcat = existingsuggested.concat(existingsuggested1);
@@ -583,7 +687,10 @@ AsyncStorage.setItem('isAuth','true');
     return 'no favorite contacts'
   }
 
-  const newsugmeetings = [...newmeetings, ...user.tblSuggestedMeetings];
+  console.log('this is newmeetings', newmeetings);
+  console.log('this is newtblsuggestedmeetings', newtblsuggestedmeetings);
+
+  const newsugmeetings = newtblsuggestedmeetings.concat(newmeetings);
 
   
 
@@ -602,12 +709,15 @@ AsyncStorage.setItem('isAuth','true');
 
   //set user without prev
 
-  return newsugmeetings;
+  return {newsugmeetings,newtblsuggestedmeetings1};
   
 }
 else{
   let newsugmeetings= user.tblSuggestedMeetings;
-  return newsugmeetings;
+  let newtblsuggestedmeetings1=user.tblSuggestedMeetings1;
+
+
+  return {newsugmeetings,newtblsuggestedmeetings1};
 }
   }
 

@@ -37,7 +37,6 @@ function SignUpAPI({navigation}) {
     projectNameForProxy:'@dor93/social-keeper-client'
     
   });
-  
 
 
 
@@ -45,8 +44,6 @@ function SignUpAPI({navigation}) {
   const [request2, response2, promptAsync2] = Facebook.useAuthRequest({
     clientId: '177882227985650',
     useProxy: true,
-    projectNameForProxy:'@dor93/social-keeper-client',
-
     redirectUri: RedirectUrl,
     scopes: ['public_profile', 'email'],
   });
@@ -62,10 +59,8 @@ function SignUpAPI({navigation}) {
     clientId: '923332378077-0gf55cn5cq0dvpahm5bk6vetdaigl7cr.apps.googleusercontent.com',
     
     // Use expo's web browser
+
     useProxy: true,
-    projectNameForProxy:'@dor93/social-keeper-client',
-
-
     redirectUri: RedirectUrl,
     //brign the id token with all the user info
     

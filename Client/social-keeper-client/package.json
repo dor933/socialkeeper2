@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
@@ -69,7 +70,6 @@
     "react-native-dropdown-autocomplete": "^1.0.18",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-elements": "^3.4.3",
-    "react-native-file-log": "^1.0.1",
     "react-native-fs": "^2.20.0",
     "react-native-google-places-autocomplete": "^2.5.1",
     "react-native-images-collage": "^3.3.5",
