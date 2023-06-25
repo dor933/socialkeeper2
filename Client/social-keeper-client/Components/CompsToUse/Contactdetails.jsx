@@ -434,16 +434,16 @@ type="MaterialCommunityIcons"
  </View>
  <TouchableOpacity onPress={()=> whatsappcontact(selectedContact.phoneNum1)}>
 
- <View style={{height:60,width:Dimensions.get('window').width-20,marginTop:10,justifyContent:'space-between',flexDirection:'row-reverse'}}>
+ <View style={{height:Dimensions.get('window').height/11,width:Dimensions.get('window').width-20,justifyContent:'space-between',flexDirection:'row-reverse'}}>
 
-<View>
+<View style={{alignSelf:'center'}}>
 
-<Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333",marginTop:10}}>WhatsApp</Text>
+<Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333"}}>WhatsApp</Text>
 
 </View>
-<View style={{marginTop:10,right:15,flexDirection:'row'}}>
+{/* <View style={{marginTop:10,right:15,flexDirection:'row'}}> */}
 
-<View style={{height:26,width:26,borderRadius:100,alignItems:'center',justifyContent:'center',borderRadius:100,backgroundColor:'#25D366',borderWidth:2,borderColor:"#25D366"}}>
+{/* <View style={{height:26,width:26,borderRadius:100,alignItems:'center',alignSelf:'center',justifyContent:'center',borderRadius:100,backgroundColor:'#25D366',borderWidth:2,borderColor:"#25D366"}}> */}
 
   {/* <Image source={require('../../assets//Images/Contacts/whatstrans.png')}
     resizeMode="contain"
@@ -452,35 +452,39 @@ type="MaterialCommunityIcons"
       height: 16, // Set the icon height
     }} */}
 
+<View style={{alignSelf:'center'}}>
 <SocialIcon
       type="whatsapp"
       style={{width:32,height:32}}
       
       
       />
+
+</View>
+
   
 
-</View>
+{/* </View> */}
 
 
 
-</View>
+{/* </View> */}
 
 </View>
 </TouchableOpacity>
 
 <TouchableOpacity onPress={()=> telegramcontact(selectedContact.phoneNum1)}>
 
-<View style={{height:60,width:Dimensions.get('window').width-20,marginTop:10,justifyContent:'space-between',flexDirection:'row-reverse'}}>
+<View style={{height:Dimensions.get('window').height/11,width:Dimensions.get('window').width-20,marginTop:0,justifyContent:'space-between',flexDirection:'row-reverse'}}>
 
-<View>
+<View style={{alignSelf:'center'}}>
 
-<Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333",marginTop:10}}>Telegram</Text>
+<Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333"}}>Telegram</Text>
 
 </View>
-<View style={{marginTop:10,right:15,flexDirection:'row'}}>
 
-<View style={{height:32,width:32,borderRadius:100,alignItems:'center',justifyContent:'center',borderRadius:100,backgroundColor:'#039BE5',borderWidth:2,borderColor:"#039BE5"}}>
+<View style={{alignSelf:'center',paddingLeft:10}}>
+<View style={{height:32,width:32,alignItems:'center',alignSelf:'center',justifyContent:'center',borderRadius:20,backgroundColor:'#039BE5',borderWidth:2,borderColor:"#039BE5"}}>
 
   <Image source={require('../../assets/Images/Contacts/telegram.png')}
     resizeMode="contain"
@@ -492,39 +496,36 @@ type="MaterialCommunityIcons"
  />
 
 </View>
-
-
-
 </View>
+
+
+
 
 </View>
 </TouchableOpacity>
 
 
 
-<View style={{height:60,width:Dimensions.get('window').width-20,marginTop:10,justifyContent:'space-between',flexDirection:'row-reverse'}}>
+<View style={{height:Dimensions.get('window').height/11,width:Dimensions.get('window').width-20,marginTop:0,justifyContent:'space-between',flexDirection:'row-reverse'}}>
 
-<TouchableOpacity onPress={addtofavorite}>
-<Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333",marginTop:14}}>Remove From Friends</Text>
+<TouchableOpacity onPress={addtofavorite} style={{alignSelf:'center'}}>
+<Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333"}}>Remove From Friends</Text>
 
 </TouchableOpacity>
-<View style={{marginTop:10,right:15,flexDirection:'row'}}>
 
-<View style={{height:32,width:32,alignItems:'center',justifyContent:'center'}}>
+<View style={{alignSelf:'center',paddingLeft:11}}>
 
 <Icon
         name="delete"
         size={32}
         type="MaterialIcons"
         color="red"
-        style={{alignSelf:'center',justifyContent:'center'}}
         />
 
 </View>
 
 
 
-</View>
 
 </View>
 
