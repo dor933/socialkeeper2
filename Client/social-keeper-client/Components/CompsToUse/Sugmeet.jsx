@@ -397,7 +397,7 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
       <Text style={styles.subtextstyle}>{date}</Text>
     </View>
 
-    <View style={{alignContent:'center'}}>
+    <View style={{width:Dimensions.get('window').width-250,padding:10}} >
       <Text style={styles.subtextstyle}>
         -{meeting.startTime}/ {meeting.endTime}
       </Text>

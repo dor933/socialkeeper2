@@ -629,7 +629,7 @@ const renderItem = ({ item }) => {
       
       <View style={styles.Title}>
         { !isfrommainapp ?
-        <Text style={styles.Titletext}> My Contacts </Text>
+        <Text style={styles.Titleregist}> My Contacts </Text>
         :
         <View style={{flexDirection:'row-reverse',justifyContent:'space-around',width:'100%',marginBottom:20}}>
         <View style={{
@@ -1104,6 +1104,17 @@ justifyContent: 'space-around',
     lineHeight: 33,
     fontFamily: "NunitoSans_400Regular",
     textAlign:'center'
+},
+
+Titleregist:{
+  fontSize: 24,
+  fontweight: "800",
+  color: "#333333",
+  lineHeight: 33,
+  textAlign: 'right',
+  marginRight: 10,
+  fontFamily: "NunitoSans_400Regular",
+  top:10
 }
 }
 );

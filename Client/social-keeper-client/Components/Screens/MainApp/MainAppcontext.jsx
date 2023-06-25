@@ -9,8 +9,6 @@ export default function MainAppcontextfunc(props) {
     const [ispersonalactiveated, setIspersonalactiveated] = useState(false);
     const [userevents, setUserevents] = useState([]);
     const [firebaseuser, setFirebaseuser] = useState({});
-    const [suggestedmeeting, setSuggestedmeeting] = useState({});
-    const [suggestedmeeting1, setSuggestedmeeting1] = useState({});
     const [screenisready, setScreenisready] = useState(false);
     const [isappready, setIsappready] = useState(false);
     const [hobbienumtypes, setHobbienumtypes] = useState([
@@ -79,7 +77,7 @@ export default function MainAppcontextfunc(props) {
    
     
     return (
-        <MainAppcontext.Provider value={{ user,clearmainappcontext,setUser,screenisready,setScreenisready, ispersonalactiveated,setIspersonalactiveated, userevents,setUserevents, firebaseuser, setFirebaseuser, suggestedmeeting, setSuggestedmeeting, hobbienumtypes, suggestedmeeting1, setSuggestedmeeting1,isappready,setIsappready }}>
+        <MainAppcontext.Provider value={{ user,clearmainappcontext,setUser,screenisready,setScreenisready, ispersonalactiveated,setIspersonalactiveated, userevents,setUserevents, firebaseuser, setFirebaseuser, hobbienumtypes,isappready,setIsappready }}>
             {props.children}
         </MainAppcontext.Provider>
     )
