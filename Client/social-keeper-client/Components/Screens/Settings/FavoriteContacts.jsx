@@ -633,17 +633,19 @@ const renderItem = ({ item }) => {
         :
         <View style={{flexDirection:'row-reverse',justifyContent:'space-around',width:'100%',marginBottom:20}}>
         <View style={{
-          width:200,
-          height:30,
           backgroundColor:'#cb595a',
           borderRadius:100,
           alignSelf:'center',
+          width:Dimensions.get('window').width/2.4,
+          justifyContent:'center',
+          
+        
         }}
          >
-        <Text style={[styles.Titletext,{color:'#ffffff',fontWeight:'600',paddingLeft:22,top:-2,fontSize:15}]}> Add your Friends! </Text>
+        <Text style={[styles.Titletext,{color:'#ffffff',fontWeight:'600'}]}> Add your Friends! </Text>
 
         </View>
-        <View >
+        <View style={{justifyContent:'center'}} >
         <Image source={{uri:user.imageUri}} style={{
           width:45,
           height:45,
@@ -1096,14 +1098,12 @@ justifyContent: 'space-around',
   
 
   Titletext: {
-    fontSize: 24,
+    fontSize: 15,
     fontweight: "800",
     color: "#333333",
     lineHeight: 33,
-    textAlign: 'right',
-    marginRight: 10,
     fontFamily: "NunitoSans_400Regular",
-    top:10
+    textAlign:'center'
 }
 }
 );
