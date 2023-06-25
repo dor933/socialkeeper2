@@ -52,6 +52,20 @@ namespace ClassLibrary_SocialKeeper
 
     public class Meetings
     {
+        public static List<PlaceResult> calculatebaysienrank(List<PlaceResult> placelist)
+        {
+            double avaragerank = placelist.Average(x => x.Rating);
+            double minimumreiews = 15;
+
+            foreach(PlaceResult place in placelist)
+            {
+                place.bayesianrank= (place.UserRatingsTotal/(place.UserRatingsTotal+minimumreiews)) * place.Rating + (minimumreiews/(place.UserRatingsTotal+minimumreiews)) * avaragerank;
+            }
+
+            return placelist;
+
+        }
+
         public static void Timeandhobbiegenerator(List<Events> userinviteeve, List<Events> userinvitedeve, List<SuggestedDTO> existingsugmeetings, ExistsingUsers user1exist, tblUser usertomeeting,
           ExistsingUsers usertomeetingexist, List<RatingData> ratedhobbies, RatingData ratemax, tblFavoriteContact item, ref double totalmeetingrank, ref int numbermeetings, List<SuggestedDTO> suggestedmeet,
           double prefferdtimerate, List<tblPreferredTime> commontimeperiods2)
@@ -353,7 +367,7 @@ namespace ClassLibrary_SocialKeeper
             }
         }
 
-        public static async Task<List<SuggestedDTO>> Generatemeetings(Googlecloudservices _googleservices,List<SuggestedDTO> mysuggested, igroup192_prodEntities db, List<RatingData> ratedh)
+        public static async Task<SuggestedDTO> Generatemeetings(Googlecloudservices _googleservices,SuggestedDTO mysuggested, igroup192_prodEntities db, List<RatingData> ratedh)
         {
 
             
@@ -379,12 +393,11 @@ namespace ClassLibrary_SocialKeeper
 
 
 
-            foreach (SuggestedDTO sugitem in mysuggested)
-            {
-                RatingData highesthobrank = ratedh.Where(x => x.HobbieNum == sugitem.hobbieNum).FirstOrDefault();
-                List<RatingData> ratedwithouthobbie= ratedh.Where(x=> x.HobbieNum!= sugitem.hobbieNum).ToList();
+         
+                RatingData highesthobrank = ratedh.Where(x => x.HobbieNum == mysuggested.hobbieNum).FirstOrDefault();
+                List<RatingData> ratedwithouthobbie= ratedh.Where(x=> x.HobbieNum!= mysuggested.hobbieNum).ToList();
                 bool placefound = false;
-                int currentDayOfWeek = (int)sugitem.date.DayOfWeek;
+                int currentDayOfWeek = (int)mysuggested.date.DayOfWeek;
                 bool initialrunning = true;
                 placeslist= new Dictionary<string, List<PlaceResult>>();
                 foreach (KeyValuePair<string, string> entry in placetypes)
@@ -397,10 +410,10 @@ namespace ClassLibrary_SocialKeeper
 
                 string hobbiename = "";
 
-                double lat1 = Convert.ToDouble(sugitem.user1.citylatt);
-                double lon1 = Convert.ToDouble(sugitem.user1.citylong);
-                double lat2 = Convert.ToDouble(sugitem.user2.citylatt);
-                double lon2 = Convert.ToDouble(sugitem.user2.citylong);
+                double lat1 = Convert.ToDouble(mysuggested.user1.citylatt);
+                double lon1 = Convert.ToDouble(mysuggested.user1.citylong);
+                double lat2 = Convert.ToDouble(mysuggested.user2.citylatt);
+                double lon2 = Convert.ToDouble(mysuggested.user2.citylong);
 
                 (double midLat, double midLon) = FindMidpoint(lat1, lon1, lat2, lon2);
 
@@ -420,7 +433,7 @@ namespace ClassLibrary_SocialKeeper
 
                     if (initialrunning)
                     {
-                         hobbiename = db.tblHobbie.Where(x => x.hobbieNum == sugitem.hobbieNum).FirstOrDefault().hobbieName;
+                         hobbiename = db.tblHobbie.Where(x => x.hobbieNum == mysuggested.hobbieNum).FirstOrDefault().hobbieName;
                          type = placetypes[hobbiename];
 
                         if (currentplacetype != type)
@@ -463,18 +476,14 @@ namespace ClassLibrary_SocialKeeper
 
                                         }
 
-                                        if (pr.UserRatingsTotal >= 10 && pr.Rating>4)
-                                        {
+                                      
                                             placetorun.Add(pr);
-                                        }
+                                        
                                     }
                                    
                                 }
 
-                                if (placetorun.Count > 15)
-                                {
-                                    break;
-                                }
+                         
                                
                             }
 
@@ -531,9 +540,8 @@ namespace ClassLibrary_SocialKeeper
                             
                             
                         }
-                        places= places.Where(x=> x.UserRatingsTotal>=5).ToList();
-                        places.Sort((x, y) => y.Rating.CompareTo(x.Rating));
-                        //filter if total rating is less than 5
+                    places = calculatebaysienrank(places);
+                    places.Sort((x, y) => y.bayesianrank.CompareTo(x.bayesianrank));
 
                         
                        
@@ -550,12 +558,12 @@ namespace ClassLibrary_SocialKeeper
                                 ratedwithouthobbie.RemoveAt(0);
                                  hobbiename = db.tblHobbie.Where(x => x.hobbieNum == hobbienum).FirstOrDefault().hobbieName;
                                 type = placetypes[hobbiename];
-                                if (currentplacetype != type  && (sugitem.endTime - sugitem.startTime >= TimeSpan.FromHours(firstplacerate.Minhours)))
+                                if (currentplacetype != type  && (mysuggested.endTime - mysuggested.startTime >= TimeSpan.FromHours(firstplacerate.Minhours)))
                                 {
                                     double hobbierank = ratedh.Where(x => x.HobbieNum == hobbienum).FirstOrDefault().Label;
-                                    sugitem.normalizehobbierank = (hobbierank - 1.0) / (75.0 - 1.0);
-                                    sugitem.rank = calculatemeetingscore(sugitem.normalizehobbierank, sugitem.prefferedtimerate);
-                                    sugitem.hobbieNum= hobbienum;
+                                    mysuggested.normalizehobbierank = (hobbierank - 1.0) / (75.0 - 1.0);
+                                    mysuggested.rank = calculatemeetingscore(mysuggested.normalizehobbierank, mysuggested.prefferedtimerate);
+                                    mysuggested.hobbieNum= hobbienum;
                                     if (placeslist[type].Count == 10)
                                     {
                                         places = placeslist[type];
@@ -596,17 +604,13 @@ namespace ClassLibrary_SocialKeeper
 
 
                                                     }
-                                                    if (pr.UserRatingsTotal >= 10 && pr.Rating>4)
-                                                    {
+                                                  
                                                         placetorun.Add(pr);
-                                                    }
+                                                    
                                                 }
                                                
                                             }
-                                            if (placetorun.Count > 15)
-                                            {
-                                                break;
-                                            }
+                                         
 
                                         }
 
@@ -661,8 +665,8 @@ namespace ClassLibrary_SocialKeeper
                                     }
 
                                     places = placetorun;
-                                    places = places.Where(x => x.UserRatingsTotal >= 5).ToList();
-                                    places.Sort((x, y) => y.Rating.CompareTo(x.Rating));
+                                    places = calculatebaysienrank(places);
+                                    places.Sort((x, y) => y.bayesianrank.CompareTo(x.bayesianrank));
                                     currentplacetype = type;
                                     break;
                                 }
@@ -713,9 +717,9 @@ namespace ClassLibrary_SocialKeeper
                                     dtoloc.latitude = locationnew.latitude;
                                     dtoloc.longitude = locationnew.longitude;
                                     dtoloc.city = locationnew.city;
-                                    sugitem.locatation = dtoloc;
-                                    sugitem.longitude = dtoloc.longitude;
-                                    sugitem.latitude = dtoloc.latitude;
+                                    mysuggested.locatation = dtoloc;
+                                    mysuggested.longitude = dtoloc.longitude;
+                                    mysuggested.latitude = dtoloc.latitude;
                                 }
                                 else
                                 {
@@ -727,11 +731,11 @@ namespace ClassLibrary_SocialKeeper
                                         loctocheck.Placeid=place.PlaceId;
                                         db.SaveChanges();
                                     }
-                                    sugitem.locatation = dtoloc;
-                                    sugitem.latitude = loctocheck.latitude;
-                                    sugitem.longitude = loctocheck.longitude;
+                                    mysuggested.locatation = dtoloc;
+                                    mysuggested.latitude = loctocheck.latitude;
+                                    mysuggested.longitude = loctocheck.longitude;
                                 }
-                                sugitem.place = place;
+                                mysuggested.place = place;
                                 placefound = true;
                                 break;
 
@@ -749,15 +753,33 @@ namespace ClassLibrary_SocialKeeper
                                         {
                                             opcloseday.Add(period);
                                         }
+                                        else if(period.Open.Day==currentDayOfWeek && period.Close.Day== currentDayOfWeek+1 && TimeSpan.Parse(period.Open.Time) > TimeSpan.Parse(period.Close.Time))
+                                    {
+
+                                        opcloseday.Add(period);
+
+
                                     }
+                                }
                                 }
 
                                 foreach (Period period in opcloseday)
                                 {
                                     TimeSpan timeopen = TimeSpan.ParseExact(period.Open.Time, "hhmm", CultureInfo.InvariantCulture);
                                     TimeSpan timeclose = TimeSpan.ParseExact(period.Close.Time, "hhmm", CultureInfo.InvariantCulture);
+                                TimeSpan mysuggestedendfixed = mysuggested.endTime;
 
-                                    if (sugitem.startTime >= timeopen && sugitem.endTime <= timeclose)
+                                if (mysuggested.startTime > mysuggested.endTime)
+                                {
+                                    mysuggestedendfixed = mysuggestedendfixed.Add(TimeSpan.FromDays(1));
+                                }
+
+                                if (timeopen > timeclose)
+                                {
+                                    timeclose= timeclose.Add(TimeSpan.FromDays(1));
+                                }
+
+                                    if (mysuggested.startTime >= timeopen && mysuggestedendfixed <= timeclose)
                                     {
                                         LoctationDTO dtoloc = new LoctationDTO();
                                         tblLoctation loctocheck = db.tblLoctation.Where(x => x.longitude == place.Geometry.Location.Longitude && x.latitude == place.Geometry.Location.Latitude).FirstOrDefault();
@@ -773,9 +795,9 @@ namespace ClassLibrary_SocialKeeper
                                             dtoloc.latitude = locationnew.latitude;
                                             dtoloc.longitude = locationnew.longitude;
                                             dtoloc.city = locationnew.city;
-                                            sugitem.locatation = dtoloc;
-                                            sugitem.longitude = dtoloc.longitude;
-                                            sugitem.latitude = dtoloc.latitude;
+                                            mysuggested.locatation = dtoloc;
+                                            mysuggested.longitude = dtoloc.longitude;
+                                            mysuggested.latitude = dtoloc.latitude;
                                         }
                                         else
                                         {
@@ -783,13 +805,13 @@ namespace ClassLibrary_SocialKeeper
                                             dtoloc.longitude = loctocheck.longitude;
                                             dtoloc.city = loctocheck.city;
                                             dtoloc.Placeid = place.PlaceId;
-                                            sugitem.locatation = dtoloc;
-                                            sugitem.latitude = loctocheck.latitude;
-                                            sugitem.longitude = loctocheck.longitude;
+                                            mysuggested.locatation = dtoloc;
+                                            mysuggested.latitude = loctocheck.latitude;
+                                            mysuggested.longitude = loctocheck.longitude;
                                         }
-                                        sugitem.place = place;
+                                        mysuggested.place = place;
                                         placefound = true;
-                                        break;
+                                        return mysuggested;
 
 
 
@@ -818,7 +840,7 @@ namespace ClassLibrary_SocialKeeper
 
                
 
-            }
+            
             return mysuggested;
 
 

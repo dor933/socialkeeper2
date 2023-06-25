@@ -371,8 +371,25 @@ namespace WebApplication1.Controllers
                     }
                     
                     List<SuggestedDTO> suggestedsorted= suggestedmeet.OrderByDescending(x=> x.rank).ToList();
-                    List<SuggestedDTO> top5Suggestions = suggestedsorted.Take(5-totalmeetingsnumber).ToList();
-                    List<SuggestedDTO> meetingslist= await Meetings.Generatemeetings(_googleservices,top5Suggestions,_db,ratedhobbies);
+                    //List<SuggestedDTO> top5Suggestions = suggestedsorted.Take(5-totalmeetingsnumber).ToList();
+                    List<SuggestedDTO> meetingslist = new List<SuggestedDTO>();
+
+                    foreach (SuggestedDTO s in suggestedsorted)
+                    {
+                       SuggestedDTO newsuggested= await Meetings.Generatemeetings(_googleservices, s,_db,ratedhobbies);
+                        if (newsuggested.place.PlaceId != null)
+                        {
+                            totalmeetingsnumber++;
+                            meetingslist.Add(newsuggested);
+
+                        }
+
+                        if (totalmeetingsnumber == 5)
+                        {
+                            break;
+                        }
+
+                    }
                     meetingslist.Sort((x, y) => y.rank.CompareTo(x.rank));
 
                     List<SuggestedDTO> meetingstoreturn= new List<SuggestedDTO>();

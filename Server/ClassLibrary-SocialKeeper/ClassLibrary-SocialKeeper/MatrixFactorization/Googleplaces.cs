@@ -85,6 +85,8 @@ namespace ClassLibrary_SocialKeeper
 
         [JsonProperty("vicinity")]
         public string Vicinity { get; set; }
+
+        public double bayesianrank { get; set; }
     }
 
     public class PlaceEditorialSummary
