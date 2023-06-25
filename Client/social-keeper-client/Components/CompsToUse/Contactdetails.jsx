@@ -6,6 +6,8 @@ import { Overlay, Icon,CheckBox } from '@rneui/themed';
 import {whatsappcontact,telegramcontact,mailcomposer,callnumber} from '../../assets/Utils/Connectivity';
 //import Dimensions from 'react-native';
 import { Dimensions } from 'react-native';
+import { SocialIcon, SocialIconProps } from '@rneui/themed';
+
 
 
 
@@ -28,10 +30,10 @@ export default function Contactdetails({selectedContact,friendid,addtofavorite,m
           setModalVisible(!modalVisible);
         }}
       >
-              <SafeAreaView style={{top:45}} >
+              <SafeAreaView style={{top:20}} >
                 <View >
         <View style={styles.headerModal}>
-          <View style={{paddingLeft:45}}>
+          <View style={{paddingLeft:64,marginTop:2}}>
         <Text style={{ fontFamily: 'NunitoSans_700Bold', fontStyle: 'normal', fontWeight:'600', fontSize: 24, lineHeight: 33, color: '#333333'}}>
             Contact Details
             </Text>
@@ -161,14 +163,21 @@ export default function Contactdetails({selectedContact,friendid,addtofavorite,m
 
 <View style={{height:26,width:26,borderRadius:100,alignItems:'center',justifyContent:'center',borderRadius:100,backgroundColor:'#25D366',borderWidth:2,borderColor:"#25D366"}}>
  
-      <Image source={require('../../assets//Images/Contacts/whatstrans.png')}
+      {/* <Image source={require('../../assets//Images/Contacts/whatstrans.png')}
         resizeMode="contain"
         style={{
           width: 16, // Set the icon width
           height: 16, // Set the icon height
-        }}
+        }} */}
+      <SocialIcon
+      type="whatsapp"
+      style={{width:32,height:32}}
+
+      />
+
+
       
-     />
+    
 
     </View>
     
@@ -190,7 +199,7 @@ export default function Contactdetails({selectedContact,friendid,addtofavorite,m
 </View>
 <View style={{marginTop:10,right:15,flexDirection:'row'}}>
 
-    <View style={{height:26,width:26,borderRadius:100,alignItems:'center',justifyContent:'center',borderRadius:100,backgroundColor:'#039BE5',borderWidth:2,borderColor:"#039BE5"}}>
+    <View style={{height:32,width:32,borderRadius:100,alignItems:'center',justifyContent:'center',borderRadius:100,backgroundColor:'#039BE5',borderWidth:2,borderColor:"#039BE5"}}>
  
       <Image source={require('../../assets/Images/Contacts/telegram.png')}
         resizeMode="contain"
@@ -303,10 +312,10 @@ else {
       setModalVisible(!modalVisible);
     }}
   >
-          <SafeAreaView style={{top:45}} >
+          <SafeAreaView style={{top:20}} >
             <View >
     <View style={styles.headerModal}>
-      <View style={{paddingLeft:45}}>
+      <View style={{paddingLeft:64,marginTop:2}}>
     <Text style={{ fontFamily: 'NunitoSans_700Bold', fontStyle: 'normal', fontWeight:'600', fontSize: 24, lineHeight: 33, color: '#333333'}}>
         Contact Details
         </Text>
@@ -436,14 +445,20 @@ type="MaterialCommunityIcons"
 
 <View style={{height:26,width:26,borderRadius:100,alignItems:'center',justifyContent:'center',borderRadius:100,backgroundColor:'#25D366',borderWidth:2,borderColor:"#25D366"}}>
 
-  <Image source={require('../../assets//Images/Contacts/whatstrans.png')}
+  {/* <Image source={require('../../assets//Images/Contacts/whatstrans.png')}
     resizeMode="contain"
     style={{
       width: 16, // Set the icon width
       height: 16, // Set the icon height
-    }}
+    }} */}
+
+<SocialIcon
+      type="whatsapp"
+      style={{width:32,height:32}}
+      
+      
+      />
   
- />
 
 </View>
 
@@ -465,7 +480,7 @@ type="MaterialCommunityIcons"
 </View>
 <View style={{marginTop:10,right:15,flexDirection:'row'}}>
 
-<View style={{height:26,width:26,borderRadius:100,alignItems:'center',justifyContent:'center',borderRadius:100,backgroundColor:'#039BE5',borderWidth:2,borderColor:"#039BE5"}}>
+<View style={{height:32,width:32,borderRadius:100,alignItems:'center',justifyContent:'center',borderRadius:100,backgroundColor:'#039BE5',borderWidth:2,borderColor:"#039BE5"}}>
 
   <Image source={require('../../assets/Images/Contacts/telegram.png')}
     resizeMode="contain"
@@ -490,18 +505,19 @@ type="MaterialCommunityIcons"
 <View style={{height:60,width:Dimensions.get('window').width-20,marginTop:10,justifyContent:'space-between',flexDirection:'row-reverse'}}>
 
 <TouchableOpacity onPress={addtofavorite}>
-<Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333",marginTop:10}}>Remove From Friends</Text>
+<Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333",marginTop:14}}>Remove From Friends</Text>
 
 </TouchableOpacity>
 <View style={{marginTop:10,right:15,flexDirection:'row'}}>
 
-<View style={{height:26,width:26,alignItems:'center',justifyContent:'center'}}>
+<View style={{height:32,width:32,alignItems:'center',justifyContent:'center'}}>
 
 <Icon
         name="delete"
-        size={24}
+        size={32}
         type="MaterialIcons"
         color="red"
+        style={{alignSelf:'center',justifyContent:'center'}}
         />
 
 </View>

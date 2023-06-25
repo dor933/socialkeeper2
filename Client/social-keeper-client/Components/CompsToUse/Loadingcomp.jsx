@@ -5,7 +5,7 @@ const Loadingcomp = () => {
     return (
         
         <SafeAreaView style={styles.container}>
-            <ImageBackground source={require('../../assets/Images/RandomImages/SocialKeeper.jpeg')} style={styles.cont} resizeMode='contain'   >
+            <ImageBackground source={require('../../assets/Images/RandomImages/SocialKeeper.png')} style={styles.cont} resizeMode='contain'   >
                 <View style={styles.spinnerContainer}>
                 <ActivityIndicator size="large" color="red" />
                
