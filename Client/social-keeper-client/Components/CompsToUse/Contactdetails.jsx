@@ -152,69 +152,59 @@ export default function Contactdetails({selectedContact,friendid,addtofavorite,m
      </View>
      <TouchableOpacity onPress={()=> whatsappcontact(selectedContact.phonenumbers[0])}>
 
-     <View style={{height:60,width:Dimensions.get('window').width-20,marginTop:10,justifyContent:'space-between',flexDirection:'row-reverse'}}>
+     <View style={{height:Dimensions.get('window').height/11,width:Dimensions.get('window').width-20,justifyContent:'space-between',flexDirection:'row-reverse'}}>
 
-<View>
+<View style={{alignSelf:'center'}}>
 
-<Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333",marginTop:10}}>WhatsApp</Text>
+<Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333"}}>WhatsApp</Text>
 
 </View>
-<View style={{marginTop:10,right:15,flexDirection:'row'}}>
 
-<View style={{height:26,width:26,borderRadius:100,alignItems:'center',justifyContent:'center',borderRadius:100,backgroundColor:'#25D366',borderWidth:2,borderColor:"#25D366"}}>
- 
-      {/* <Image source={require('../../assets//Images/Contacts/whatstrans.png')}
-        resizeMode="contain"
-        style={{
-          width: 16, // Set the icon width
-          height: 16, // Set the icon height
-        }} */}
-      <SocialIcon
+
+<View style={{alignSelf:'center'}}>
+<SocialIcon
       type="whatsapp"
       style={{width:32,height:32}}
-
+      
+      
       />
 
+</View>
 
-      
-    
-
-    </View>
-    
-    
   
-  </View>
+
+
 
 </View>
 </TouchableOpacity>
 
 <TouchableOpacity onPress={()=> telegramcontact(selectedContact.phonenumbers[0])}>
 
-<View style={{height:60,width:Dimensions.get('window').width-20,marginTop:10,justifyContent:'space-between',flexDirection:'row-reverse'}}>
+<View style={{height:Dimensions.get('window').height/11,width:Dimensions.get('window').width-20,marginTop:0,justifyContent:'space-between',flexDirection:'row-reverse'}}>
 
-<View>
+<View style={{alignSelf:'center'}}>
 
-<Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333",marginTop:10}}>Telegram</Text>
+<Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333"}}>Telegram</Text>
 
 </View>
-<View style={{marginTop:10,right:15,flexDirection:'row'}}>
 
-    <View style={{height:32,width:32,borderRadius:100,alignItems:'center',justifyContent:'center',borderRadius:100,backgroundColor:'#039BE5',borderWidth:2,borderColor:"#039BE5"}}>
- 
-      <Image source={require('../../assets/Images/Contacts/telegram.png')}
-        resizeMode="contain"
-        style={{
-          width: 16, // Set the icon width
-          height: 16, // Set the icon height
-        }}
-      
-     />
+<View style={{alignSelf:'center',paddingLeft:Dimensions.get('window').width/38}}>
+<View style={{height:32,width:32,alignItems:'center',alignSelf:'center',justifyContent:'center',borderRadius:20,backgroundColor:'#039BE5',borderWidth:2,borderColor:"#039BE5"}}>
 
-    </View>
-    
-    
+  <Image source={require('../../assets/Images/Contacts/telegram.png')}
+    resizeMode="contain"
+    style={{
+      width: 16, // Set the icon width
+      height: 16, // Set the icon height
+    }}
   
-  </View>
+ />
+
+</View>
+</View>
+
+
+
 
 </View>
 </TouchableOpacity>
@@ -222,16 +212,14 @@ export default function Contactdetails({selectedContact,friendid,addtofavorite,m
 {typeof selectedContact.addedtofav =="undefined"  ? (
   <TouchableOpacity onPress={()=> addtofavorite()}>
 
-  <View style={{height:60,width:Dimensions.get('window').width-20,marginTop:10,justifyContent:'space-between',flexDirection:'row-reverse'}}>
-  
-  <View>
-  
-  <Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333",marginTop:10}}>Send favorite request</Text>
-  
-  </View>
-  <View style={{marginTop:10,right:15,flexDirection:'row'}}>
-  
-  <View style={{height:26,width:26,alignItems:'center',justifyContent:'center'}}>
+<View style={{height:Dimensions.get('window').height/11,width:Dimensions.get('window').width-20,justifyContent:'space-between',flexDirection:'row-reverse'}}>
+
+<TouchableOpacity onPress={addtofavorite} style={{alignSelf:'center',justifyContent:'center'}}>
+<Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333"}}>Add To Friends</Text>
+
+</TouchableOpacity>
+
+<View style={{alignSelf:'center',paddingLeft:Dimensions.get('window').width/28,justifyContent:'center'}}>
   
   <Icon
             name="favorite"
@@ -244,22 +232,19 @@ export default function Contactdetails({selectedContact,friendid,addtofavorite,m
   
   
   
-  </View>
   
   </View>
   </TouchableOpacity>
 
 ) : (
-<View style={{height:60,width:Dimensions.get('window').width-20,marginTop:10,justifyContent:'space-between',flexDirection:'row-reverse',opacity:0.3}}>
-  
-  <View>
-  
-  <Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333",marginTop:10}}>Send favorite request</Text>
-  
-  </View>
-  <View style={{marginTop:10,right:15,flexDirection:'row'}}>
-  
-  <View style={{height:26,width:26,alignItems:'center',justifyContent:'center'}}>
+<View style={{height:Dimensions.get('window').height/11,width:Dimensions.get('window').width-20,opacity:0.3,justifyContent:'space-between',flexDirection:'row-reverse'}}>
+
+<TouchableOpacity onPress={addtofavorite} style={{alignSelf:'center'}}>
+<Text style={{fontFamily:"NunitoSans_600SemiBold",fontStyle:"normal",fontSize:14,lineHeight:19,color:"#333333"}}>Add To Friends</Text>
+
+</TouchableOpacity>
+
+<View style={{alignSelf:'center',paddingLeft:Dimensions.get('window').width/28}}>
   
   <Icon
             name="favorite"
@@ -272,7 +257,6 @@ export default function Contactdetails({selectedContact,friendid,addtofavorite,m
   
   
   
-  </View>
   
   </View>
 )
@@ -483,7 +467,7 @@ type="MaterialCommunityIcons"
 
 </View>
 
-<View style={{alignSelf:'center',paddingLeft:10}}>
+<View style={{alignSelf:'center',paddingLeft:Dimensions.get('window').width/38}}>
 <View style={{height:32,width:32,alignItems:'center',alignSelf:'center',justifyContent:'center',borderRadius:20,backgroundColor:'#039BE5',borderWidth:2,borderColor:"#039BE5"}}>
 
   <Image source={require('../../assets/Images/Contacts/telegram.png')}
@@ -513,7 +497,7 @@ type="MaterialCommunityIcons"
 
 </TouchableOpacity>
 
-<View style={{alignSelf:'center',paddingLeft:11}}>
+<View style={{alignSelf:'center',paddingLeft:Dimensions.get('window').width/34}}>
 
 <Icon
         name="delete"
