@@ -26,6 +26,7 @@ function SignUpAPI({navigation}) {
   const {firebaseuser, setFirebaseuser} = useContext(MainAppcontext);
   const [isloading, setIsloading] = useState(false);
   const [guestemail, setGuestemail] = useState('');
+  const {selectedhobbies, setSelectedHobbies} = useContext(RegistContext);
 
   WebBrowser.maybeCompleteAuthSession();
 
@@ -33,6 +34,7 @@ function SignUpAPI({navigation}) {
   const [userInfo, setUserInfo] = useState(null);
   const RedirectUrl=AuthSession.makeRedirectUri({
     useProxy:true,
+    projectNameForProxy:'@dor93/social-keeper-client'
     
   });
 
@@ -130,13 +132,16 @@ function SignUpAPI({navigation}) {
 
         if(user.email!=undefined) {
 
-        personaldetails.email=user.email;
+      
         navigation.navigate('CreateProfile',{isfrommainapp:false});
         }
       }
       else if(typeof ifuser.data.imageUri == 'string'){
         setIsloading(true);
         setUser(ifuser.data);
+        console.log('this is ifuser.data',ifuser.data);
+        setPersonalDetails({phoneNumber:ifuser.data.phoneNum1,userName:ifuser.data.userName,gender:ifuser.data.gender})
+        setSelectedHobbies(ifuser.data.tblUserHobbiesDTO);
         setIsAuthenticated(true);
       }
     } catch (error) {
@@ -159,7 +164,8 @@ function SignUpAPI({navigation}) {
       }
       else if(typeof ifuser.data.imageUri == 'string'){
         setUser(ifuser.data);
-        setPersonalDetails(...personaldetails,{phoneNumber:ifuser.data.phoneNum1,userName:ifuser.data.userName,gender:ifuser.data.gender})
+        setPersonalDetails(personaldetails,{phoneNumber:ifuser.data.phoneNum1,userName:ifuser.data.userName,gender:ifuser.data.gender})
+        setSelectedHobbies(ifuser.data.tblHobbiedto);
         setIsAuthenticated(true);
       }
     
@@ -172,7 +178,7 @@ function SignUpAPI({navigation}) {
     try {
       //check if email structure is valid
       if(email.includes('@') && email.includes('.')){
-      const ifuser= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin',{email:email});
+      const ifuser= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin',{email:email,token:expoPushToken});
       if(ifuser.data=='no user was found'){
         setPersonalDetails({email:email});
         navigation.navigate('CreateProfile',{isfrommainapp:false});
@@ -216,12 +222,7 @@ if(isloading){
         <Image style={styles.logo} source={require('../../../assets/Images/RandomImages/social-keeper-low-resolution-logo-color-on-transparent-background.png')} />
 
         {/* Login with google button */}
-        <TouchableOpacity onPress={async () => {
 
-          promptAsync();
-          
-
-        } }>
                  {/* <TouchableOpacity onPress={async () => {
                const ifuser= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin',{email:'rotinazsd@example.com'});
                if(ifuser.data=='no user was found'){
@@ -240,17 +241,28 @@ if(isloading){
                }
               }}> */}
           <View style={styles.container}>
+          <TouchableOpacity onPress={async () => {
+
+promptAsync();
+
+
+} }>
             
             <Image style={styles.googleLogo} source={require('../../../assets/Images/Logos/GoogleLogo.png')} ></Image>
             <Text style={styles.textForButton}>Sign in with Google</Text>
+            </TouchableOpacity>
+
           </View>
-        </TouchableOpacity>
 
         {/* Login with outlook button */}
-        <TouchableOpacity onPress={async () => promptAsync2()}>
+        {/* <TouchableOpacity onPress={async () => promptAsync2()}> */}
  
-
+       
           <View style={styles.container2}>
+          <TouchableOpacity onPress={async () => {
+              promptAsync2();
+
+            } }>
             <SocialIcon
               title='Sign In With Facebook'
               type='facebook'
@@ -259,10 +271,14 @@ if(isloading){
             />
 
             {/* <Image style={styles.outLookLogo} source={require('../../../assets/Images/Logos/facebook.png')} ></Image> */}
+       
             <Text style={styles.textForButton}>Login with Facebook</Text>
+            </TouchableOpacity>
+
           </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => guestsigin(guestemail)} style={{top:590,width:300,alignSelf:'center'}}>
+
+        {/* </TouchableOpacity> */}
+        <View style={{top:590,width:300,alignSelf:'center'}}>
           <View>
             <Text style={{textAlign:'center',fontSize:13}}>Continue as a guest (Application in development mode- authentication is not available)</Text>
           </View>
@@ -270,10 +286,11 @@ if(isloading){
 <Input placeholder='Enter your email' value={guestemail} onChangeText={(text)=>setGuestemail(text)}></Input>
 
 
+
 <Button title='Continue as guest' onPress={()=>guestsigin(guestemail)}></Button>
 
 
-          </TouchableOpacity>
+          </View>
 
 
         <View style={styles.elipseButtom}></View>
@@ -296,7 +313,7 @@ const styles = StyleSheet.create({
   text: {
     position: 'absolute',
     width: 141,
-    height: 28,
+    height: 33,
     left: 137,
     top: 353,
     fontStyle: 'normal',
@@ -358,10 +375,9 @@ const styles = StyleSheet.create({
 
   //text for google button
   textForButton: {
-    position: 'absolute',
-    width: 150,
-    height: 19,
-    left: 90,
+    height: 25,
+    textAlign: 'center',
+    left: 20,
     top: 22,
     fontStyle: 'normal',
     fontWeight: '400',

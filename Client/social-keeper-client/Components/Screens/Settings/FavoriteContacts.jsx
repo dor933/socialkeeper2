@@ -46,7 +46,7 @@ export default function FavoriteContacts({ isfrommainapp:propIsFromMainApp ,navi
   const [commonhobbie,setCommonHobbie]=useState([]);
   const { setIsAuthenticated}= React.useContext(AuthContext);
   const {user,setUser} = React.useContext(MainAppcontext);
-  const {expoPushToken}= React.useContext(RegistContext);
+  const {expoPushToken}= React.useContext(AuthContext);
   const routeIsFromMainApp = route?.params?.isfrommainapp;
   const isfrommainapp = routeIsFromMainApp !== undefined ? routeIsFromMainApp : propIsFromMainApp;
 
@@ -284,7 +284,11 @@ export default function FavoriteContacts({ isfrommainapp:propIsFromMainApp ,navi
         const response3= await axios.put("http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/updpushtoken",
       usertopush);
 
+      if(response3.status==200){
+
+        console.log("pushtoken updated", response3.data)
       setIsAuthenticated(true)
+      }
 
     
       
@@ -611,7 +615,7 @@ const renderItem = ({ item }) => {
     <SafeAreaView style={{flex:1, alignItems:'center', justifyContent:'center', backgroundColor:"#ffffff"}}>
       
         {!isfrommainapp && (
-            <Image source={require('../../../assets/Images/RandomImages/SocialKeeper.jpeg')} style={{width:180,height:180, 
+            <Image source={require('../../../assets/Images/RandomImages/SocialKeeper.png')} style={{width:180,height:180, 
             top:"3%"
             
             }} />
@@ -625,21 +629,23 @@ const renderItem = ({ item }) => {
       
       <View style={styles.Title}>
         { !isfrommainapp ?
-        <Text style={styles.Titletext}> My Contacts </Text>
+        <Text style={styles.Titleregist}> My Contacts </Text>
         :
         <View style={{flexDirection:'row-reverse',justifyContent:'space-around',width:'100%',marginBottom:20}}>
         <View style={{
-          width:200,
-          height:30,
           backgroundColor:'#cb595a',
           borderRadius:100,
           alignSelf:'center',
+          width:Dimensions.get('window').width/2.4,
+          justifyContent:'center',
+          
+        
         }}
          >
-        <Text style={[styles.Titletext,{color:'#ffffff',fontWeight:'600',paddingLeft:22,top:-2,fontSize:15}]}> Add your Friends! </Text>
+        <Text style={[styles.Titletext,{color:'#ffffff',fontWeight:'600'}]}> Add your Friends! </Text>
 
         </View>
-        <View >
+        <View style={{justifyContent:'center'}} >
         <Image source={{uri:user.imageUri}} style={{
           width:45,
           height:45,
@@ -1092,14 +1098,23 @@ justifyContent: 'space-around',
   
 
   Titletext: {
-    fontSize: 24,
+    fontSize: 15,
     fontweight: "800",
     color: "#333333",
     lineHeight: 33,
-    textAlign: 'right',
-    marginRight: 10,
     fontFamily: "NunitoSans_400Regular",
-    top:10
+    textAlign:'center'
+},
+
+Titleregist:{
+  fontSize: 24,
+  fontweight: "800",
+  color: "#333333",
+  lineHeight: 33,
+  textAlign: 'right',
+  marginRight: 10,
+  fontFamily: "NunitoSans_400Regular",
+  top:10
 }
 }
 );

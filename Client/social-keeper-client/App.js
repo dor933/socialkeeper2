@@ -165,8 +165,19 @@ export default function App() {
   useEffect( () => {
 
     setIsAuthenticated(false);
+    console.log("useEffect first");
 
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+        
+      }),
+    });
+
 
     notificationListener.current = Notifications.addNotificationReceivedListener(async (notification) => {
       console.log("notification");

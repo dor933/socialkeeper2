@@ -141,7 +141,11 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
     //search if meeting is already in suggestedmeetings1
     const isinmeetings1= user.tblSuggestedMeetings1.find((item) => item.meetingNum==meetingnum)
     if(!isinmeetings1){
-    const placedetails= await getPlaceDetails(meetingtoret.place.place_id)
+    let placedetails= await getPlaceDetails(meetingtoret.place.place_id)
+    if(placedetails.result){
+
+       placedetails=placedetails.result
+    }
     meetingtoret.place=placedetails;
     const newtblsuggested1meetings= user.tblSuggestedMeetings1;
     newtblsuggested1meetings.push(meetingtoret)

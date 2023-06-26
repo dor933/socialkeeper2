@@ -1,7 +1,7 @@
 
 import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, SafeAreaView,FlatList } from 'react-native'
   import { useState, useEffect,useContext } from 'react';
-  import Logo from '../..//..//assets/Images/RandomImages/SocialKeeper.jpeg'
+  import Logo from '../..//..//assets/Images/RandomImages/SocialKeeper.png'
   import HobbiesComponent from './HobbiesComponent.jsx'
   import { Ionicons } from '@expo/vector-icons';
   import axios from 'axios';
@@ -18,9 +18,9 @@ import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, Safe
     const [count, setCount] = useState(0);
     const [hobbies, setHobbies] = useState([]);
     const {selectedhobbies, setSelectedHobbies} = useContext(RegistContext);
-    const {personaldetails, setPersonalDetails} = useContext(RegistContext);
     const {ispersonalactiveated, setIspersonalactiveated} = useContext(MainAppcontext);
-    const {user, setUser} = useContext(MainAppcontext);
+    const {personaldetails} = useContext(RegistContext);
+    const {user,setUser}=useContext(MainAppcontext);
 
 
     const counting = (number) => {
@@ -88,11 +88,15 @@ import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, Safe
 
           
         }
+        console.log('counting from 4',count)
+        console.log('this is personaldetails',personaldetails)
           
           
 
 
       } else {
+        console.log("selectedhobbies",selectedhobbies);
+        console.log('counting',count)
       }
 
     }
