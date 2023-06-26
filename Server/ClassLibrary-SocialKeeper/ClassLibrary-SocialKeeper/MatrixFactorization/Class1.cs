@@ -120,14 +120,7 @@ namespace ClassLibrary_SocialKeeper
                 List<Tuple<TimeSpan, TimeSpan>> listmatch = Findifcollapse(new Tuple<TimeSpan, TimeSpan>(comtime.startTime, comtime.endTime), userinviteevefixed, userinvitedfixed);
                 foreach (var lismatchitems in listmatch)
                 {
-                    TimeSpan startspan = new TimeSpan(17, 0, 0);
-                    TimeSpan endspan = new TimeSpan(20, 0, 0);
-
-                    if (lismatchitems.Item1 == startspan && lismatchitems.Item2 == endspan)
-                    {
-                        int j = 222;
-
-                    }
+         
                     foreach (SuggestedDTO itesug in existingsugmeetings)
                     {
                         if (itesug.startTime == lismatchitems.Item1 && lismatchitems.Item2 == itesug.endTime && new DateTime(itesug.date.Year,itesug.date.Month,itesug.date.Day) == new DateTime(thedate.Year,thedate.Month,thedate.Day))
