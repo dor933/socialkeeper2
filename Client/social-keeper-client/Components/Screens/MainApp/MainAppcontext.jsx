@@ -66,8 +66,6 @@ export default function MainAppcontextfunc(props) {
         setIspersonalactiveated(false);
         setUserevents([]);
         setFirebaseuser({});
-        setSuggestedmeeting({});
-        setSuggestedmeeting1({});
         setScreenisready(false);
         setIsappready(false);
 

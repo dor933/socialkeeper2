@@ -332,7 +332,7 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
       </View>
 
       <View >
-      <View style={{alignContent:'center'}}>
+      <View style={{width:Dimensions.get('window').width-250,padding:10}}>
 
       <Text style={[styles.subtextstyle, { fontWeight:'800', color:'#d99199' }]}>Invited by {meeting.user1.userName}!</Text>
 
@@ -375,7 +375,7 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
     // <Image source={{uri:images[photoindex].uri} }
     //       style={{height:70,width:70, borderRadius:20}} />
     <Animated.Image source={{uri:images[photoindex].uri} }
-          style={{height:70,width:70,paddingRight:5, borderRadius:20, opacity:fadeAnim}} />
+          style={{height:70,width:70,marginLeft:5, borderRadius:20, opacity:fadeAnim}} />
   }  
       
     </View>
