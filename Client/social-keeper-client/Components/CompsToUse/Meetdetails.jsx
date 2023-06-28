@@ -7,6 +7,8 @@ import LocationPhotos from './Locationphotos';
 import Customheader from './Customheader';
 import StarRating from 'react-native-star-rating-widget';
 import AuthContext from '../../Authcontext';
+import axios from 'axios';
+import { MainAppcontext } from '../Screens/MainApp/MainAppcontext';
 
 
 //icons
@@ -23,21 +25,84 @@ const Details = ({route,navigation}) => {
 
     const meeting=route.params.meeting;
     const usertomeeting=route.params.usertomeet;
+    const invitedbyfriend=meeting.user1.phonenumbers[0]==usertomeeting.phonenumbers[0] ? true : false; 
     const type=route.params.type;
     const meetingtype= route.params.meetingtype;
     const {isnotif, setIsnotif} = useContext(AuthContext)
     const setisnotif=route.params?.setisnotif;
     const [rating1, setRating1] = useState(0);
     const [rating2, setRating2] = useState(0);
+    const {user, setUser} = useContext(MainAppcontext);
 
     useEffect(() => {
         console.log('this is meeting',meeting);
         console.log('this is type',type);
         setIsnotif(false)
+        if(meetingtype=='Ended') {
+
+     
+            if(invitedbyfriend){
+                const firstmeetcopy= user.tblactualmeetings1.find(meet => meet.meetingNum === meeting.meetingNum);
+                setRating1(firstmeetcopy.rankUser2);
+            }
+            else {
+                const firstmeetcopy= user.tblactualmeetings.find(meet => meet.meetingNum === meeting.meetingNum);
+                setRating1(firstmeetcopy.rankUser1);
+            }
+
+
+        }
 
        
 
     }, [])
+
+    const rateendmeeting = async (meetingid) => {
+ 
+        let updateobj={};
+
+    
+
+        if(invitedbyfriend){
+  
+           updateobj={
+            rankUser2:rating1,
+            meetingNum:meetingid
+          }
+  
+        }
+        else {
+  
+           updateobj={
+            rankUser1:rating1,
+            meetingNum:meetingid
+        }
+      }
+  
+      const response= await axios.put('http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/updateactrank',updateobj)
+      if(response.data='rating updated'){
+  
+        console.log('this is the response', response.data)
+  
+        if(invitedbyfriend){
+  
+          const meetingcopy= user.tblactualmeetings1.find(meeting => meeting.meetingNum === meetingid);
+          meetingcopy.rankUser2=rating1;
+  
+        }
+        else {
+  
+          const meetingcopy= user.tblactualmeetings.find(meeting => meeting.meetingNum === meetingid);
+          meetingcopy.rankUser1=rating1;
+  
+        }
+      }
+  
+      
+  
+  
+    }
+  
 
     function getDayOfWeek(dateString) {
         const date = new Date(dateString);
@@ -204,7 +269,7 @@ const Details = ({route,navigation}) => {
  
             </View>
             <View style={styles.buttonsviews}>
-            <TouchableOpacity style={styles.submitbox} onPress={() => { alert('Thank you for your feedback!') }}>
+            <TouchableOpacity style={styles.submitbox} onPress={async() => rateendmeeting(meeting.meetingNum)}>
                 <Text style={styles.submittext}>Submit</Text>
             </TouchableOpacity>
             </View>

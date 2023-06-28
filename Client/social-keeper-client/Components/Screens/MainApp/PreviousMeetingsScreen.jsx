@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet,SafeAreaView, FlatList, Dimensions } from 'react-native'
+import { View, Text, StyleSheet,SafeAreaView, FlatList, Dimensions, ScrollView } from 'react-native'
 import React from 'react'
 //import use effect
 import { useEffect, useContext } from 'react';
@@ -25,6 +25,8 @@ export default function PreviousMeetingsScreen({navigation}) {
 
   console.log('this is months')
   console.log(months);
+
+    
 
 
   return (
@@ -53,9 +55,171 @@ export default function PreviousMeetingsScreen({navigation}) {
 
     
         </View>
-        <View style={{flex:1, paddingBottom:10}}>
-        <FlatList
+        <View style={{}}>
+        {/* <FlatList
   data={user.tblactualmeetings}
+  
+  renderItem={({item, index2})=>{
+    // Extract month from the date
+    const date = new Date(item.tblSuggestedMeeting.date);
+    console.log(date);
+    const monthname=monthNames[date.getMonth()];
+    console.log(monthname);
+    console.log('this is the item new 2805', item) */}
+
+    <ScrollView>
+
+     { user.tblactualmeetings.map((item, index2) => {
+        const date = new Date(item.tblSuggestedMeeting.date);
+        console.log(date);
+        const monthname=monthNames[date.getMonth()];
+        console.log(monthname);
+        console.log('this is the item new 2805', item)
+       
+        return (
+          <View key={index2}>
+
+  {
+    index==0 && monthname== months[0] && 
+    <Sugmeet
+    key={index2}
+    meeting={item.tblSuggestedMeeting}
+    invitedbyfriend={false}
+    meetingtype="Ended"
+    navigation={navigation}
+    />
+  }
+      {
+    index==1 && monthname== months[1] && 
+    <Sugmeet
+    key={index2}
+    meeting={item.tblSuggestedMeeting}
+    invitedbyfriend={false}
+    meetingtype="Ended"
+    navigation={navigation}
+    />
+  }
+      {
+    index==2 && monthname== months[2] && 
+    <Sugmeet
+    key={index2}
+    meeting={item.tblSuggestedMeeting}
+    invitedbyfriend={false}
+    meetingtype="Ended"
+    navigation={navigation}
+
+    />
+  }
+     {
+    index==3 && monthname== months[3] && 
+    <Sugmeet
+    key={index2}
+    meeting={item.tblSuggestedMeeting}
+    invitedbyfriend={false}
+    meetingtype="Ended"
+    navigation={navigation}
+
+    />
+  }
+   {
+    index==4 && monthname== months[4] && 
+    <Sugmeet
+    key={index2}
+    meeting={item.tblSuggestedMeeting}
+    invitedbyfriend={false}
+    meetingtype="Ended"
+    navigation={navigation}
+
+    />
+  }
+  </View>
+   );
+  })}
+
+  {
+    user.tblactualmeetings1.map((item, index2) => {
+      const date = new Date(item.tblSuggestedMeeting.date);
+      console.log(date);
+      const monthname=monthNames[date.getMonth()];
+      console.log(monthname);
+      console.log('this is the item new 2805', item)
+     
+      return (
+        <View key={index2}>
+        {
+          index==0 && monthname== months[0] &&
+          <Sugmeet
+          key={index2}
+          meeting={item.tblSuggestedMeeting}
+          invitedbyfriend={true}
+          meetingtype="Ended"
+          navigation={navigation}
+          />
+        }
+          {
+            index==1 && monthname== months[1] && 
+            <Sugmeet
+            key={index2}
+            meeting={item.tblSuggestedMeeting}
+            invitedbyfriend={true}
+            meetingtype="Ended"
+            navigation={navigation}
+            />
+          }
+              {
+            index==2 && monthname== months[2] && 
+            <Sugmeet
+            key={index2}
+            meeting={item.tblSuggestedMeeting}
+            invitedbyfriend={true}
+            meetingtype="Ended"
+            navigation={navigation}
+  
+            />
+          }
+             {
+            index==3 && monthname== months[3] && 
+            <Sugmeet
+            key={index2}
+            meeting={item.tblSuggestedMeeting}
+            invitedbyfriend={true}
+            meetingtype="Ended"
+            navigation={navigation}
+  
+            />
+          }
+           {
+            index==4 && monthname== months[4] && 
+            <Sugmeet
+            key={index2}
+            meeting={item.tblSuggestedMeeting}
+            invitedbyfriend={true}
+            meetingtype="Ended"
+            navigation={navigation}
+  
+            />
+          }
+          </View>
+            );
+          })}
+
+
+  
+    
+      
+  
+  
+
+      
+
+    </ScrollView>
+
+  
+    
+  
+
+{/* <FlatList
+  data={user.tblactualmeetings1}
   
   renderItem={({item, index2})=>{
     // Extract month from the date
@@ -66,14 +230,14 @@ export default function PreviousMeetingsScreen({navigation}) {
     console.log('this is the item new 2805', item)
 
     return (
-      <View style={{width:Dimensions.get('window').width-20, alignSelf:'center'}}>
+      <>
       
         {
           index==0 && monthname== months[0] && 
           <Sugmeet
           key={index2}
           meeting={item.tblSuggestedMeeting}
-          invitedbyfriend={false}
+          invitedbyfriend={true}
           meetingtype="Ended"
           navigation={navigation}
           />
@@ -83,7 +247,7 @@ export default function PreviousMeetingsScreen({navigation}) {
           <Sugmeet
           key={index2}
           meeting={item.tblSuggestedMeeting}
-          invitedbyfriend={false}
+          invitedbyfriend={true}
           meetingtype="Ended"
           navigation={navigation}
           />
@@ -93,7 +257,7 @@ export default function PreviousMeetingsScreen({navigation}) {
           <Sugmeet
           key={index2}
           meeting={item.tblSuggestedMeeting}
-          invitedbyfriend={false}
+          invitedbyfriend={true}
           meetingtype="Ended"
           navigation={navigation}
 
@@ -104,7 +268,7 @@ export default function PreviousMeetingsScreen({navigation}) {
           <Sugmeet
           key={index2}
           meeting={item.tblSuggestedMeeting}
-          invitedbyfriend={false}
+          invitedbyfriend={true}
           meetingtype="Ended"
           navigation={navigation}
 
@@ -115,16 +279,16 @@ export default function PreviousMeetingsScreen({navigation}) {
           <Sugmeet
           key={index2}
           meeting={item.tblSuggestedMeeting}
-          invitedbyfriend={false}
+          invitedbyfriend={true}
           meetingtype="Ended"
           navigation={navigation}
 
           />
         }
-      </View>
+        </>
     );
   }}
-/>
+/> */}
 
 </View>
 
