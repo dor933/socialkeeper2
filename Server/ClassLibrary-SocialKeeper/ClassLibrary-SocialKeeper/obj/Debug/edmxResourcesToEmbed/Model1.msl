@@ -37,10 +37,10 @@
     <EntitySetMapping Name="tblFavoriteContact">
       <EntityTypeMapping TypeName="igroup192_prodModel.tblFavoriteContact">
         <MappingFragment StoreEntitySet="tblFavoriteContact">
-          <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
           <ScalarProperty Name="phoneNum2" ColumnName="phoneNum2" />
           <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -117,13 +117,14 @@
           <ScalarProperty Name="latitude" ColumnName="latitude" />
           <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
           <ScalarProperty Name="rank" ColumnName="rank" />
+          <ScalarProperty Name="isremindersend" ColumnName="isremindersend" />
+          <ScalarProperty Name="isaskforranknotif" ColumnName="isaskforranknotif" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblUser">
       <EntityTypeMapping TypeName="igroup192_prodModel.tblUser">
         <MappingFragment StoreEntitySet="tblUser">
-          <ScalarProperty Name="ExpoPushToken" ColumnName="ExpoPushToken" />
           <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
           <ScalarProperty Name="userName" ColumnName="userName" />
           <ScalarProperty Name="birthDate" ColumnName="birthDate" />
@@ -133,6 +134,7 @@
           <ScalarProperty Name="imageUri" ColumnName="imageUri" />
           <ScalarProperty Name="citylatt" ColumnName="citylatt" />
           <ScalarProperty Name="citylong" ColumnName="citylong" />
+          <ScalarProperty Name="ExpoPushToken" ColumnName="ExpoPushToken" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

@@ -33,6 +33,8 @@ namespace ClassLibrary_SocialKeeper
         public double latitude { get; set; }
         public Nullable<int> hobbieNum { get; set; }
         public Nullable<float> rank { get; set; }
+        public Nullable<bool> isremindersend { get; set; }
+        public Nullable<bool> isaskforranknotif { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblActualMeeting> tblActualMeeting { get; set; }

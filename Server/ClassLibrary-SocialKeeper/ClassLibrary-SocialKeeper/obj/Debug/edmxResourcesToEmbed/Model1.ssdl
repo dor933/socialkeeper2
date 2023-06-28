@@ -118,6 +118,8 @@
     <Property Name="latitude" Type="float" Nullable="false" />
     <Property Name="hobbieNum" Type="int" />
     <Property Name="rank" Type="real" />
+    <Property Name="isremindersend" Type="bit" />
+    <Property Name="isaskforranknotif" Type="bit" />
   </EntityType>
   <EntityType Name="tblUser">
     <Key>

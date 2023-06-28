@@ -259,6 +259,46 @@ namespace WebApplication1.Controllers
             }
         }
 
+
+        [HttpPut]
+        [Route("api/MainAppaction/updateactrank")]
+
+        public HttpResponseMessage Updatemeetrank(Actualmeetingdto actdto)
+        {
+            try
+            {
+                tblActualMeeting actmeeting = _db.tblActualMeeting.Where(x => x.meetingNum == actdto.meetingNum).FirstOrDefault();
+                if (actmeeting != null)
+                {
+                    if (actdto.rankUser1 != null)
+                    {
+
+                        actmeeting.rankUser1 = actdto.rankUser1;
+
+                    }
+                    else
+                    {
+                        actmeeting.rankUser2 = actdto.rankUser2;
+
+                    }
+
+                    _db.SaveChanges();
+
+                    return Request.CreateResponse(HttpStatusCode.OK, "rating updated");
+
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "Meeting not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+
+        }
+
         [HttpPut]
         [Route("api/MainAppaction/Upduser")]
         public HttpResponseMessage UpdateUser([FromBody] UserDTO ustoupdto)
