@@ -369,8 +369,8 @@ namespace WebApplication1.Controllers
                         }
 
                     }
-                    
-                    List<SuggestedDTO> suggestedsorted= suggestedmeet.OrderByDescending(x=> x.rank).ToList();
+
+                    List<SuggestedDTO> suggestedsorted = suggestedmeet.OrderByDescending(x => x.rank).ThenBy(x => x.phoneNum2).ToList();
                     //List<SuggestedDTO> top5Suggestions = suggestedsorted.Take(5-totalmeetingsnumber).ToList();
                     List<SuggestedDTO> meetingslist = new List<SuggestedDTO>();
 
