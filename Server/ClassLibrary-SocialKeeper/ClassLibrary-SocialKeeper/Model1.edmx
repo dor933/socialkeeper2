@@ -123,6 +123,12 @@
           <Property Name="latitude" Type="float" Nullable="false" />
           <Property Name="hobbieNum" Type="int" />
           <Property Name="rank" Type="real" />
+          <Property Name="isremindersend" Type="bit" />
+          <Property Name="isaskforranknotif" Type="bit" />
+          <Property Name="event_id" Type="nvarchar" MaxLength="100" />
+          <Property Name="event_id_user2" Type="nvarchar" MaxLength="100" />
+          <Property Name="event_id_defaultcal" Type="nvarchar" MaxLength="100" />
+          <Property Name="event_id_defaultcal_user2" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="tblUser">
           <Key>
@@ -509,12 +515,10 @@
       <Schema Namespace="igroup192_prodModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="PossibleFavoriteContact">
           <Key>
+            <PropertyRef Name="phonenuminvite" />
+            <PropertyRef Name="phonenuminvited" />
             <PropertyRef Name="id" />
-			  <PropertyRef Name="phonenuminvite" />
-			  <PropertyRef Name="phonenuminvited" />
-
-
-		  </Key>
+          </Key>
           <Property Name="hobbieNum" Type="Int32" Nullable="false" />
           <Property Name="phonenuminvite" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="phonenuminvited" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
@@ -560,10 +564,10 @@
           <Property Name="phoneNum1" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="phoneNum2" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="hobbieNum" Type="Int32" Nullable="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="tblUser" Relationship="Self.fk1tblFavoriteContact" FromRole="tblFavoriteContact" ToRole="tblUser" />
           <NavigationProperty Name="tblUser1" Relationship="Self.fk2tblFavoriteContact" FromRole="tblFavoriteContact" ToRole="tblUser" />
           <NavigationProperty Name="tblHobbie" Relationship="Self.fk3tblFavoriteContact" FromRole="tblFavoriteContact" ToRole="tblHobbie" />
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
         <EntityType Name="tblHobbie">
           <Key>
@@ -651,12 +655,18 @@
           <Property Name="latitude" Type="Double" Nullable="false" />
           <Property Name="hobbieNum" Type="Int32" />
           <Property Name="rank" Type="Single" />
+          <Property Name="isremindersend" Type="Boolean" />
+          <Property Name="isaskforranknotif" Type="Boolean" />
           <NavigationProperty Name="tblActualMeeting" Relationship="Self.fk2tbltblActualMeeting" FromRole="tblSuggestedMeeting" ToRole="tblActualMeeting" />
           <NavigationProperty Name="tblHobbie" Relationship="Self.FK_tblSuggestedMeeting_tblHobbie" FromRole="tblSuggestedMeeting" ToRole="tblHobbie" />
           <NavigationProperty Name="tblLoctation" Relationship="Self.fk3tblSuggestedMeeting" FromRole="tblSuggestedMeeting" ToRole="tblLoctation" />
           <NavigationProperty Name="tblSuggestedHobbie" Relationship="Self.fk1tblSuggestedHobbie" FromRole="tblSuggestedMeeting" ToRole="tblSuggestedHobbie" />
           <NavigationProperty Name="tblUser" Relationship="Self.fk1tblSuggestedMeeting" FromRole="tblSuggestedMeeting" ToRole="tblUser" />
           <NavigationProperty Name="tblUser1" Relationship="Self.fk2tblSuggestedMeeting" FromRole="tblSuggestedMeeting" ToRole="tblUser" />
+          <Property Name="event_id" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="event_id_user2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="event_id_defaultcal" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="event_id_defaultcal_user2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tblUser">
           <Key>
@@ -671,6 +681,7 @@
           <Property Name="imageUri" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
           <Property Name="citylatt" Type="Double" />
           <Property Name="citylong" Type="Double" />
+          <Property Name="ExpoPushToken" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="PossibleFavoriteContact" Relationship="Self.FK__PossibleF__phone__3D2915A8" FromRole="tblUser" ToRole="PossibleFavoriteContact" />
           <NavigationProperty Name="PossibleFavoriteContact1" Relationship="Self.FK__PossibleF__phone__3E1D39E1" FromRole="tblUser" ToRole="PossibleFavoriteContact" />
           <NavigationProperty Name="tblFavoriteContact" Relationship="Self.fk1tblFavoriteContact" FromRole="tblUser" ToRole="tblFavoriteContact" />
@@ -681,7 +692,6 @@
           <NavigationProperty Name="tblSuggestedMeeting" Relationship="Self.fk1tblSuggestedMeeting" FromRole="tblUser" ToRole="tblSuggestedMeeting" />
           <NavigationProperty Name="tblSuggestedMeeting1" Relationship="Self.fk2tblSuggestedMeeting" FromRole="tblUser" ToRole="tblSuggestedMeeting" />
           <NavigationProperty Name="tblUserHobbie" Relationship="Self.fk1tblUserHobbie" FromRole="tblUser" ToRole="tblUserHobbie" />
-          <Property Name="ExpoPushToken" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tblUserHobbie">
           <Key>
@@ -1091,10 +1101,10 @@
           <EntitySetMapping Name="tblFavoriteContact">
             <EntityTypeMapping TypeName="igroup192_prodModel.tblFavoriteContact">
               <MappingFragment StoreEntitySet="tblFavoriteContact">
-                <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
                 <ScalarProperty Name="phoneNum2" ColumnName="phoneNum2" />
                 <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1159,6 +1169,10 @@
           <EntitySetMapping Name="tblSuggestedMeeting">
             <EntityTypeMapping TypeName="igroup192_prodModel.tblSuggestedMeeting">
               <MappingFragment StoreEntitySet="tblSuggestedMeeting">
+                <ScalarProperty Name="event_id_defaultcal_user2" ColumnName="event_id_defaultcal_user2" />
+                <ScalarProperty Name="event_id_defaultcal" ColumnName="event_id_defaultcal" />
+                <ScalarProperty Name="event_id_user2" ColumnName="event_id_user2" />
+                <ScalarProperty Name="event_id" ColumnName="event_id" />
                 <ScalarProperty Name="meetingNum" ColumnName="meetingNum" />
                 <ScalarProperty Name="startTime" ColumnName="startTime" />
                 <ScalarProperty Name="endTime" ColumnName="endTime" />
@@ -1171,13 +1185,14 @@
                 <ScalarProperty Name="latitude" ColumnName="latitude" />
                 <ScalarProperty Name="hobbieNum" ColumnName="hobbieNum" />
                 <ScalarProperty Name="rank" ColumnName="rank" />
+                <ScalarProperty Name="isremindersend" ColumnName="isremindersend" />
+                <ScalarProperty Name="isaskforranknotif" ColumnName="isaskforranknotif" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblUser">
             <EntityTypeMapping TypeName="igroup192_prodModel.tblUser">
               <MappingFragment StoreEntitySet="tblUser">
-                <ScalarProperty Name="ExpoPushToken" ColumnName="ExpoPushToken" />
                 <ScalarProperty Name="phoneNum1" ColumnName="phoneNum1" />
                 <ScalarProperty Name="userName" ColumnName="userName" />
                 <ScalarProperty Name="birthDate" ColumnName="birthDate" />
@@ -1187,6 +1202,7 @@
                 <ScalarProperty Name="imageUri" ColumnName="imageUri" />
                 <ScalarProperty Name="citylatt" ColumnName="citylatt" />
                 <ScalarProperty Name="citylong" ColumnName="citylong" />
+                <ScalarProperty Name="ExpoPushToken" ColumnName="ExpoPushToken" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

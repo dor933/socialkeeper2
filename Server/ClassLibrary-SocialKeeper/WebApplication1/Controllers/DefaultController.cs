@@ -362,6 +362,14 @@ namespace WebApplication1.Controllers
                         suggested.longitude = sugit.longitude;
                         suggested.latitude = sugit.latitude;
                         suggested.status = sugit.status;
+                    if (sugit.event_id_user2 != null)
+                    {
+                        suggested.event_id_user2 = sugit.event_id_user2;
+                    }
+                    if(sugit.event_id_defaultcal_user2!= null)
+                    {
+                        suggested.event_id_default_calender_user2 = sugit.event_id_defaultcal_user2;
+                    }
                         tblUser user1 = _db.tblUser.Where(x => x.phoneNum1 == sugit.phoneNum1).FirstOrDefault();
                         tblUser user2 = _db.tblUser.Where(x => x.phoneNum1 == sugit.phoneNum2).FirstOrDefault();
                         ExistsingUsers userexist = new ExistsingUsers();
@@ -466,6 +474,14 @@ namespace WebApplication1.Controllers
                     suggested.longitude = sugitm.longitude;
                     suggested.latitude = sugitm.latitude;
                     suggested.status = sugitm.status;
+                    if (sugitm.event_id != null)
+                    {
+                        suggested.event_id= sugitm.event_id;
+                    }
+                    if (sugitm.event_id_defaultcal != null)
+                    {
+                        suggested.event_id_default_calender = sugitm.event_id_defaultcal;
+                    }
                     tblUser user1 = _db.tblUser.Where(x => x.phoneNum1 == sugitm.phoneNum1).FirstOrDefault();
                     tblUser user2 = _db.tblUser.Where(x => x.phoneNum1 == sugitm.phoneNum2).FirstOrDefault();
                     ExistsingUsers userexist = new ExistsingUsers();
