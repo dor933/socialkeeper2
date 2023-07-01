@@ -25,6 +25,7 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
     const [images, setImages] = useState([]);
     const datetime= meeting.date;
     const {hobbienumtypes} = useContext(MainAppcontext);
+    const {removemeetingfromcalender,addmeetingtocalender}= useContext(MainAppcontext);
     const [photoindex, setphotoindex] = useState(0);
     const apikey='AIzaSyDCCbpFYxI2jGqyWacOIokLnXONGUCUmow'
     const fadeAnim = useRef(new Animated.Value(1)).current;  // Initial value for opacity
@@ -121,16 +122,36 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
           let data={};
           if(meetingcopy==undefined){
               let meetingtochange=tblsuggested1copy.find(meeting => meeting.meetingNum === meetingNum);
+              let currentmeetingstatus=meetingtochange.status;
               meetingtochange.status="R";
               setUser({...user,tblSuggestedMeetings1:tblsuggested1copy});
               data=await changemeetingstatus(meetingNum,"R");
+              if(currentmeetingstatus=="A"){
+                await removemeetingfromcalender(meeting,invitedbyfriend? true:false);
+                const url=  `http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/sendcancelnotif/${meetingNum}/${meetingtochange.phoneNum1}`;
+                console.log('this is the url new', url)
+
+                const notifyfriend= await axios.post(url);
+
+                }
+
   
           }
           else{
               let meetingtochange=tblsuggestedcopy.find(meeting => meeting.meetingNum === meetingNum);
+              let currentmeetingstatus=meetingtochange.status;
               meetingtochange.status="R";
               setUser({...user,tblSuggestedMeetings:tblsuggestedcopy});
               data=await changemeetingstatus(meetingNum,"R");
+
+              if(currentmeetingstatus=="A"){
+                await removemeetingfromcalender(meeting,false);
+                const url= `http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/sendcancelnotif/${meetingNum}/${meetingtochange.phoneNum2}`
+                console.log('this is the url', url)
+                const notifyfriend= await axios.post(url);
+
+
+                }
   
           }
       }
@@ -191,37 +212,7 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
 
             setUser({...user,tblSuggestedMeetings1:tblsuggested1copy});
                     let data=await changemeetingstatus(meetingnumparsed,"A");
-                    let mystartdate=new Date(meetingtochange.date);
-                             mystartdate.setHours(parseInt(meetingtochange.startTime.substring(0,2)));
-                                mystartdate.setMinutes(parseInt(meetingtochange.startTime.substring(3,5)));
-                                mystartdate.setSeconds(0);
-                                let myenddate=new Date(meetingtochange.date);
-                                myenddate.setHours(parseInt(meetingtochange.endTime.substring(0,2)));
-                                myenddate.setMinutes(parseInt(meetingtochange.endTime.substring(3,5)));
-                                myenddate.setSeconds(0);
-                             const eventobjecttoadd={
-                                 title: 'Meeting with '+meetingtochange.user1.userName ,
-                                 startDate: mystartdate,
-                                 endDate: myenddate,
-                                 location: meetingtochange.place.name,
-                                 timeZone: 'Asia/Jerusalem',
-                                 notes: 'Meeting with '+meetingtochange.user1.userName ,
-                                 
-                                 
-                               }
-             
-                                   try {
-                                     const eventId = await Calendar.createEventAsync(calendars[0].id, eventobjecttoadd);
-                                     //add to calendar default
-             
-                                     if(Calendar.DEFAULT?.id!=undefined){
-                                     const eventId2 = await Calendar.createEventAsync(Calendar.DEFAULT, eventobjecttoadd)
-                                     }
-                                     
-                                     console.log(`Created event with id: ${eventId} in calendar: ${calendars[0].title}`);
-                                   } catch(error) {
-                                     console.log('this is the error', error)
-                                   }
+                    await addmeetingtocalender(meeting,true);
                            
 
                   }

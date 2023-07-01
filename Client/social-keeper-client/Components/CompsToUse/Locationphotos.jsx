@@ -8,6 +8,7 @@ import axios from 'axios';
 const LocationPhotos = ({photosarray,typeofmeeting,meeting,navigation}) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedImage, setSelectedImage] = useState('');
+    const {addmeetingtocalender,removemeetingfromcalender}= useContext(MainAppcontext);
     const [images, setImages] = useState([]);
     const apikey='AIzaSyDCCbpFYxI2jGqyWacOIokLnXONGUCUmow'
     const {user, setUser} = useContext(MainAppcontext);
@@ -69,15 +70,24 @@ const LocationPhotos = ({photosarray,typeofmeeting,meeting,navigation}) => {
             let data={};
             if(meetingcopy==undefined){
                 let meetingtochange=tblsuggested1copy.find(meeting => meeting.meetingNum === meetingNum);
+                let currentmeetingstatus=meetingtochange.status;
                 meetingtochange.status="R";
                 setUser({...user,tblSuggestedMeetings1:tblsuggested1copy});
                 data=await changemeetingstatus(meetingNum,"R");
+                if(currentmeetingstatus=="A"){
+                await removemeetingfromcalender(meetingtoremove,true);
+                }
+                
             }
             else{
                 let meetingtochange=tblsuggestedcopy.find(meeting => meeting.meetingNum === meetingNum);
+                let currentmeetingstatus=meetingtochange.status;
                 meetingtochange.status="R";
                 setUser({...user,tblSuggestedMeetings:tblsuggestedcopy});
                 data=await changemeetingstatus(meetingNum,"R");
+                if(currentmeetingstatus=="A"){
+                await removemeetingfromcalender(meetingtoremove,false);
+                }
 
             }
         }
@@ -150,7 +160,6 @@ const LocationPhotos = ({photosarray,typeofmeeting,meeting,navigation}) => {
                          let meetingcopy={};
                          meetingcopy= user.tblSuggestedMeetings.find(meeting => meeting.meetingNum === meetingNum);
                          let data={};
-                         const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
 
 
                         if(meetingcopy==undefined){
@@ -164,37 +173,38 @@ const LocationPhotos = ({photosarray,typeofmeeting,meeting,navigation}) => {
                             }
                             setUser({...user,tblSuggestedMeetings1:tblsuggested1copy});
                              data=await changemeetingstatus(meetingNum,"A");
-                             let mystartdate=new Date(meetingtochange.date);
-                             mystartdate.setHours(parseInt(meetingtochange.startTime.substring(0,2)));
-                                mystartdate.setMinutes(parseInt(meetingtochange.startTime.substring(3,5)));
-                                mystartdate.setSeconds(0);
-                                let myenddate=new Date(meetingtochange.date);
-                                myenddate.setHours(parseInt(meetingtochange.endTime.substring(0,2)));
-                                myenddate.setMinutes(parseInt(meetingtochange.endTime.substring(3,5)));
-                                myenddate.setSeconds(0);
-                             const eventobjecttoadd={
-                                 title: 'Meeting with '+meetingtochange.user1.userName ,
-                                 startDate: mystartdate,
-                                 endDate: myenddate,
-                                 location: meetingtochange.place.name,
-                                 timeZone: 'Asia/Jerusalem',
-                                 notes: 'Meeting with '+meetingtochange.user1.userName ,
+                             await addmeetingtocalender(meetingtochange,true);
+                            //  let mystartdate=new Date(meetingtochange.date);
+                            //  mystartdate.setHours(parseInt(meetingtochange.startTime.substring(0,2)));
+                            //     mystartdate.setMinutes(parseInt(meetingtochange.startTime.substring(3,5)));
+                            //     mystartdate.setSeconds(0);
+                            //     let myenddate=new Date(meetingtochange.date);
+                            //     myenddate.setHours(parseInt(meetingtochange.endTime.substring(0,2)));
+                            //     myenddate.setMinutes(parseInt(meetingtochange.endTime.substring(3,5)));
+                            //     myenddate.setSeconds(0);
+                            //  const eventobjecttoadd={
+                            //      title: 'Meeting with '+meetingtochange.user1.userName ,
+                            //      startDate: mystartdate,
+                            //      endDate: myenddate,
+                            //      location: meetingtochange.place.name,
+                            //      timeZone: 'Asia/Jerusalem',
+                            //      notes: 'Meeting with '+meetingtochange.user1.userName ,
                                  
                                  
-                               }
+                            //    }
              
-                                   try {
-                                     const eventId = await Calendar.createEventAsync(calendars[0].id, eventobjecttoadd);
-                                     //add to calendar default
+                            //        try {
+                            //          const eventId = await Calendar.createEventAsync(calendars[0].id, eventobjecttoadd);
+                            //          //add to calendar default
              
-                                     if(Calendar.DEFAULT?.id!=undefined){
-                                     const eventId2 = await Calendar.createEventAsync(Calendar.DEFAULT, eventobjecttoadd)
-                                     }
+                            //          if(Calendar.DEFAULT?.id!=undefined){
+                            //          const eventId2 = await Calendar.createEventAsync(Calendar.DEFAULT, eventobjecttoadd)
+                            //          }
                                      
-                                     console.log(`Created event with id: ${eventId} in calendar: ${calendars[0].title}`);
-                                   } catch(error) {
-                                     console.log('this is the error', error)
-                                   }
+                            //          console.log(`Created event with id: ${eventId} in calendar: ${calendars[0].title}`);
+                            //        } catch(error) {
+                            //          console.log('this is the error', error)
+                            //        }
                            
                            
 
