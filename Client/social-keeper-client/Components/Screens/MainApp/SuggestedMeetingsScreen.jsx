@@ -26,11 +26,11 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
 
   const [selectedIndex, setSelectedIndex] = useState(2);
   const {user, setUser} = useContext(MainAppcontext);
-  const [newtblsuggesthis, setnewtblsuggesthis] = useState([]);
-  const [newtblsuggest1this, setnewtblsuggest1this] = useState([]);
+  const {addmeetingtocalender}= useContext(MainAppcontext);
   const {screenisready, setScreenisready} = useContext(MainAppcontext);
   const [mynotife, setMynotife] = useState(notifobj);
   const {isnotif, setIsnotif} = useContext(AuthContext)
+  const {removemeetingfromcalender}= useContext(MainAppcontext);
 
 
 
@@ -60,50 +60,55 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
     }
     else if(notifobj.notiftype=='Approvedmeeting'){
       setSelectedIndex(0)
-      const newtblsuggestedmeetings= user.tblSuggestedMeetings.map((item) => {
-        if(item.meetingNum==notifobj.meetingnum){
-          return {...item,status:'A'};
-        }
-        return item;
-      });
-      const Newuser={...user}
-      Newuser.tblSuggestedMeetings=newtblsuggestedmeetings;
-      setUser(Newuser);
+      
+      const meetingtoapprove= user.tblSuggestedMeetings.find((item) => item.meetingNum==notifobj.meetingnum)
+      addmeetingtocalender(meetingtoapprove,false)
     }
-    // else if(notifobj.notiftype=='Approvedfriendrequest') {
 
-    //   const possiblefriend= user.possibleFavoriteContacts_invite_DTO.find((item) => item.phonenuminvited == notifobj.phonenuminvited)
-    //   console.log('this is possible friend',possiblefriend)
-  //     if(possiblefriend){
-  //       const newfavoritecontact = {
-  //         ID:notifobj.ID,
-  //         phoneNum1:possiblefriend.phonenuminvite,
-  //         phoneNum2:possiblefriend.phonenuminvited,
-  //         hobbieNum:possiblefriend.hobbienum,
-  //         rank:1,
-  //         tblUser1:possiblefriend.tblUser1,
-  //                  tblHobbie:possiblefriend.tblHobbiedto
-  //   }
-  //   console.log('this is new favorite contact',newfavoritecontact)
-  //   const newfavoritecontacts = [...user.tblFavoriteContacts,newfavoritecontact]
+    else if(notifobj.notiftype=='Meeting Canceled'){ 
 
-  //   const newpossiblefavoritecontacts = user.possibleFavoriteContacts_invite_DTO.filter((item) => item.phonenuminvited !== notifobj.phonenuminvited)
-  //   console.log('this is new possible favorite contacts',newpossiblefavoritecontacts)
-  //   const newuser = {
-  //     ...user,
-  //     tblFavoriteContacts:newfavoritecontacts,
-  //     possibleFavoriteContacts_invite_DTO:newpossiblefavoritecontacts
+      console.log('this is userblsuggestedmeetings',user.tblSuggestedMeetings)
+      const meetingnum=notifobj.meetingnum;
+      let copyofmeeting= user.tblSuggestedMeetings.find ((item) => item.meetingNum==meetingnum)
+      if(!copyofmeeting){
 
-  //   } 
-  //   setUser(newuser)
-  
+        copyofmeeting= user.tblSuggestedMeetings1.find ((item) => item.meetingNum==meetingnum)
+         const newtblsuggestedmeeting1= user.tblSuggestedMeetings1.filter((item) => item.meetingNum != meetingnum)
+          const newuser = {
+            ...user,
 
-  //  }
+          }
+
+          newuser.tblSuggestedMeetings1=newtblsuggestedmeeting1;
+
+          setUser(newuser)
+
+          removemeetingfromcalender(copyofmeeting, true)
+
+      }
+      else{
+        const newtblsuggestedmeeting= user.tblSuggestedMeetings.filter((item) => item.meetingNum != meetingnum)
+          const newuser = {
+            ...user
+          }
+          newuser.tblSuggestedMeetings=newtblsuggestedmeeting;
+          console.log('this is newuser suggested meetings',newuser.tblSuggestedMeetings)
+
+          setUser(newuser)
+          removemeetingfromcalender(copyofmeeting, false)
+
+      }
+
+
+
+    }
    
-  // }
+  
     else{
       setSelectedIndex(2)
     }
+
+    fromnotif=false;
 
     
   }
@@ -121,18 +126,7 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
 
   }, [fromnotif,notifobj])
 
-  useEffect(() => {
-   
-    if(user.tblSuggestedMeetings){
-      setnewtblsuggesthis(user.tblSuggestedMeetings)
-    }
-    if(user.tblSuggestedMeetings1){
-      setnewtblsuggest1this(user.tblSuggestedMeetings1)
-    }
-  
-  
-  
-  }, [user])
+ 
 
   const getmeetingfromserver = async (meetingnum) => {
     console.log('im into getmeetingfromserver')
@@ -160,6 +154,9 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
    
     
   }
+
+  
+
 
 
 
@@ -205,7 +202,7 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
            && user.tblSuggestedMeetings1.length > 0 && 
 
            
-            newtblsuggest1this.map((each,index)=>{
+            user.tblSuggestedMeetings1.map((each,index)=>{
               if(each.status=='P'){
             return(
               
@@ -222,7 +219,7 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
           user.tblSuggestedMeetings &&
           user.tblSuggestedMeetings.length > 0 &&
           selectedIndex === 2 &&
-          newtblsuggesthis.map((each, index2) => {
+          user.tblSuggestedMeetings.map((each, index2) => {
             if(each.status=="P"){
 
 
@@ -246,7 +243,7 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
           user.tblSuggestedMeetings &&
           user.tblSuggestedMeetings.length > 0 &&
           selectedIndex === 1 &&
-          newtblsuggesthis.map((each, index2) => {
+          user.tblSuggestedMeetings.map((each, index2) => {
             if(each.status=="W"){
 
 
@@ -271,7 +268,7 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
            
 
            
-            newtblsuggest1this.map((each,index)=>{
+            user.tblSuggestedMeetings1.map((each,index)=>{
               if(each.status=='W'){
             return(
               
@@ -293,7 +290,7 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
             selectedIndex==0
             && user.tblSuggestedMeetings1
             && user.tblSuggestedMeetings1.length > 0 &&
-            newtblsuggest1this.map((each,index)=>{
+            user.tblSuggestedMeetings1.map((each,index)=>{
               if(each.status=='A'){
             return(
               <Sugmeet
@@ -312,7 +309,7 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
           user.tblSuggestedMeetings &&
           user.tblSuggestedMeetings.length > 0 &&
           selectedIndex === 0 &&
-          newtblsuggesthis.map((each, index2) => {
+          user.tblSuggestedMeetings.map((each, index2) => {
             if(each.status=="A"){
             return(
 

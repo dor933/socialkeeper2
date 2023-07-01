@@ -131,6 +131,7 @@ export default function App() {
   const notificationListener = useRef();
   const [isnotif, setIsnotif] = useState(false);
   const [numberofnewfriends, setNumberofnewfriends] = useState(0);
+  const [numberofnewendedmeetings,setNumberofnewendedmeetings]= useState(0);
   const responseListener = useRef();
   const navigationRef = useRef();
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
@@ -257,7 +258,7 @@ export default function App() {
 
 
 
-    <AuthContext.Provider value={{ isAuthenticated,notification,numberofnewfriends,setNumberofnewfriends,isnotif,setIsnotif,setIsAuthenticated,expoPushToken,setExpoPushToken }}>
+    <AuthContext.Provider value={{ isAuthenticated,notification,numberofnewendedmeetings,setNumberofnewendedmeetings,numberofnewfriends,setNumberofnewfriends,isnotif,setIsnotif,setIsAuthenticated,expoPushToken,setExpoPushToken }}>
       <RegistrationContext>
         <MainAppcontext>
 

@@ -102,7 +102,9 @@ export default function MainDashBoard({route}) {
   const {userevents, setUserevents} = useContext(MainAppcontext);
   const [screenisready, setScreenisready] = useState(false);
   const {ispersonalactiveated, setIspersonalactiveated} = useContext(MainAppcontext);
+  const {removemeetingfromcalender} = useContext(MainAppcontext);
   const {numberofnewfriends, setNumberofnewfriends} = useContext(AuthContext);
+  const {numberofnewendedmeetings, setNumberofnewendedmeetings} = useContext(AuthContext);
   const {isnotif, setIsnotif} = useContext(AuthContext);
   const fromnotif=route.params?.fromnotif;
   const notifobj=route.params?.notifobj;
@@ -173,8 +175,57 @@ export default function MainDashBoard({route}) {
 
 
       }
+
+      else if(notifobj.notiftype=='Meeting Ended'){
+
+        const meetingnum=notifobj.meetingnum;
+        getactualmeeting(meetingnum)
+  
+      }
+
+     
     }
   }, [notifobj]);
+
+  const getactualmeeting = async (meetingnum) => {
+    console.log('im into getactualmeeting')
+    let meetingtofind= user.tblactualmeetings.find ((item) => item.meetingNum==meetingnum)
+    if(!meetingtofind){
+      meetingtofind= user.tblactualmeetings1.find ((item) => item.meetingNum==meetingnum)
+      }
+
+      if(meetingtofind){
+        console.log('this meeting is already in actualmeetings')
+      }
+      else{
+    const newmeeting= await axios.get(`http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/getactualmeeting/${meetingnum}`);
+    const meetingtoret= newmeeting.data;
+    if(meetingtoret?.tblSuggestedMeeting.phoneNum1==user.phoneNum1){
+
+      const newtblactualmeetings= user.tblactualmeetings;
+      newtblactualmeetings.push(meetingtoret)
+      const Newuser={...user}
+      Newuser.tblactualmeetings=newtblactualmeetings;
+      setUser(Newuser);
+
+    }
+    else{
+        
+        const newtblactualmeetings1= user.tblactualmeetings1;
+        newtblactualmeetings1.push(meetingtoret)
+        const Newuser={...user}
+        Newuser.tblactualmeetings1=newtblactualmeetings1;
+        setUser(Newuser);
+  
+      }
+
+      setNumberofnewendedmeetings(numberofnewendedmeetings+1)
+
+
+
+  }
+}
+
 
 
   const getrequestasync = async () => {
@@ -530,6 +581,8 @@ AsyncStorage.setItem('isAuth','true');
 
   user.tblSuggestedMeetings1.forEach(async (each) => {
 
+    if(each.status!='A'){
+
       for(let i=0; i<newevents.length; i++){
         if(each.date.split('T')[0]===newevents[i].date.toISOString().split('T')[0]){
           let eachStartTime = new Date("1970-01-01T" + each.startTime + "Z");
@@ -569,13 +622,16 @@ AsyncStorage.setItem('isAuth','true');
 
   iscollapsed=false;
 
-
+    }
   })
 
   iscollapsed=false;
 
   user.tblSuggestedMeetings.forEach(async (each) => {
       for(let i=0; i<newevents.length; i++){
+
+        if(each.status!='A'){
+
         if(each.date.split('T')[0]===newevents[i].date.toISOString().split('T')[0]){
           let eachStartTime = new Date("1970-01-01T" + each.startTime + "Z");
           let eachEndTime = new Date("1970-01-01T" + each.endTime + "Z");
@@ -599,6 +655,7 @@ AsyncStorage.setItem('isAuth','true');
           }
 
     }
+  }
   }
   if(iscollapsed===false){
     if(each.status==='P'){
@@ -783,7 +840,10 @@ else{
             }}  />
 
 
-            <Tab.Screen name="Previous Meetings" component={PreviousMeetingsStackScreen} />
+            <Tab.Screen name="Previous Meetings" component={PreviousMeetingsStackScreen} options={{
+                headerShown: false,
+                tabBarBadge: numberofnewendedmeetings>0? numberofnewendedmeetings : null,
+            }} />
 
 
 
