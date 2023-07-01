@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.UI.WebControls;
 using System.Xml.Linq;
 
 namespace WebApplication1.Controllers
@@ -101,7 +102,12 @@ namespace WebApplication1.Controllers
                 else if (meetingstat == "R")
                 {
                     tblSuggestedMeeting sugmeet = _db.tblSuggestedMeeting.Where(x => x.meetingNum == meetingnum).FirstOrDefault();
+                    string currentstatus = sugmeet.status;
                     sugmeet.status = "R";
+
+                 
+
+
                     _db.SaveChanges();
                     return Request.CreateResponse(HttpStatusCode.OK, "Meeting is rejected");
 
@@ -133,6 +139,51 @@ namespace WebApplication1.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, ex.Message);
             }
+
+        }
+
+        [HttpPost]
+        [Route("api/MainAppaction/sendcancelnotif/{meetingnum}/{cancelphonenumber}")]
+
+        public async Task<HttpResponseMessage> Sendcancelnotif( int meetingnum, string cancelphonenumber) 
+        {
+            tblSuggestedMeeting sugmeet = _db.tblSuggestedMeeting.Where(x => x.meetingNum == meetingnum).FirstOrDefault();
+            string currentstatus = sugmeet.status;
+            NotificationDTO notifyfriendrequest= new NotificationDTO();
+
+           
+
+                string senderphonenum;
+
+                if (cancelphonenumber == sugmeet.phoneNum1)
+                {
+                    senderphonenum = sugmeet.phoneNum2;
+
+                }
+                else
+                {
+                    senderphonenum = sugmeet.phoneNum1;
+                }
+
+                notifyfriendrequest.Notificationtype = "Canceled Meeting";
+                notifyfriendrequest.senderphonenum = senderphonenum;
+                notifyfriendrequest.targetuserphonenum = cancelphonenumber;
+                notifyfriendrequest.Title = "Meeting Canceled by friend!";
+                notifyfriendrequest.Body = "Meeting is canceled!";
+                notifyfriendrequest.Data = new Dictionary<string, string>
+                    {
+                        {"meetingnum", $"{meetingnum}" },
+                        {"notiftype", "Meeting Canceled" }
+                    };
+
+                await Notificationsmaker.Notify(notifyfriendrequest);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "notified");
+
+
+
+            
+
 
         }
 
@@ -259,6 +310,133 @@ namespace WebApplication1.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("api/MainAppaction/updateeventid")]
+
+        public HttpResponseMessage Updateeventid(SuggestedDTO dtosugupdate)
+        {
+            try
+            {
+                tblSuggestedMeeting sugtoupdate = _db.tblSuggestedMeeting.Where(x => x.meetingNum == dtosugupdate.meetingNum).FirstOrDefault();
+                if (dtosugupdate.event_id != null)
+                {
+
+                    sugtoupdate.event_id = dtosugupdate.event_id;
+
+                }
+                else
+                {
+                    sugtoupdate.event_id_user2 = dtosugupdate.event_id_user2;
+                }
+
+                _db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch(Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+
+        [HttpPost]
+        [Route("api/MainAppaction/updateeventiddefcal")]
+        public HttpResponseMessage Updateeventiddefaultcal(SuggestedDTO dtosugupdate)
+        {
+            try
+            {
+                tblSuggestedMeeting sugtoupdate = _db.tblSuggestedMeeting.Where(x => x.meetingNum == dtosugupdate.meetingNum).FirstOrDefault();
+
+                if (dtosugupdate.event_id_default_calender != null)
+                {
+                    sugtoupdate.event_id_defaultcal = dtosugupdate.event_id_default_calender;
+                }
+
+                else
+                {
+                    sugtoupdate.event_id_defaultcal_user2 = dtosugupdate.event_id_default_calender_user2;
+                }
+
+                _db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch(Exception ex)
+            {
+                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+
+
+            }
+
+        }
+
+
+
+        [HttpGet]
+        [Route("api/MainAppaction/getactualmeeting/{meetingnum}")]
+        public HttpResponseMessage Getactualmeeting(int meetingnum)
+        {
+            tblSuggestedMeeting suggestedactual = _db.tblSuggestedMeeting.Where(x => x.meetingNum == meetingnum).FirstOrDefault();
+            if(suggestedactual != null)
+            {
+                SuggestedDTO suggested = new SuggestedDTO();
+                string placeid = _db.tblLoctation.Where(x => x.latitude == suggestedactual.latitude && x.longitude == suggestedactual.longitude).FirstOrDefault().Placeid;
+                suggested.place.PlaceId = placeid;
+                suggested.phoneNum1 = suggestedactual.phoneNum1;
+                suggested.date = suggestedactual.date;
+                suggested.phoneNum2 = suggestedactual.phoneNum2;
+                suggested.meetingNum = suggestedactual.meetingNum;
+                suggested.startTime = suggestedactual.startTime;
+                suggested.endTime = suggestedactual.endTime;
+                suggested.rank = Convert.ToDouble(suggestedactual.rank);
+                suggested.hobbieNum = int.Parse(suggestedactual.hobbieNum.ToString());
+                suggested.longitude = suggestedactual.longitude;
+                suggested.latitude = suggestedactual.latitude;
+                suggested.status = suggestedactual.status;
+                tblUser user1 = _db.tblUser.Where(x => x.phoneNum1 == suggestedactual.phoneNum1).FirstOrDefault();
+                tblUser user2 = _db.tblUser.Where(x => x.phoneNum1 == suggestedactual.phoneNum2).FirstOrDefault();
+                ExistsingUsers userexist = new ExistsingUsers();
+                ExistsingUsers userexist2 = new ExistsingUsers();
+                userexist.userName = user1.userName;
+                userexist.phonenumbers.Add(user1.phoneNum1);
+                userexist.birthDate = Convert.ToDateTime(user1.birthDate);
+                userexist.imageUri = user1.imageUri;
+                userexist.email = user1.email;
+                userexist.gender = user1.gender;
+                userexist.city = user1.city;
+                userexist2.userName = user2.userName;
+                userexist2.phonenumbers.Add(user2.phoneNum1);
+                userexist2.birthDate = Convert.ToDateTime(user2.birthDate);
+                userexist2.imageUri = user2.imageUri;
+                userexist2.email = user2.email;
+                userexist2.gender = user2.gender;
+                userexist2.city = user2.city;
+                suggested.user1 = userexist;
+                suggested.user2 = userexist2;
+                tblActualMeeting actumeet = _db.tblActualMeeting.Where(x => x.meetingNum == suggestedactual.meetingNum).FirstOrDefault();
+                if (actumeet != null)
+                {
+                    Actualmeetingdto actdto = new Actualmeetingdto();
+                    actdto.latitude = actumeet.latitude;
+                    actdto.longitude = actumeet.longitude;
+                    actdto.meetingNum = actumeet.meetingNum;
+                    actdto.hobbieNum = actumeet.hobbieNum;
+                    actdto.rankUser1 = actumeet.rankUser1;
+                    actdto.rankUser2 = actumeet.rankUser2;
+                    actdto.tblSuggestedMeeting = suggested;
+                    return Request.CreateResponse(HttpStatusCode.OK, actdto);
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.NoContent);
+                }
+
+
+            }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.NoContent, "meeting not exist");
+            }
+        }
 
         [HttpPut]
         [Route("api/MainAppaction/updateactrank")]

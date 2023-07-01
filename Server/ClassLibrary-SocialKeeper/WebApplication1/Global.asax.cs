@@ -49,7 +49,7 @@ namespace WebApplication1
             HangfireAspNet.Use(GetHangfireServers);
 
 
-            RecurringJob.AddOrUpdate("notifmaker", () => Notificationwrapper(), Cron.Minutely);
+            RecurringJob.AddOrUpdate("notifmaker", () => NotificationsChecker(), Cron.Minutely);
 
 
 
@@ -60,11 +60,7 @@ namespace WebApplication1
         }
 
 
-        public void Notificationwrapper()
-        {
-
-            NotificationsChecker().Wait();
-        }
+      
 
 
 
@@ -78,24 +74,26 @@ namespace WebApplication1
                     System.Diagnostics.Debug.WriteLine("Hello world from Hangfire!");
                     DateTime now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
                     DateTime tommorrow = now.AddDays(1);
-                    TimeSpan meethour = new TimeSpan(now.Hour, now.Minute, now.Second);
+                    TimeSpan timenow = new TimeSpan(now.Hour, now.Minute, now.Second);
 
                     TimeSpan onehour = new TimeSpan(1, 30, 0);
                     List<tblSuggestedMeeting> suggestedcheck = _db.tblSuggestedMeeting.Where(x => (x.date == now || x.date == tommorrow) && x.status == "A").ToList();
+
                     foreach (tblSuggestedMeeting sug in suggestedcheck)
                     {
+                        //לטפל במקרה של פגישות שמתחילות בין השעה 00 לשעה 01 מבחינת ההתראות
                         DateTime relevanttime = now;
                         TimeSpan endtime = sug.endTime;
                         TimeSpan starttime = sug.startTime;
+                        
 
-                        if (sug.startTime > sug.endTime)
+                        if (sug.startTime >= new TimeSpan(00,00,00) && sug.startTime< new TimeSpan(01,00,00))
                         {
-                            endtime.Add(new TimeSpan(1, 0, 0, 0));
-                            relevanttime = tommorrow;
+                            starttime.Add(new TimeSpan(1, 0, 0, 0));
 
                         }
 
-                        if (sug.startTime.Add(onehour) >= starttime && sug.date == relevanttime && sug.isremindersend != true)
+                        if (timenow.Add(onehour) >= starttime && sug.date == relevanttime && sug.isremindersend != true)
                         {
                             NotificationDTO notifyupcoming = new NotificationDTO();
                             notifyupcoming.Notificationtype = "Suggested meeting";
@@ -163,11 +161,11 @@ namespace WebApplication1
                 {
                     Debug.WriteLine("Into actual meeting creator!");
                     DateTime now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
-                    DateTime tommorrow = now.AddDays(1);
-                    TimeSpan meethour = new TimeSpan(now.Hour, now.Minute, now.Second);
+                    DateTime yestarday= now.AddDays(-1);
+                    TimeSpan timenow = new TimeSpan(now.Hour, now.Minute, now.Second);
 
                     TimeSpan onehour = new TimeSpan(1, 0, 0);
-                    List<tblSuggestedMeeting> suggestedcheck = _db.tblSuggestedMeeting.Where(x => (x.date == now || x.date == tommorrow) && x.status == "A").ToList();
+                    List<tblSuggestedMeeting> suggestedcheck = _db.tblSuggestedMeeting.Where(x => (x.date == now || x.date == yestarday) && x.status == "A").ToList();
                     foreach (tblSuggestedMeeting sug in suggestedcheck)
                     {
                         DateTime relevanttime = now;
@@ -176,12 +174,12 @@ namespace WebApplication1
 
                         if (sug.startTime > sug.endTime)
                         {
-                            endtime.Add(new TimeSpan(1, 0, 0, 0));
-                            relevanttime = tommorrow;
+                            timenow.Add(new TimeSpan(1, 0, 0, 0));
+                            relevanttime = yestarday;
 
                         }
 
-                        if (sug.endTime.Add(onehour) >= endtime && sug.date == relevanttime && sug.isaskforranknotif != true)
+                        if (sug.endTime.Add(onehour) <= timenow && sug.date == relevanttime && sug.isaskforranknotif != true)
                         {
 
                             tblActualMeeting actmeeting = new tblActualMeeting();

@@ -118,6 +118,12 @@
     <Property Name="latitude" Type="float" Nullable="false" />
     <Property Name="hobbieNum" Type="int" />
     <Property Name="rank" Type="real" />
+    <Property Name="isremindersend" Type="bit" />
+    <Property Name="isaskforranknotif" Type="bit" />
+    <Property Name="event_id" Type="nvarchar" MaxLength="100" />
+    <Property Name="event_id_user2" Type="nvarchar" MaxLength="100" />
+    <Property Name="event_id_defaultcal" Type="nvarchar" MaxLength="100" />
+    <Property Name="event_id_defaultcal_user2" Type="nvarchar" MaxLength="100" />
   </EntityType>
   <EntityType Name="tblUser">
     <Key>

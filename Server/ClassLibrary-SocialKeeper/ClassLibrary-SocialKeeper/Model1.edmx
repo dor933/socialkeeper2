@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="igroup192_prodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="igroup192_prodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="PossibleFavoriteContact">
           <Key>
             <PropertyRef Name="phonenuminvite" />
@@ -125,6 +125,10 @@
           <Property Name="rank" Type="real" />
           <Property Name="isremindersend" Type="bit" />
           <Property Name="isaskforranknotif" Type="bit" />
+          <Property Name="event_id" Type="nvarchar" MaxLength="100" />
+          <Property Name="event_id_user2" Type="nvarchar" MaxLength="100" />
+          <Property Name="event_id_defaultcal" Type="nvarchar" MaxLength="100" />
+          <Property Name="event_id_defaultcal_user2" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="tblUser">
           <Key>
@@ -505,8 +509,7 @@
             <End Role="tblSuggestedMeeting" EntitySet="tblSuggestedMeeting" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="igroup192_prodModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -660,6 +663,10 @@
           <NavigationProperty Name="tblSuggestedHobbie" Relationship="Self.fk1tblSuggestedHobbie" FromRole="tblSuggestedMeeting" ToRole="tblSuggestedHobbie" />
           <NavigationProperty Name="tblUser" Relationship="Self.fk1tblSuggestedMeeting" FromRole="tblSuggestedMeeting" ToRole="tblUser" />
           <NavigationProperty Name="tblUser1" Relationship="Self.fk2tblSuggestedMeeting" FromRole="tblSuggestedMeeting" ToRole="tblUser" />
+          <Property Name="event_id" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="event_id_user2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="event_id_defaultcal" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="event_id_defaultcal_user2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tblUser">
           <Key>
@@ -1162,6 +1169,10 @@
           <EntitySetMapping Name="tblSuggestedMeeting">
             <EntityTypeMapping TypeName="igroup192_prodModel.tblSuggestedMeeting">
               <MappingFragment StoreEntitySet="tblSuggestedMeeting">
+                <ScalarProperty Name="event_id_defaultcal_user2" ColumnName="event_id_defaultcal_user2" />
+                <ScalarProperty Name="event_id_defaultcal" ColumnName="event_id_defaultcal" />
+                <ScalarProperty Name="event_id_user2" ColumnName="event_id_user2" />
+                <ScalarProperty Name="event_id" ColumnName="event_id" />
                 <ScalarProperty Name="meetingNum" ColumnName="meetingNum" />
                 <ScalarProperty Name="startTime" ColumnName="startTime" />
                 <ScalarProperty Name="endTime" ColumnName="endTime" />

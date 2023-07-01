@@ -15,6 +15,7 @@ using Microsoft.SqlServer.Server;
 using Newtonsoft.Json;
 using Google.Cloud.Firestore;
 using Google.Cloud.Firestore.V1;
+using System.Diagnostics;
 
 namespace ClassLibrary_SocialKeeper
 {
@@ -454,25 +455,39 @@ namespace ClassLibrary_SocialKeeper
                                 if(distance <= radiuskm)
                                 {
                                     string placeid= docsnap.GetValue<string>("Placeid");
-                                    string placejson= await Googlecloudfunctions.Getfilefromcloudstorage($"Places/{placeid}",_googleservices);
-                                    if(placejson!=null)
+                                
+                                try
+                                {
+                                    string placejson = await Googlecloudfunctions.Getfilefromcloudstorage($"Places/{placeid}", _googleservices);
+                                    if (placejson != null)
                                     {
 
                                         PlaceResult pr = new PlaceResult();
-                                         pr= JsonConvert.DeserializeObject<PlaceResult>(placejson);
+                                        pr = JsonConvert.DeserializeObject<PlaceResult>(placejson);
                                         if (pr.PlaceId == null)
                                         {
                                             SinglePlaceroot prsing = new SinglePlaceroot();
-                                            prsing= JsonConvert.DeserializeObject<SinglePlaceroot>(placejson);
+                                            prsing = JsonConvert.DeserializeObject<SinglePlaceroot>(placejson);
                                             pr = prsing.Result;
 
 
                                         }
 
-                                      
-                                            placetorun.Add(pr);
-                                        
+
+                                        placetorun.Add(pr);
+
                                     }
+                                }
+                                catch(Exception ex)
+                                {
+                                    Debug.WriteLine(ex.Message);
+                                    DocumentReference todelete = _googleservices._firestoreDb.Collection("Places").Document(docsnap.Id);
+                                    await todelete.DeleteAsync();
+
+
+
+
+                                }
                                    
                                 }
 

@@ -105,6 +105,10 @@
     <EntitySetMapping Name="tblSuggestedMeeting">
       <EntityTypeMapping TypeName="igroup192_prodModel.tblSuggestedMeeting">
         <MappingFragment StoreEntitySet="tblSuggestedMeeting">
+          <ScalarProperty Name="event_id_defaultcal_user2" ColumnName="event_id_defaultcal_user2" />
+          <ScalarProperty Name="event_id_defaultcal" ColumnName="event_id_defaultcal" />
+          <ScalarProperty Name="event_id_user2" ColumnName="event_id_user2" />
+          <ScalarProperty Name="event_id" ColumnName="event_id" />
           <ScalarProperty Name="meetingNum" ColumnName="meetingNum" />
           <ScalarProperty Name="startTime" ColumnName="startTime" />
           <ScalarProperty Name="endTime" ColumnName="endTime" />

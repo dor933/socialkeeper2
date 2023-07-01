@@ -397,7 +397,7 @@ namespace WebApplication1.Controllers
                     {
                         if (meetitem.place.PlaceId != null)
                         {
-                            meetitem.date = new DateTime(meetitem.date.Year, meetitem.date.Month, meetitem.date.Day, 23, 59, 59);
+                            meetitem.date = new DateTime(meetitem.date.Year, meetitem.date.Month, meetitem.date.Day, 00, 00, 00);
                             tblSuggestedMeeting sugmeetadd = new tblSuggestedMeeting();
                             if (meetitem.endTime.Days > 0)
                             {

@@ -21,6 +21,14 @@ namespace ClassLibrary_SocialKeeper
 
         public int hobbieNum { get; set; }
 
+        public string event_id { get; set; }
+
+        public string event_id_user2 { get; set; }
+
+        public string event_id_default_calender { get; set; }
+
+        public string event_id_default_calender_user2 { get; set; }
+
         public double prefferedtimerate;
 
         public double normalizeuserrank { get; set; }

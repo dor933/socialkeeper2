@@ -150,6 +150,10 @@
     <NavigationProperty Name="tblSuggestedHobbie" Relationship="Self.fk1tblSuggestedHobbie" FromRole="tblSuggestedMeeting" ToRole="tblSuggestedHobbie" />
     <NavigationProperty Name="tblUser" Relationship="Self.fk1tblSuggestedMeeting" FromRole="tblSuggestedMeeting" ToRole="tblUser" />
     <NavigationProperty Name="tblUser1" Relationship="Self.fk2tblSuggestedMeeting" FromRole="tblSuggestedMeeting" ToRole="tblUser" />
+    <Property Name="event_id" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="event_id_user2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="event_id_defaultcal" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="event_id_defaultcal_user2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="tblUser">
     <Key>
