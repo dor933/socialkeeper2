@@ -1,0 +1,805 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>C:\Users\dorat\OneDrive\שולחן העבודה\2906new</_PublishTargetUrl>
+    <History>True|2023-07-01T11:13:41.5048401Z;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="Areas/HelpPage/HelpPage.css">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/Api.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/ApiGroup.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/CollectionModelDescription.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/ComplexTypeModelDescription.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/DictionaryModelDescription.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/EnumTypeModelDescription.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/HelpPageApiModel.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/ImageSample.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/InvalidSample.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/KeyValuePairModelDescription.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/ModelDescriptionLink.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/Parameters.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/Samples.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/SimpleTypeModelDescription.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/TextSample.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/Index.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/ResourceModel.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Shared/_Layout.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Web.config">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/_ViewStart.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="bin/Antlr3.Runtime.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Antlr3.Runtime.pdb">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Autofac.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Autofac.Integration.WebApi.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Azure.Core.dll">
+      <publishTime>06/30/2022 22:28:28</publishTime>
+    </File>
+    <File Include="bin/Azure.Identity.dll">
+      <publishTime>09/19/2022 23:31:34</publishTime>
+    </File>
+    <File Include="bin/ca/Hangfire.Core.resources.dll">
+      <publishTime>05/26/2023 14:02:48</publishTime>
+    </File>
+    <File Include="bin/ClassLibrary-SocialKeeper.dll">
+      <publishTime>06/30/2023 15:37:50</publishTime>
+    </File>
+    <File Include="bin/ClassLibrary-SocialKeeper.dll.config">
+      <publishTime>06/28/2023 22:08:57</publishTime>
+    </File>
+    <File Include="bin/ClassLibrary-SocialKeeper.pdb">
+      <publishTime>06/30/2023 15:37:50</publishTime>
+    </File>
+    <File Include="bin/de/Hangfire.Core.resources.dll">
+      <publishTime>05/26/2023 14:02:48</publishTime>
+    </File>
+    <File Include="bin/de/Microsoft.Data.SqlClient.resources.dll">
+      <publishTime>03/28/2023 08:28:26</publishTime>
+    </File>
+    <File Include="bin/EntityFramework.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/EntityFramework.SqlServer.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/es/Hangfire.Core.resources.dll">
+      <publishTime>05/26/2023 14:02:48</publishTime>
+    </File>
+    <File Include="bin/es/Microsoft.Data.SqlClient.resources.dll">
+      <publishTime>03/28/2023 08:28:24</publishTime>
+    </File>
+    <File Include="bin/Expo.Server.SDK.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/fa/Hangfire.Core.resources.dll">
+      <publishTime>05/26/2023 14:02:48</publishTime>
+    </File>
+    <File Include="bin/Firebase.Auth.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Firebase.Storage.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/FirebaseAdmin.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/fr/Hangfire.Core.resources.dll">
+      <publishTime>05/26/2023 14:02:48</publishTime>
+    </File>
+    <File Include="bin/fr/Microsoft.Data.SqlClient.resources.dll">
+      <publishTime>03/28/2023 08:28:26</publishTime>
+    </File>
+    <File Include="bin/Google.Api.CommonProtos.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Api.CommonProtos.pdb">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Api.Gax.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Api.Gax.Grpc.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Api.Gax.Grpc.pdb">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Api.Gax.pdb">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Api.Gax.Rest.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Api.Gax.Rest.pdb">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Apis.Auth.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Apis.Auth.pdb">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Apis.Auth.PlatformServices.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Apis.Core.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Apis.Core.pdb">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Apis.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Apis.pdb">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Apis.PlatformServices.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Apis.Storage.v1.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Apis.Storage.v1.pdb">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Cloud.Firestore.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Cloud.Firestore.pdb">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Cloud.Firestore.V1.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Cloud.Firestore.V1.pdb">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Cloud.Location.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Cloud.Location.pdb">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Cloud.Storage.V1.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Cloud.Storage.V1.pdb">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.LongRunning.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.LongRunning.pdb">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Protobuf.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Google.Protobuf.pdb">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Grpc.Auth.dll">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Grpc.Auth.pdb">
+      <publishTime>06/01/2023 19:47:25</publishTime>
+    </File>
+    <File Include="bin/Grpc.Core.Api.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/Grpc.Core.Api.pdb">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/Grpc.Core.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/Grpc.Core.pdb">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/Grpc.Net.Client.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/Grpc.Net.Client.pdb">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/Grpc.Net.Common.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/Grpc.Net.Common.pdb">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/grpc_csharp_ext.x64.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/grpc_csharp_ext.x86.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/Hangfire.AspNet.dll">
+      <publishTime>08/16/2016 17:23:58</publishTime>
+    </File>
+    <File Include="bin/Hangfire.Core.dll">
+      <publishTime>05/26/2023 14:03:24</publishTime>
+    </File>
+    <File Include="bin/Hangfire.SqlServer.dll">
+      <publishTime>05/26/2023 14:03:26</publishTime>
+    </File>
+    <File Include="bin/it/Microsoft.Data.SqlClient.resources.dll">
+      <publishTime>03/28/2023 08:28:24</publishTime>
+    </File>
+    <File Include="bin/ja/Microsoft.Data.SqlClient.resources.dll">
+      <publishTime>03/28/2023 08:28:24</publishTime>
+    </File>
+    <File Include="bin/ko/Microsoft.Data.SqlClient.resources.dll">
+      <publishTime>03/28/2023 08:29:02</publishTime>
+    </File>
+    <File Include="bin/libgrpc_csharp_ext.x64.dylib">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/libgrpc_csharp_ext.x64.so">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Bcl.AsyncInterfaces.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Data.SqlClient.dll">
+      <publishTime>03/28/2023 08:28:26</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Data.SqlClient.pdb">
+      <publishTime>03/28/2023 08:23:28</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Data.SqlClient.SNI.arm64.dll">
+      <publishTime>01/13/2023 00:19:36</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Data.SqlClient.SNI.arm64.pdb">
+      <publishTime>01/13/2023 00:17:16</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Data.SqlClient.SNI.x64.dll">
+      <publishTime>01/13/2023 00:19:36</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Data.SqlClient.SNI.x64.pdb">
+      <publishTime>01/13/2023 00:17:16</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Data.SqlClient.SNI.x86.dll">
+      <publishTime>01/13/2023 00:19:36</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Data.SqlClient.SNI.x86.pdb">
+      <publishTime>01/13/2023 00:17:16</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Extensions.DependencyInjection.Abstractions.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Extensions.DependencyInjection.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Extensions.Logging.Abstractions.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Identity.Client.dll">
+      <publishTime>10/03/2022 20:40:18</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Identity.Client.Extensions.Msal.dll">
+      <publishTime>11/20/2021 00:02:00</publishTime>
+    </File>
+    <File Include="bin/Microsoft.IdentityModel.Abstractions.dll">
+      <publishTime>10/13/2022 22:42:54</publishTime>
+    </File>
+    <File Include="bin/Microsoft.IdentityModel.JsonWebTokens.dll">
+      <publishTime>10/13/2022 22:20:40</publishTime>
+    </File>
+    <File Include="bin/Microsoft.IdentityModel.Logging.dll">
+      <publishTime>10/13/2022 22:22:46</publishTime>
+    </File>
+    <File Include="bin/Microsoft.IdentityModel.Protocols.dll">
+      <publishTime>10/13/2022 22:24:40</publishTime>
+    </File>
+    <File Include="bin/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll">
+      <publishTime>10/13/2022 22:34:10</publishTime>
+    </File>
+    <File Include="bin/Microsoft.IdentityModel.Tokens.dll">
+      <publishTime>10/13/2022 22:28:30</publishTime>
+    </File>
+    <File Include="bin/Microsoft.ML.Core.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/Microsoft.ML.CpuMath.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/Microsoft.ML.Data.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/Microsoft.ML.DataView.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/Microsoft.ML.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/Microsoft.ML.KMeansClustering.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/Microsoft.ML.Mkl.Components.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/Microsoft.ML.PCA.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/Microsoft.ML.Recommender.dll">
+      <publishTime>06/01/2023 19:47:29</publishTime>
+    </File>
+    <File Include="bin/Microsoft.ML.StandardTrainers.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/Microsoft.ML.Transforms.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.dll">
+      <publishTime>02/13/2015 15:16:30</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Host.SystemWeb.dll">
+      <publishTime>02/13/2015 15:16:34</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Web.Infrastructure.dll">
+      <publishTime>06/01/2023 19:47:29</publishTime>
+    </File>
+    <File Include="bin/nb/Hangfire.Core.resources.dll">
+      <publishTime>05/26/2023 14:02:48</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>06/01/2023 19:47:29</publishTime>
+    </File>
+    <File Include="bin/nl/Hangfire.Core.resources.dll">
+      <publishTime>05/26/2023 14:02:48</publishTime>
+    </File>
+    <File Include="bin/Owin.dll">
+      <publishTime>11/13/2012 14:19:34</publishTime>
+    </File>
+    <File Include="bin/pt-BR/Hangfire.Core.resources.dll">
+      <publishTime>05/26/2023 14:02:48</publishTime>
+    </File>
+    <File Include="bin/pt-BR/Microsoft.Data.SqlClient.resources.dll">
+      <publishTime>03/28/2023 08:28:24</publishTime>
+    </File>
+    <File Include="bin/pt-PT/Hangfire.Core.resources.dll">
+      <publishTime>05/26/2023 14:02:48</publishTime>
+    </File>
+    <File Include="bin/pt/Hangfire.Core.resources.dll">
+      <publishTime>05/26/2023 14:02:48</publishTime>
+    </File>
+    <File Include="bin/roslyn/csc.exe">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/csc.exe.config">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/csc.rsp">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/csi.exe">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/csi.exe.config">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/csi.rsp">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.Build.Tasks.CodeAnalysis.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.CSharp.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.CSharp.Scripting.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.Scripting.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.VisualBasic.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CSharp.Core.targets">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.DiaSymReader.Native.amd64.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.DiaSymReader.Native.x86.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.Managed.Core.targets">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.VisualBasic.Core.targets">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.Win32.Primitives.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.AppContext.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Collections.Immutable.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Console.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Diagnostics.DiagnosticSource.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Diagnostics.FileVersionInfo.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Diagnostics.StackTrace.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Globalization.Calendars.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.IO.Compression.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.IO.Compression.ZipFile.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.IO.FileSystem.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.IO.FileSystem.Primitives.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Net.Http.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Net.Sockets.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Reflection.Metadata.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Runtime.InteropServices.RuntimeInformation.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Security.Cryptography.Algorithms.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Security.Cryptography.Encoding.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Security.Cryptography.Primitives.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Security.Cryptography.X509Certificates.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Text.Encoding.CodePages.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Threading.Tasks.Extensions.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.ValueTuple.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Xml.ReaderWriter.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Xml.XmlDocument.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Xml.XPath.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Xml.XPath.XDocument.dll">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/vbc.exe">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/vbc.exe.config">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/vbc.rsp">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/VBCSCompiler.exe">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/roslyn/VBCSCompiler.exe.config">
+      <publishTime>06/01/2023 19:47:27</publishTime>
+    </File>
+    <File Include="bin/ru/Microsoft.Data.SqlClient.resources.dll">
+      <publishTime>03/28/2023 08:28:24</publishTime>
+    </File>
+    <File Include="bin/sv/Hangfire.Core.resources.dll">
+      <publishTime>05/26/2023 14:02:48</publishTime>
+    </File>
+    <File Include="bin/System.Buffers.dll">
+      <publishTime>06/01/2023 19:47:29</publishTime>
+    </File>
+    <File Include="bin/System.CodeDom.dll">
+      <publishTime>06/01/2023 19:47:29</publishTime>
+    </File>
+    <File Include="bin/System.Collections.Immutable.dll">
+      <publishTime>06/01/2023 19:47:30</publishTime>
+    </File>
+    <File Include="bin/System.Configuration.ConfigurationManager.dll">
+      <publishTime>08/19/2022 22:55:18</publishTime>
+    </File>
+    <File Include="bin/System.Diagnostics.DiagnosticSource.dll">
+      <publishTime>06/01/2023 19:47:30</publishTime>
+    </File>
+    <File Include="bin/System.IdentityModel.Tokens.Jwt.dll">
+      <publishTime>10/13/2022 22:18:48</publishTime>
+    </File>
+    <File Include="bin/System.Linq.Async.dll">
+      <publishTime>06/01/2023 19:47:30</publishTime>
+    </File>
+    <File Include="bin/System.Memory.Data.dll">
+      <publishTime>04/08/2021 19:45:54</publishTime>
+    </File>
+    <File Include="bin/System.Memory.dll">
+      <publishTime>06/01/2023 19:47:30</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.Formatting.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/System.Numerics.Vectors.dll">
+      <publishTime>06/01/2023 19:47:31</publishTime>
+    </File>
+    <File Include="bin/System.Runtime.CompilerServices.Unsafe.dll">
+      <publishTime>06/01/2023 19:47:32</publishTime>
+    </File>
+    <File Include="bin/System.Security.AccessControl.dll">
+      <publishTime>10/23/2021 02:45:08</publishTime>
+    </File>
+    <File Include="bin/System.Security.Cryptography.ProtectedData.dll">
+      <publishTime>11/15/2019 10:41:08</publishTime>
+    </File>
+    <File Include="bin/System.Security.Permissions.dll">
+      <publishTime>10/23/2021 02:48:12</publishTime>
+    </File>
+    <File Include="bin/System.Security.Principal.Windows.dll">
+      <publishTime>10/19/2020 21:46:28</publishTime>
+    </File>
+    <File Include="bin/System.Text.Encodings.Web.dll">
+      <publishTime>10/23/2021 02:41:14</publishTime>
+    </File>
+    <File Include="bin/System.Text.Json.dll">
+      <publishTime>04/15/2020 01:39:40</publishTime>
+    </File>
+    <File Include="bin/System.Threading.Channels.dll">
+      <publishTime>06/01/2023 19:47:32</publishTime>
+    </File>
+    <File Include="bin/System.Threading.Tasks.Extensions.dll">
+      <publishTime>06/01/2023 19:47:33</publishTime>
+    </File>
+    <File Include="bin/System.ValueTuple.dll">
+      <publishTime>06/01/2023 19:47:33</publishTime>
+    </File>
+    <File Include="bin/System.Web.Cors.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/System.Web.Helpers.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.Cors.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.WebHost.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/System.Web.Mvc.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/System.Web.Optimization.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/System.Web.Razor.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Deployment.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Razor.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="bin/tr-TR/Hangfire.Core.resources.dll">
+      <publishTime>05/26/2023 14:02:48</publishTime>
+    </File>
+    <File Include="bin/WebApplication1.dll">
+      <publishTime>07/01/2023 14:13:39</publishTime>
+    </File>
+    <File Include="bin/WebApplication1.pdb">
+      <publishTime>07/01/2023 14:13:39</publishTime>
+    </File>
+    <File Include="bin/WebGrease.dll">
+      <publishTime>06/01/2023 19:47:33</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/Microsoft.Data.SqlClient.resources.dll">
+      <publishTime>03/28/2023 08:28:24</publishTime>
+    </File>
+    <File Include="bin/zh-Hant/Microsoft.Data.SqlClient.resources.dll">
+      <publishTime>03/28/2023 08:28:24</publishTime>
+    </File>
+    <File Include="bin/zh-TW/Hangfire.Core.resources.dll">
+      <publishTime>05/26/2023 14:02:48</publishTime>
+    </File>
+    <File Include="bin/zh/Hangfire.Core.resources.dll">
+      <publishTime>05/26/2023 14:02:48</publishTime>
+    </File>
+    <File Include="Content/bootstrap-theme.css">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Content/bootstrap-theme.css.map">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Content/bootstrap-theme.min.css">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Content/bootstrap-theme.min.css.map">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Content/bootstrap.css">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Content/bootstrap.css.map">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Content/bootstrap.min.css">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Content/bootstrap.min.css.map">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Content/Site.css">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="favicon.ico">
+      <publishTime>06/01/2023 19:47:24</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.eot">
+      <publishTime>06/01/2023 19:47:24</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.svg">
+      <publishTime>06/01/2023 19:47:24</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.ttf">
+      <publishTime>06/01/2023 19:47:24</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.woff">
+      <publishTime>06/01/2023 19:47:24</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.woff2">
+      <publishTime>06/01/2023 19:47:24</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="GoogleCloudnew/json1.json">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="grpc_csharp_ext.x64.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="grpc_csharp_ext.x86.dll">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="libgrpc_csharp_ext.x64.dylib">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="libgrpc_csharp_ext.x64.so">
+      <publishTime>06/01/2023 19:47:26</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.js">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.min.js">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.4.1.js">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.4.1.min.js">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.4.1.min.map">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.4.1.slim.js">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.4.1.slim.min.js">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.4.1.slim.min.map">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Scripts/modernizr-2.8.3.js">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Views/Home/Index.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Views/Shared/Error.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Views/Shared/_Layout.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Views/Web.config">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Views/_ViewStart.cshtml">
+      <publishTime>06/01/2023 19:47:23</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>07/01/2023 14:13:40</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

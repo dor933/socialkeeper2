@@ -87,7 +87,7 @@ namespace WebApplication1
                         TimeSpan starttime = sug.startTime;
                         
 
-                        if (sug.startTime >= new TimeSpan(00,00,00) && sug.startTime< new TimeSpan(01,00,00))
+                        if (new DateTime(sug.date.Year,sug.date.Month,sug.date.Day)==tommorrow)
                         {
                             starttime.Add(new TimeSpan(1, 0, 0, 0));
 
@@ -172,9 +172,10 @@ namespace WebApplication1
                         TimeSpan endtime = sug.endTime;
                         TimeSpan starttime = sug.startTime;
 
-                        if (sug.startTime > sug.endTime)
+                        if (new DateTime(sug.date.Year,sug.date.Month,sug.date.Day) == yestarday)
                         {
                             timenow.Add(new TimeSpan(1, 0, 0, 0));
+
                             relevanttime = yestarday;
 
                         }
