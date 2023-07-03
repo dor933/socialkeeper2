@@ -41,6 +41,7 @@ import * as Device from 'expo-device';
 
 
 
+
 //Notification configure
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -255,6 +256,7 @@ export default function App() {
   }
 
   return (
+
 
 
 

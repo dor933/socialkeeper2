@@ -39,6 +39,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity,ScrollView, Alert, Safe
         }
 
         else{
+          console.log('this is the selectedhobbies',selectedhobbies)
           counting(selectedhobbies.length)
         }
        

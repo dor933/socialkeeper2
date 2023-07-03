@@ -12,6 +12,9 @@ export default (props) => {
   const {personaldetails, setPersonalDetails} = useContext(RegistContext);
   const [hasDateBeenSelected, setHasDateBeenSelected] = useState(false);
   const keyboardshow = props.keyboardshow;
+  const handledate=props.handledate;
+  const fromgeneratemeeting=props.fromgeneratemeeting;
+  console.log('from generate meeting is',fromgeneratemeeting)
   const isfrommainapp = props.isfrommainapp;
   console.log(isfrommainapp)
 
@@ -24,6 +27,44 @@ export default (props) => {
 
   const onChange = (event, selectedDate) => {
     if (event.type === 'set') {
+
+      if(fromgeneratemeeting){
+    
+        //the selected date must be in the future
+        const currentDate = new Date();
+        const differenceInTime = currentDate - selectedDate;
+        const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+
+        if (selectedDate < currentDate || differenceInDays > 6570) {
+          // If the selected date is in the past or doesn't meet the constraint, show an alert
+          alert("Invalid Date");
+          return;
+        }
+
+
+        //if the selected date is not null
+        if(selectedDate){
+
+        const currentDate = new Date(selectedDate || date);
+        //make the current date as string and without time
+        const datestring= currentDate.toISOString().split('T')[0];
+
+        setDate(currentDate);
+        setHasDateBeenSelected(true);
+        console.log('this is the date',datestring)
+        handledate(datestring);
+        }
+        setOpen(false);
+
+
+
+
+
+
+
+
+      }
+      else{
 
       const currentDate = new Date();
       const differenceInTime = currentDate - selectedDate;
@@ -50,6 +91,7 @@ export default (props) => {
       console.log(personaldetails);
     }
     setOpen(false);
+  }
   };
   };
 
@@ -62,8 +104,8 @@ export default (props) => {
     
       <TouchableOpacity onPress={handlePress} >
         <Input
-          placeholder="Date of Birth"
-          value={hasDateBeenSelected ? date.toDateString() : 'Date of Birth'}
+          placeholder= { !fromgeneratemeeting? "Date of Birth" : "Meeting Time"}
+          value={hasDateBeenSelected ? date.toDateString() : !fromgeneratemeeting? 'Date of Birth' : "Meeting Date"}
           editable={false}
           leftIcon={{ type: 'font-awesome', name: 'calendar' }}
           style={{color: isfrommainapp? '#ffffff': hasDateBeenSelected? "black" : "#8d97a0"}}

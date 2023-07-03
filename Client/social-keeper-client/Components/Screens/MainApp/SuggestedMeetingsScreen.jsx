@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, StyleSheet, Dimensions } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
 // import use context
 import React from 'react'
 import Customheader from '../../CompsToUse/Customheader'
@@ -14,6 +14,9 @@ import {getPlaceDetails} from '../../..//assets/Utils/places';
 import { ScrollView } from 'react-native-gesture-handler';
 import Loadingcomp from '../../CompsToUse/Loadingcomp';
 import AuthContext from '../../../Authcontext';
+import { Icon } from '@rneui/themed';
+import { RegistContext } from '../../../RegistContext';
+
 
 
 
@@ -31,12 +34,23 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
   const [mynotife, setMynotife] = useState(notifobj);
   const {isnotif, setIsnotif} = useContext(AuthContext)
   const {removemeetingfromcalender}= useContext(MainAppcontext);
+  const {selectedhobbies, setSelectedHobbies} = useContext(RegistContext);
+  const {personaldetails, setPersonalDetails} = useContext(RegistContext);
+
+
+
+  const navigatetogeneratemeet= () => {
+    navigation.navigate('Generatemeet')
+  }
 
 
 
   useEffect(() => {
-    console.log('is notif is '+isnotif)
-    console.log('my notif is '+mynotife)
+  
+    console.log('this is userhobbiesdto', user.tblUserHobbiesDTO)
+    setSelectedHobbies(user.tblUserHobbiesDTO)
+    console.log('this is selectedhobbies', selectedhobbies)
+    setPersonalDetails({phoneNumber:user.phoneNum1,userName:user.userName,gender:user.gender})
   
 
   },[])
@@ -102,6 +116,13 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
 
 
     }
+
+    else if(notifobj.notiftype=='Meeting Ended'){
+
+      const meetingnum=notifobj.meetingnum;
+      getactualmeeting(meetingnum)
+
+    }
    
   
     else{
@@ -126,6 +147,45 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
 
   }, [fromnotif,notifobj])
 
+  
+  const getactualmeeting = async (meetingnum) => {
+    console.log('im into getactualmeeting')
+    let meetingtofind= user.tblactualmeetings.find ((item) => item.meetingNum==meetingnum)
+    if(!meetingtofind){
+      meetingtofind= user.tblactualmeetings1.find ((item) => item.meetingNum==meetingnum)
+      }
+
+      if(meetingtofind){
+        console.log('this meeting is already in actualmeetings')
+      }
+      else{
+    const newmeeting= await axios.get(`http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/getactualmeeting/${meetingnum}`);
+    const meetingtoret= newmeeting.data;
+    if(meetingtoret?.tblSuggestedMeeting.phoneNum1==user.phoneNum1){
+
+      const newtblactualmeetings= user.tblactualmeetings;
+      newtblactualmeetings.push(meetingtoret)
+      const Newuser={...user}
+      Newuser.tblactualmeetings=newtblactualmeetings;
+      setUser(Newuser);
+
+    }
+    else{
+        
+        const newtblactualmeetings1= user.tblactualmeetings1;
+        newtblactualmeetings1.push(meetingtoret)
+        const Newuser={...user}
+        Newuser.tblactualmeetings1=newtblactualmeetings1;
+        setUser(Newuser);
+  
+      }
+
+      setNumberofnewendedmeetings(numberofnewendedmeetings+1)
+
+
+
+  }
+}
  
 
   const getmeetingfromserver = async (meetingnum) => {
@@ -178,6 +238,29 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
       <Customheader/>
       <View style={styles.meetingview}> 
         <Text style={styles.meetingtext}>My Meetings</Text>
+        <View style={styles.generatemeetbutton}>
+
+          < TouchableOpacity style={{flexDirection:'row-reverse',height:"100%",alignItems:'center',justifyContent:'center'}}
+          onPress={navigatetogeneratemeet}
+          >
+    
+         <Icon
+          name='calendar-plus-o'
+          type='font-awesome'
+          color= '#eb6a5e'
+          size={17}
+          style={{padding:5}}
+          />
+
+          <Text style={styles.generatemeetingtext}>
+            Generate Meeting
+          </Text>
+
+        
+
+          </TouchableOpacity>
+
+        </View>
       </View>
   
       <View style={styles.rectengelbuttongroup}>
@@ -362,8 +445,11 @@ const styles= StyleSheet.create({
   meetingview:{
     backgroundColor: '#ffffff',
     alignItems:'flex-end',
-    paddingRight: 20,
     paddingTop: 20,
+    flexDirection: 'row-reverse',
+    width:Dimensions.get('window').width-20,
+    justifyContent: 'space-between',
+    
 
   },
 
@@ -377,12 +463,19 @@ const styles= StyleSheet.create({
   
     letterSpacing: 0.03,
     //move it to left
-    paddingRight:170,
     marginTop: 15,
     marginBottom: 5
     
 
   },
+
+  generatemeetbutton:{
+    width: 140,
+    height: 50,
+    borderRadius:20,
+    backgroundColor: '#faf7f7',
+  },
+
   rectengelbuttongroup:{
     backgroundColor: 'rgba(0, 0, 0, 0.05)',
     borderRadius: 25,
@@ -396,6 +489,19 @@ const styles= StyleSheet.create({
 
 
   },
+
+  generatemeetingtext:{
+    fontFamily: 'Lato_400Regular',
+    fontSize: 10,
+    
+    color: '#eb6a5e',
+    textAlign:'center',
+    fontStyle: 'normal',
+    lineHeight: 19,
+    letterSpacing: 0.03,
+    paddingRight: 5,
+
+  } 
 
 
   

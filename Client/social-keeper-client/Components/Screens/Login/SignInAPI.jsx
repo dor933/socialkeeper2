@@ -26,7 +26,6 @@ function SignUpAPI({navigation}) {
   const {firebaseuser, setFirebaseuser} = useContext(MainAppcontext);
   const [isloading, setIsloading] = useState(false);
   const [guestemail, setGuestemail] = useState('');
-  const {selectedhobbies, setSelectedHobbies} = useContext(RegistContext);
 
   WebBrowser.maybeCompleteAuthSession();
 
@@ -139,9 +138,6 @@ function SignUpAPI({navigation}) {
       else if(typeof ifuser.data.imageUri == 'string'){
         setIsloading(true);
         setUser(ifuser.data);
-        console.log('this is ifuser.data',ifuser.data);
-        setPersonalDetails({phoneNumber:ifuser.data.phoneNum1,userName:ifuser.data.userName,gender:ifuser.data.gender})
-        setSelectedHobbies(ifuser.data.tblUserHobbiesDTO);
         setIsAuthenticated(true);
       }
     } catch (error) {
@@ -164,8 +160,7 @@ function SignUpAPI({navigation}) {
       }
       else if(typeof ifuser.data.imageUri == 'string'){
         setUser(ifuser.data);
-        setPersonalDetails(personaldetails,{phoneNumber:ifuser.data.phoneNum1,userName:ifuser.data.userName,gender:ifuser.data.gender})
-        setSelectedHobbies(ifuser.data.tblHobbiedto);
+    
         setIsAuthenticated(true);
       }
     
