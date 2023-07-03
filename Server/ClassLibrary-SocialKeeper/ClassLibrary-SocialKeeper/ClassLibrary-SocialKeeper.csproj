@@ -203,6 +203,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DTO\Actualmeetingdto.cs" />
+    <Compile Include="DTO\Generatedmeeting.cs" />
     <Compile Include="DTO\NotificationDTO.cs" />
     <Compile Include="DTO\DataDTO.cs" />
     <Compile Include="DTO\EmailDTO.cs" />

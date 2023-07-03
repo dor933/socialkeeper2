@@ -74,10 +74,11 @@ namespace WebApplication1
                     System.Diagnostics.Debug.WriteLine("Hello world from Hangfire!");
                     DateTime now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
                     DateTime tommorrow = now.AddDays(1);
-                    TimeSpan timenow = new TimeSpan(now.Hour, now.Minute, now.Second);
+                    TimeSpan timenow = new TimeSpan(DateTime.Now.Hour,DateTime.Now.Minute,DateTime.Now.Second);
 
-                    TimeSpan onehour = new TimeSpan(1, 30, 0);
+                    TimeSpan onehour = new TimeSpan(1, 0, 0);
                     List<tblSuggestedMeeting> suggestedcheck = _db.tblSuggestedMeeting.Where(x => (x.date == now || x.date == tommorrow) && x.status == "A").ToList();
+                    Debug.WriteLine($"length of suggestedtocheck is {suggestedcheck.Count}");
 
                     foreach (tblSuggestedMeeting sug in suggestedcheck)
                     {
@@ -89,9 +90,14 @@ namespace WebApplication1
 
                         if (new DateTime(sug.date.Year,sug.date.Month,sug.date.Day)==tommorrow)
                         {
-                            starttime.Add(new TimeSpan(1, 0, 0, 0));
+                            starttime=starttime.Add(new TimeSpan(1, 0, 0, 0));
 
                         }
+
+                        Debug.WriteLine($"meeting num is {sug.meetingNum}");
+                        Debug.WriteLine($"timenowand hour is {timenow.Add(onehour)}");
+                        Debug.WriteLine($"relevant time is {relevanttime}");
+                        Debug.WriteLine($"sugdate is {sug.date}");
 
                         if (timenow.Add(onehour) >= starttime && sug.date == relevanttime && sug.isremindersend != true)
                         {
@@ -133,6 +139,10 @@ namespace WebApplication1
 
 
                         }
+                        else
+                        {
+                            Debug.WriteLine("not entered");
+                        }
 
                     }
 
@@ -162,7 +172,7 @@ namespace WebApplication1
                     Debug.WriteLine("Into actual meeting creator!");
                     DateTime now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
                     DateTime yestarday= now.AddDays(-1);
-                    TimeSpan timenow = new TimeSpan(now.Hour, now.Minute, now.Second);
+                    TimeSpan timenow = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
 
                     TimeSpan onehour = new TimeSpan(1, 0, 0);
                     List<tblSuggestedMeeting> suggestedcheck = _db.tblSuggestedMeeting.Where(x => (x.date == now || x.date == yestarday) && x.status == "A").ToList();
@@ -174,13 +184,32 @@ namespace WebApplication1
 
                         if (new DateTime(sug.date.Year,sug.date.Month,sug.date.Day) == yestarday)
                         {
-                            timenow.Add(new TimeSpan(1, 0, 0, 0));
+                            timenow=timenow.Add(new TimeSpan(1, 0, 0, 0));
 
                             relevanttime = yestarday;
 
                         }
 
-                        if (sug.endTime.Add(onehour) <= timenow && sug.date == relevanttime && sug.isaskforranknotif != true)
+                        if(sug.startTime> sug.endTime)
+                        {
+                            Debug.WriteLine($"entime before ${endtime}");
+                            endtime=endtime.Add(new TimeSpan(1,0,0,0));
+                            Debug.WriteLine($"sugtimeafter {endtime}");
+                            
+                            
+                        }
+
+                        Debug.WriteLine($"meeting num is {sug.meetingNum}");
+                        Debug.WriteLine($"timenow is {timenow}");
+                        Debug.WriteLine($"sugendtimeandhour is {endtime.Add(onehour)}");
+                        Debug.WriteLine($"relevant time is {relevanttime}");
+                        Debug.WriteLine($"sugdate is {sug.date}");
+                        Debug.WriteLine($"yesteraday is {yestarday}");
+
+
+
+
+                        if (endtime.Add(onehour) <= timenow && sug.date == relevanttime && sug.isaskforranknotif != true)
                         {
 
                             tblActualMeeting actmeeting = new tblActualMeeting();
@@ -290,7 +319,7 @@ namespace WebApplication1
             notifendmeet2.Data = new Dictionary<string, string>
             {
              {"meetingnum", $"{actdto.meetingNum}" },
-             {"notiftype", "Upcomingmeeting" },
+             {"notiftype", "Meeting Ended" },
             };
 
             await Notificationsmaker.Notify(notifendmeet2);

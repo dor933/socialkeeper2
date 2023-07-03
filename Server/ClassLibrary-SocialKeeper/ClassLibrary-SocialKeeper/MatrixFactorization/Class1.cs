@@ -16,6 +16,8 @@ using Newtonsoft.Json;
 using Google.Cloud.Firestore;
 using Google.Cloud.Firestore.V1;
 using System.Diagnostics;
+using System.Numerics;
+using System.Collections;
 
 namespace ClassLibrary_SocialKeeper
 {
@@ -361,6 +363,345 @@ namespace ClassLibrary_SocialKeeper
             }
         }
 
+        public static async Task<SuggestedDTO> Generateplace_ondemand (Googlecloudservices _googlecloudservices, SuggestedDTO mysuggested, igroup192_prodEntities db, LoctationDTO loc)
+        {
+            Dictionary<string, string> placetypes = new Dictionary<string, string>();
+            placetypes.Add("Football", "bar");
+            placetypes.Add("Basketball", "bar");
+            placetypes.Add("Resturant", "restaurant");
+            placetypes.Add("Movie", "movie_theater");
+            placetypes.Add("Parties", "night_club");
+            placetypes.Add("Coffee", "cafe");
+            placetypes.Add("Gym", "gym");
+            placetypes.Add("Tennis", "park");
+            placetypes.Add("Running", "park");
+            placetypes.Add("Chas", "library");
+            string type = "";
+            List<PlaceResult> places = new List<PlaceResult>();
+            List<PlaceResult> placetorun = new List<PlaceResult>();
+            List<string> typeswithoutplaces = new List<string>();
+            Dictionary<string, List<string>> placeslist = new Dictionary<string, List<string>>(); 
+            string hobbiename = "";
+            double midlat;
+            double midlon;
+            bool placefound = false;
+            int currentDayOfWeek = (int)mysuggested.date.DayOfWeek;
+
+            foreach (KeyValuePair<string, string> entry in placetypes)
+            {
+                if (!placeslist.ContainsKey(entry.Value))
+                {
+                    placeslist[entry.Value] = new List<string>();
+                }
+            }
+
+            if (loc.city == null)
+            {
+                double lat1 = Convert.ToDouble(mysuggested.user1.citylatt);
+                double lon1 = Convert.ToDouble(mysuggested.user1.citylong);
+                double lat2 = Convert.ToDouble(mysuggested.user2.citylatt);
+                double lon2 = Convert.ToDouble(mysuggested.user2.citylong);
+
+                ( midlat,  midlon) = FindMidpoint(lat1, lon1, lat2, lon2);
+
+            }
+            else
+            {
+                midlat = loc.latitude;
+                midlon = loc.longitude;
+            }
+
+            double radius = 10000;
+            double radiusinkm = radius / 1000;
+            double northLatitude = midlat + (radiusinkm / 111.0);
+            double southLatitude = midlat - (radiusinkm / 111.0);
+            double eastlongitude = midlon + (radiusinkm / 111.0);
+            double westlongitude = midlon - (radiusinkm / 111.0);
+
+
+            hobbiename = db.tblHobbie.Where(x => x.hobbieNum == mysuggested.hobbieNum).FirstOrDefault().hobbieName;
+                type = placetypes[hobbiename];
+
+              
+
+                    QuerySnapshot snapshot = await _googlecloudservices._firestoreDb.Collection("Places").WhereEqualTo("type", type).GetSnapshotAsync();
+
+
+                    var filteredPlaces = snapshot.Documents
+             .Where(placeDoc =>
+         placeDoc.GetValue<double>("latitude") >= southLatitude &&
+    placeDoc.GetValue<double>("latitude") <= northLatitude &&
+    placeDoc.GetValue<double>("longitude") >= westlongitude &&
+    placeDoc.GetValue<double>("longitude") <= eastlongitude)
+    .ToList();
+
+
+
+                    foreach (DocumentSnapshot docsnap in filteredPlaces)
+                    {
+                        double docLatitude = docsnap.GetValue<double>("latitude");
+                        double docLongitude = docsnap.GetValue<double>("longitude");
+                        double distance = Googlecloudfunctions.CalculateDistance(midlat, midlon, docLatitude, docLongitude);
+                        double radiuskm = radius / 800;
+                        if (distance <= radiuskm)
+                        {
+                            string placeid = docsnap.GetValue<string>("Placeid");
+
+                            try
+                            {
+                                string placejson = await Googlecloudfunctions.Getfilefromcloudstorage($"Places/{placeid}", _googlecloudservices);
+                                if (placejson != null)
+                                {
+
+                                    PlaceResult pr = new PlaceResult();
+                                    pr = JsonConvert.DeserializeObject<PlaceResult>(placejson);
+                                    if (pr.PlaceId == null)
+                                    {
+                                        SinglePlaceroot prsing = new SinglePlaceroot();
+                                        prsing = JsonConvert.DeserializeObject<SinglePlaceroot>(placejson);
+                                        pr = prsing.Result;
+
+
+                                    }
+
+
+                                    placetorun.Add(pr);
+
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex.Message);
+                                DocumentReference todelete = _googlecloudservices._firestoreDb.Collection("Places").Document(docsnap.Id);
+                                await todelete.DeleteAsync();
+
+
+
+
+                            }
+
+                        }
+
+
+
+                    }
+
+                    if (placetorun.Count >= 10)
+                    {
+                        places = placetorun;
+                    }
+                    else
+                    {
+
+                        //will be request to firestore to check if there is places there according to demands
+
+                        string response = await GetPlacesAsync(_googlecloudservices.googlemapscred, midlat, midlon, radius, type);
+                        places = Extractingfromjson.ExtractPlacesFromJson(response);
+                        places.Sort((x, y) => y.Rating.CompareTo(x.Rating));
+                        SinglePlaceroot prsing = new SinglePlaceroot();
+                        PlaceResult pr = new PlaceResult();
+                        foreach (PlaceResult placeto in places)
+                        {
+                            string fullplace = await openinghours(_googlecloudservices.googlemapscred, placeto.PlaceId);
+                            prsing = JsonConvert.DeserializeObject<SinglePlaceroot>(fullplace);
+                            pr = prsing.Result;
+                            string prconverted = JsonConvert.SerializeObject(pr);
+                            string ifexist = await Googlecloudfunctions.Getfilefromcloudstorage($"Places/{pr.PlaceId}", _googlecloudservices);
+                            if (ifexist == null)
+                            {
+                                CollectionReference collection = _googlecloudservices._firestoreDb.Collection("Places");
+                                GeoPoint gepoint = new GeoPoint(pr.Geometry.Location.Latitude, pr.Geometry.Location.Longitude);
+                                Dictionary<string, object> docdata = new Dictionary<string, object>
+                                    {
+                                        {"Placeid", pr.PlaceId },
+                                        {"latitude", gepoint.Latitude },
+                                        {"longitude", gepoint.Longitude },
+                                        {"type", type }
+                                    };
+
+                                DocumentReference docref = await collection.AddAsync(docdata);
+                                await Googlecloudfunctions.UploadJsonToGoogleCloudStorage(prconverted, $"Places/{pr.PlaceId}", _googlecloudservices);
+                                placetorun.Add(pr);
+
+                            }
+                            else
+                            {
+
+                                placetorun.Add(pr);
+
+                            }
+                        }
+                        places = placetorun;
+
+
+                    }
+
+
+                
+                places = calculatebaysienrank(places);
+                places.Sort((x, y) => y.bayesianrank.CompareTo(x.bayesianrank));
+
+            foreach (PlaceResult place in places)
+            {
+                if (placefound)
+                {
+                    break;
+                }
+
+                List <string> myst= placeslist[type];
+                string findif = myst.Where(x => x == place.PlaceId).FirstOrDefault();
+                if (findif != null)
+                {
+                    continue;
+                }
+
+           
+
+                OpeningHoursDetails openingHoursDetails = place.OpeningHours;
+
+
+                if (openingHoursDetails != null || type == "park")
+                {
+
+                    if (type == "park" && openingHoursDetails == null)
+                    {
+                        LoctationDTO dtoloc = new LoctationDTO();
+                        tblLoctation loctocheck = db.tblLoctation.Where(x => x.longitude == place.Geometry.Location.Longitude && x.latitude == place.Geometry.Location.Latitude).FirstOrDefault();
+                        if (loctocheck == null)
+                        {
+                            tblLoctation locationnew = new tblLoctation();
+                            locationnew.latitude = place.Geometry.Location.Latitude;
+                            locationnew.longitude = place.Geometry.Location.Longitude;
+                            locationnew.city = place.Name;
+                            locationnew.Placeid = place.PlaceId;
+                            db.tblLoctation.Add(locationnew);
+                            db.SaveChanges();
+                            dtoloc.latitude = locationnew.latitude;
+                            dtoloc.longitude = locationnew.longitude;
+                            dtoloc.city = locationnew.city;
+                            mysuggested.locatation = dtoloc;
+                            mysuggested.longitude = dtoloc.longitude;
+                            mysuggested.latitude = dtoloc.latitude;
+                        }
+                        else
+                        {
+                            dtoloc.latitude = loctocheck.latitude;
+                            dtoloc.longitude = loctocheck.longitude;
+                            dtoloc.city = loctocheck.city;
+                            if (loctocheck.Placeid == null)
+                            {
+                                loctocheck.Placeid = place.PlaceId;
+                                db.SaveChanges();
+                            }
+                            mysuggested.locatation = dtoloc;
+                            mysuggested.latitude = loctocheck.latitude;
+                            mysuggested.longitude = loctocheck.longitude;
+                        }
+                        mysuggested.place = place;
+                        placefound = true;
+                        break;
+
+                    }
+                    else
+                    {
+
+
+                        List<Period> opcloseday = new List<Period>();
+                        foreach (Period period in openingHoursDetails.Periods)
+                        {
+                            if (period.Open != null && period.Close != null)
+                            {
+                                if (period.Open.Day == currentDayOfWeek && period.Close.Day == currentDayOfWeek)
+                                {
+                                    opcloseday.Add(period);
+                                }
+                                else if (period.Open.Day == currentDayOfWeek && period.Close.Day == currentDayOfWeek + 1 && TimeSpan.Parse(period.Open.Time) > TimeSpan.Parse(period.Close.Time))
+                                {
+
+                                    opcloseday.Add(period);
+
+
+                                }
+                            }
+                        }
+
+                        foreach (Period period in opcloseday)
+                        {
+                            TimeSpan timeopen = TimeSpan.ParseExact(period.Open.Time, "hhmm", CultureInfo.InvariantCulture);
+                            TimeSpan timeclose = TimeSpan.ParseExact(period.Close.Time, "hhmm", CultureInfo.InvariantCulture);
+                            TimeSpan mysuggestedendfixed = mysuggested.endTime;
+
+                            if (mysuggested.startTime > mysuggested.endTime)
+                            {
+                                mysuggestedendfixed = mysuggestedendfixed.Add(TimeSpan.FromDays(1));
+                            }
+
+                            if (timeopen > timeclose)
+                            {
+                                timeclose = timeclose.Add(TimeSpan.FromDays(1));
+                            }
+
+                            if (mysuggested.startTime >= timeopen && mysuggestedendfixed <= timeclose)
+                            {
+                                LoctationDTO dtoloc = new LoctationDTO();
+                                tblLoctation loctocheck = db.tblLoctation.Where(x => x.longitude == place.Geometry.Location.Longitude && x.latitude == place.Geometry.Location.Latitude).FirstOrDefault();
+                                if (loctocheck == null)
+                                {
+                                    tblLoctation locationnew = new tblLoctation();
+                                    locationnew.latitude = place.Geometry.Location.Latitude;
+                                    locationnew.longitude = place.Geometry.Location.Longitude;
+                                    locationnew.city = place.Name;
+                                    locationnew.Placeid = place.PlaceId;
+                                    db.tblLoctation.Add(locationnew);
+                                    db.SaveChanges();
+                                    dtoloc.latitude = locationnew.latitude;
+                                    dtoloc.longitude = locationnew.longitude;
+                                    dtoloc.city = locationnew.city;
+                                    mysuggested.locatation = dtoloc;
+                                    mysuggested.longitude = dtoloc.longitude;
+                                    mysuggested.latitude = dtoloc.latitude;
+                                }
+                                else
+                                {
+                                    dtoloc.latitude = loctocheck.latitude;
+                                    dtoloc.longitude = loctocheck.longitude;
+                                    dtoloc.city = loctocheck.city;
+                                    dtoloc.Placeid = place.PlaceId;
+                                    mysuggested.locatation = dtoloc;
+                                    mysuggested.latitude = loctocheck.latitude;
+                                    mysuggested.longitude = loctocheck.longitude;
+                                }
+                                mysuggested.place = place;
+                                placefound = true;
+                                return mysuggested;
+
+
+
+
+                            }
+                        }
+                    }
+                }
+
+                string place1 = placeslist[type].Where(x => x == place.PlaceId).FirstOrDefault();
+
+                if (place1 == null)
+                {
+                    placeslist[type].Add(place.PlaceId);
+
+                }
+
+
+
+            }
+
+            return null;
+
+
+
+
+        }
+
         public static async Task<SuggestedDTO> Generatemeetings(Googlecloudservices _googleservices,SuggestedDTO mysuggested, igroup192_prodEntities db, List<RatingData> ratedh)
         {
 
@@ -535,7 +876,6 @@ namespace ClassLibrary_SocialKeeper
                                 else
                                 {
                                     
-                                     pr = JsonConvert.DeserializeObject<PlaceResult>(ifexist);
                                     placetorun.Add(pr);
 
                                 }
@@ -659,7 +999,6 @@ namespace ClassLibrary_SocialKeeper
                                                 else
                                                 {
 
-                                                    pr = JsonConvert.DeserializeObject<PlaceResult>(ifexist);
                                                     placetorun.Add(pr);
 
                                                 }

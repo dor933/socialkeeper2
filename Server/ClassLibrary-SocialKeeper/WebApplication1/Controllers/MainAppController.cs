@@ -43,6 +43,133 @@ namespace WebApplication1.Controllers
             return "value";
         }
 
+        [HttpPost]
+        [Route("api/MainApp/Meetingbydemand")]
+        public async Task<HttpResponseMessage> Meetingbydemand([FromBody] Generatedmeeting meetingobj)
+        {
+            try
+            {
+                List<Events> creatoruserevents = await createlistevents(meetingobj.meetingcreatorphone);
+                List<Events> inviteduserevents = await createlistevents(meetingobj.meetinguserphone);
+                ExistsingUsers usercreatorexisting = Createxistinguser(meetingobj.meetingcreatorphone);
+                ExistsingUsers userinvitedexisting = Createxistinguser(meetingobj.meetinguserphone);
+                LoctationDTO locationcitydto = new LoctationDTO();
+
+
+                if (meetingobj.meetinglocation != null)
+                {
+                    locationcitydto.latitude = meetingobj.meetinglocation.latitude;
+                    locationcitydto.longitude = meetingobj.meetinglocation.longitude;
+                    locationcitydto.city = meetingobj.meetinglocation.city;
+                }
+
+
+
+                string meetingweekday = (((int)meetingobj.meetingdate.DayOfWeek + 6) % 7 + 1).ToString();
+                tblPreferredTime pref = new tblPreferredTime();
+                pref.weekDay = meetingweekday;
+                pref.startTime = meetingobj.meetingstarttime;
+                pref.endTime = meetingobj.meetingendtime;
+                List<List<Events>> myevents = Meetings.returneventsfixed(creatoruserevents, inviteduserevents, pref);
+
+                List<Events> userinviteevefixed = myevents[0];
+                List<Events> userinvitedfixed = myevents[1];
+                List<Tuple<TimeSpan, TimeSpan>> listmatch = Meetings.Findifcollapse(new Tuple<TimeSpan, TimeSpan>(pref.startTime, pref.endTime), userinviteevefixed, userinvitedfixed);
+                if (listmatch.Count == 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, "No time periods");
+                }
+                else
+                {
+                    foreach (var lismatchitems in listmatch)
+                    {
+
+
+
+                        SuggestedDTO sugdto = new SuggestedDTO();
+                        sugdto.status = "P";
+                        sugdto.prefferedtimerate = 0.5;
+                        sugdto.date = meetingobj.meetingdate;
+                        sugdto.user1 = usercreatorexisting;
+                        sugdto.user2 = userinvitedexisting;
+                        sugdto.startTime = lismatchitems.Item1;
+                        sugdto.endTime = lismatchitems.Item2;
+                        sugdto.phoneNum1 = usercreatorexisting.phonenumbers[0];
+                        sugdto.phoneNum2 = userinvitedexisting.phonenumbers[0];
+                        sugdto.hobbieNum = meetingobj.meetinghobbie.hobbieNum;
+                        sugdto.normalizehobbierank = 1;
+                        sugdto.rank = 0.5;
+                        SuggestedDTO suggstedaftermeeting = await Meetings.Generateplace_ondemand(_googleservices, sugdto, _db, locationcitydto);
+                        if (suggstedaftermeeting != null)
+                        {
+                            suggstedaftermeeting.date = new DateTime(suggstedaftermeeting.date.Year, suggstedaftermeeting.date.Month, suggstedaftermeeting.date.Day, 00, 00, 00);
+                            tblSuggestedMeeting sugmeetadd = new tblSuggestedMeeting();
+                            if (suggstedaftermeeting.endTime.Days > 0)
+                            {
+                                TimeSpan adjusttimespan = new TimeSpan(suggstedaftermeeting.endTime.Hours, suggstedaftermeeting.endTime.Minutes, suggstedaftermeeting.endTime.Seconds);
+                                suggstedaftermeeting.endTime = adjusttimespan;
+                            }
+                            sugmeetadd.date = suggstedaftermeeting.date;
+                            sugmeetadd.meetingNum = suggstedaftermeeting.meetingNum;
+                            sugmeetadd.phoneNum1 = suggstedaftermeeting.phoneNum1;
+                            sugmeetadd.phoneNum2 = suggstedaftermeeting.phoneNum2;
+                            sugmeetadd.latitude = suggstedaftermeeting.latitude;
+
+                            sugmeetadd.longitude = suggstedaftermeeting.longitude;
+                            sugmeetadd.startTime = suggstedaftermeeting.startTime;
+                            sugmeetadd.endTime = suggstedaftermeeting.endTime;
+                            sugmeetadd.rank = (float)suggstedaftermeeting.rank;
+                            sugmeetadd.hobbieNum = suggstedaftermeeting.hobbieNum;
+                            sugmeetadd.status = "P";
+                            _db.tblSuggestedMeeting.Add(sugmeetadd);
+                            _db.SaveChanges();
+                            int generatedmeetingnumber = sugmeetadd.meetingNum;
+                            suggstedaftermeeting.meetingNum = generatedmeetingnumber;
+                            tblSuggestedHobbie sughobbie = new tblSuggestedHobbie();
+                            sughobbie.hobbieNum = suggstedaftermeeting.hobbieNum;
+                            sughobbie.meetingNum = sugmeetadd.meetingNum;
+                            _db.tblSuggestedHobbie.Add(sughobbie);
+                            _db.SaveChanges();
+                            return Request.CreateResponse(HttpStatusCode.OK, suggstedaftermeeting);
+                        }
+
+                        //need to add hobbienum to tblsuggestedmeeting
+                        // need to normalize it and calculate score
+                        //if score is under some limit its not added at all.
+
+
+
+
+                    }
+
+                    return Request.CreateResponse(HttpStatusCode.OK, "Failed to find meeting location");
+                }
+            }
+            catch(Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+
+
+        }
+
+        public ExistsingUsers Createxistinguser (string phonenumber)
+        {
+            tblUser usertomeeting = _db.tblUser.Where(x => x.phoneNum1 == phonenumber).FirstOrDefault();
+            ExistsingUsers usertomeetingexist = new ExistsingUsers();
+            usertomeetingexist.phonenumbers.Add(usertomeeting.phoneNum1);
+            usertomeetingexist.birthDate = Convert.ToDateTime(usertomeeting.birthDate);
+            usertomeetingexist.city = usertomeeting.city;
+            usertomeetingexist.email = usertomeeting.email;
+            usertomeetingexist.userName = usertomeeting.userName;
+            usertomeetingexist.imageUri = usertomeeting.imageUri;
+            usertomeetingexist.gender = usertomeeting.gender;
+            usertomeetingexist.citylatt = Convert.ToDouble(usertomeeting.citylatt);
+            usertomeetingexist.citylong = Convert.ToDouble(usertomeeting.citylong);
+            return usertomeetingexist;
+
+        }
+
         public async Task<List<Events>> createlistevents(string phonenumber)
         {
             try
