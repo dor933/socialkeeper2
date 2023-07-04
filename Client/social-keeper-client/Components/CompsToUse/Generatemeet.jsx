@@ -1,5 +1,5 @@
 import react from 'react';
-import {View,Text,StyleSheet,TouchableOpacity,Image, SafeAreaView, Dimensions, FlatList,ImageBackground} from 'react-native';
+import {View,Text,StyleSheet,TouchableOpacity,Image, SafeAreaView, Dimensions,Alert, FlatList,ImageBackground} from 'react-native';
 //import usestate
 import { useState, useEffect, useContext } from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -10,6 +10,9 @@ import TimePicker from '../Screens/Settings/PrefComp/Timepicker';
 import DatePickerComponent from './DatePickerComponent';
 import Radiobutton from './Radiobutton';
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import axios from 'axios';
+import { isLoading } from 'expo-font';
+import Loadingcomp from './Loadingcomp';
 
 
 
@@ -31,6 +34,7 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
     const [selectedid, setSelectedid] = useState(null);
     const [addressbeenselected, setAddressbeenselected] = useState(false);
     const [chosencity, setchosencity] = useState(null);
+    const [loading, setLoading] = useState(false);
 
 
     useEffect(() => {
@@ -89,6 +93,7 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
       }
       setchosencity(myadder);
       setAddressbeenselected(true);
+      console.log('this is chosen city',chosencity);
     };
 
     const handlestarttime=(time)=>{
@@ -144,6 +149,11 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
         return;
       }
 
+      else if(loading){
+        console.log('loading');
+        return;
+      }
+
       else{
 
 
@@ -158,6 +168,24 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
         meetingcreatorphone:user.phoneNum1,
 
 
+    }
+
+    setLoading(true);
+
+    const response= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/MainApp/Meetingbydemand',meetingobject);
+    if(response.data.place != null){
+
+      setLoading(false);
+      const mymeeting=response.data;
+      const copyoftblsuggestedmeetings=user.tblSuggestedMeetings;
+      copyoftblsuggestedmeetings.push(mymeeting);
+      setUser({...user,tblSuggestedMeetings:copyoftblsuggestedmeetings});
+      navigation.navigate('Meetdetails', {meeting: mymeeting,usertomeet:mymeeting.user2,type:mymeeting.place.types[0],meetingtype:'suggested'});
+
+    }
+    else{
+      setLoading(false);
+     Alert.alert('Place not found', 'Please choose another location or time');
     }
 
     console.log('this is the meeting object',meetingobject);
@@ -227,14 +255,37 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
     }, [])
 
 
+    if(loading){
+      return (
+
+        <Loadingcomp/>
+      )
+    }
 
     return (
-        <SafeAreaView style={{flex:1, backgroundColor:'#ffffff'}}>
-            <View style={styles.container}>
+        <SafeAreaView style={{flex:1}}>
+            <View style={[styles.container]}>
+
+           
+      
+             
+               
             <Customheader/>
 
+            <View style={[styles.rowstyle,{justifyContent:'space-around',alignItems:'center',height:Dimensions.get('window').height/10,borderBottomWidth:0}]}>
             <View>
-                <Text style={styles.meetingtext}>Generate Meeting</Text>
+              <Image 
+                 source={{uri:chosenuser?.imageuri}}
+                 style={{width: Dimensions.get('window').width/7, height: Dimensions.get('window').height/15, borderRadius: 100}}
+                />
+              </View>
+              <View>
+              <Text style={styles.meetingtext}>Generate Meeting With</Text>
+         
+
+              </View>
+           
+            
             </View>
             <View style={{flex:1}}>
             <View style={styles.rowstyle} >
@@ -316,7 +367,7 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 <View style={{flexDirection:'row', width:Dimensions.get('window').width/1.6,height:"100%",paddingTop:5,paddingBottom:5}}>
 
 
-<View>
+<View style={{marginRight:10,borderRadius:20}}>
 <Text style={[styles.chooseusertext,{textAlign:'center',marginBottom:Dimensions.get('window').height/78}]}>
   End Time
 </Text>
@@ -324,7 +375,7 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 
 </View>
 
-<View>
+<View style={{borderRadius:20}}>
 <Text style={[styles.chooseusertext,{textAlign:'center',marginBottom:Dimensions.get('window').height/78}]} >
   Start Time
 </Text>
@@ -341,7 +392,7 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 
 </View>
 
-                        <View style={[styles.rowstyle,{height:Dimensions.get('window').height/7}]} >
+                        <View style={[styles.rowstyle,{height:Dimensions.get('window').height/7,borderBottomWidth:0}]} >
 
 <View style={{width:Dimensions.get('window').width/1.7}}>
 <GooglePlacesAutocomplete
@@ -351,7 +402,7 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
   fetchDetails={true}
   onPress={(data, details = null) => {
 
-    if(selectedid==1){
+    if(selectedid==2){
 
     handleSelectItem(data,details);
     console.log(data);
@@ -401,7 +452,7 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
       opacity: selectedid==2? 1:0.5,
       borderBottomWidth: 1,
       alignSelf:'center',
-      top:Dimensions.get('window').height/60,
+      top:Dimensions.get('window').height/40,
     
    
       
@@ -469,14 +520,14 @@ const styles = StyleSheet.create({
         borderBottomColor:'#f0ebeb',
         borderBottomWidth:1,
         paddingHorizontal:10,
+        
 
 
         },
       meetingtext:{
         fontFamily: 'Pacifico_400Regular',
-        fontSize: 33,
+        fontSize: 25,
         color: '#eb6a5e',
-        textAlign:'center',
         fontStyle: 'normal',
         lineHeight: 54,
       
@@ -490,7 +541,7 @@ const styles = StyleSheet.create({
 
       dropdown: {
         height: Dimensions.get('window').height / 17,
-        borderColor: 'gray',
+        borderColor: '#eb6a5e',
         borderWidth: 0.5,
         width: Dimensions.get('window').width - 140,
         borderRadius: 8,
@@ -551,7 +602,7 @@ const styles = StyleSheet.create({
 
           submitbox:{
 
-            backgroundColor: "#1976D2",
+            backgroundColor: "#eb6a5e",
             boxShadow: '0px 0px 40px 2px rgba(0, 0, 0, 0.5)',
             borderRadius: 25,
             justifyContent:'center',

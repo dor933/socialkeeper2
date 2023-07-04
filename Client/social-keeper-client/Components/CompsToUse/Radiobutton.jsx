@@ -13,7 +13,7 @@ export default function Radiobutton(props) {
             value: 'option1',
             containerStyle:{paddingLeft:15,
             },
-           labelStyle:{fontFamily:'Lato_400Regular',fontSize:10}
+           labelStyle:{fontFamily:'Lato_400Regular',fontSize:10,}
 
 
 
