@@ -80,6 +80,8 @@ const Businesspage = ({route,navigation}) => {
                     starStrokeWidth="2px"
                     starType="svg"
                     starStrokeColor="red"
+                    onChange={()=> {return}}
+
                     />
                     </View>
                 }

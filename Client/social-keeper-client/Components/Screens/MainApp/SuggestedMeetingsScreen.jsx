@@ -268,7 +268,7 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
           buttons={['Approved', 'Waiting','Suggested']}
           containerStyle={{height: 44, width:Dimensions.get('window').width-60, borderRadius: 25, backgroundColor: 'rgba(0, 0, 0, 0.05)'}}
           textStyle={{fontFamily: 'Lato_400Regular', fontSize: 14, color: 'rgba(0, 0, 0, 0.5)', textAlign:'center', fontStyle: 'normal', lineHeight: 19, letterSpacing: 0.03, fontWeight: 'normal',}}
-          selectedButtonStyle={{backgroundColor: '#ffffff'}}
+          selectedButtonStyle={{backgroundColor: selectedIndex==2? '#f5a093' : selectedIndex==1 ? '#f5f093' : '#93f5a3'}}
           selectedTextStyle={{color: 'rgba(0, 0, 0, 0.5)'}}
           innerBorderStyle={{width: 0}}
           selectedIndex={selectedIndex}

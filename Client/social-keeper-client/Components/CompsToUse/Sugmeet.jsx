@@ -8,6 +8,8 @@ import { Ionicons } from "@expo/vector-icons";
 import {MainAppcontext} from "../Screens/MainApp/MainAppcontext";
 import axios from "axios";
 import * as Calendar from 'expo-calendar';
+import StarRating from 'react-native-star-rating-widget';
+
 
 //import lato font
 
@@ -336,6 +338,21 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
           {meeting.startTime}/ {meeting.endTime}
         </Text>
         <Text style={styles.subtextstyle}>{meeting.place.name} </Text>
+        <StarRating
+                    rating={meeting.place.rating}
+                    starDimension="20px"
+                    starSize={10}
+                    starSpacing="2px"
+                    starRatedColor="red"
+                    starEmptyColor="grey"
+                    starHoverColor="red"
+                    starStrokeWidth="2px"
+                    starType="svg"
+                    starStrokeColor="red"
+                    style={{marginTop:Dimensions.get('window').height/120}}
+                    onChange={()=> {return}}
+
+                    />
 
     
      
@@ -394,6 +411,21 @@ export default function Sugmeet({ meeting, navigation,meetingnumnew, invitedbyfr
         -{meeting.startTime}/ {meeting.endTime}
       </Text>
       <Text style={styles.subtextstyle}>{meeting.place.name}</Text>
+      <StarRating
+                    rating={meeting.place.rating}
+                    starDimension="15px"
+                    starSize={10}
+                    starSpacing="1px"
+                    starRatedColor="red"
+                    starEmptyColor="grey"
+                    starHoverColor="red"
+                    starStrokeWidth="2px"
+                    starType="svg"
+                    starStrokeColor="red"
+                    //make it view only
+                     onChange={()=> {return}}
+                     style={{marginTop:Dimensions.get('window').height/120}}
+                    />
       {
           meetingnumnew==meeting.meetingNum &&
           
