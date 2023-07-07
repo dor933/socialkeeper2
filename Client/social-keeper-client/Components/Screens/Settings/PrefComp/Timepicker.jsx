@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 
-const TimePicker = ({ onTimeSelected }) => {
+const TimePicker = ({ onTimeSelected , fromgenerate}) => {
   const hours = [...Array(24)].map((_, i) => `${i}:00`);
   const [selectedHour, setSelectedHour] = useState(null);
 
@@ -13,7 +13,7 @@ const TimePicker = ({ onTimeSelected }) => {
 
 
   const renderItem = ({ item }) => (
-    <View style={[ {width:100,marginBottom:10,borderRadius:10,alignItems:'center',backgroundColor: item === selectedHour ? '#f0f0f0' : '#fff' }]}>
+    <View style={[ {width:100,marginBottom:10,borderRadius: 10,alignItems:'center',backgroundColor: item === selectedHour? '#cce7e8' : item!=selectedHour && fromgenerate? "#ffffff" : '##ffffff' }]}>
             <TouchableOpacity
       onPress={() => handlePress(item)}
     >
@@ -45,11 +45,15 @@ const styles = StyleSheet.create({
 
     },
     timeText: {
-        fontSize: 14,
+        fontSize: 12,
+        fontFamily:'Pacifico_400Regular',
+        
+        
     },
     timePicker: {
         alignItems: 'center',
         justifyContent: 'center',
+        
         
         
         

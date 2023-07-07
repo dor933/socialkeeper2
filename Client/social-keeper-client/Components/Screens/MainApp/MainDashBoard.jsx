@@ -26,6 +26,7 @@ import Businesspage from './Businesspage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthContext from '../../../Authcontext';
 import { RegistContext } from '../../../RegistContext';
+import Generatemeet from '..//../CompsToUse/Generatemeet.jsx';
 
 
 
@@ -58,6 +59,7 @@ function SuggestedMeetingsStackScreen({fromnotif,notifobj,navigation}) {
         <SuggestedMeetingsStack.Screen name="SuggestedMeetingCalender" component={Calender} options={{headerShown:false}} />
         <SuggestedMeetingsStack.Screen name="MapLocationForHobbies" component={MapLocationForHobbies} options={{headerShown:false}} />
         <SuggestedMeetingsStack.Screen name="Meetdetails" component={Meetdetails} options={{headerShown:false}} />
+        <SuggestedMeetingsStack.Screen name="Generatemeet" component={Generatemeet} options={{headerShown:false}} />
       </SuggestedMeetingsStack.Navigator>
     );
   }
@@ -176,56 +178,13 @@ export default function MainDashBoard({route}) {
 
       }
 
-      else if(notifobj.notiftype=='Meeting Ended'){
-
-        const meetingnum=notifobj.meetingnum;
-        getactualmeeting(meetingnum)
   
-      }
 
      
     }
   }, [notifobj]);
 
-  const getactualmeeting = async (meetingnum) => {
-    console.log('im into getactualmeeting')
-    let meetingtofind= user.tblactualmeetings.find ((item) => item.meetingNum==meetingnum)
-    if(!meetingtofind){
-      meetingtofind= user.tblactualmeetings1.find ((item) => item.meetingNum==meetingnum)
-      }
-
-      if(meetingtofind){
-        console.log('this meeting is already in actualmeetings')
-      }
-      else{
-    const newmeeting= await axios.get(`http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/getactualmeeting/${meetingnum}`);
-    const meetingtoret= newmeeting.data;
-    if(meetingtoret?.tblSuggestedMeeting.phoneNum1==user.phoneNum1){
-
-      const newtblactualmeetings= user.tblactualmeetings;
-      newtblactualmeetings.push(meetingtoret)
-      const Newuser={...user}
-      Newuser.tblactualmeetings=newtblactualmeetings;
-      setUser(Newuser);
-
-    }
-    else{
-        
-        const newtblactualmeetings1= user.tblactualmeetings1;
-        newtblactualmeetings1.push(meetingtoret)
-        const Newuser={...user}
-        Newuser.tblactualmeetings1=newtblactualmeetings1;
-        setUser(Newuser);
-  
-      }
-
-      setNumberofnewendedmeetings(numberofnewendedmeetings+1)
-
-
-
-  }
-}
-
+ 
 
 
   const getrequestasync = async () => {
@@ -853,6 +812,7 @@ else{
             }} />
             <Tab.Screen name="Suggested Meetings" 
             options={{
+              tabBarStyle: ispersonalactiveated? styles.tabBarhidden : styles.tabBar,
                 headerShown: false,
             }}
           
@@ -869,6 +829,7 @@ const styles = StyleSheet.create({
   
     tabBar: {
         backgroundColor: '#fff',
+        
         
     },
 

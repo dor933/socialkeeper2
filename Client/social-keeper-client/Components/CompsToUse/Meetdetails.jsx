@@ -16,6 +16,7 @@ const calendarIcon = <Icon name="calendar" size={20} color="#900" style={{ right
 const clockIcon = <Icon name="clock-o" size={20} color="#900" style={{ right: 1 }} />;
 const locationIcon = <Icon name="map-marker" size={20} color="#900" style={{ right: -2 }} />;
 const meetingTypeIcon = <Icon name="users" size={20} color="#900" style={{ right: 2 }} />;
+const homeicon= <Icon name="home" size={20} color="#900" style={{ right: 2 }} />;
 
 //Upper component
 const Details = ({route,navigation}) => {
@@ -212,6 +213,10 @@ const Details = ({route,navigation}) => {
                                 </View>
                                 }
                         </TouchableOpacity>
+                    </View>
+                    <View style={styles.item}>
+                        {homeicon}
+                        <Text style={styles.text}>{meeting.place.name}</Text>
                     </View>
                     <View style={styles.item}>
                         {calendarIcon}

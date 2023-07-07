@@ -80,6 +80,8 @@ const Businesspage = ({route,navigation}) => {
                     starStrokeWidth="2px"
                     starType="svg"
                     starStrokeColor="red"
+                    onChange={()=> {return}}
+
                     />
                     </View>
                 }
@@ -113,7 +115,7 @@ const Businesspage = ({route,navigation}) => {
                 {
                     place.reviews.map((item,index)=>{
                             return(
-                                <View style={styles.ratingbox}>
+                                <View style={styles.ratingbox} key={index}>
                                     <Image source={{uri:item.profile_photo_url}} style={styles.imagerating}/>
                                     <View style={{alignItems:'center',marginLeft:10}}>
                                     <Text style={{fontFamily:'Lato_400Regular',height:20,color:'#e67465',fontSize:14}}>{item.author_name}</Text>

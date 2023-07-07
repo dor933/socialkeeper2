@@ -13,7 +13,6 @@ const Loadingcomp = () => {
                 </View>
                 <View style={{height:150}}>
                 <Text style={styles.text}>Preparing your meetings...</Text>
-                <Text style={styles.text}>This could take between 2 to 3 minutes</Text>
 
                 </View>
             </ImageBackground>

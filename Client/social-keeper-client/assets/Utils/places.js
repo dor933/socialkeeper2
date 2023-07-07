@@ -8,8 +8,9 @@ global.Buffer = global.Buffer || require('buffer').Buffer;
 
 
 const getPlaceDetails = async (placeId) => {
+
+
     const fileName = `${placeId}`;
-    console.log('placeid', placeId)
     // Create a reference to the file we want to download
     const fileRef = ref(firebaseInstance.storage, `Places/${fileName}`);
    
@@ -18,16 +19,25 @@ const getPlaceDetails = async (placeId) => {
     try {
       // Check if the file exists in Firebase Storage
 
+      
 
       const url = await getDownloadURL(fileRef);
+      
+      console.log('url', url);
+      console.log('placeid', placeId)
 
+      const linktodownload=`https://storage.googleapis.com/responsive-cab-377615.appspot.com/Places/${placeId}`
 
     
       
 
   
       // Fetch the JSON file from Firebase Storage
-      const response = await axios.get(url);
+      const response = await axios.get(linktodownload);
+      
+      
+
+      console.log('response', response.data);
       return response.data;
     }
      catch (error) {
