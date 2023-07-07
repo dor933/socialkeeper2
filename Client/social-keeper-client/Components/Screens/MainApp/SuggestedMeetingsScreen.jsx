@@ -248,7 +248,7 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
               Alert.alert('No Friends To invite', 'You need to add friends to generate a meeting')
             }
             else{
-            navigation.navigate('GenerateMeeting')
+            navigation.navigate('Generatemeet')
             }
           }}
           >
