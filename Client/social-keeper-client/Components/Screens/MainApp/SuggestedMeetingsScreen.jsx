@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native'
 // import use context
 import React from 'react'
 import Customheader from '../../CompsToUse/Customheader'
@@ -241,7 +241,16 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
         <View style={styles.generatemeetbutton}>
 
           < TouchableOpacity style={{flexDirection:'row-reverse',height:"100%",alignItems:'center',justifyContent:'center'}}
-          onPress={navigatetogeneratemeet}
+          onPress={()=> {
+
+            const concatarray= user.tblSuggestedMeetings.concat(user.tblSuggestedMeetings1)
+            if(concatarray.length==0){
+              Alert.alert('No Friends To invite', 'You need to add friends to generate a meeting')
+            }
+            else{
+            navigation.navigate('GenerateMeeting')
+            }
+          }}
           >
     
          <Icon

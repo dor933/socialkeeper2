@@ -17,7 +17,7 @@ const TimePicker = ({ onTimeSelected , fromgenerate}) => {
             <TouchableOpacity
       onPress={() => handlePress(item)}
     >
-      <Text style={[styles.timeText,{fontFamily:fromgenerate? 'Pacifico_400Regular' : 'Lato_400Regular', fontSize:!fromgenerate && 14}]}>{item}</Text>
+      <Text style={[styles.timeText,{fontFamily:fromgenerate? 'Pacifico_400Regular' : 'Lato_400Regular', fontSize:!fromgenerate? 14 : 10}]}>{item}</Text>
     </TouchableOpacity>
 
     </View>

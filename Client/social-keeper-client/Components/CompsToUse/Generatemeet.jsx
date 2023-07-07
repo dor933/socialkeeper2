@@ -197,7 +197,7 @@ import Loadingcomp from './Loadingcomp';
     setendtimevalue(null);
     setchosencity(null);
     setchosenhobby(null);
-    
+
 
     console.log('this is the meeting object',meetingobject);
   }
@@ -236,7 +236,12 @@ import Loadingcomp from './Loadingcomp';
         const tblcopyfavoritecontacts= user.tblFavoriteContacts;
         const tblcopyfavoritecontacts1= user.tblFavoriteContacts1;
 
+        console.log('this is user',user);
+
         const allfavoritecontacts=tblcopyfavoritecontacts.concat(tblcopyfavoritecontacts1);
+
+     
+
         console.log('this is the userdtohobbies',allfavoritecontacts[0].tblUser1.tblUserHobbiesDTO);
         const favoriteaslabelandvalue=allfavoritecontacts.map((item)=>{
 
@@ -262,9 +267,12 @@ import Loadingcomp from './Loadingcomp';
                 phoneNum1:item.tblUser1.phoneNum1,
             }
         })
-        console.log(favoriteaslabelandvalue);
+
+
+      
         setAllfavoritecontacts(favoriteaslabelandvalue);
         setchosenuser(favoriteaslabelandvalue[0]);
+        
         
 
     }, [])
