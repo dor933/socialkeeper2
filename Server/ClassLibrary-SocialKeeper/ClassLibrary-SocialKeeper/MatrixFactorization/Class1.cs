@@ -71,7 +71,7 @@ namespace ClassLibrary_SocialKeeper
 
         public static void Timeandhobbiegenerator(List<Events> userinviteeve, List<Events> userinvitedeve, List<SuggestedDTO> existingsugmeetings, ExistsingUsers user1exist, tblUser usertomeeting,
           ExistsingUsers usertomeetingexist, List<RatingData> ratedhobbies, RatingData ratemax, tblFavoriteContact item, ref double totalmeetingrank, ref int numbermeetings, List<SuggestedDTO> suggestedmeet,
-          double prefferdtimerate, List<tblPreferredTime> commontimeperiods2)
+          double prefferdtimerate, List<tblPreferredTime> commontimeperiods2, igroup192_prodEntities _db)
         {
             bool existingperiod = false;
             List<tblPreferredTime> usertblpref = item.tblUser.tblPreferredTime.ToList();
@@ -159,7 +159,7 @@ namespace ClassLibrary_SocialKeeper
                             }
                         }
                         sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (75.0 - 1.0);
-                        totalmeetingrank = Meetings.calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate);
+                        totalmeetingrank = Meetings.calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate,item,_db);
                         sugdto.rank = totalmeetingrank;
                         //need to add hobbienum to tblsuggestedmeeting
                         // need to normalize it and calculate score
@@ -202,7 +202,7 @@ namespace ClassLibrary_SocialKeeper
         }
         public static void RandomTimeandhobbiegenerator(List<Events> userinviteeve, List<Events> userinvitedeve, List<SuggestedDTO> existingsugmeetings, ExistsingUsers user1exist, tblUser usertomeeting,
           ExistsingUsers usertomeetingexist, List<RatingData> ratedhobbies, RatingData ratemax, tblFavoriteContact item, ref double totalmeetingrank, ref int numbermeetings, List<SuggestedDTO> suggestedmeet,
-          double prefferdtimerate)
+          double prefferdtimerate, igroup192_prodEntities _db)
         {
             bool existingperiod = false;
             DateTime dateto = DateTime.Now;
@@ -313,7 +313,7 @@ namespace ClassLibrary_SocialKeeper
                             }
                         }
                         sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (75.0 - 1.0);
-                        totalmeetingrank = calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate);
+                        totalmeetingrank = calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate, item, _db);
                         sugdto.rank = totalmeetingrank;
                         //need to add hobbienum to tblsuggestedmeeting
                         // need to normalize it and calculate score
@@ -622,6 +622,12 @@ namespace ClassLibrary_SocialKeeper
 
 
                                 }
+
+                                else if (period.Open.Day == currentDayOfWeek - 1 && period.Close.Day == currentDayOfWeek && TimeSpan.Parse(period.Close.Time) > mysuggested.endTime)
+                                {
+                                    opcloseday.Add(period);
+
+                                }
                             }
                         }
 
@@ -630,10 +636,19 @@ namespace ClassLibrary_SocialKeeper
                             TimeSpan timeopen = TimeSpan.ParseExact(period.Open.Time, "hhmm", CultureInfo.InvariantCulture);
                             TimeSpan timeclose = TimeSpan.ParseExact(period.Close.Time, "hhmm", CultureInfo.InvariantCulture);
                             TimeSpan mysuggestedendfixed = mysuggested.endTime;
+                            TimeSpan mysuggestedstartfixed=mysuggested.startTime;
 
                             if (mysuggested.startTime > mysuggested.endTime)
                             {
                                 mysuggestedendfixed = mysuggestedendfixed.Add(TimeSpan.FromDays(1));
+                            }
+
+                            if (period.Open.Day == currentDayOfWeek - 1)
+                            {
+                                mysuggestedendfixed = mysuggestedendfixed.Add(TimeSpan.FromDays(1));
+                                mysuggestedstartfixed = mysuggestedstartfixed.Add(TimeSpan.FromDays(1));
+
+
                             }
 
                             if (timeopen > timeclose)
@@ -641,7 +656,7 @@ namespace ClassLibrary_SocialKeeper
                                 timeclose = timeclose.Add(TimeSpan.FromDays(1));
                             }
 
-                            if (mysuggested.startTime >= timeopen && mysuggestedendfixed <= timeclose)
+                            if (mysuggestedstartfixed >= timeopen && mysuggestedendfixed <= timeclose)
                             {
                                 LoctationDTO dtoloc = new LoctationDTO();
                                 tblLoctation loctocheck = db.tblLoctation.Where(x => x.longitude == place.Geometry.Location.Longitude && x.latitude == place.Geometry.Location.Latitude).FirstOrDefault();
@@ -723,6 +738,7 @@ namespace ClassLibrary_SocialKeeper
             List<PlaceResult> placetorun= new List<PlaceResult>();
             List<string> typeswithoutplaces= new List<string>();
             Dictionary<string, List<PlaceResult>> placeslist= new Dictionary<string, List<PlaceResult>>();
+            tblFavoriteContact fav = db.tblFavoriteContact.Where(x => (x.phoneNum1 == mysuggested.phoneNum1 && x.phoneNum2 == mysuggested.phoneNum2) || (x.phoneNum2 == mysuggested.phoneNum1 && x.phoneNum1 == mysuggested.phoneNum2)).FirstOrDefault();
            
       
 
@@ -910,7 +926,7 @@ namespace ClassLibrary_SocialKeeper
                                 {
                                     double hobbierank = ratedh.Where(x => x.HobbieNum == hobbienum).FirstOrDefault().Label;
                                     mysuggested.normalizehobbierank = (hobbierank - 1.0) / (75.0 - 1.0);
-                                    mysuggested.rank = calculatemeetingscore(mysuggested.normalizehobbierank, mysuggested.prefferedtimerate);
+                                    mysuggested.rank = calculatemeetingscore(mysuggested.normalizehobbierank, mysuggested.prefferedtimerate, fav,db);
                                     mysuggested.hobbieNum= hobbienum;
                                     if (placeslist[type].Count == 10)
                                     {
@@ -1107,6 +1123,11 @@ namespace ClassLibrary_SocialKeeper
 
 
                                     }
+                                        else if(period.Open.Day==currentDayOfWeek-1 && period.Close.Day==currentDayOfWeek && TimeSpan.Parse(period.Close.Time) > mysuggested.endTime)
+                                    {
+                                        opcloseday.Add(period);
+
+                                    }
                                 }
                                 }
 
@@ -1115,10 +1136,19 @@ namespace ClassLibrary_SocialKeeper
                                     TimeSpan timeopen = TimeSpan.ParseExact(period.Open.Time, "hhmm", CultureInfo.InvariantCulture);
                                     TimeSpan timeclose = TimeSpan.ParseExact(period.Close.Time, "hhmm", CultureInfo.InvariantCulture);
                                 TimeSpan mysuggestedendfixed = mysuggested.endTime;
+                                TimeSpan mysuggestedstartfixed= mysuggested.startTime;
 
-                                if (mysuggested.startTime > mysuggested.endTime)
+                                if (mysuggested.startTime > mysuggested.endTime )
                                 {
                                     mysuggestedendfixed = mysuggestedendfixed.Add(TimeSpan.FromDays(1));
+                                }
+
+                                if(period.Open.Day == currentDayOfWeek - 1)
+                                {
+                                    mysuggestedendfixed = mysuggestedendfixed.Add(TimeSpan.FromDays(1));
+                                    mysuggestedstartfixed= mysuggestedstartfixed.Add(TimeSpan.FromDays(1));
+
+
                                 }
 
                                 if (timeopen > timeclose)
@@ -1126,7 +1156,7 @@ namespace ClassLibrary_SocialKeeper
                                     timeclose= timeclose.Add(TimeSpan.FromDays(1));
                                 }
 
-                                    if (mysuggested.startTime >= timeopen && mysuggestedendfixed <= timeclose)
+                                    if (mysuggestedstartfixed >= timeopen && mysuggestedendfixed <= timeclose)
                                     {
                                         LoctationDTO dtoloc = new LoctationDTO();
                                         tblLoctation loctocheck = db.tblLoctation.Where(x => x.longitude == place.Geometry.Location.Longitude && x.latitude == place.Geometry.Location.Latitude).FirstOrDefault();
@@ -1417,11 +1447,38 @@ namespace ClassLibrary_SocialKeeper
             return today.AddDays(daysUntilTargetDay);
         }
 
-        static public double calculatemeetingscore(double hobbyranknormalized,double prefferedtimerate)
+        static public double calculatemeetingscore(double hobbyranknormalized,double prefferedtimerate,tblFavoriteContact fav , igroup192_prodEntities _db)
         {
-      
 
-            double sugmeetingrank = (0.5 * hobbyranknormalized)  + (0.5 * prefferedtimerate);
+            double avaragescore = 0;
+            List<tblSuggestedMeeting> actual = _db.tblSuggestedMeeting.Where(x => (x.phoneNum1 == fav.phoneNum1 && x.phoneNum2 == fav.phoneNum2) || (x.phoneNum1 == fav.phoneNum2 &&
+            x.phoneNum2 == fav.phoneNum1)).ToList();
+
+            List<tblActualMeeting> actulist = new List<tblActualMeeting>();
+            foreach(tblSuggestedMeeting item in actual)
+            {
+                tblActualMeeting act = _db.tblActualMeeting.Where(x => x.meetingNum == item.meetingNum).FirstOrDefault();
+                if (act != null)
+                {
+                    actulist.Add(act);
+                }
+
+            }
+            if (actulist.Count>0 )
+            {
+                foreach(tblActualMeeting itemact in actulist)
+                {
+                    double rankuser1 = Convert.ToDouble(itemact.rankUser1);
+                    double rankuser2= Convert.ToDouble(itemact.rankUser2);
+                    double avarage = (rankuser1 + rankuser2) / 2.0;
+                    avaragescore += avarage;
+                }
+                avaragescore = avaragescore / actulist.Count();
+                avaragescore = (avaragescore - 1.0) / (5.0 - 1.0);
+
+            }
+
+            double sugmeetingrank = (0.3 * hobbyranknormalized) + (0.3 * prefferedtimerate) + (0.4 * avaragescore);
             return sugmeetingrank;
 
         }

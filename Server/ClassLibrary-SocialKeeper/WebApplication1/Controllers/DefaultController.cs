@@ -146,6 +146,7 @@ namespace WebApplication1.Controllers
                     userhobbiedto.phoneNum1 = userhobbie.phoneNum1;
                     tblHobbie hob= _db.tblHobbie.Where(h => h.hobbieNum == userhobbie.hobbieNum).FirstOrDefault();
                     userhobbiedto.hobbiename = hob.hobbieName;
+                    userhobbiedto.hobbieimage = hob.imageuri;
                     userhobbiesdtolist.Add(userhobbiedto);
                 }
                 user1dto.tblUserHobbiesDTO= userhobbiesdtolist;
@@ -188,6 +189,7 @@ namespace WebApplication1.Controllers
                     userhobbiedto.phoneNum1 = userhobbie.phoneNum1;
                     tblHobbie hob = _db.tblHobbie.Where(h => h.hobbieNum == userhobbie.hobbieNum).FirstOrDefault();
                     userhobbiedto.hobbiename = hob.hobbieName;
+                    userhobbiedto.hobbieimage = hob.imageuri;
                     userhobbiesdtolist.Add(userhobbiedto);
                 }
                 user1dto.tblUserHobbiesDTO = userhobbiesdtolist;

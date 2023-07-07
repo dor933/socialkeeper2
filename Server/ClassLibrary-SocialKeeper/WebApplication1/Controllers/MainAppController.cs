@@ -380,7 +380,8 @@ namespace WebApplication1.Controllers
                         while(numbermeetings<5 )
                         {
                             List<tblPreferredTime> commontimeperiods2 = new List<tblPreferredTime>();
-                            Meetings.Timeandhobbiegenerator(userinviteeve, userinvitedeve, existingsugmeetings, user1exist, usertomeeting, usertomeetingexist, ratedhobbies, ratemax, item, ref totalmeetingrank, ref numbermeetings, suggestedmeet, 1, commontimeperiods2);
+                            
+                            Meetings.Timeandhobbiegenerator(userinviteeve, userinvitedeve, existingsugmeetings, user1exist, usertomeeting, usertomeetingexist, ratedhobbies, ratemax, item, ref totalmeetingrank, ref numbermeetings, suggestedmeet, 1, commontimeperiods2, _db);
                             if (numbermeetings >= 5)
                             {
                                 break;
@@ -388,7 +389,7 @@ namespace WebApplication1.Controllers
 
                        
                             Meetings.Timeandhobbiegenerator(userinviteeve, userinvitedeve, existingsugmeetings, user1exist, usertomeeting, usertomeetingexist, ratedhobbies, ratemax, item, ref totalmeetingrank,
-                            ref numbermeetings, suggestedmeet, 0.5, usertomeeting.tblPreferredTime.ToList());
+                            ref numbermeetings, suggestedmeet, 0.5, usertomeeting.tblPreferredTime.ToList() , _db);
                             if (numbermeetings >= 5)
                             {
                                 break;
@@ -397,7 +398,7 @@ namespace WebApplication1.Controllers
                           
 
                             Meetings.RandomTimeandhobbiegenerator(userinviteeve, userinvitedeve, existingsugmeetings, user1exist, usertomeeting, usertomeetingexist, ratedhobbies, ratemax,
-                                item, ref totalmeetingrank, ref numbermeetings, suggestedmeet, 0);
+                                item, ref totalmeetingrank, ref numbermeetings, suggestedmeet, 0 , _db);
 
                            
 
@@ -469,7 +470,7 @@ namespace WebApplication1.Controllers
                         {
 
                             List<tblPreferredTime> commontimeperiods2 = new List<tblPreferredTime>();
-                            Meetings.Timeandhobbiegenerator(userinviteeve, userinvitedeve, existingsugmeetings, user1exist, usertomeeting, usertomeetingexist, ratedhobbies, ratemax, item, ref totalmeetingrank, ref numbermeetings, suggestedmeet, 1, commontimeperiods2);
+                            Meetings.Timeandhobbiegenerator(userinviteeve, userinvitedeve, existingsugmeetings, user1exist, usertomeeting, usertomeetingexist, ratedhobbies, ratemax, item, ref totalmeetingrank, ref numbermeetings, suggestedmeet, 1, commontimeperiods2, _db);
                             if (numbermeetings >= 3)
                             {
                                 break;
@@ -478,7 +479,7 @@ namespace WebApplication1.Controllers
                         
 
                             Meetings.Timeandhobbiegenerator(userinviteeve, userinvitedeve, existingsugmeetings, user1exist, usertomeeting, usertomeetingexist, ratedhobbies, ratemax, item, ref totalmeetingrank,
-                     ref numbermeetings, suggestedmeet, 0.5, usertomeeting.tblPreferredTime.ToList());
+                     ref numbermeetings, suggestedmeet, 0.5, usertomeeting.tblPreferredTime.ToList(), _db);
                             if (numbermeetings >= 5)
                             {
                                 break;
@@ -486,7 +487,7 @@ namespace WebApplication1.Controllers
 
 
                             Meetings.RandomTimeandhobbiegenerator(userinviteeve, userinvitedeve, existingsugmeetings, user1exist, usertomeeting, usertomeetingexist, ratedhobbies, ratemax,
-                         item, ref totalmeetingrank, ref numbermeetings, suggestedmeet, 0);
+                         item, ref totalmeetingrank, ref numbermeetings, suggestedmeet, 0, _db);
 
                           
 
