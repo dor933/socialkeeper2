@@ -359,10 +359,11 @@ const styles = StyleSheet.create({
     },
     closeButton: {
         position: 'absolute',
-        top: 40,
-        right: 20,
+        top: 270,
+        right: 68,
         backgroundColor: 'white',
         width: 30,
+        zIndex: 1,
         height: 30,
         borderRadius: 15,
         justifyContent: 'center',
@@ -374,13 +375,13 @@ const styles = StyleSheet.create({
     },
     modalContent: {
         backgroundColor: 'white',
-        width: '80%',
-        height: '80%',
+        width: 300,
+        height: 300,
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 1,
         borderColor: 'white',
-        borderRadius: 20,
+        borderRadius: 50,
         overflow: 'hidden',
     },
     buttonsviews:{
@@ -394,8 +395,9 @@ const styles = StyleSheet.create({
         
     },
     modalImage: {
-        width: '100%',
-        height: '100%',
+        width: 300,
+        height: 300,
+        borderRadius:50
     },
     cancelButton: {
         color: '#D24747',

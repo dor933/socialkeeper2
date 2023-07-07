@@ -23,7 +23,7 @@ export default function Radiobutton(props) {
             label: 'By City',
             value: 'option2',
             labelStyle:{fontFamily:'Lato_400Regular',fontSize:10,
-            paddingLeft:6,
+            paddingLeft:5.5,
         }
 
             

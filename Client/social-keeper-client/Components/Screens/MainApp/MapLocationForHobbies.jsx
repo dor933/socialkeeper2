@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
  
     position:'absolute',
-    marginTop: 700,
+    marginTop: Dimensions.get('window').height - 130,
     width: Dimensions.get('window').width - 50,
     alignSelf: 'center',
     padding:10,

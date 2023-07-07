@@ -664,6 +664,8 @@ const styles = StyleSheet.create({
     width:Dimensions.get('window').width-100,
     height:Dimensions.get('window').height/1.7,
     paddingTop:0,
+    justifyContent:'center',
+ 
     alignSelf:'center',
   },
 

@@ -812,6 +812,7 @@ else{
             }} />
             <Tab.Screen name="Suggested Meetings" 
             options={{
+              tabBarStyle: ispersonalactiveated? styles.tabBarhidden : styles.tabBar,
                 headerShown: false,
             }}
           
@@ -828,6 +829,7 @@ const styles = StyleSheet.create({
   
     tabBar: {
         backgroundColor: '#fff',
+        
         
     },
 

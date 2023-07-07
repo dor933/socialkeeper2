@@ -4,6 +4,7 @@ import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { Input } from "@rneui/themed";
 import { RegistContext } from '../..//RegistContext.jsx';
 import { useContext } from 'react';
+import { Icon } from 'react-native-elements';
 
 
 export default (props) => {
@@ -107,8 +108,16 @@ export default (props) => {
           placeholder= { !fromgeneratemeeting? "Date of Birth" : "Meeting Time"}
           value={hasDateBeenSelected ? date.toDateString() : !fromgeneratemeeting? 'Date of Birth' : "Meeting Date"}
           editable={false}
-          leftIcon={{ type: 'font-awesome', name: 'calendar' }}
-          style={{color: isfrommainapp? '#ffffff': hasDateBeenSelected? "black" : "#8d97a0"}}
+          leftIcon={
+            <Icon
+              name={!fromgeneratemeeting? "calendar" : "date-range"}
+              size={24}
+              style={{color: isfrommainapp? '#ffffff': hasDateBeenSelected? "black" : "#8d97a0"}}
+
+
+            />
+          }
+          style={{color: isfrommainapp? '#ffffff': hasDateBeenSelected? "black" : "#8d97a0" , fontFamily:'Lato_400Regular'}}
         />
       </TouchableOpacity>
 
@@ -127,6 +136,7 @@ export default (props) => {
             borderColor: 'black',
             
           }}
+          //pick a theme for the date picker
         />
       )}
     </>

@@ -723,6 +723,9 @@ const renderItem = ({ item }) => {
       </View>
 
      <View style={{flex:1,marginTop:10}}>
+      {
+        console.log('filteredalready',filteredalreadymebers.length)
+      }
       
      { alreadymembers!='No Users' && (
     <View>
@@ -734,6 +737,13 @@ const renderItem = ({ item }) => {
         renderItem={renderfavoriteItem}
         keyExtractor={(item) => item.phonenumbers[0]}
         extraData={alreadymembers}
+        style={{ marginBottom:5,height:isfrommainapp && filteredalreadymebers.length>0 ? "100%" : !isfrommainapp && filteredalreadymebers.length>0 ? Dimensions.get('window').height/4.7 : "0%"}} 
+        
+        //show the scroll bar all the time
+        //hide the scroll bar
+      
+     
+
       />
     </View>
     
@@ -866,7 +876,7 @@ const renderItem = ({ item }) => {
         />
 
       </TouchableOpacity>
-      <Text style={{textAlign:'center',fontSize:16,fontFamily:'Lato_700Bold'}}>Press when you're Done</Text>
+      <Text style={{textAlign:'center',color:"#eb6a5e",fontSize:16,fontFamily:'Pacifico_400Regular'}}>Press when you're Done</Text>
       </View>
 )
 }
@@ -1003,12 +1013,12 @@ justifyContent: 'space-around',
   },
   
   alreadymemberscss: {
-    fontFamily:"NunitoSans_600SemiBold",
+    fontFamily:"Pacifico_400Regular",
     fontStyle:"normal",
     fontWeight:"600",
     fontSize:14,
     lineHeight:19,
-    color:"#333333",
+    color:"#eb6a5e",
     textShadowColor:  'rgba(0, 0, 0, 0.25)',
     textShadowRadius: 2,
     top:10,
@@ -1109,11 +1119,11 @@ justifyContent: 'space-around',
 Titleregist:{
   fontSize: 24,
   fontweight: "800",
-  color: "#333333",
+  color: "#eb6a5e",
   lineHeight: 33,
   textAlign: 'right',
   marginRight: 10,
-  fontFamily: "NunitoSans_400Regular",
+  fontFamily: "Pacifico_400Regular",
   top:10
 }
 }

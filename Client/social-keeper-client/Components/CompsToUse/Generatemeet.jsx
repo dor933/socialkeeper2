@@ -35,6 +35,8 @@ import Loadingcomp from './Loadingcomp';
     const [addressbeenselected, setAddressbeenselected] = useState(false);
     const [chosencity, setchosencity] = useState(null);
     const [loading, setLoading] = useState(false);
+    const {ispersonalactiveated, setIspersonalactiveated} = useContext(MainAppcontext);
+
 
 
     useEffect(() => {
@@ -47,6 +49,7 @@ import Loadingcomp from './Loadingcomp';
     useEffect(() => {
 
         console.log(chosenhobby)
+        console.log(commonhobbies)
 
 
     }, [chosenhobby])
@@ -61,20 +64,18 @@ import Loadingcomp from './Loadingcomp';
             const commonhobbies=[];
 
 
-            user.tblUserHobbiesDTO.map((hobby)=>{
+            user.tblUserHobbiesDTO.map((hobbie)=>{
 
-            chosenuser.hobbies.map((hobby1)=>{
-                if(hobby.hobbieNum==hobby1.value){
+            commonhobbies.push(hobbie);
+        })
 
-                    //find in hobbies the hobbie imageuri
-                    
+        chosenuser.hobbies.map ((hobbie)=>{
 
-                    console.log('this is the hobby',hobby);
+           let myhobbie=commonhobbies.find (item => item.hobbieNum === hobbie.hobbieNum);
+            if(myhobbie==null){
 
-                    commonhobbies.push(hobby);
-                }
+            commonhobbies.push(hobbie);
             }
-            )
         })
         setCommonhobbies(commonhobbies);
         console.log('this is the common hobbies',commonhobbies);
@@ -170,12 +171,14 @@ import Loadingcomp from './Loadingcomp';
 
     }
 
+    setIspersonalactiveated(true)
     setLoading(true);
 
     const response= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/MainApp/Meetingbydemand',meetingobject);
     if(response.data.place != null){
 
       setLoading(false);
+      setIspersonalactiveated(false)
       const mymeeting=response.data;
       const copyoftblsuggestedmeetings=user.tblSuggestedMeetings;
       copyoftblsuggestedmeetings.push(mymeeting);
@@ -185,8 +188,16 @@ import Loadingcomp from './Loadingcomp';
     }
     else{
       setLoading(false);
+      setIspersonalactiveated(false)
      Alert.alert('Place not found', 'Please choose another location or time');
     }
+
+    setdatevalue(null);
+    setstarttimevalue(null);
+    setendtimevalue(null);
+    setchosencity(null);
+    setchosenhobby(null);
+    
 
     console.log('this is the meeting object',meetingobject);
   }
@@ -231,9 +242,13 @@ import Loadingcomp from './Loadingcomp';
 
             const hobbies=item.tblUser1.tblUserHobbiesDTO.map((hobby)=>{
 
+              console.log('this is the hobbie from the use effect',hobby);
                 return{
-                    label:hobby.hobbiename,
-                    value:hobby.hobbieNum
+                  hobbiename:hobby.hobbiename,
+                    hobbieNum:hobby.hobbieNum,
+                    hobbieimage:hobby.hobbieimage,
+                    rank:hobby.rank,
+                    phoneNum1:hobby.phoneNum1
                 }
 
             }
@@ -263,7 +278,7 @@ import Loadingcomp from './Loadingcomp';
     }
 
     return (
-        <SafeAreaView style={{flex:1}}>
+        <SafeAreaView style={{flex:1, backgroundColor:'#ffffff'}}>
             <View style={[styles.container]}>
 
            
@@ -336,7 +351,7 @@ import Loadingcomp from './Loadingcomp';
                 data={commonhobbies}
                 renderItem={renderhobbies}
                 keyExtractor={(item) => item.hobbieNum}
-                style={{marginBottom:10}}
+                style={{marginBottom:Dimensions.get('window').height/120}}
                 //show 2 items at a time
                 numColumns={2}
                 
@@ -364,22 +379,22 @@ import Loadingcomp from './Loadingcomp';
 
                         <View style={[styles.rowstyle,{height:Dimensions.get('window').height/8}]} >
 
-<View style={{flexDirection:'row', width:Dimensions.get('window').width/1.6,height:"100%",paddingTop:5,paddingBottom:5}}>
+<View style={{flexDirection:'row', width:Dimensions.get('window').width/1.6,height:"100%",paddingTop:Dimensions.get('window').height/120,paddingBottom:Dimensions.get('window').height/120}}>
 
 
-<View style={{marginRight:10,borderRadius:20}}>
-<Text style={[styles.chooseusertext,{textAlign:'center',marginBottom:Dimensions.get('window').height/78}]}>
+<View style={{marginRight:10,borderRadius:10, backgroundColor:'#a7ccfa',paddingHorizontal:10}}>
+<Text style={[styles.chooseusertext,{textAlign:'center',marginBottom:Dimensions.get('window').height/78,fontFamily:'Pacifico_400Regular'}]}>
   End Time
 </Text>
-<TimePicker onTimeSelected={handleendtime} />
+<TimePicker onTimeSelected={handleendtime} fromgenerate={true} />
 
 </View>
 
-<View style={{borderRadius:20}}>
-<Text style={[styles.chooseusertext,{textAlign:'center',marginBottom:Dimensions.get('window').height/78}]} >
+<View style={{borderRadius:10,backgroundColor:'#faada7',paddingHorizontal:10}}>
+<Text style={[styles.chooseusertext,{textAlign:'center',marginBottom:Dimensions.get('window').height/78,fontFamily:'Pacifico_400Regular'}]} >
   Start Time
 </Text>
-<TimePicker onTimeSelected={handlestarttime} />
+<TimePicker onTimeSelected={handlestarttime} fromgenerate={true} />
 
 </View>
 
@@ -436,6 +451,7 @@ import Loadingcomp from './Loadingcomp';
     textInput: {
       fontSize: 16,
       fontWeight: "normal",
+      fontFamily: "Lato_400Regular",
       fontStyle: "normal",
       color: addressbeenselected? '#000000': '#8d97a0',
       height: 40,
@@ -484,7 +500,7 @@ import Loadingcomp from './Loadingcomp';
                             </View>
 
 
-                            <View style={[{height:Dimensions.get('window').height/17,alignItems:'center',marginTop:Dimensions.get('window').height/42}]} >
+                            <View style={[{height:Dimensions.get('window').height/17,alignItems:'center'}]} >
 
                             <TouchableOpacity style={styles.submitbox} onPress={async ()=> generatemeeting()} >
                 <Text style={styles.submittext}>Generate Meeting</Text>
@@ -504,139 +520,138 @@ export default Generatetomeeting;
 
 
 const styles = StyleSheet.create({
-    container:{
-        backgroundColor: '#ffffff',
-        flex:1,
-        marginTop:20,
-        alignItems:'center',
-    
-      },
-      rowstyle:{
-        flexDirection:'row',
-        alignItems:'center',
-        width:Dimensions.get('window').width,
-        height:Dimensions.get('window').height/7.3,
-        justifyContent:'space-between',
-        borderBottomColor:'#f0ebeb',
-        borderBottomWidth:1,
-        paddingHorizontal:10,
-        
-
-
-        },
-      meetingtext:{
-        fontFamily: 'Pacifico_400Regular',
-        fontSize: 25,
-        color: '#eb6a5e',
-        fontStyle: 'normal',
-        lineHeight: 54,
-      
-        letterSpacing: 0.03,
-        //move it to left
-        marginTop: 15,
-        marginBottom: 5
-        
-    
-      },
-
-      dropdown: {
-        height: Dimensions.get('window').height / 17,
-        borderColor: '#eb6a5e',
-        borderWidth: 0.5,
-        width: Dimensions.get('window').width - 140,
-        borderRadius: 8,
-        paddingHorizontal: 8,
-      },
-      icon: {
-        marginRight: 5,
-      },
-      label: {
-        position: 'absolute',
-        backgroundColor: 'white',
-        left: 22,
-        top: 8,
-        zIndex: 999,
-        paddingHorizontal: 8,
-        fontSize: 14,
-      },
-      placeholderStyle: {
-        fontSize: 16,
-      },
-      selectedTextStyle: {
-        fontSize: 16,
-      },
-      iconStyle: {
-        width: 20,
-        height: 20,
-      },
-      inputSearchStyle: {
-        height: 40,
-        fontSize: 16,
-      },
-
-      chooseusertext:{
-        fontFamily:'Lato_400Regular',
-        fontSize: 12,
-
-        },
-        containerhobbie: {
-            width:110,
-            height:90,
-            margin: 5,    
-            backgroundColor: 'rgba(0, 0, 0, 0.05)',
-            borderRadius: 25,
-            justifyContent:'center',
-            alignItems:'center',
-            
-            
-            
-            
-          },
-
-          submittext:{
-            color: '#ffffff',
-            fontSize: 15,
-            fontFamily:'Lato_400Regular',
-            lineHeight: 19,
-        },
-
-          submitbox:{
-
-            backgroundColor: "#eb6a5e",
-            boxShadow: '0px 0px 40px 2px rgba(0, 0, 0, 0.5)',
-            borderRadius: 25,
-            justifyContent:'center',
-            alignItems:'center',
-            width:"48%",
-            height:"100%",
-    
-    
-        },
-
-          hobbieImage: {
-            width: 80,
-            height: 60,
-            borderRadius: 25,
-            overflow: 'hidden',
-            
-            
-            
-          },
-            
-  hobbieName: {
-   
-    fontSize: 11,
-    marginTop: 5,
-    fontFamily: 'Lato_400Regular',
+  container:{
+      backgroundColor: '#ffffff',
+      marginTop:Dimensions.get('window').height/40,
+      flex:1,
+      alignItems:'center',
   
-    
+    },
+    rowstyle:{
+      flexDirection:'row',
+      alignItems:'center',
+      width:Dimensions.get('window').width,
+      height:Dimensions.get('window').height/7.3,
+      justifyContent:'space-between',
+      borderBottomColor:'#f0ebeb',
+      borderBottomWidth:1,
+      paddingHorizontal:10,
+      
 
 
+      },
+    meetingtext:{
+      fontFamily: 'Pacifico_400Regular',
+      fontSize: 25,
+      color: '#eb6a5e',
+      fontStyle: 'normal',
+      lineHeight: 54,
     
-  },
+      letterSpacing: 0.03,
+      //move it to left
+      marginTop: 15,
+      marginBottom: 5
+      
+  
+    },
+
+    dropdown: {
+      height: Dimensions.get('window').height / 17,
+      borderColor: '#eb6a5e',
+      borderWidth: 0.5,
+      width: Dimensions.get('window').width - 140,
+      borderRadius: 8,
+      paddingHorizontal: 8,
+    },
+    icon: {
+      marginRight: 5,
+    },
+    label: {
+      position: 'absolute',
+      backgroundColor: 'white',
+      left: 22,
+      top: 8,
+      zIndex: 999,
+      paddingHorizontal: 8,
+      fontSize: 14,
+    },
+    placeholderStyle: {
+      fontSize: 16,
+    },
+    selectedTextStyle: {
+      fontSize: 16,
+    },
+    iconStyle: {
+      width: 20,
+      height: 20,
+    },
+    inputSearchStyle: {
+      height: 40,
+      fontSize: 16,
+    },
+
+    chooseusertext:{
+      fontFamily:'Lato_400Regular',
+      fontSize: 12,
+
+      },
+      containerhobbie: {
+          width:110,
+          height:90,
+          margin: 5,    
+          backgroundColor: 'rgba(0, 0, 0, 0.05)',
+          borderRadius: 25,
+          justifyContent:'center',
+          alignItems:'center',
+          
+          
+          
+          
+        },
+
+        submittext:{
+          color: '#ffffff',
+          fontSize: 15,
+          fontFamily:'Lato_400Regular',
+          lineHeight: 19,
+      },
+
+        submitbox:{
+
+          backgroundColor: "#eb6a5e",
+          boxShadow: '0px 0px 40px 2px rgba(0, 0, 0, 0.5)',
+          borderRadius: 25,
+          justifyContent:'center',
+          alignItems:'center',
+          width:"48%",
+          height:"100%",
+  
+  
+      },
+
+        hobbieImage: {
+          width: 80,
+          height: 60,
+          borderRadius: 25,
+          overflow: 'hidden',
+          
+          
+          
+        },
+          
+hobbieName: {
+ 
+  fontSize: 11,
+  marginTop: 5,
+  fontFamily: 'Lato_400Regular',
+
+  
+
+
+  
+},
 
 
 });
-
 
 
