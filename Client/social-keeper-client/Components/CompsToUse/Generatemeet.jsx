@@ -1,5 +1,5 @@
 import react from 'react';
-import {View,Text,StyleSheet,TouchableOpacity,Image, SafeAreaView, Dimensions,Alert, FlatList,ImageBackground} from 'react-native';
+import {View,Text,StyleSheet,TouchableOpacity,Image, BackHandler, SafeAreaView, Dimensions,Alert, FlatList,ImageBackground} from 'react-native';
 //import usestate
 import { useState, useEffect, useContext } from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -37,7 +37,24 @@ import Loadingcomp from './Loadingcomp';
     const [loading, setLoading] = useState(false);
     const {ispersonalactiveated, setIspersonalactiveated} = useContext(MainAppcontext);
 
-
+    useEffect(() => {
+      const backAction = () => {
+        if (loading) {
+          // If disableBack is true, do nothing and prevent the default behavior.
+          return true;
+        }
+  
+        // If disableBack is false, allow the default back behavior.
+        return false;
+      };
+  
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        backAction
+      );
+  
+      return () => backHandler.remove();
+    }, [loading]); 
 
     useEffect(() => {
 
@@ -170,6 +187,8 @@ import Loadingcomp from './Loadingcomp';
 
 
     }
+
+    console.log('this is the meeting object',meetingobject);
 
     setIspersonalactiveated(true)
     setLoading(true);
