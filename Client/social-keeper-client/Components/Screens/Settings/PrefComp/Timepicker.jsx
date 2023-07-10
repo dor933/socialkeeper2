@@ -13,14 +13,16 @@ const TimePicker = ({ onTimeSelected , fromgenerate}) => {
 
 
   const renderItem = ({ item }) => (
-    <View style={[ {width:100,marginBottom:10,borderRadius: 10,alignItems:'center',backgroundColor: item == selectedHour? '#cce7e8' : '#ffffff' }]}>
-            <TouchableOpacity
-      onPress={() => handlePress(item)}
-    >
-      <Text style={[styles.timeText,{fontFamily:fromgenerate? 'Pacifico_400Regular' : 'Lato_400Regular', fontSize:!fromgenerate? 14 : 10}]}>{item}</Text>
-    </TouchableOpacity>
+    <TouchableOpacity style={[ {width:100,marginBottom:10,borderRadius: 10,alignItems:'center',backgroundColor: item == selectedHour? '#cce7e8' : '#ffffff' }]
+    
 
-    </View>
+    } 
+    onPress={() => handlePress(item)}
+    >
+    
+      <Text style={[styles.timeText,{fontFamily:fromgenerate? 'Pacifico_400Regular' : 'Lato_400Regular', fontSize:!fromgenerate? 14 : 10}]}>{item}</Text>
+
+    </TouchableOpacity>
 
   );
 

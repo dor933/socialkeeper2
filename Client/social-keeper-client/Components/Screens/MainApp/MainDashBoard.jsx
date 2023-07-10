@@ -27,6 +27,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthContext from '../../../Authcontext';
 import { RegistContext } from '../../../RegistContext';
 import Generatemeet from '..//../CompsToUse/Generatemeet.jsx';
+import Calendermeet from '../../CompsToUse/Calendermeet';
 
 
 
@@ -60,6 +61,7 @@ function SuggestedMeetingsStackScreen({fromnotif,notifobj,navigation}) {
         <SuggestedMeetingsStack.Screen name="MapLocationForHobbies" component={MapLocationForHobbies} options={{headerShown:false}} />
         <SuggestedMeetingsStack.Screen name="Meetdetails" component={Meetdetails} options={{headerShown:false}} />
         <SuggestedMeetingsStack.Screen name="Generatemeet" component={Generatemeet} options={{headerShown:false}} />
+        <SuggestedMeetingsStack.Screen name="Calendermeet" component={Calendermeet} options={{headerShown:false}} />
       </SuggestedMeetingsStack.Navigator>
     );
   }

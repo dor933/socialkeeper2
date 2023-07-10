@@ -233,6 +233,7 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
     <SafeAreaView style={styles.areaviewcontainter}>
       <ScrollView>
     <View style={styles.container}>
+      
     
    
       <Customheader/>
@@ -248,7 +249,7 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
               Alert.alert('No Friends To invite', 'You need to add friends to generate a meeting')
             }
             else{
-            navigation.navigate('Generatemeet')
+            navigation.navigate('Calendermeet')
             }
           }}
           >
