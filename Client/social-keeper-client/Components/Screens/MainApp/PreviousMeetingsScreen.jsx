@@ -55,19 +55,11 @@ export default function PreviousMeetingsScreen({navigation}) {
 
     
         </View>
-        <View style={{}}>
-        {/* <FlatList
-  data={user.tblactualmeetings}
-  
-  renderItem={({item, index2})=>{
-    // Extract month from the date
-    const date = new Date(item.tblSuggestedMeeting.date);
-    console.log(date);
-    const monthname=monthNames[date.getMonth()];
-    console.log(monthname);
-    console.log('this is the item new 2805', item) */}
+        <ScrollView>
 
-    <ScrollView>
+        <View >
+  
+
 
      { user.tblactualmeetings.map((item, index2) => {
         const date = new Date(item.tblSuggestedMeeting.date);
@@ -212,85 +204,17 @@ export default function PreviousMeetingsScreen({navigation}) {
 
       
 
-    </ScrollView>
 
   
     
   
 
-{/* <FlatList
-  data={user.tblactualmeetings1}
-  
-  renderItem={({item, index2})=>{
-    // Extract month from the date
-    const date = new Date(item.tblSuggestedMeeting.date);
-    console.log(date);
-    const monthname=monthNames[date.getMonth()];
-    console.log(monthname);
-    console.log('this is the item new 2805', item)
 
-    return (
-      <>
-      
-        {
-          index==0 && monthname== months[0] && 
-          <Sugmeet
-          key={index2}
-          meeting={item.tblSuggestedMeeting}
-          invitedbyfriend={true}
-          meetingtype="Ended"
-          navigation={navigation}
-          />
-        }
-            {
-          index==1 && monthname== months[1] && 
-          <Sugmeet
-          key={index2}
-          meeting={item.tblSuggestedMeeting}
-          invitedbyfriend={true}
-          meetingtype="Ended"
-          navigation={navigation}
-          />
-        }
-            {
-          index==2 && monthname== months[2] && 
-          <Sugmeet
-          key={index2}
-          meeting={item.tblSuggestedMeeting}
-          invitedbyfriend={true}
-          meetingtype="Ended"
-          navigation={navigation}
-
-          />
-        }
-           {
-          index==3 && monthname== months[3] && 
-          <Sugmeet
-          key={index2}
-          meeting={item.tblSuggestedMeeting}
-          invitedbyfriend={true}
-          meetingtype="Ended"
-          navigation={navigation}
-
-          />
-        }
-         {
-          index==4 && monthname== months[4] && 
-          <Sugmeet
-          key={index2}
-          meeting={item.tblSuggestedMeeting}
-          invitedbyfriend={true}
-          meetingtype="Ended"
-          navigation={navigation}
-
-          />
-        }
-        </>
-    );
-  }}
-/> */}
 
 </View>
+
+</ScrollView>
+
 
           
           

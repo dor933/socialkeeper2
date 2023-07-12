@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Pressable, Alert, Modal, TouchableOpacity, Linking, Image } from 'react-native';
 import React, { useState,useContext,useEffect } from 'react';
 
-import { Agenda, AgendaEntry, AgendaSchedule, DateData } from 'react-native-calendars';
+import { Agenda, AgendaEntry, AgendaSchedule } from 'react-native-calendars';
 import events from '..//..//assets/events.json';
 import EventItem from './Eventitem';
 import { MainAppcontext } from '../Screens/MainApp/MainAppcontext';

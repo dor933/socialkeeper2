@@ -3,8 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView , ImageBackgroun
 import { Dimensions } from "react-native";
 import { Icon } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
-import { Calendar , LocaleConfig } from "react-native-calendars";
-
+import { Calendar } from "react-native-calendars";
 import Customheader from "./Customheader";
 
 //create a component

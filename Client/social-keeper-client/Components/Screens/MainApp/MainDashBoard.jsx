@@ -140,40 +140,8 @@ export default function MainDashBoard({route}) {
     if(fromnotif){
       console.log('its from notif new 0706')
       
-      if(notifobj.notiftype=='Approvedfriendrequest') {
-
-       const possiblefriend= user.possibleFavoriteContacts_invite_DTO.find((item) => item.phonenuminvited == notifobj.phonenuminvited)
-       console.log('this is possible friend',possiblefriend)
-            if(possiblefriend){
-        const newfavoritecontact = {
-          ID: parseInt(notifobj.ID),
-          phoneNum1:possiblefriend.phonenuminvite,
-          phoneNum2:possiblefriend.phonenuminvited,
-          hobbieNum:possiblefriend.hobbieNum,
-          rank:1,
-          tblUser1:possiblefriend.tblUser1,
-                   tblHobbie:possiblefriend.tblHobbiedto
-    }
-    console.log('this is new favorite contact',newfavoritecontact)
-    const newfavoritecontacts = [...user.tblFavoriteContacts,newfavoritecontact]
-    console.log('this is new favorite contacts',newfavoritecontacts)
-
-    const newpossiblefavoritecontacts = user.possibleFavoriteContacts_invite_DTO.filter((item) => item.phonenuminvited !== notifobj.phonenuminvited)
-    console.log('this is new possible favorite contacts',newpossiblefavoritecontacts)
-    const newuser = {
-      ...user,
-      tblFavoriteContacts:newfavoritecontacts,
-      possibleFavoriteContacts_invite_DTO:newpossiblefavoritecontacts
-
-    } 
-    setUser(newuser)
-    //increate number of new friends by 1
-    setNumberofnewfriends(numberofnewfriends+1)
-
-  }
-
-      }
-      else if (notifobj.notiftype=='newFriendrequest') {
+     
+       if (notifobj.notiftype=='newFriendrequest') {
 
         getrequestasync();
 
@@ -193,6 +161,7 @@ export default function MainDashBoard({route}) {
 
     const response= await axios.get(`http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/Getnewreq/${notifobj.ID}`)
     const newrequest = response.data;
+    newrequest.tblUser.imageUri=`https://storage.googleapis.com/responsive-cab-377615.appspot.com/Images/Profiles/${newrequest.phonenuminvite}`;
     const ifexisting = user.possibleFavoriteContacts_invited_DTO.find((item) => item.id == newrequest.id)
     if(!ifexisting){
     const newtblpossiblefavoriteinvited=user.possibleFavoriteContacts_invited_DTO

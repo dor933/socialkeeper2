@@ -131,6 +131,8 @@ function SignUpAPI({navigation}) {
 
         if(user.email!=undefined) {
 
+          setPersonalDetails({email:user.email});
+
       
         navigation.navigate('CreateProfile',{isfrommainapp:false});
         }

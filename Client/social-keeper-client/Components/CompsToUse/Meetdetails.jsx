@@ -261,18 +261,7 @@ const Details = ({route,navigation}) => {
 
      
             </View>
-            <View style={styles.ratingContainer}>
-                    <Text style={[styles.ratingText]}>Meeting type satisfaction</Text>
-                    <View style={{paddingLeft:12}}>
-                    <StarRating
-          starSize={20}
-          maxStars={5}
-          rating={rating2}
-          onChange={handlerating2}
-        />
-        </View>
- 
-            </View>
+         
             <View style={styles.buttonsviews}>
             <TouchableOpacity style={styles.submitbox} onPress={async() => rateendmeeting(meeting.meetingNum)}>
                 <Text style={styles.submittext}>Submit</Text>

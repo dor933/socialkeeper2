@@ -40,6 +40,12 @@ import { Icon } from 'react-native-elements';
     const getcurrenttime= new Date().getHours()+ ':' + new Date().getMinutes();
     console.log('this is the current time',getcurrenttime);
 
+    let currentDate = new Date();
+    // getMonth() returns month from 0 to 11, so add 1 to get correct month number
+    let month = ('0' + (currentDate.getMonth()+1)).slice(-2); // convert month to 2 digits
+    let date = ('0' + currentDate.getDate()).slice(-2); // convert date to 2 digits
+    
+    let formattedDate = currentDate.getFullYear() + '-' + month + '-' + date;
     
 
     useEffect(() => {
@@ -66,6 +72,18 @@ import { Icon } from 'react-native-elements';
       console.log('this is selected id',selectedid);
 
     }, [selectedid])
+
+    useEffect(() => {
+
+      //get the date right now without time according to israel time
+
+   
+      
+      
+      
+     
+
+    }, [])
 
 
     
@@ -150,7 +168,7 @@ import { Icon } from 'react-native-elements';
         return false;
       }
 
-      if(starttimevalue<getcurrenttime){
+      if(starttimevalue<getcurrenttime && datevalue==formattedDate){
         alert('please choose a start time that is later than the current time');
         return false;
       }
