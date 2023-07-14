@@ -427,6 +427,11 @@ AsyncStorage.setItem('isAuth','true');
         const StartDate = new Date(each.startDate);
         const EndDate = new Date(each.endDate);
 
+        console.log('this is startdate')
+        console.log(StartDate)
+        console.log('this is startdate + 1')
+        console.log(StartDate.getDate()+1)
+
     
         return {
           title: each.title,
@@ -434,8 +439,9 @@ AsyncStorage.setItem('isAuth','true');
           endtime: EndDate.getHours().toString().padStart(2, '0') + ':' + EndDate.getMinutes().toString().padStart(2, '0'),
           //convert start and end date to date object that shows hours and minutes
           
+          
           date: StartDate,
-          weekday: StartDate.getDay(),
+          weekday: StartDate.getDay()
         };
       });
 
@@ -457,6 +463,9 @@ AsyncStorage.setItem('isAuth','true');
 
   return acc;
 }, {});
+
+console.log('this is eventobject')
+console.log(eventobject)
 
 
       setUserevents(eventobject);

@@ -168,8 +168,26 @@ import { Icon } from 'react-native-elements';
         return false;
       }
 
-      if(starttimevalue<getcurrenttime && datevalue==formattedDate){
-        alert('please choose a start time that is later than the current time');
+    
+      const starttimevaluearray=starttimevalue.split(':');
+      const starttimevaluehours=starttimevaluearray[0];
+      const starttimevalueminutes=starttimevaluearray[1];
+      const starttimevalueobject=new Date();
+      starttimevalueobject.setHours(starttimevaluehours);
+     starttimevalueobject.setMinutes(starttimevalueminutes);
+      const currenttimearray=getcurrenttime.split(':');
+      const currenttimehours=currenttimearray[0];
+      const currenttimeminutes=currenttimearray[1];
+      const currenttimeobject=new Date();
+      currenttimeobject.setHours(currenttimehours);
+      currenttimeobject.setMinutes(currenttimeminutes);
+
+      if(starttimevalueobject<currenttimeobject && datevalue==formattedDate){
+        console.log('this is the date value',datevalue);
+        console.log('this is the formatted date',formattedDate);
+        console.log('this is the current time',getcurrenttime);
+        console.log('this is the start time',starttimevalue);
+        alert('please choose a start time that is later than the current time2');
         return false;
       }
 
