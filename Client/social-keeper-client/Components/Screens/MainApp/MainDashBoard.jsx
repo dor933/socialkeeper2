@@ -129,6 +129,7 @@ export default function MainDashBoard({route}) {
             setIsnotif(false) 
             clearregistcontext()
             clearmainappcontext()
+            AsyncStorage.setItem('isAuth', 'false');
     }
 
    

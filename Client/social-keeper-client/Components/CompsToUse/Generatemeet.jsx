@@ -187,7 +187,7 @@ import { Icon } from 'react-native-elements';
         console.log('this is the formatted date',formattedDate);
         console.log('this is the current time',getcurrenttime);
         console.log('this is the start time',starttimevalue);
-        alert('please choose a start time that is later than the current time2');
+        alert('please choose a start time that is later than the current time');
         return false;
       }
 

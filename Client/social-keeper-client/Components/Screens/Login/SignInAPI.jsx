@@ -171,27 +171,7 @@ function SignUpAPI({navigation}) {
     }
   }
 
-  const guestsigin=async(email)=>{
-    try {
-      //check if email structure is valid
-      if(email.includes('@') && email.includes('.')){
-      const ifuser= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin',{email:email,token:expoPushToken});
-      if(ifuser.data=='no user was found'){
-        setPersonalDetails({email:email});
-        navigation.navigate('CreateProfile',{isfrommainapp:false});
-      }
-      else if(typeof ifuser.data.imageUri == 'string'){
-        setUser(ifuser.data);
-        setIsAuthenticated(true);
-      }
-    }
-    else{
-      alert('please enter a valid email')
-    } 
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  
 
 
 if(isloading){
@@ -275,19 +255,7 @@ promptAsync();
           </View>
 
         {/* </TouchableOpacity> */}
-        <View style={{top:590,width:300,alignSelf:'center'}}>
-          <View>
-            <Text style={{textAlign:'center',fontSize:13}}>Continue as a guest (Application in development mode- authentication is not available)</Text>
-          </View>
-    
-<Input placeholder='Enter your email' value={guestemail} onChangeText={(text)=>setGuestemail(text)}></Input>
-
-
-
-<Button title='Continue as guest' onPress={()=>guestsigin(guestemail)}></Button>
-
-
-          </View>
+      
 
 
         <View style={styles.elipseButtom}></View>
