@@ -49,6 +49,7 @@ export default function CreateProfile({navigation,route}) {
 
   useEffect (() => {
     //set the placeholder image as the selected image
+    console.log('this is personal deta',personaldetails)
     if(!isfrommainapp){
     setSelectedImage(placeHolderImageuri);
     }
@@ -122,13 +123,25 @@ export default function CreateProfile({navigation,route}) {
         );
         if(typeof response2.data.imageUri == "string") {
           console.log("image uploaded");
-          setUser(response2.data);
+         
+          setUser({...user, imageUri: response2.data.imageUri, city: response2.data.city, citylatt: response2.data.citylatt, citylong: response2.data.citylong,
+          userName: response2.data.userName, birthDate: response2.data.birthDate, phoneNum1: response2.data.phoneNum1,gender:response2.data.gender
+        });
+
+  
 
 
         }
       }
       else{
-        setUser(res.data);
+        const newuser= res.data;
+        setUser({...user, city: newuser.city, citylatt: newuser.citylatt, citylong: newuser.citylong, gender:newuser.gender,
+        
+          userName:newuser.userName, birthDate:newuser.birthDate
+        });
+
+  
+      
       }
 
       Alert.alert("User updated successfully");

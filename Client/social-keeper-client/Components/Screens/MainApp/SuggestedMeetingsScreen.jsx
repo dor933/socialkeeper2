@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native'
 // import use context
 import React from 'react'
 import Customheader from '../../CompsToUse/Customheader'
@@ -36,6 +36,10 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
   const {removemeetingfromcalender}= useContext(MainAppcontext);
   const {selectedhobbies, setSelectedHobbies} = useContext(RegistContext);
   const {personaldetails, setPersonalDetails} = useContext(RegistContext);
+  const {numberofnewfriends, setNumberofnewfriends} = useContext(AuthContext);
+  const {numberofnewendedmeetings, setNumberofnewendedmeetings} = useContext(AuthContext);
+
+
 
 
 
@@ -51,6 +55,11 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
     setSelectedHobbies(user.tblUserHobbiesDTO)
     console.log('this is selectedhobbies', selectedhobbies)
     setPersonalDetails({phoneNumber:user.phoneNum1,userName:user.userName,gender:user.gender})
+
+
+
+   
+
   
 
   },[])
@@ -123,6 +132,40 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
       getactualmeeting(meetingnum)
 
     }
+
+    else if(notifobj.notiftype=='Approvedfriendrequest') {
+
+      const possiblefriend= user.possibleFavoriteContacts_invite_DTO.find((item) => item.phonenuminvited == notifobj.phonenuminvited)
+      console.log('this is possible friend',possiblefriend)
+           if(possiblefriend){
+       const newfavoritecontact = {
+         ID: parseInt(notifobj.ID),
+         phoneNum1:possiblefriend.phonenuminvite,
+         phoneNum2:possiblefriend.phonenuminvited,
+         hobbieNum:possiblefriend.hobbieNum,
+         rank:1,
+         tblUser1:possiblefriend.tblUser1,
+                  tblHobbie:possiblefriend.tblHobbiedto
+   }
+   console.log('this is new favorite contact',newfavoritecontact)
+   const newfavoritecontacts = [...user.tblFavoriteContacts,newfavoritecontact]
+   console.log('this is new favorite contacts',newfavoritecontacts)
+
+   const newpossiblefavoritecontacts = user.possibleFavoriteContacts_invite_DTO.filter((item) => item.phonenuminvited !== notifobj.phonenuminvited)
+   console.log('this is new possible favorite contacts',newpossiblefavoritecontacts)
+   const newuser = {
+     ...user,
+     tblFavoriteContacts:newfavoritecontacts,
+     possibleFavoriteContacts_invite_DTO:newpossiblefavoritecontacts
+
+   } 
+   setUser(newuser)
+   //increate number of new friends by 1
+   setNumberofnewfriends(numberofnewfriends+1)
+
+ }
+
+     }
    
   
     else{
@@ -161,13 +204,29 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
       else{
     const newmeeting= await axios.get(`http://cgroup92@194.90.158.74/cgroup92/prod/api/MainAppaction/getactualmeeting/${meetingnum}`);
     const meetingtoret= newmeeting.data;
+    let placedetails= await getPlaceDetails(meetingtoret.tblSuggestedMeeting.place.place_id)
+    if(placedetails.result){
+
+     placedetails= placedetails.result
+
+    }
+
+    meetingtoret.tblSuggestedMeeting.place=placedetails
+
+
     if(meetingtoret?.tblSuggestedMeeting.phoneNum1==user.phoneNum1){
+
+  
+
+
+      
 
       const newtblactualmeetings= user.tblactualmeetings;
       newtblactualmeetings.push(meetingtoret)
       const Newuser={...user}
       Newuser.tblactualmeetings=newtblactualmeetings;
       setUser(Newuser);
+      console.log('this is newtblactualmeetings',newtblactualmeetings)
 
     }
     else{
@@ -177,6 +236,8 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
         const Newuser={...user}
         Newuser.tblactualmeetings1=newtblactualmeetings1;
         setUser(Newuser);
+
+        console.log('this is newtblactualmeetings1',newtblactualmeetings1)
   
       }
 
@@ -233,6 +294,7 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
     <SafeAreaView style={styles.areaviewcontainter}>
       <ScrollView>
     <View style={styles.container}>
+      
     
    
       <Customheader/>
@@ -241,7 +303,17 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
         <View style={styles.generatemeetbutton}>
 
           < TouchableOpacity style={{flexDirection:'row-reverse',height:"100%",alignItems:'center',justifyContent:'center'}}
-          onPress={navigatetogeneratemeet}
+          onPress={()=> {
+
+            const concatarray= user.tblFavoriteContacts.concat(user.tblFavoriteContacts1)
+            console.log('this is concatarray',concatarray)
+            if(concatarray.length==0){
+              Alert.alert('No Friends To invite', 'You need to add friends to generate a meeting')
+            }
+            else{
+            navigation.navigate('Calendermeet')
+            }
+          }}
           >
     
          <Icon

@@ -1,5 +1,5 @@
 import react from 'react';
-import {View,Text,StyleSheet,TouchableOpacity,Image, SafeAreaView, Dimensions,Alert, FlatList,ImageBackground} from 'react-native';
+import {View,Text,StyleSheet,TouchableOpacity,Image, BackHandler, SafeAreaView, Dimensions,Alert, FlatList,ImageBackground} from 'react-native';
 //import usestate
 import { useState, useEffect, useContext } from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -13,6 +13,7 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import axios from 'axios';
 import { isLoading } from 'expo-font';
 import Loadingcomp from './Loadingcomp';
+import { Icon } from 'react-native-elements';
 
 
 
@@ -30,26 +31,68 @@ import Loadingcomp from './Loadingcomp';
     const [commonhobbies, setCommonhobbies] = useState([]);
     const [starttimevalue, setstarttimevalue] = useState(null);
     const [endtimevalue, setendtimevalue] = useState(null);
-    const [datevalue, setdatevalue] = useState(null);
+    const [datevalue, setdatevalue] = useState(route.params.date);
     const [selectedid, setSelectedid] = useState(null);
     const [addressbeenselected, setAddressbeenselected] = useState(false);
     const [chosencity, setchosencity] = useState(null);
     const [loading, setLoading] = useState(false);
     const {ispersonalactiveated, setIspersonalactiveated} = useContext(MainAppcontext);
+    const getcurrenttime= new Date().getHours()+ ':' + new Date().getMinutes();
+    console.log('this is the current time',getcurrenttime);
 
+    let currentDate = new Date();
+    // getMonth() returns month from 0 to 11, so add 1 to get correct month number
+    let month = ('0' + (currentDate.getMonth()+1)).slice(-2); // convert month to 2 digits
+    let date = ('0' + currentDate.getDate()).slice(-2); // convert date to 2 digits
+    
+    let formattedDate = currentDate.getFullYear() + '-' + month + '-' + date;
+    
 
+    useEffect(() => {
+      const backAction = () => {
+        if (loading) {
+          // If disableBack is true, do nothing and prevent the default behavior.
+          return true;
+        }
+  
+        // If disableBack is false, allow the default back behavior.
+        return false;
+      };
+  
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        backAction
+      );
+  
+      return () => backHandler.remove();
+    }, [loading]); 
 
     useEffect(() => {
 
       console.log('this is selected id',selectedid);
 
     }, [selectedid])
+
+    useEffect(() => {
+
+      //get the date right now without time according to israel time
+
+   
+      
+      
+      
+     
+
+    }, [])
+
+
     
  
     useEffect(() => {
 
         console.log(chosenhobby)
         console.log(commonhobbies)
+        console.log('this is the date',datevalue)
 
 
     }, [chosenhobby])
@@ -124,6 +167,30 @@ import Loadingcomp from './Loadingcomp';
         alert('please choose a start time');
         return false;
       }
+
+    
+      const starttimevaluearray=starttimevalue.split(':');
+      const starttimevaluehours=starttimevaluearray[0];
+      const starttimevalueminutes=starttimevaluearray[1];
+      const starttimevalueobject=new Date();
+      starttimevalueobject.setHours(starttimevaluehours);
+     starttimevalueobject.setMinutes(starttimevalueminutes);
+      const currenttimearray=getcurrenttime.split(':');
+      const currenttimehours=currenttimearray[0];
+      const currenttimeminutes=currenttimearray[1];
+      const currenttimeobject=new Date();
+      currenttimeobject.setHours(currenttimehours);
+      currenttimeobject.setMinutes(currenttimeminutes);
+
+      if(starttimevalueobject<currenttimeobject && datevalue==formattedDate){
+        console.log('this is the date value',datevalue);
+        console.log('this is the formatted date',formattedDate);
+        console.log('this is the current time',getcurrenttime);
+        console.log('this is the start time',starttimevalue);
+        alert('please choose a start time that is later than the current time');
+        return false;
+      }
+
       if(endtimevalue==null){
         alert('please choose an end time');
         return false;
@@ -171,6 +238,8 @@ import Loadingcomp from './Loadingcomp';
 
     }
 
+    console.log('this is the meeting object',meetingobject);
+
     setIspersonalactiveated(true)
     setLoading(true);
 
@@ -192,12 +261,11 @@ import Loadingcomp from './Loadingcomp';
      Alert.alert('Place not found', 'Please choose another location or time');
     }
 
-    setdatevalue(null);
     setstarttimevalue(null);
     setendtimevalue(null);
     setchosencity(null);
     setchosenhobby(null);
-    
+
 
     console.log('this is the meeting object',meetingobject);
   }
@@ -236,7 +304,12 @@ import Loadingcomp from './Loadingcomp';
         const tblcopyfavoritecontacts= user.tblFavoriteContacts;
         const tblcopyfavoritecontacts1= user.tblFavoriteContacts1;
 
+        console.log('this is user',user);
+
         const allfavoritecontacts=tblcopyfavoritecontacts.concat(tblcopyfavoritecontacts1);
+
+     
+
         console.log('this is the userdtohobbies',allfavoritecontacts[0].tblUser1.tblUserHobbiesDTO);
         const favoriteaslabelandvalue=allfavoritecontacts.map((item)=>{
 
@@ -262,9 +335,12 @@ import Loadingcomp from './Loadingcomp';
                 phoneNum1:item.tblUser1.phoneNum1,
             }
         })
-        console.log(favoriteaslabelandvalue);
+
+
+      
         setAllfavoritecontacts(favoriteaslabelandvalue);
         setchosenuser(favoriteaslabelandvalue[0]);
+        
         
 
     }, [])
@@ -278,16 +354,37 @@ import Loadingcomp from './Loadingcomp';
     }
 
     return (
+      
         <SafeAreaView style={{flex:1, backgroundColor:'#ffffff'}}>
+
+
+
             <View style={[styles.container]}>
 
+            <ImageBackground 
+        source={require('../../assets/Images/RandomImages/SocialKeeper.png')} 
+        style={{flex:1,alignItems:'center',zIndex:1}}
+        resizeMode="center"
+        
+
+     >
+
+<View style={{
+            backgroundColor: '#ffffff',
+            opacity: 0.9,
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+        }}/>
            
       
              
                
             <Customheader/>
 
-            <View style={[styles.rowstyle,{justifyContent:'space-around',alignItems:'center',height:Dimensions.get('window').height/10,borderBottomWidth:0}]}>
+            <View style={[styles.rowstyle,{justifyContent:'space-between',width:Dimensions.get('window').width-25,height:Dimensions.get('window').height/10,borderBottomWidth:0}]}>
             <View>
               <Image 
                  source={{uri:chosenuser?.imageuri}}
@@ -303,7 +400,7 @@ import Loadingcomp from './Loadingcomp';
             
             </View>
             <View style={{flex:1}}>
-            <View style={styles.rowstyle} >
+            <View style={[styles.rowstyle]} >
 
            
      
@@ -337,11 +434,7 @@ import Loadingcomp from './Loadingcomp';
           )}
         />
 
-<View style={{justifyContent:'center',width:Dimensions.get('window').width/4}}>
-                <Text style={styles.chooseusertext}>
-                    Choose User
-                </Text>
-                </View>
+
     
             </View>
             <View style={styles.rowstyle} >
@@ -353,31 +446,17 @@ import Loadingcomp from './Loadingcomp';
                 keyExtractor={(item) => item.hobbieNum}
                 style={{marginBottom:Dimensions.get('window').height/120}}
                 //show 2 items at a time
-                numColumns={2}
+                numColumns={3}
                 
                 />
-                <View style={{justifyContent:'center', width:Dimensions.get('window').width/4}}>
-                <Text style={styles.chooseusertext}>Choose Hobbie</Text>
-                </View>
+             
 
                 </View>
 
                
-                    <View style={[styles.rowstyle,{height:Dimensions.get('window').height/9}]} >
+          
 
-                      <View style={{width:Dimensions.get('window').width/1.7}}>
-                      <DatePickerComponent fromgeneratemeeting={true} handledate={handledate}/>
-
-                      </View>
-
-                        <View style={{justifyContent:'center', width:Dimensions.get('window').width/4}}>
-                <Text style={styles.chooseusertext}>Choose Date</Text>
-
-                </View>
-
-                        </View>
-
-                        <View style={[styles.rowstyle,{height:Dimensions.get('window').height/8}]} >
+                        <View style={[styles.rowstyle,{height:Dimensions.get('window').height/7}]} >
 
 <View style={{flexDirection:'row', width:Dimensions.get('window').width/1.6,height:"100%",paddingTop:Dimensions.get('window').height/120,paddingBottom:Dimensions.get('window').height/120}}>
 
@@ -399,21 +478,21 @@ import Loadingcomp from './Loadingcomp';
 </View>
 
 </View>
-<View style={{justifyContent:'center', width:Dimensions.get('window').width/4}}>
-<Text style={styles.chooseusertext}>Choose Time</Text>
+
+
 
 </View>
 
+                        <View style={[styles.rowstyle,{height:Dimensions.get('window').height/6.5,borderBottomWidth:0,
+                    backgroundColor:'#ffffff'
+                      }]} >
 
-</View>
+<View style={{width:Dimensions.get('window').width/1.7, height:Dimensions.get('window').height/5.5}}>
 
-                        <View style={[styles.rowstyle,{height:Dimensions.get('window').height/7,borderBottomWidth:0}]} >
+  <View style={{flexDirection:'row',justifyContent:'space-between'}}>
 
-<View style={{width:Dimensions.get('window').width/1.7}}>
 <GooglePlacesAutocomplete
   placeholder='City'
-
-  
   fetchDetails={true}
   onPress={(data, details = null) => {
 
@@ -454,7 +533,7 @@ import Loadingcomp from './Loadingcomp';
       fontFamily: "Lato_400Regular",
       fontStyle: "normal",
       color: addressbeenselected? '#000000': '#8d97a0',
-      height: 40,
+      height: 50,
       lineHeight: 19,
       letterSpacing: 0.1,
       textAlign: "left",
@@ -463,12 +542,15 @@ import Loadingcomp from './Loadingcomp';
      
       width:Dimensions.get('window').width/1.82,
     },
+
+    
     textInputContainer: {
       backgroundColor: "#ffffff",
       opacity: selectedid==2? 1:0.5,
       borderBottomWidth: 1,
       alignSelf:'center',
       top:Dimensions.get('window').height/40,
+      
     
    
       
@@ -486,10 +568,32 @@ import Loadingcomp from './Loadingcomp';
   }}
   
 />
+
+
+
+
+
 </View>
 
 
-<View style={{justifyContent:'center', width:Dimensions.get('window').width/4}}>
+<View style={{alignItems:'flex-start',justifyContent:'flex-start',bottom:Dimensions.get('window').height/35,left:Dimensions.get('window').width/40 
+
+}}>
+<Icon
+  name='location'
+  type='evilicon'
+  color='#eb6a5e'
+  size={30}
+  
+/>
+</View>
+
+</View>
+
+
+
+
+<View style={{ width:Dimensions.get('window').width/4, height:Dimensions.get('window').height/9.5}}>
 <Radiobutton
                             selectedid={selectedid}
                             setSelectedid={setSelectedid}
@@ -510,7 +614,7 @@ import Loadingcomp from './Loadingcomp';
 
                             
             </View>
-            
+            </ImageBackground>
             </View>
         </SafeAreaView>
     );
@@ -530,12 +634,12 @@ const styles = StyleSheet.create({
     rowstyle:{
       flexDirection:'row',
       alignItems:'center',
-      width:Dimensions.get('window').width,
-      height:Dimensions.get('window').height/7.3,
-      justifyContent:'space-between',
+      height:Dimensions.get('window').height/6.5,
+      justifyContent:'space-around',
       borderBottomColor:'#f0ebeb',
       borderBottomWidth:1,
       paddingHorizontal:10,
+      marginBottom:Dimensions.get('window').height/120,
       
 
 
@@ -561,6 +665,7 @@ const styles = StyleSheet.create({
       borderWidth: 0.5,
       width: Dimensions.get('window').width - 140,
       borderRadius: 8,
+      
       paddingHorizontal: 8,
     },
     icon: {

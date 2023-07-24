@@ -9,6 +9,10 @@ import StarRating from 'react-native-star-rating-widget';
 import AuthContext from '../../Authcontext';
 import axios from 'axios';
 import { MainAppcontext } from '../Screens/MainApp/MainAppcontext';
+//import deep link
+import { Linking } from 'react-native';
+//import FontAwsome
+
 
 
 //icons
@@ -17,7 +21,7 @@ const clockIcon = <Icon name="clock-o" size={20} color="#900" style={{ right: 1 
 const locationIcon = <Icon name="map-marker" size={20} color="#900" style={{ right: -2 }} />;
 const meetingTypeIcon = <Icon name="users" size={20} color="#900" style={{ right: 2 }} />;
 const homeicon= <Icon name="home" size={20} color="#900" style={{ right: 2 }} />;
-
+const waze= <Icon name="car" size={20} color="#91b3ff" style={{ right: 2 }} />;
 //Upper component
 const Details = ({route,navigation}) => {
 
@@ -240,11 +244,29 @@ const Details = ({route,navigation}) => {
                              
                              </Text>
                     </View>
+                   
                     <View style={styles.item}>
                         {meetingTypeIcon}
                         <Text style={styles.text}>Meeting Type: {type}
                         </Text>
                     </View>
+                    <TouchableOpacity
+                        onPress={() => { Linking.openURL(`https://www.waze.com/ul?ll=${meeting.place.geometry.location.lat},${meeting.place.geometry.location.lng}&navigate=yes`) }}>
+                    <View style={[styles.item]}>
+                    {waze}
+
+                        <Text style={[styles.text,{color:'#91b3ff',fontWeight:'bold'}]}>
+
+
+                           
+                            Navigate with Waze
+
+
+                            
+                             
+                             </Text>
+                    </View>
+                    </TouchableOpacity>
                     <View style={styles.line} />
                     <LocationPhotos navigation={navigation} photosarray={meeting.place.photos} typeofmeeting={meetingtype} meeting={meeting} />
                     {  meetingtype=='Ended' && 
@@ -261,18 +283,7 @@ const Details = ({route,navigation}) => {
 
      
             </View>
-            <View style={styles.ratingContainer}>
-                    <Text style={[styles.ratingText]}>Meeting type satisfaction</Text>
-                    <View style={{paddingLeft:12}}>
-                    <StarRating
-          starSize={20}
-          maxStars={5}
-          rating={rating2}
-          onChange={handlerating2}
-        />
-        </View>
- 
-            </View>
+         
             <View style={styles.buttonsviews}>
             <TouchableOpacity style={styles.submitbox} onPress={async() => rateendmeeting(meeting.meetingNum)}>
                 <Text style={styles.submittext}>Submit</Text>

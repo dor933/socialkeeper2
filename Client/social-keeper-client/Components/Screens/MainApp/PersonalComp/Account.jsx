@@ -271,6 +271,8 @@ function Favoritecont () {
             isAccepted:ifapproved
           }
 
+          console.log('item',item)
+
 
           if(ifapproved==true){
 
@@ -369,7 +371,7 @@ function Favoritecont () {
             <Badge
             status="error"
             value={user.possibleFavoriteContacts_invited_DTO.length}
-            containerStyle={{ position: 'absolute', top: 0, right: 138 }}
+            containerStyle={{ position: 'absolute', top: 0, right: Dimensions.get('window').width/2-50 }}
             
             />}  
             {
@@ -377,7 +379,7 @@ function Favoritecont () {
                 <Badge
                 status="error"
                 value='!'
-                containerStyle={{ position: 'absolute', top: 0, right: 155 }}
+                containerStyle={{ position: 'absolute', top: 0, right: Dimensions.get('window').width/2-50 }}
                 />
 
               )

@@ -110,7 +110,7 @@ export default (props) => {
           editable={false}
           leftIcon={
             <Icon
-              name={!fromgeneratemeeting? "calendar" : "date-range"}
+              name={"date-range"}
               size={24}
               style={{color: isfrommainapp? '#ffffff': hasDateBeenSelected? "black" : "#8d97a0"}}
 
