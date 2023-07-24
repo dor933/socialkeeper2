@@ -125,7 +125,8 @@ export default function MainDashBoard({route}) {
 
     return () => {
       console.log('unmounting')
-      setNumberofnewfriends(0)           
+      setNumberofnewfriends(0) 
+      setNumberofnewendedmeetings(0)          
             setIsnotif(false) 
             clearregistcontext()
             clearmainappcontext()

@@ -172,6 +172,7 @@ function SignUpAPI({navigation}) {
   }
 
   
+  
 
 
 if(isloading){
@@ -198,25 +199,7 @@ if(isloading){
         <Text style={styles.text}>Sign In</Text>
         <Image style={styles.logo} source={require('../../../assets/Images/RandomImages/social-keeper-low-resolution-logo-color-on-transparent-background.png')} />
 
-        {/* Login with google button */}
-
-                 {/* <TouchableOpacity onPress={async () => {
-               const ifuser= await axios.post('http://cgroup92@194.90.158.74/cgroup92/prod/api/Default/Signin',{email:'rotinazsd@example.com'});
-               if(ifuser.data=='no user was found'){
-         
-                 if(user.email!=undefined) {
-         
-                 personaldetails.email=user.email;
-                 navigation.navigate('CreateProfile',{isfrommainapp:false});
-                 }
-               }
-               else if(typeof ifuser.data.imageUri == 'string'){
-                 setIsloading(true);
-                 setUser(ifuser.data);
-                 console.log('this is the user my user test',ifuser.data);
-                 setIsAuthenticated(true);
-               }
-              }}> */}
+     
           <View style={styles.container}>
           <TouchableOpacity onPress={async () => {
 
@@ -255,6 +238,8 @@ promptAsync();
           </View>
 
         {/* </TouchableOpacity> */}
+
+      
       
 
 

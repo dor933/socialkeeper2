@@ -55,6 +55,11 @@ export default function SuggestedMeetingsScreen({navigation,fromnotif,notifobj})
     setSelectedHobbies(user.tblUserHobbiesDTO)
     console.log('this is selectedhobbies', selectedhobbies)
     setPersonalDetails({phoneNumber:user.phoneNum1,userName:user.userName,gender:user.gender})
+
+
+
+   
+
   
 
   },[])
