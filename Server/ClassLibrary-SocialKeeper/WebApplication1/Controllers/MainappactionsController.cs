@@ -412,7 +412,8 @@ namespace WebApplication1.Controllers
                 userexist2.city = user2.city;
                 suggested.user1 = userexist;
                 suggested.user2 = userexist2;
-                tblActualMeeting actumeet = _db.tblActualMeeting.Where(x => x.meetingNum == suggestedactual.meetingNum).FirstOrDefault();
+                var actumeet = _db.tblActualMeeting.Find(suggestedactual.meetingNum, suggestedactual.hobbieNum,suggestedactual.longitude,suggestedactual.latitude);
+                _db.Entry(actumeet).Reload();
                 if (actumeet != null)
                 {
                     Actualmeetingdto actdto = new Actualmeetingdto();
@@ -692,7 +693,7 @@ namespace WebApplication1.Controllers
                 notifyfriendrequest.senderphonenum = possibledto.phonenuminvite;
                 notifyfriendrequest.targetuserphonenum = possibledto.phonenuminvited;
                 notifyfriendrequest.Title = "New Friend Request!";
-                notifyfriendrequest.Body = $"You have a new friend request from ${userinvite.userName}!";
+                notifyfriendrequest.Body = $"You have a new friend request from {userinvite.userName}!";
                 notifyfriendrequest.Data = new Dictionary<string, string>
                         {
                     {"ID", IDstring },
@@ -751,6 +752,7 @@ namespace WebApplication1.Controllers
                     userhobbiedto.phoneNum1 = userhobbie.phoneNum1;
                     tblHobbie hobi = _db.tblHobbie.Where(h => h.hobbieNum == userhobbie.hobbieNum).FirstOrDefault();
                     userhobbiedto.hobbiename = hobi.hobbieName;
+                    userhobbiedto.hobbieimage = hobi.imageuri;
                     userhobbiesdtolist.Add(userhobbiedto);
                 }
                 user1.tblUserHobbiesDTO = userhobbiesdtolist;
