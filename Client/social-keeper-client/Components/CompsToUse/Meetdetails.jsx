@@ -268,7 +268,12 @@ const Details = ({route,navigation}) => {
                     </View>
                     </TouchableOpacity>
                     <View style={styles.line} />
-                    <LocationPhotos navigation={navigation} photosarray={meeting.place.photos} typeofmeeting={meetingtype} meeting={meeting} />
+                    {
+                        meeting.place.photos &&
+                        <LocationPhotos navigation={navigation} photosarray={meeting.place.photos} typeofmeeting={meetingtype} meeting={meeting} />
+
+
+                    }
                     {  meetingtype=='Ended' && 
                     <View>
                     <Text style={styles.feedBack}>Feedback </Text> 

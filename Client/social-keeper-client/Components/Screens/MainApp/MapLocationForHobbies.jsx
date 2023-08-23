@@ -171,6 +171,8 @@ const setnewmeetingplace= (details,hobbienumreplace) => {
           placeholder='Search'
           fetchDetails={true}
           onPress={async (data, details = null) => {
+            // place must have a photo
+            
             console.log('im trying to get the location')
 
             console.log('this is the data', data)
@@ -194,6 +196,9 @@ const setnewmeetingplace= (details,hobbienumreplace) => {
           query={{
             key: 'AIzaSyDCCbpFYxI2jGqyWacOIokLnXONGUCUmow',
             language: 'en',
+            types: ['establishment'],
+            components: 'country:il',
+
           }}
           styles={{
             textInputContainer: styles.textInputContainer,
@@ -206,6 +211,7 @@ const setnewmeetingplace= (details,hobbienumreplace) => {
           // suppressDefaultStyles={true}
           nearbyPlacesAPI='GooglePlacesSearch'
           debounce={400}
+      
           
           
           
