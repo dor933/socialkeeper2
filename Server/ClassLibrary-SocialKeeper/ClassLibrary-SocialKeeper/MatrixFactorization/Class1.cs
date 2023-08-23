@@ -74,8 +74,23 @@ namespace ClassLibrary_SocialKeeper
           double prefferdtimerate, List<tblPreferredTime> commontimeperiods2, igroup192_prodEntities _db)
         {
             bool existingperiod = false;
-            List<tblPreferredTime> usertblpref = item.tblUser.tblPreferredTime.ToList();
-            List<tblPreferredTime> user1tblpref = item.tblUser1.tblPreferredTime.ToList();
+            bool usersendfavoritereq = false;
+
+            List<tblPreferredTime> usertblpref = new List<tblPreferredTime>();
+            List<tblPreferredTime> user1tblpref = new List<tblPreferredTime>();
+            if (usertomeeting.phoneNum1 == item.tblUser.phoneNum1)
+            {
+                usertblpref = item.tblUser.tblPreferredTime.ToList();
+                user1tblpref = item.tblUser1.tblPreferredTime.ToList();
+                usersendfavoritereq= true;
+
+            }
+            else
+            {
+                usertblpref = item.tblUser1.tblPreferredTime.ToList();
+                user1tblpref = item.tblUser.tblPreferredTime.ToList();
+            }
+
 
 
 
@@ -97,6 +112,7 @@ namespace ClassLibrary_SocialKeeper
                                 tblPreferredTime eventadd = new tblPreferredTime();
                                 eventadd.startTime = newtup.Item1;
                                 eventadd.endTime = newtup.Item2;
+
                                 eventadd.weekDay = tm.weekDay;
                                 commontimeperiods2.Add(eventadd);
                             }
@@ -107,12 +123,15 @@ namespace ClassLibrary_SocialKeeper
             foreach (tblPreferredTime comtime in commontimeperiods2)
             {
                 existingperiod = false;
+                int comtimeint = int.Parse(comtime.weekDay);
+                comtimeint--;
+                string comtimeweekdayreplacer= comtimeint.ToString();
 
                 if (numbermeetings == 5)
                 {
                     break;
                 }
-                DateTime thedate = GetDateForWeekday(comtime.weekDay, comtime.startTime);
+                DateTime thedate = GetDateForWeekday(comtimeweekdayreplacer, comtime.startTime);
                 List<List<Events>> myevents = returneventsfixed(userinviteeve, userinvitedeve, comtime);
                 List<Events> userinviteevefixed = myevents[0];
                 List<Events> userinvitedfixed = myevents[1];
@@ -133,6 +152,27 @@ namespace ClassLibrary_SocialKeeper
                             break;
                         }
                     }
+                    string phonenumberinviteduser;
+                    if (usersendfavoritereq)
+                    {
+                         phonenumberinviteduser = item.tblUser1.phoneNum1;
+                    }
+                    else
+                    {
+                        phonenumberinviteduser = item.tblUser.phoneNum1;
+
+                    }
+
+                    foreach(SuggestedDTO itesug2 in suggestedmeet)
+                    {
+                        if (itesug2.startTime == lismatchitems.Item1 && lismatchitems.Item2 == itesug2.endTime && new DateTime(itesug2.date.Year, itesug2.date.Month, itesug2.date.Day) == new DateTime(thedate.Year, thedate.Month, thedate.Day)
+                            && itesug2.phoneNum2==phonenumberinviteduser)
+                        {
+                            existingperiod= true; 
+                            break;
+
+                        }
+                    }
                     if (!existingperiod)
                     {
                         if (numbermeetings == 5)
@@ -151,14 +191,17 @@ namespace ClassLibrary_SocialKeeper
                         sugdto.phoneNum2 = user1exist.phonenumbers[0];
                         foreach (RatingData rat in ratedhobbies)
                         {
+                            
                             if (lismatchitems.Item2 - lismatchitems.Item1 >= TimeSpan.FromHours(rat.Minhours))
                             {
+                                
+                                
                                 sugdto.hobbieNum = rat.HobbieNum;
                                 ratemax = rat;
                                 break;
                             }
                         }
-                        sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (75.0 - 1.0);
+                        sugdto.normalizehobbierank = ratemax.Label / 28.0;
                         totalmeetingrank = Meetings.calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate,item,_db);
                         sugdto.rank = totalmeetingrank;
                         //need to add hobbienum to tblsuggestedmeeting
@@ -178,18 +221,20 @@ namespace ClassLibrary_SocialKeeper
 
         public static List<List<Events>> returneventsfixed(List<Events> userinviteeve, List<Events> userinvitedeve, tblPreferredTime comtime)
         {
+            int comtimeint = int.Parse(comtime.weekDay) - 1;
+           string  comtimeweekdayreplacement= comtimeint.ToString();
             List<Events> userinviteevefixed = new List<Events>();
             List<Events> userinvitedfixed = new List<Events>();
             foreach (Events eve in userinviteeve)
             {
-                if (eve.weekday == comtime.weekDay)
+                if (eve.weekday == comtimeweekdayreplacement)
                 {
                     userinviteevefixed.Add(eve);
                 }
             }
             foreach (Events eve2 in userinvitedeve)
             {
-                if (eve2.weekday == comtime.weekDay)
+                if (eve2.weekday == comtimeweekdayreplacement)
                 {
                     userinvitedfixed.Add(eve2);
                 }
@@ -312,7 +357,7 @@ namespace ClassLibrary_SocialKeeper
                                 }
                             }
                         }
-                        sugdto.normalizehobbierank = (ratemax.Label - 1.0) / (75.0 - 1.0);
+                        sugdto.normalizehobbierank = ratemax.Label / 28.0;
                         totalmeetingrank = calculatemeetingscore(sugdto.normalizehobbierank, sugdto.prefferedtimerate, item, _db);
                         sugdto.rank = totalmeetingrank;
                         //need to add hobbienum to tblsuggestedmeeting
@@ -599,7 +644,7 @@ namespace ClassLibrary_SocialKeeper
                         }
                         mysuggested.place = place;
                         placefound = true;
-                        break;
+                        return mysuggested;
 
                     }
                     else
@@ -609,13 +654,34 @@ namespace ClassLibrary_SocialKeeper
                         List<Period> opcloseday = new List<Period>();
                         foreach (Period period in openingHoursDetails.Periods)
                         {
+                            int currentdayplusone;
+                            int currentdayminusone;
+                            if (currentDayOfWeek == 6)
+                            {
+                                currentdayplusone = 0;
+                            }
+                            else
+                            {
+                                currentdayplusone = currentDayOfWeek + 1;
+                            }
+
+                            if (currentDayOfWeek == 0)
+                            {
+                                currentdayminusone = 6;
+                            }
+                            else
+                            {
+                                currentdayminusone= currentDayOfWeek - 1;
+
+                            }
+
                             if (period.Open != null && period.Close != null)
                             {
                                 if (period.Open.Day == currentDayOfWeek && period.Close.Day == currentDayOfWeek)
                                 {
                                     opcloseday.Add(period);
                                 }
-                                else if (period.Open.Day == currentDayOfWeek && period.Close.Day == currentDayOfWeek + 1 && TimeSpan.Parse(period.Open.Time) > TimeSpan.Parse(period.Close.Time))
+                                else if (period.Open.Day == currentDayOfWeek && period.Close.Day == currentdayplusone && TimeSpan.Parse(period.Open.Time) > TimeSpan.Parse(period.Close.Time))
                                 {
 
                                     opcloseday.Add(period);
@@ -623,7 +689,7 @@ namespace ClassLibrary_SocialKeeper
 
                                 }
 
-                                else if (period.Open.Day == currentDayOfWeek - 1 && period.Close.Day == currentDayOfWeek && TimeSpan.Parse(period.Close.Time) > mysuggested.endTime)
+                                else if (period.Open.Day == currentdayminusone && period.Close.Day == currentDayOfWeek && TimeSpan.Parse(period.Close.Time) > mysuggested.endTime)
                                 {
                                     opcloseday.Add(period);
 
@@ -1100,15 +1166,36 @@ namespace ClassLibrary_SocialKeeper
                                 }
                                 mysuggested.place = place;
                                 placefound = true;
-                                break;
+                                return mysuggested;
 
                             }
                             else
                             {
                                 
 
-                                List<Period> opcloseday = new List<Period>();
-                                foreach (Period period in openingHoursDetails.Periods)
+                            List<Period> opcloseday = new List<Period>();
+                            int currentdayplusone;
+                            int currentdayminusone;
+                            if (currentDayOfWeek == 6)
+                            {
+                                currentdayplusone = 0;
+                            }
+                            else
+                            {
+                                currentdayplusone = currentDayOfWeek + 1;
+                            }
+
+                            if (currentDayOfWeek == 0)
+                            {
+                                currentdayminusone = 6;
+                            }
+                            else
+                            {
+                                currentdayminusone = currentDayOfWeek - 1;
+
+                            }
+
+                            foreach (Period period in openingHoursDetails.Periods)
                                 {
                                     if(period.Open!=null && period.Close != null)
                                     {
@@ -1116,14 +1203,14 @@ namespace ClassLibrary_SocialKeeper
                                         {
                                             opcloseday.Add(period);
                                         }
-                                        else if(period.Open.Day==currentDayOfWeek && period.Close.Day== currentDayOfWeek+1 && TimeSpan.Parse(period.Open.Time) > TimeSpan.Parse(period.Close.Time))
+                                        else if(period.Open.Day==currentDayOfWeek && period.Close.Day== currentdayplusone && TimeSpan.Parse(period.Open.Time) > TimeSpan.Parse(period.Close.Time))
                                     {
 
                                         opcloseday.Add(period);
 
 
                                     }
-                                        else if(period.Open.Day==currentDayOfWeek-1 && period.Close.Day==currentDayOfWeek && TimeSpan.Parse(period.Close.Time) > mysuggested.endTime)
+                                        else if(period.Open.Day== currentdayminusone && period.Close.Day==currentDayOfWeek && TimeSpan.Parse(period.Close.Time) > mysuggested.endTime)
                                     {
                                         opcloseday.Add(period);
 
@@ -1394,7 +1481,17 @@ namespace ClassLibrary_SocialKeeper
                     {
 
                         TimeSpan resultfixed = new TimeSpan(e.Item2.Hours, e.Item2.Minutes, e.Item2.Seconds);
-                        newevreturn.Add(new Tuple<TimeSpan, TimeSpan>(e.Item1, resultfixed));
+
+                        if (e.Item1.Days > 0)
+                        {
+                            TimeSpan resultfixedstart = new TimeSpan(e.Item1.Hours, e.Item1.Minutes, e.Item1.Seconds);
+                            newevreturn.Add(new Tuple<TimeSpan, TimeSpan>(resultfixedstart, resultfixed));
+
+                        }
+                        else
+                        {
+                            newevreturn.Add(new Tuple<TimeSpan, TimeSpan>(e.Item1, resultfixed));
+                        }
 
 
                     }
@@ -1425,10 +1522,11 @@ namespace ClassLibrary_SocialKeeper
         {
             int dayofweekint = int.Parse(dayOfWeek);
             DateTime today = DateTime.Today;
+            TimeSpan timenow = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
             int currentDayOfWeek = (int)today.DayOfWeek;
             int daysUntilTargetDay;
             TimeSpan additional = new TimeSpan(5, 0, 0);
-            TimeSpan newtimestart= starttime.Add(additional);
+            TimeSpan newtimenow= timenow.Add(additional);
             
 
            
@@ -1438,7 +1536,7 @@ namespace ClassLibrary_SocialKeeper
                     daysUntilTargetDay += 7;
                 }
 
-                if(daysUntilTargetDay==0 && today.TimeOfDay<newtimestart)
+                if(daysUntilTargetDay==0 && newtimenow>starttime)
             {
                     daysUntilTargetDay = 7;
                 }
@@ -1478,7 +1576,7 @@ namespace ClassLibrary_SocialKeeper
 
             }
 
-            double sugmeetingrank = (0.3 * hobbyranknormalized) + (0.3 * prefferedtimerate) + (0.4 * avaragescore);
+            double sugmeetingrank = (0.3 * hobbyranknormalized) + (0.5 * prefferedtimerate) + (0.2 * avaragescore);
             return sugmeetingrank;
 
         }

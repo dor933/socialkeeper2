@@ -65,7 +65,7 @@ namespace WebApplication1.Controllers
 
 
 
-                string meetingweekday = (((int)meetingobj.meetingdate.DayOfWeek + 6) % 7 + 1).ToString();
+                string meetingweekday = ((int)meetingobj.meetingdate.DayOfWeek+1).ToString();
                 tblPreferredTime pref = new tblPreferredTime();
                 pref.weekDay = meetingweekday;
                 pref.startTime = meetingobj.meetingstarttime;
@@ -84,6 +84,10 @@ namespace WebApplication1.Controllers
                     foreach (var lismatchitems in listmatch)
                     {
 
+                        if(pref.startTime>lismatchitems.Item1)
+                        {
+                            meetingobj.meetingdate = meetingobj.meetingdate.AddDays(1);
+                        }
 
 
                         SuggestedDTO sugdto = new SuggestedDTO();
@@ -361,11 +365,13 @@ namespace WebApplication1.Controllers
                             double multiplynumber = user1itemlab * user2itemlab;
                             if (hobie.hobbieNum == item.tblHobbie.hobbieNum)
                             {
-                                multiplynumber = multiplynumber * 3;
+                                multiplynumber = multiplynumber  +3;
                             
                             }
                             RatingData rated = new RatingData();
+                        
                             rated.Label = multiplynumber;
+                            
                             rated.HobbieNum = i;
                             rated.Minhours = Convert.ToDouble(hobie.Minhours);
                             ratedhobbies.Add(rated);
@@ -453,8 +459,9 @@ namespace WebApplication1.Controllers
                             double multiplynumber = user1itemlab * user2itemlab;
                             if (hobie.hobbieNum == item.tblHobbie.hobbieNum)
                             {
-                                multiplynumber = multiplynumber * 3;
+                                multiplynumber = multiplynumber +3;
                             }
+                          
                             RatingData rated = new RatingData();
                             rated.Label = multiplynumber;
                             rated.HobbieNum = i;
@@ -463,6 +470,8 @@ namespace WebApplication1.Controllers
 
 
                         }
+                        ratedhobbies.Sort((x, y) => y.Label.CompareTo(x.Label));
+
 
 
 

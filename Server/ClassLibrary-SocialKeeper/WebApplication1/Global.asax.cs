@@ -48,7 +48,6 @@ namespace WebApplication1
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             HangfireAspNet.Use(GetHangfireServers);
 
-
             RecurringJob.AddOrUpdate("notifmaker", () => NotificationsChecker(), Cron.Minutely);
 
 
@@ -172,18 +171,23 @@ namespace WebApplication1
                     Debug.WriteLine("Into actual meeting creator!");
                     DateTime now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
                     DateTime yestarday= now.AddDays(-1);
-                    TimeSpan timenow = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
 
-                    TimeSpan onehour = new TimeSpan(1, 0, 0);
+                    TimeSpan onehour = new TimeSpan(1, 10,0);
                     List<tblSuggestedMeeting> suggestedcheck = _db.tblSuggestedMeeting.Where(x => (x.date == now || x.date == yestarday) && x.status == "A").ToList();
                     foreach (tblSuggestedMeeting sug in suggestedcheck)
                     {
+                        TimeSpan timenow = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
                         DateTime relevanttime = now;
                         TimeSpan endtime = sug.endTime;
                         TimeSpan starttime = sug.startTime;
 
-                        if (new DateTime(sug.date.Year,sug.date.Month,sug.date.Day) == yestarday)
+                        DateTime checkdate= new DateTime(sug.date.Year,sug.date.Month,sug.date.Day);
+                        Debug.WriteLine("this is checkdate");
+                        Debug.WriteLine(checkdate);
+
+                        if (checkdate == yestarday)
                         {
+                            Debug.WriteLine("Entered to add to timenow");
                             timenow=timenow.Add(new TimeSpan(1, 0, 0, 0));
 
                             relevanttime = yestarday;
@@ -205,11 +209,13 @@ namespace WebApplication1
                         Debug.WriteLine($"relevant time is {relevanttime}");
                         Debug.WriteLine($"sugdate is {sug.date}");
                         Debug.WriteLine($"yesteraday is {yestarday}");
+                        Debug.WriteLine($"sugisaksfornotif is {sug.isaskforranknotif}");
+                        Debug.WriteLine($"endtime is {endtime}");
 
 
 
 
-                        if (endtime.Add(onehour) <= timenow && sug.date == relevanttime && sug.isaskforranknotif != true)
+                        if (endtime.Add(onehour)<= timenow && sug.date == relevanttime && sug.isaskforranknotif != true)
                         {
 
                             tblActualMeeting actmeeting = new tblActualMeeting();
@@ -305,7 +311,7 @@ namespace WebApplication1
             notifendmeet.Data = new Dictionary<string, string>
             {
              {"meetingnum", $"{actdto.meetingNum}" },
-             {"notiftype", "Upcomingmeeting" },
+             {"notiftype", "Meeting Ended" },
             };
 
             await Notificationsmaker.Notify(notifendmeet);

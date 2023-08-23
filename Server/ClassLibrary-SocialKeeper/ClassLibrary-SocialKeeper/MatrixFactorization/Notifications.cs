@@ -22,6 +22,9 @@ namespace ClassLibrary_SocialKeeper
             tblUser targetuser = _db.tblUser.Where(x => x.phoneNum1 == notification.targetuserphonenum).FirstOrDefault();
             tblUser senderuser = _db.tblUser.Where(x => x.phoneNum1 == notification.senderphonenum).FirstOrDefault();
 
+            var reloadentity = _db.tblUser.Find(notification.targetuserphonenum);
+            _db.Entry(reloadentity).Reload();
+
             if (targetuser == null || senderuser == null)
             {
                 return "user not found";
@@ -34,7 +37,7 @@ namespace ClassLibrary_SocialKeeper
             {
                 PushTicketRequest pushticketrrequest = new PushTicketRequest
                 {
-                    PushTo = new List<string> { targetuser.ExpoPushToken },
+                    PushTo = new List<string> { reloadentity.ExpoPushToken },
                     PushTitle = notification.Title,
                     PushBody = notification.Body,
                     PushData= JsonConvert.SerializeObject(notification.Data)
